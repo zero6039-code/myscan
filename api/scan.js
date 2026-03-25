@@ -1,9 +1,16 @@
 const axios = require('axios');
+const https = require('https');
 
-// 辅助函数：发送 GET 请求（带超时和错误处理）
+// 创建一个自定义的 axios 实例，忽略 SSL 证书验证（仅用于测试环境）
+const axiosInstance = axios.create({
+    httpsAgent: new https.Agent({ rejectUnauthorized: false }),
+    timeout: 5000
+});
+
+// 辅助函数：发送 GET 请求（使用自定义实例）
 async function fetchUrl(url) {
     try {
-        const response = await axios.get(url, { timeout: 5000 });
+        const response = await axiosInstance.get(url);
         return response;
     } catch (error) {
         return { error: error.message, status: error.response?.status || 500 };
@@ -20,7 +27,6 @@ async function getBasicInfo(url) {
         status: response.status,
         headers: response.headers,
         contentLength: response.data.length,
-        // 可提取标题等
         title: (response.data.match(/<title>(.*?)<\/title>/i) || [])[1] || ''
     };
 }
@@ -48,7 +54,7 @@ async function checkSensitiveFiles(baseUrl) {
     for (const path of sensitivePaths) {
         const url = new URL(path, baseUrl).href;
         try {
-            const res = await axios.get(url, { timeout: 2000 });
+            const res = await axiosInstance.get(url, { timeout: 2000 });
             if (res.status === 200) {
                 found.push(path);
             }
@@ -62,13 +68,12 @@ async function checkSensitiveFiles(baseUrl) {
 // 4. 简单 XSS 检测（反射型）
 async function checkXssReflected(baseUrl) {
     const payload = '<script>alert("XSS")</script>';
-    // 尝试将 payload 作为参数添加到 URL 中（常见参数名如 q, s, id）
     const testParams = ['q', 's', 'id', 'search', 'query'];
     for (const param of testParams) {
         const testUrl = new URL(baseUrl);
         testUrl.searchParams.set(param, payload);
         try {
-            const res = await axios.get(testUrl.href);
+            const res = await axiosInstance.get(testUrl.href);
             if (res.data.includes(payload) && !res.data.includes('&lt;script&gt;')) {
                 return { vulnerable: true, param, url: testUrl.href };
             }
@@ -87,15 +92,13 @@ async function checkSqlInjection(baseUrl) {
         const testUrl = new URL(baseUrl);
         testUrl.searchParams.set(param, payload);
         try {
-            const res = await axios.get(testUrl.href);
-            // 检测常见 SQL 错误关键词
+            const res = await axiosInstance.get(testUrl.href);
             const errorKeywords = ['sql', 'mysql', 'syntax', 'unclosed'];
             const hasError = errorKeywords.some(k => res.data.toLowerCase().includes(k));
             if (hasError) {
                 return { vulnerable: true, param, url: testUrl.href };
             }
         } catch (e) {
-            // 有时注入会导致服务器错误，也算可能漏洞
             if (e.response && e.response.status >= 500) {
                 return { vulnerable: true, param, url: testUrl.href, note: 'Server error likely caused by injection' };
             }
@@ -106,7 +109,7 @@ async function checkSqlInjection(baseUrl) {
 
 // 主函数
 module.exports = async (req, res) => {
-    // 设置 CORS 和预检
+    // 设置 CORS
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     if (req.method === 'OPTIONS') return res.status(200).end();
@@ -127,7 +130,6 @@ module.exports = async (req, res) => {
     }
 
     try {
-        // 并行执行检测（部分依赖顺序）
         const basic = await getBasicInfo(targetUrl);
         const securityMissing = checkSecurityHeaders(basic.headers || {});
         const sensitiveFiles = await checkSensitiveFiles(targetUrl);
