@@ -1,25 +1,43 @@
 const axios = require('axios');
 const https = require('https');
 
-// 创建一个自定义的 axios 实例，忽略 SSL 证书验证（仅用于测试环境）
+// ==================== 增强的 axios 实例 ====================
+// 模拟真实浏览器请求头，提高通过率
 const axiosInstance = axios.create({
     httpsAgent: new https.Agent({ rejectUnauthorized: false }),
-    timeout: 5000
+    timeout: 10000,  // 单次请求超时10秒（原5秒）
+    headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Connection': 'keep-alive',
+        'Upgrade-Insecure-Requests': '1',
+        'Referer': 'https://www.google.com/'  // 部分网站依赖 Referer
+    }
 });
 
-// 辅助函数：发送 GET 请求（使用自定义实例）
-async function fetchUrl(url) {
-    try {
-        const response = await axiosInstance.get(url);
-        return response;
-    } catch (error) {
-        return { error: error.message, status: error.response?.status || 500 };
+// ==================== 带重试的请求函数 ====================
+// 用于获取页面基本信息（失败时自动重试2次）
+async function fetchUrlWithRetry(url, retries = 2) {
+    for (let attempt = 0; attempt <= retries; attempt++) {
+        try {
+            const response = await axiosInstance.get(url);
+            return response;
+        } catch (error) {
+            if (attempt === retries) {
+                // 最后一次失败，返回错误信息
+                return { error: error.message, status: error.response?.status || 500 };
+            }
+            // 等待1秒后重试
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        }
     }
 }
 
-// 1. 基础信息：状态码、响应头、页面大小等
+// 基础信息获取（使用重试）
 async function getBasicInfo(url) {
-    const response = await fetchUrl(url);
+    const response = await fetchUrlWithRetry(url);
     if (response.error) {
         return { error: response.error, status: response.status };
     }
@@ -31,7 +49,8 @@ async function getBasicInfo(url) {
     };
 }
 
-// 2. 检测安全头部缺失
+// ==================== 其他检测（沿用增强的 axiosInstance，但无重试） ====================
+// 检测安全头部缺失
 function checkSecurityHeaders(headers) {
     const required = [
         'X-Frame-Options',
@@ -44,7 +63,7 @@ function checkSecurityHeaders(headers) {
     return missing;
 }
 
-// 3. 检测敏感文件泄露（常见路径列表）
+// 检测敏感文件泄露（使用增强 axiosInstance，但单独设置超时）
 async function checkSensitiveFiles(baseUrl) {
     const sensitivePaths = [
         '/.env', '/.git/config', '/backup.zip', '/admin', '/phpinfo.php',
@@ -65,7 +84,7 @@ async function checkSensitiveFiles(baseUrl) {
     return found;
 }
 
-// 4. 简单 XSS 检测（反射型）
+// 简单 XSS 检测（反射型）
 async function checkXssReflected(baseUrl) {
     const payload = '<script>alert("XSS")</script>';
     const testParams = ['q', 's', 'id', 'search', 'query'];
@@ -84,7 +103,7 @@ async function checkXssReflected(baseUrl) {
     return { vulnerable: false };
 }
 
-// 5. 简单 SQL 注入检测（基于响应差异）
+// 简单 SQL 注入检测（基于响应差异）
 async function checkSqlInjection(baseUrl) {
     const payload = "' OR '1'='1";
     const testParams = ['id', 'page', 'user'];
@@ -107,9 +126,9 @@ async function checkSqlInjection(baseUrl) {
     return { vulnerable: false };
 }
 
-// 主函数
+// ==================== 主函数 ====================
 module.exports = async (req, res) => {
-    // 设置 CORS
+    // CORS 设置
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     if (req.method === 'OPTIONS') return res.status(200).end();
@@ -130,6 +149,7 @@ module.exports = async (req, res) => {
     }
 
     try {
+        // 并行执行检测
         const basic = await getBasicInfo(targetUrl);
         const securityMissing = checkSecurityHeaders(basic.headers || {});
         const sensitiveFiles = await checkSensitiveFiles(targetUrl);
