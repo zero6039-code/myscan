@@ -1,7 +1,9 @@
-// API 地址（根据你的实际情况修改）
-const API_URL = 'https://myscan-henna.vercel.app/api/scan';
+// ==================== 配置 ====================
+const API_BASE = 'https://myscan-henna.vercel.app';  // 修改为你的 Vercel 项目域名
+const API_SCAN = `${API_BASE}/api/scan`;
+const API_PROGRESS = `${API_BASE}/api/progress`;
 
-// 国际化文本库
+// ==================== 国际化文本 ====================
 const i18n = {
     en: {
         scanning: 'Scanning...',
@@ -15,6 +17,7 @@ const i18n = {
         sensitiveFiles: 'Sensitive Files Discovered',
         xss: 'XSS (Cross-Site Scripting)',
         sql: 'SQL Injection',
+        threatIntel: 'Threat Intelligence (VirusTotal)',
         vulnerable: 'Vulnerable',
         notVulnerable: 'Not Vulnerable',
         parameter: 'Parameter',
@@ -26,7 +29,12 @@ const i18n = {
         unknown: 'Unknown',
         errorFetch: 'Failed to fetch scan results.',
         pleaseEnterUrl: 'Please enter a URL.',
-        disclaimer: '⚠️ This tool is for authorized security testing only. Use responsibly.'
+        disclaimer: '⚠️ This tool is for authorized security testing only. Use responsibly.',
+        export: 'Export as JSON',
+        progressPending: 'Waiting to start...',
+        progressRunning: 'Scanning...',
+        progressCompleted: 'Scan completed!',
+        progressError: 'Scan failed'
     },
     zh: {
         scanning: '扫描中...',
@@ -40,6 +48,7 @@ const i18n = {
         sensitiveFiles: '发现的敏感文件',
         xss: '跨站脚本 (XSS)',
         sql: 'SQL 注入',
+        threatIntel: '威胁情报 (VirusTotal)',
         vulnerable: '存在漏洞',
         notVulnerable: '未发现漏洞',
         parameter: '参数',
@@ -51,11 +60,18 @@ const i18n = {
         unknown: '未知',
         errorFetch: '获取扫描结果失败。',
         pleaseEnterUrl: '请输入网址。',
-        disclaimer: '⚠️ 本工具仅供授权的安全测试使用，请合法使用。'
+        disclaimer: '⚠️ 本工具仅供授权的安全测试使用，请合法使用。',
+        export: '导出 JSON',
+        progressPending: '等待开始...',
+        progressRunning: '扫描中...',
+        progressCompleted: '扫描完成！',
+        progressError: '扫描失败'
     }
 };
 
-let currentLang = 'en'; // 默认英文
+let currentLang = 'en';
+let currentTaskId = null;
+let pollInterval = null;
 
 // DOM 元素
 const targetInput = document.getElementById('target');
@@ -63,28 +79,30 @@ const scanBtn = document.getElementById('scan-btn');
 const resultContainer = document.getElementById('result-container');
 const errorContainer = document.getElementById('error-container');
 const loadingDiv = document.getElementById('loading');
+const progressContainer = document.getElementById('progress-container');
+const progressFill = document.getElementById('progress-fill');
+const progressMessage = document.getElementById('progress-message');
+const exportContainer = document.getElementById('export-container');
+const exportBtn = document.getElementById('export-btn');
+
 const langEnBtn = document.getElementById('lang-en');
 const langZhBtn = document.getElementById('lang-zh');
 
-// 切换语言
-function setLanguage(lang) {
-    currentLang = lang;
-    // 更新按钮样式
-    langEnBtn.classList.toggle('active', lang === 'en');
-    langZhBtn.classList.toggle('active', lang === 'zh');
-    // 如果当前有结果显示，重新渲染（使用新语言）
-    const currentData = window.lastScanData;
-    if (currentData) {
-        renderResult(currentData);
-    }
-}
-
-// 获取当前语言文本
+// ==================== 辅助函数 ====================
 function t(key) {
     return i18n[currentLang][key] || key;
 }
 
-// 辅助：创建卡片
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+    });
+}
+
 function createCard(title, contentHtml, extraClass = '') {
     const card = document.createElement('div');
     card.className = `result-card ${extraClass}`;
@@ -93,19 +111,6 @@ function createCard(title, contentHtml, extraClass = '') {
         <div class="card-body">${contentHtml}</div>
     `;
     return card;
-}
-
-// 简单的防XSS
-function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/[&<>]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        return m;
-    }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
-        return c;
-    });
 }
 
 // 渲染扫描结果
@@ -122,23 +127,17 @@ function renderResult(data) {
     `);
 
     // 2. 安全头部缺失卡片
-    let securityHtml = '';
     const missing = data.security?.missingHeaders || [];
-    if (missing.length === 0) {
-        securityHtml = `<div class="info-value">${t('noMissingHeaders')}</div>`;
-    } else {
-        securityHtml = `<div class="info-value">${missing.map(h => `<span class="badge">${escapeHtml(h)}</span>`).join('')}</div>`;
-    }
+    let securityHtml = missing.length === 0
+        ? `<div class="info-value">${t('noMissingHeaders')}</div>`
+        : `<div class="info-value">${missing.map(h => `<span class="badge">${escapeHtml(h)}</span>`).join('')}</div>`;
     const securityCard = createCard(t('securityHeaders'), securityHtml);
 
     // 3. 敏感文件卡片
-    let sensitiveHtml = '';
     const sensitive = data.sensitiveFiles || [];
-    if (sensitive.length === 0) {
-        sensitiveHtml = `<div class="info-value">${t('noSensitiveFiles')}</div>`;
-    } else {
-        sensitiveHtml = `<div class="info-value">${sensitive.map(f => `<span class="badge vuln-badge">${escapeHtml(f)}</span>`).join('')}</div>`;
-    }
+    let sensitiveHtml = sensitive.length === 0
+        ? `<div class="info-value">${t('noSensitiveFiles')}</div>`
+        : `<div class="info-value">${sensitive.map(f => `<span class="badge vuln-badge">${escapeHtml(f)}</span>`).join('')}</div>`;
     const sensitiveCard = createCard(t('sensitiveFiles'), sensitiveHtml);
 
     // 4. XSS 卡片
@@ -159,65 +158,145 @@ function renderResult(data) {
     }
     const sqlCard = createCard(t('sql'), sqlHtml);
 
-    // 6. 免责声明卡片（放在最后）
+    // 6. 威胁情报卡片
+    let threatHtml = '';
+    if (data.threatIntel && !data.threatIntel.error) {
+        threatHtml = `
+            <div class="info-row"><span class="info-label">Malicious:</span><span class="info-value">${data.threatIntel.malicious}</span></div>
+            <div class="info-row"><span class="info-label">Suspicious:</span><span class="info-value">${data.threatIntel.suspicious}</span></div>
+            <div class="info-row"><span class="info-label">Harmless:</span><span class="info-value">${data.threatIntel.harmless}</span></div>
+            <div class="info-row"><span class="info-label">Undetected:</span><span class="info-value">${data.threatIntel.undetected}</span></div>
+        `;
+    } else {
+        threatHtml = `<div class="info-value">${data.threatIntel?.error || '情报不可用'}</div>`;
+    }
+    const threatCard = createCard(t('threatIntel'), threatHtml);
+
+    // 7. 免责声明卡片
     const disclaimerCard = createCard('', `<div style="font-size:14px;">${t('disclaimer')}</div>`, 'disclaimer-card');
-    // 修改标题栏内容，直接显示警告图标和文本
     disclaimerCard.querySelector('.card-header').innerHTML = `⚠️ ${t('disclaimer')}`;
     disclaimerCard.querySelector('.card-body').style.padding = '12px 20px';
 
-    // 按顺序添加所有卡片
+    // 按顺序添加
     resultContainer.appendChild(basicCard);
     resultContainer.appendChild(securityCard);
     resultContainer.appendChild(sensitiveCard);
     resultContainer.appendChild(xssCard);
     resultContainer.appendChild(sqlCard);
+    resultContainer.appendChild(threatCard);
     resultContainer.appendChild(disclaimerCard);
 
     resultContainer.style.display = 'block';
+    exportContainer.style.display = 'block';
     window.lastScanData = data;
 }
 
-// 扫描函数
+// 导出报告
+function exportReport() {
+    if (!window.lastScanData) return;
+    const dataStr = JSON.stringify(window.lastScanData, null, 2);
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `scan_report_${new Date().toISOString()}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+exportBtn.addEventListener('click', exportReport);
+
+// 轮询进度
+async function pollProgress(taskId) {
+    if (pollInterval) clearInterval(pollInterval);
+    pollInterval = setInterval(async () => {
+        try {
+            const response = await fetch(`${API_PROGRESS}?taskId=${taskId}`);
+            const data = await response.json();
+            if (data.status === 'completed') {
+                clearInterval(pollInterval);
+                loadingDiv.style.display = 'none';
+                progressContainer.style.display = 'none';
+                renderResult(data.result);
+            } else if (data.status === 'error') {
+                clearInterval(pollInterval);
+                loadingDiv.style.display = 'none';
+                progressContainer.style.display = 'none';
+                errorContainer.textContent = t('errorPrefix') + data.message;
+                errorContainer.style.display = 'block';
+            } else {
+                // 更新进度条
+                progressFill.style.width = `${data.progress}%`;
+                let msg = data.message;
+                if (data.status === 'running') msg = `${t('progressRunning')} ${msg}`;
+                else if (data.status === 'pending') msg = t('progressPending');
+                progressMessage.textContent = msg;
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }, 1000);
+}
+
+// 扫描主函数
 async function scan() {
     const url = targetInput.value.trim();
     if (!url) {
         errorContainer.textContent = t('pleaseEnterUrl');
         errorContainer.style.display = 'block';
-        resultContainer.style.display = 'none';
         return;
     }
 
-    // 隐藏之前的结果和错误，显示加载
+    // 重置界面
+    resultContainer.innerHTML = '';
     resultContainer.style.display = 'none';
     errorContainer.style.display = 'none';
+    exportContainer.style.display = 'none';
+    progressContainer.style.display = 'block';
+    progressFill.style.width = '0%';
+    progressMessage.textContent = t('progressPending');
     loadingDiv.style.display = 'block';
 
     try {
-        const response = await fetch(API_URL, {
+        const response = await fetch(API_SCAN, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ url: url })
+            body: JSON.stringify({ url })
         });
-
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-
         const data = await response.json();
-        renderResult(data);
+        if (!response.ok) throw new Error(data.error || 'Unknown error');
+        currentTaskId = data.taskId;
+        pollProgress(currentTaskId);
     } catch (err) {
+        loadingDiv.style.display = 'none';
+        progressContainer.style.display = 'none';
         errorContainer.textContent = t('errorPrefix') + err.message;
         errorContainer.style.display = 'block';
-        resultContainer.style.display = 'none';
-    } finally {
-        loadingDiv.style.display = 'none';
+    }
+}
+
+// 语言切换
+function setLanguage(lang) {
+    currentLang = lang;
+    langEnBtn.classList.toggle('active', lang === 'en');
+    langZhBtn.classList.toggle('active', lang === 'zh');
+    if (window.lastScanData) renderResult(window.lastScanData);
+    // 更新输入框占位符
+    targetInput.placeholder = lang === 'en' ? 'https://example.com' : 'https://example.com';
+    scanBtn.textContent = lang === 'en' ? 'Start Scan' : '开始扫描';
+    exportBtn.textContent = t('export');
+    loadingDiv.textContent = t('scanning');
+    // 如果有进度显示，更新进度文本
+    if (progressContainer.style.display === 'block' && progressMessage.textContent) {
+        // 简单更新当前消息
+        const oldMsg = progressMessage.textContent;
+        if (oldMsg.includes('Scanning...') || oldMsg.includes('扫描中...')) {
+            progressMessage.textContent = t('progressRunning');
+        }
     }
 }
 
 // 事件绑定
 scanBtn.addEventListener('click', scan);
-targetInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') scan();
-});
+targetInput.addEventListener('keypress', (e) => e.key === 'Enter' && scan());
 langEnBtn.addEventListener('click', () => setLanguage('en'));
 langZhBtn.addEventListener('click', () => setLanguage('zh'));
