@@ -1,200 +1,41 @@
-const axios = require('axios');
-const https = require('https');
-const { v4: uuidv4 } = require('uuid'); // 需要安装 uuid
-
-// 内存存储进度（生产环境请替换为 Redis 或 Vercel KV）
-const tasks = {};
-
-// 增强的 axios 实例
-const axiosInstance = axios.create({
-    httpsAgent: new https.Agent({ rejectUnauthorized: false }),
-    timeout: 10000,
-    headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-        'Accept-Language': 'en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7',
-        'Accept-Encoding': 'gzip, deflate, br',
-        'Connection': 'keep-alive',
-        'Upgrade-Insecure-Requests': '1',
-        'Referer': 'https://www.google.com/'
-    }
-});
-
-// 带重试的请求函数
-async function fetchUrlWithRetry(url, retries = 2) {
-    for (let attempt = 0; attempt <= retries; attempt++) {
-        try {
-            const response = await axiosInstance.get(url);
-            return response;
-        } catch (error) {
-            if (attempt === retries) {
-                return { error: error.message, status: error.response?.status || 500 };
-            }
-            await new Promise(resolve => setTimeout(resolve, 1000));
-        }
-    }
-}
-
-// 获取基础信息
-async function getBasicInfo(url) {
-    const response = await fetchUrlWithRetry(url);
-    if (response.error) {
-        return { error: response.error, status: response.status };
-    }
-    return {
-        status: response.status,
-        headers: response.headers,
-        contentLength: response.data.length,
-        title: (response.data.match(/<title>(.*?)<\/title>/i) || [])[1] || ''
-    };
-}
-
-// 检测安全头部缺失
-function checkSecurityHeaders(headers) {
-    const required = [
-        'X-Frame-Options',
-        'X-Content-Type-Options',
-        'X-XSS-Protection',
-        'Strict-Transport-Security',
-        'Content-Security-Policy'
-    ];
-    const missing = required.filter(h => !headers[h.toLowerCase()]);
-    return missing;
-}
-
-// 敏感文件探测
-async function checkSensitiveFiles(baseUrl) {
-    const sensitivePaths = [
-        '/.env', '/.git/config', '/backup.zip', '/admin', '/phpinfo.php',
-        '/wp-config.php.bak', '/config.php', '/robots.txt'
-    ];
-    const found = [];
-    for (const path of sensitivePaths) {
-        const url = new URL(path, baseUrl).href;
-        try {
-            const res = await axiosInstance.get(url, { timeout: 2000 });
-            if (res.status === 200) found.push(path);
-        } catch (e) { /* 忽略 */ }
-    }
-    return found;
-}
-
-// XSS 反射检测
-async function checkXssReflected(baseUrl) {
-    const payload = '<script>alert("XSS")</script>';
-    const testParams = ['q', 's', 'id', 'search', 'query'];
-    for (const param of testParams) {
-        const testUrl = new URL(baseUrl);
-        testUrl.searchParams.set(param, payload);
-        try {
-            const res = await axiosInstance.get(testUrl.href);
-            if (res.data.includes(payload) && !res.data.includes('&lt;script&gt;')) {
-                return { vulnerable: true, param, url: testUrl.href };
-            }
-        } catch (e) { /* 忽略 */ }
-    }
-    return { vulnerable: false };
-}
-
-// SQL 注入检测
-async function checkSqlInjection(baseUrl) {
-    const payload = "' OR '1'='1";
-    const testParams = ['id', 'page', 'user'];
-    for (const param of testParams) {
-        const testUrl = new URL(baseUrl);
-        testUrl.searchParams.set(param, payload);
-        try {
-            const res = await axiosInstance.get(testUrl.href);
-            const errorKeywords = ['sql', 'mysql', 'syntax', 'unclosed'];
-            const hasError = errorKeywords.some(k => res.data.toLowerCase().includes(k));
-            if (hasError) return { vulnerable: true, param, url: testUrl.href };
-        } catch (e) {
-            if (e.response && e.response.status >= 500) {
-                return { vulnerable: true, param, url: testUrl.href, note: 'Server error likely caused by injection' };
-            }
-        }
-    }
-    return { vulnerable: false };
-}
-
-// 第三方情报：VirusTotal（需要 API Key）
-async function getVirusTotalInfo(domain) {
-    const apiKey = process.env.VIRUSTOTAL_API_KEY; // 在 Vercel 环境变量中设置
-    if (!apiKey) return { error: 'No API key' };
-    try {
-        const url = `https://www.virustotal.com/api/v3/domains/${domain}`;
-        const response = await axios.get(url, {
-            headers: { 'x-apikey': apiKey },
-            timeout: 5000
-        });
-        // 提取关键信息（恶意检测数等）
-        const stats = response.data.data.attributes.last_analysis_stats;
-        return {
-            malicious: stats.malicious,
-            suspicious: stats.suspicious,
-            harmless: stats.harmless,
-            undetected: stats.undetected
-        };
-    } catch (error) {
-        return { error: error.message };
-    }
-}
-
-// 主函数：创建任务，异步执行扫描
 module.exports = async (req, res) => {
+    // CORS 头
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     if (req.method === 'OPTIONS') return res.status(200).end();
-    if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+
+    if (req.method !== 'POST') {
+        return res.status(405).json({ error: 'Method not allowed' });
+    }
 
     const { url } = req.body;
-    if (!url) return res.status(400).json({ error: 'Missing url' });
+    if (!url) {
+        return res.status(400).json({ error: 'Missing url' });
+    }
 
+    // 确保 URL 有协议
     let targetUrl = url;
-    if (!/^https?:\/\//i.test(targetUrl)) targetUrl = 'http://' + targetUrl;
+    if (!/^https?:\/\//i.test(targetUrl)) {
+        targetUrl = 'http://' + targetUrl;
+    }
 
-    const taskId = uuidv4();
-    tasks[taskId] = { status: 'pending', progress: 0, message: 'Initializing...' };
+    // 模拟扫描结果（包含前端所有字段）
+    const result = {
+        url: targetUrl,
+        basic: {
+            status: 200,
+            headers: { 'content-type': 'text/html', 'server': 'MockServer' },
+            title: 'Mock Page Title',
+            contentLength: 1234
+        },
+        security: {
+            missingHeaders: ['X-Frame-Options', 'X-Content-Type-Options', 'X-XSS-Protection', 'Strict-Transport-Security', 'Content-Security-Policy']
+        },
+        sensitiveFiles: ['/robots.txt'],
+        xss: { vulnerable: false },
+        sqlInjection: { vulnerable: false },
+        threatIntel: { error: 'Threat intelligence not configured (add VIRUSTOTAL_API_KEY)' }
+    };
 
-    // 异步执行扫描，避免阻塞响应
-    (async () => {
-        try {
-            // 步骤 1: 获取基础信息
-            tasks[taskId] = { status: 'running', progress: 10, message: 'Fetching basic info...' };
-            const basic = await getBasicInfo(targetUrl);
-
-            tasks[taskId] = { status: 'running', progress: 25, message: 'Checking security headers...' };
-            const securityMissing = checkSecurityHeaders(basic.headers || {});
-
-            tasks[taskId] = { status: 'running', progress: 40, message: 'Scanning sensitive files...' };
-            const sensitiveFiles = await checkSensitiveFiles(targetUrl);
-
-            tasks[taskId] = { status: 'running', progress: 60, message: 'Testing XSS...' };
-            const xssResult = await checkXssReflected(targetUrl);
-
-            tasks[taskId] = { status: 'running', progress: 80, message: 'Testing SQL injection...' };
-            const sqlResult = await checkSqlInjection(targetUrl);
-
-            tasks[taskId] = { status: 'running', progress: 90, message: 'Fetching threat intelligence...' };
-            // 提取域名
-            let domain = new URL(targetUrl).hostname;
-            const vtInfo = await getVirusTotalInfo(domain);
-
-            const result = {
-                url: targetUrl,
-                basic,
-                security: { missingHeaders: securityMissing },
-                sensitiveFiles,
-                xss: xssResult,
-                sqlInjection: sqlResult,
-                threatIntel: vtInfo
-            };
-            tasks[taskId] = { status: 'completed', progress: 100, message: 'Scan finished', result };
-        } catch (error) {
-            console.error(error);
-            tasks[taskId] = { status: 'error', message: error.message };
-        }
-    })();
-
-    res.status(202).json({ taskId });
+    res.status(200).json(result);
 };
