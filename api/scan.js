@@ -1,32 +1,62 @@
 const axios = require('axios');
-const pLimit = require('p-limit');
-const rules = require('../rules.json'); // 确保 rules.json 在根目录
+const fs = require('fs');
+const path = require('path');
 
-// 请求限流（最多同时3个请求）
-const limit = pLimit(3);
+// 读取外部规则文件（如果失败则使用默认规则）
+let rules = null;
+try {
+    const rulesPath = path.join(__dirname, '..', 'rules.json');
+    const rulesContent = fs.readFileSync(rulesPath, 'utf8');
+    rules = JSON.parse(rulesContent);
+} catch (err) {
+    console.error('读取 rules.json 失败，使用默认规则:', err.message);
+    // 默认规则（与步骤5相同）
+    rules = {
+        sensitivePaths: ['/robots.txt', '/.env', '/.git/config', '/backup.zip', '/admin', '/phpinfo.php'],
+        xssParams: ['q', 's', 'id', 'search', 'query'],
+        sqlParams: ['id', 'page', 'user'],
+        securityHeaders: ['X-Frame-Options', 'X-Content-Type-Options', 'X-XSS-Protection', 'Strict-Transport-Security', 'Content-Security-Policy']
+    };
+}
 
-// 安全头部检测（使用规则文件）
+// 手动限流（最多同时3个请求）
+async function runWithConcurrency(tasks, concurrency = 3) {
+    const results = [];
+    const executing = [];
+    for (const task of tasks) {
+        const p = Promise.resolve().then(() => task());
+        results.push(p);
+        if (concurrency <= tasks.length) {
+            const e = p.then(() => executing.splice(executing.indexOf(e), 1));
+            executing.push(e);
+            if (executing.length >= concurrency) {
+                await Promise.race(executing);
+            }
+        }
+    }
+    return Promise.all(results);
+}
+
+// 安全头部检测
 function checkSecurityHeaders(headers) {
     return rules.securityHeaders.filter(h => !headers[h.toLowerCase()]);
 }
 
-// 敏感文件探测（使用规则文件 + 限流）
+// 敏感文件探测（使用手动限流）
 async function checkSensitiveFiles(baseUrl) {
     const found = [];
-    const tasks = rules.sensitivePaths.map(path =>
-        limit(async () => {
-            const url = new URL(path, baseUrl).href;
-            try {
-                const res = await axios.get(url, { timeout: 2000 });
-                if (res.status === 200) found.push(path);
-            } catch (e) { /* 忽略 */ }
-        })
-    );
-    await Promise.all(tasks);
+    const tasks = rules.sensitivePaths.map(path => async () => {
+        const url = new URL(path, baseUrl).href;
+        try {
+            const res = await axios.get(url, { timeout: 2000 });
+            if (res.status === 200) found.push(path);
+        } catch (e) { /* 忽略 */ }
+    });
+    await runWithConcurrency(tasks, 3);
     return found;
 }
 
-// XSS 反射检测（使用规则文件）
+// XSS 反射检测
 async function checkXssReflected(baseUrl) {
     const payload = '<script>alert("XSS")</script>';
     for (const param of rules.xssParams) {
@@ -42,7 +72,7 @@ async function checkXssReflected(baseUrl) {
     return { vulnerable: false };
 }
 
-// SQL 注入检测（使用规则文件）
+// SQL 注入检测
 async function checkSqlInjection(baseUrl) {
     const payload = "' OR '1'='1";
     for (const param of rules.sqlParams) {
@@ -90,24 +120,29 @@ module.exports = async (req, res) => {
         basic = { error: error.message, status: error.response?.status || 500 };
     }
 
-    const missingHeaders = checkSecurityHeaders(basic.headers || {});
-    const sensitiveFiles = await checkSensitiveFiles(targetUrl);
-    const xssResult = await checkXssReflected(targetUrl);
-    const sqlResult = await checkSqlInjection(targetUrl);
+    try {
+        const missingHeaders = checkSecurityHeaders(basic.headers || {});
+        const sensitiveFiles = await checkSensitiveFiles(targetUrl);
+        const xssResult = await checkXssReflected(targetUrl);
+        const sqlResult = await checkSqlInjection(targetUrl);
 
-    const result = {
-        url: targetUrl,
-        basic,
-        security: { missingHeaders },
-        sensitiveFiles,
-        xss: xssResult,
-        sqlInjection: sqlResult,
-        directoryTraversal: { vulnerable: false },
-        httpMethods: { allowed: [] },
-        infoLeakage: {},
-        cors: { vulnerable: false, details: 'No CORS headers' },
-        cms: { detected: false }
-    };
+        const result = {
+            url: targetUrl,
+            basic,
+            security: { missingHeaders },
+            sensitiveFiles,
+            xss: xssResult,
+            sqlInjection: sqlResult,
+            directoryTraversal: { vulnerable: false },
+            httpMethods: { allowed: [] },
+            infoLeakage: {},
+            cors: { vulnerable: false, details: 'No CORS headers' },
+            cms: { detected: false }
+        };
 
-    res.status(200).json(result);
+        res.status(200).json(result);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err.message });
+    }
 };
