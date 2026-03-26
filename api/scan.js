@@ -45,6 +45,29 @@ async function checkXssReflected(baseUrl) {
     return { vulnerable: false };
 }
 
+// SQL 注入检测
+async function checkSqlInjection(baseUrl) {
+    const payload = "' OR '1'='1";
+    const testParams = ['id', 'page', 'user'];
+    for (const param of testParams) {
+        const testUrl = new URL(baseUrl);
+        testUrl.searchParams.set(param, payload);
+        try {
+            const res = await axios.get(testUrl.href);
+            const errorKeywords = ['sql', 'mysql', 'syntax', 'unclosed'];
+            const hasError = errorKeywords.some(k => res.data.toLowerCase().includes(k));
+            if (hasError) {
+                return { vulnerable: true, param, url: testUrl.href };
+            }
+        } catch (e) {
+            if (e.response && e.response.status >= 500) {
+                return { vulnerable: true, param, url: testUrl.href, note: 'Server error likely caused by injection' };
+            }
+        }
+    }
+    return { vulnerable: false };
+}
+
 module.exports = async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -74,6 +97,7 @@ module.exports = async (req, res) => {
     const missingHeaders = checkSecurityHeaders(basic.headers || {});
     const sensitiveFiles = await checkSensitiveFiles(targetUrl);
     const xssResult = await checkXssReflected(targetUrl);
+    const sqlResult = await checkSqlInjection(targetUrl);
 
     const result = {
         url: targetUrl,
@@ -81,7 +105,7 @@ module.exports = async (req, res) => {
         security: { missingHeaders },
         sensitiveFiles,
         xss: xssResult,
-        sqlInjection: { vulnerable: false },
+        sqlInjection: sqlResult,
         directoryTraversal: { vulnerable: false },
         httpMethods: { allowed: [] },
         infoLeakage: {},
