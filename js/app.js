@@ -25,7 +25,8 @@ const i18n = {
         noSql: 'No SQL injection detected.',
         unknown: 'Unknown',
         errorFetch: 'Failed to fetch scan results.',
-        pleaseEnterUrl: 'Please enter a URL.'
+        pleaseEnterUrl: 'Please enter a URL.',
+        disclaimer: '⚠️ This tool is for authorized security testing only. Use responsibly.'
     },
     zh: {
         scanning: '扫描中...',
@@ -49,7 +50,8 @@ const i18n = {
         noSql: '未检测到 SQL 注入。',
         unknown: '未知',
         errorFetch: '获取扫描结果失败。',
-        pleaseEnterUrl: '请输入网址。'
+        pleaseEnterUrl: '请输入网址。',
+        disclaimer: '⚠️ 本工具仅供授权的安全测试使用，请合法使用。'
     }
 };
 
@@ -82,17 +84,10 @@ function t(key) {
     return i18n[currentLang][key] || key;
 }
 
-// 安全显示对象
-function safeString(obj) {
-    if (obj === undefined || obj === null) return t('unknown');
-    if (typeof obj === 'object') return JSON.stringify(obj);
-    return String(obj);
-}
-
 // 辅助：创建卡片
-function createCard(title, contentHtml) {
+function createCard(title, contentHtml, extraClass = '') {
     const card = document.createElement('div');
-    card.className = 'result-card';
+    card.className = `result-card ${extraClass}`;
     card.innerHTML = `
         <div class="card-header">📋 ${escapeHtml(title)}</div>
         <div class="card-body">${contentHtml}</div>
@@ -118,7 +113,7 @@ function renderResult(data) {
     resultContainer.innerHTML = '';
     errorContainer.style.display = 'none';
 
-    // 基础信息卡片
+    // 1. 基础信息卡片
     const basicCard = createCard(t('basicInfo'), `
         <div class="info-row"><span class="info-label">${t('urlLabel')}:</span><span class="info-value">${escapeHtml(data.url)}</span></div>
         <div class="info-row"><span class="info-label">${t('statusLabel')}:</span><span class="info-value">${data.basic.status || '?'}</span></div>
@@ -126,7 +121,7 @@ function renderResult(data) {
         <div class="info-row"><span class="info-label">${t('headersLabel')}:</span><span class="info-value"><pre>${escapeHtml(JSON.stringify(data.basic.headers, null, 2))}</pre></span></div>
     `);
 
-    // 安全头部缺失卡片
+    // 2. 安全头部缺失卡片
     let securityHtml = '';
     const missing = data.security?.missingHeaders || [];
     if (missing.length === 0) {
@@ -136,7 +131,7 @@ function renderResult(data) {
     }
     const securityCard = createCard(t('securityHeaders'), securityHtml);
 
-    // 敏感文件卡片
+    // 3. 敏感文件卡片
     let sensitiveHtml = '';
     const sensitive = data.sensitiveFiles || [];
     if (sensitive.length === 0) {
@@ -146,7 +141,7 @@ function renderResult(data) {
     }
     const sensitiveCard = createCard(t('sensitiveFiles'), sensitiveHtml);
 
-    // XSS 卡片
+    // 4. XSS 卡片
     let xssHtml = '';
     if (data.xss?.vulnerable) {
         xssHtml = `<div class="info-value"><span class="badge vuln-badge">${t('vulnerable')}</span> ${t('parameter')}: ${escapeHtml(data.xss.param)}<br>URL: ${escapeHtml(data.xss.url)}</div>`;
@@ -155,7 +150,7 @@ function renderResult(data) {
     }
     const xssCard = createCard(t('xss'), xssHtml);
 
-    // SQL 注入卡片
+    // 5. SQL 注入卡片
     let sqlHtml = '';
     if (data.sqlInjection?.vulnerable) {
         sqlHtml = `<div class="info-value"><span class="badge vuln-badge">${t('vulnerable')}</span> ${t('parameter')}: ${escapeHtml(data.sqlInjection.param)}<br>URL: ${escapeHtml(data.sqlInjection.url)}${data.sqlInjection.note ? `<br>${t('note')}: ${escapeHtml(data.sqlInjection.note)}` : ''}</div>`;
@@ -164,11 +159,19 @@ function renderResult(data) {
     }
     const sqlCard = createCard(t('sql'), sqlHtml);
 
+    // 6. 免责声明卡片（放在最后）
+    const disclaimerCard = createCard('', `<div style="font-size:14px;">${t('disclaimer')}</div>`, 'disclaimer-card');
+    // 修改标题栏内容，直接显示警告图标和文本
+    disclaimerCard.querySelector('.card-header').innerHTML = `⚠️ ${t('disclaimer')}`;
+    disclaimerCard.querySelector('.card-body').style.padding = '12px 20px';
+
+    // 按顺序添加所有卡片
     resultContainer.appendChild(basicCard);
     resultContainer.appendChild(securityCard);
     resultContainer.appendChild(sensitiveCard);
     resultContainer.appendChild(xssCard);
     resultContainer.appendChild(sqlCard);
+    resultContainer.appendChild(disclaimerCard);
 
     resultContainer.style.display = 'block';
     window.lastScanData = data;
