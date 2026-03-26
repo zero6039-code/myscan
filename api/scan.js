@@ -1,7 +1,8 @@
 const axios = require('axios');
 const https = require('https');
+const rules = require('../rules.json'); // 从根目录导入规则
 
-// 增强的 axios 实例
+// ==================== 增强的 axios 实例 ====================
 const axiosInstance = axios.create({
     httpsAgent: new https.Agent({ rejectUnauthorized: false }),
     timeout: 8000,
@@ -16,7 +17,7 @@ const axiosInstance = axios.create({
     }
 });
 
-// 辅助函数：带重试的基础请求
+// ==================== 辅助函数 ====================
 async function fetchUrlWithRetry(url, retries = 2) {
     for (let attempt = 0; attempt <= retries; attempt++) {
         try {
@@ -30,8 +31,6 @@ async function fetchUrlWithRetry(url, retries = 2) {
         }
     }
 }
-
-// ========== 检测模块 ==========
 
 // 1. 基础信息
 async function getBasicInfo(url) {
@@ -47,25 +46,15 @@ async function getBasicInfo(url) {
     };
 }
 
-// 2. 安全头部检测
+// 2. 安全头部检测（使用外部规则）
 function checkSecurityHeaders(headers) {
-    const required = [
-        'X-Frame-Options',
-        'X-Content-Type-Options',
-        'X-XSS-Protection',
-        'Strict-Transport-Security',
-        'Content-Security-Policy'
-    ];
-    return required.filter(h => !headers[h.toLowerCase()]);
+    return rules.securityHeaders.filter(h => !headers[h.toLowerCase()]);
 }
 
-// 3. 敏感文件探测
+// 3. 敏感文件探测（使用外部路径列表）
 async function checkSensitiveFiles(baseUrl) {
-    const sensitivePaths = [
-        '/robots.txt', '/.env', '/.git/config', '/backup.zip', '/admin', '/phpinfo.php'
-    ];
     const found = [];
-    for (const path of sensitivePaths) {
+    for (const path of rules.sensitivePaths) {
         const url = new URL(path, baseUrl).href;
         try {
             const res = await axiosInstance.get(url, { timeout: 2000 });
@@ -75,11 +64,10 @@ async function checkSensitiveFiles(baseUrl) {
     return found;
 }
 
-// 4. XSS 反射检测
+// 4. 反射型 XSS 检测（使用外部参数列表）
 async function checkXssReflected(baseUrl) {
     const payload = '<script>alert("XSS")</script>';
-    const testParams = ['q', 's', 'id', 'search', 'query'];
-    for (const param of testParams) {
+    for (const param of rules.xssParams) {
         const testUrl = new URL(baseUrl);
         testUrl.searchParams.set(param, payload);
         try {
@@ -92,11 +80,10 @@ async function checkXssReflected(baseUrl) {
     return { vulnerable: false };
 }
 
-// 5. SQL 注入检测
+// 5. SQL 注入检测（使用外部参数列表）
 async function checkSqlInjection(baseUrl) {
     const payload = "' OR '1'='1";
-    const testParams = ['id', 'page', 'user'];
-    for (const param of testParams) {
+    for (const param of rules.sqlParams) {
         const testUrl = new URL(baseUrl);
         testUrl.searchParams.set(param, payload);
         try {
@@ -115,7 +102,7 @@ async function checkSqlInjection(baseUrl) {
     return { vulnerable: false };
 }
 
-// 6. 目录遍历检测
+// 6. 目录遍历检测（payload 可后续外部化，暂硬编码）
 async function checkDirectoryTraversal(baseUrl) {
     const payloads = ['../../../etc/passwd', '..\\..\\..\\windows\\win.ini'];
     const testParams = ['file', 'path', 'page'];
@@ -125,7 +112,6 @@ async function checkDirectoryTraversal(baseUrl) {
             testUrl.searchParams.set(param, payload);
             try {
                 const res = await axiosInstance.get(testUrl.href, { timeout: 3000 });
-                // 检查是否返回敏感文件内容
                 if (res.data.includes('root:') || res.data.includes('[extensions]')) {
                     return { vulnerable: true, param, payload, url: testUrl.href };
                 }
@@ -146,13 +132,10 @@ async function checkHttpMethods(baseUrl) {
                 url: baseUrl,
                 timeout: 3000
             });
-            // 如果返回状态码不是 405（Method Not Allowed）且不是 404，视为允许
             if (res.status !== 405 && res.status !== 404) {
                 allowed.push(method);
             }
-        } catch (e) {
-            // 忽略错误
-        }
+        } catch (e) { /* 忽略 */ }
     }
     return allowed;
 }
@@ -170,7 +153,7 @@ async function checkInfoLeakage(baseUrl) {
         const found = {};
         for (const [type, regex] of Object.entries(patterns)) {
             const matches = text.match(regex);
-            if (matches && matches.length) found[type] = [...new Set(matches.slice(0, 3))]; // 最多显示3个
+            if (matches && matches.length) found[type] = [...new Set(matches.slice(0, 3))];
         }
         return found;
     } catch (e) {
@@ -186,19 +169,15 @@ function analyzeCsp(cspHeader) {
         const [key, ...values] = part.trim().split(' ');
         directives[key] = values;
     });
-    // 简单评估
     const hasUnsafe = directives['script-src']?.includes("'unsafe-inline'") || directives['script-src']?.includes("'unsafe-eval'");
     const missingDefault = !directives['default-src'];
     return {
         directives,
-        issues: {
-            unsafeInline: hasUnsafe,
-            missingDefaultSrc: missingDefault
-        }
+        issues: { unsafeInline: hasUnsafe, missingDefaultSrc: missingDefault }
     };
 }
 
-// 主函数
+// ==================== 主函数 ====================
 module.exports = async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -212,6 +191,7 @@ module.exports = async (req, res) => {
     if (!/^https?:\/\//i.test(targetUrl)) targetUrl = 'http://' + targetUrl;
 
     try {
+        // 并发执行独立检测（控制总耗时）
         const [basic, sensitiveFiles, xssResult, sqlResult, dirTraversal, httpMethods, infoLeakage] = await Promise.all([
             getBasicInfo(targetUrl),
             checkSensitiveFiles(targetUrl),
