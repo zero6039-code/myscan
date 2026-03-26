@@ -1,38 +1,35 @@
 const axios = require('axios');
+const pLimit = require('p-limit');
+const rules = require('../rules.json'); // 从根目录导入规则
 
-// 安全头部检测
+// 请求限流（最多同时3个请求）
+const limit = pLimit(3);
+
+// 安全头部检测（使用规则文件）
 function checkSecurityHeaders(headers) {
-    const required = [
-        'X-Frame-Options',
-        'X-Content-Type-Options',
-        'X-XSS-Protection',
-        'Strict-Transport-Security',
-        'Content-Security-Policy'
-    ];
-    return required.filter(h => !headers[h.toLowerCase()]);
+    return rules.securityHeaders.filter(h => !headers[h.toLowerCase()]);
 }
 
-// 敏感文件探测
+// 敏感文件探测（使用规则文件 + 限流）
 async function checkSensitiveFiles(baseUrl) {
-    const sensitivePaths = [
-        '/robots.txt', '/.env', '/.git/config', '/backup.zip', '/admin', '/phpinfo.php'
-    ];
     const found = [];
-    for (const path of sensitivePaths) {
-        const url = new URL(path, baseUrl).href;
-        try {
-            const res = await axios.get(url, { timeout: 2000 });
-            if (res.status === 200) found.push(path);
-        } catch (e) { /* 忽略 */ }
-    }
+    const tasks = rules.sensitivePaths.map(path =>
+        limit(async () => {
+            const url = new URL(path, baseUrl).href;
+            try {
+                const res = await axios.get(url, { timeout: 2000 });
+                if (res.status === 200) found.push(path);
+            } catch (e) { /* 忽略 */ }
+        })
+    );
+    await Promise.all(tasks);
     return found;
 }
 
-// XSS 反射检测
+// XSS 反射检测（使用规则文件）
 async function checkXssReflected(baseUrl) {
     const payload = '<script>alert("XSS")</script>';
-    const testParams = ['q', 's', 'id', 'search', 'query'];
-    for (const param of testParams) {
+    for (const param of rules.xssParams) {
         const testUrl = new URL(baseUrl);
         testUrl.searchParams.set(param, payload);
         try {
@@ -45,11 +42,10 @@ async function checkXssReflected(baseUrl) {
     return { vulnerable: false };
 }
 
-// SQL 注入检测
+// SQL 注入检测（使用规则文件）
 async function checkSqlInjection(baseUrl) {
     const payload = "' OR '1'='1";
-    const testParams = ['id', 'page', 'user'];
-    for (const param of testParams) {
+    for (const param of rules.sqlParams) {
         const testUrl = new URL(baseUrl);
         testUrl.searchParams.set(param, payload);
         try {
