@@ -1,8 +1,12 @@
 const axios = require('axios');
 const https = require('https');
-const rules = require('../rules.json'); // 从根目录导入规则
+const pLimit = require('p-limit');
+const rules = require('../rules.json');
 
-// ==================== 增强的 axios 实例 ====================
+// 请求限流（最多同时3个）
+const limit = pLimit(3);
+
+// 增强的 axios 实例
 const axiosInstance = axios.create({
     httpsAgent: new https.Agent({ rejectUnauthorized: false }),
     timeout: 8000,
@@ -17,7 +21,7 @@ const axiosInstance = axios.create({
     }
 });
 
-// ==================== 辅助函数 ====================
+// 带重试的基础请求
 async function fetchUrlWithRetry(url, retries = 2) {
     for (let attempt = 0; attempt <= retries; attempt++) {
         try {
@@ -46,25 +50,28 @@ async function getBasicInfo(url) {
     };
 }
 
-// 2. 安全头部检测（使用外部规则）
+// 2. 安全头部检测
 function checkSecurityHeaders(headers) {
     return rules.securityHeaders.filter(h => !headers[h.toLowerCase()]);
 }
 
-// 3. 敏感文件探测（使用外部路径列表）
+// 3. 敏感文件探测（限流）
 async function checkSensitiveFiles(baseUrl) {
     const found = [];
-    for (const path of rules.sensitivePaths) {
-        const url = new URL(path, baseUrl).href;
-        try {
-            const res = await axiosInstance.get(url, { timeout: 2000 });
-            if (res.status === 200) found.push(path);
-        } catch (e) { /* 忽略 */ }
-    }
+    const tasks = rules.sensitivePaths.map(path =>
+        limit(async () => {
+            const url = new URL(path, baseUrl).href;
+            try {
+                const res = await axiosInstance.get(url, { timeout: 2000 });
+                if (res.status === 200) found.push(path);
+            } catch (e) { /* 忽略 */ }
+        })
+    );
+    await Promise.all(tasks);
     return found;
 }
 
-// 4. 反射型 XSS 检测（使用外部参数列表）
+// 4. XSS 反射检测
 async function checkXssReflected(baseUrl) {
     const payload = '<script>alert("XSS")</script>';
     for (const param of rules.xssParams) {
@@ -80,7 +87,7 @@ async function checkXssReflected(baseUrl) {
     return { vulnerable: false };
 }
 
-// 5. SQL 注入检测（使用外部参数列表）
+// 5. SQL 注入检测
 async function checkSqlInjection(baseUrl) {
     const payload = "' OR '1'='1";
     for (const param of rules.sqlParams) {
@@ -102,7 +109,7 @@ async function checkSqlInjection(baseUrl) {
     return { vulnerable: false };
 }
 
-// 6. 目录遍历检测（payload 可后续外部化，暂硬编码）
+// 6. 目录遍历检测
 async function checkDirectoryTraversal(baseUrl) {
     const payloads = ['../../../etc/passwd', '..\\..\\..\\windows\\win.ini'];
     const testParams = ['file', 'path', 'page'];
@@ -140,7 +147,7 @@ async function checkHttpMethods(baseUrl) {
     return allowed;
 }
 
-// 8. 敏感信息泄露检测（正则匹配）
+// 8. 敏感信息泄露检测
 async function checkInfoLeakage(baseUrl) {
     try {
         const response = await axiosInstance.get(baseUrl);
@@ -177,9 +184,48 @@ function analyzeCsp(cspHeader) {
     };
 }
 
-// ==================== 主函数 ====================
+// 10. CORS 配置检测
+async function checkCors(baseUrl) {
+    try {
+        const response = await axiosInstance.options(baseUrl, { timeout: 3000 });
+        const allowOrigin = response.headers['access-control-allow-origin'];
+        if (allowOrigin === '*') {
+            return { vulnerable: true, details: 'Access-Control-Allow-Origin: * allows any origin.' };
+        }
+        return { vulnerable: false, details: 'CORS policy is restrictive.' };
+    } catch (e) {
+        return { vulnerable: false, details: 'No CORS headers detected.' };
+    }
+}
+
+// 11. CMS 指纹识别（简单示例）
+async function detectCms(baseUrl) {
+    const cmsSignatures = [
+        { name: 'WordPress', paths: ['/wp-content/', '/wp-includes/'] },
+        { name: 'Drupal', paths: ['/sites/default/', '/core/'] },
+        { name: 'Joomla', paths: ['/media/system/', '/templates/'] }
+    ];
+    try {
+        const response = await axiosInstance.get(baseUrl);
+        const html = response.data;
+        for (const cms of cmsSignatures) {
+            for (const path of cms.paths) {
+                if (html.includes(path)) {
+                    return { detected: true, name: cms.name, version: null };
+                }
+            }
+        }
+        return { detected: false };
+    } catch (e) {
+        return { detected: false };
+    }
+}
+
+// 主函数
 module.exports = async (req, res) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
+    // 安全 CORS（限制为前端域名）
+    const allowedOrigin = process.env.FRONTEND_URL || 'https://myscan-henna.vercel.app';
+    res.setHeader('Access-Control-Allow-Origin', allowedOrigin);
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     if (req.method === 'OPTIONS') return res.status(200).end();
     if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
@@ -187,19 +233,23 @@ module.exports = async (req, res) => {
     const { url } = req.body;
     if (!url) return res.status(400).json({ error: 'Missing url' });
 
+    // 智能 URL 处理
     let targetUrl = url;
-    if (!/^https?:\/\//i.test(targetUrl)) targetUrl = 'http://' + targetUrl;
+    if (!/^https?:\/\//i.test(targetUrl)) targetUrl = 'https://' + targetUrl;
+    targetUrl = targetUrl.replace(/\/$/, '');
 
     try {
         // 并发执行独立检测（控制总耗时）
-        const [basic, sensitiveFiles, xssResult, sqlResult, dirTraversal, httpMethods, infoLeakage] = await Promise.all([
+        const [basic, sensitiveFiles, xssResult, sqlResult, dirTraversal, httpMethods, infoLeakage, cors, cms] = await Promise.all([
             getBasicInfo(targetUrl),
             checkSensitiveFiles(targetUrl),
             checkXssReflected(targetUrl),
             checkSqlInjection(targetUrl),
             checkDirectoryTraversal(targetUrl),
             checkHttpMethods(targetUrl),
-            checkInfoLeakage(targetUrl)
+            checkInfoLeakage(targetUrl),
+            checkCors(targetUrl),
+            detectCms(targetUrl)
         ]);
 
         const securityMissing = checkSecurityHeaders(basic.headers || {});
@@ -214,7 +264,9 @@ module.exports = async (req, res) => {
             sqlInjection: sqlResult,
             directoryTraversal: dirTraversal,
             httpMethods: { allowed: httpMethods },
-            infoLeakage
+            infoLeakage,
+            cors,
+            cms
         };
 
         res.status(200).json(result);
