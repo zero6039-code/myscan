@@ -1,39 +1,22 @@
-module.exports = async (req, res) => {
-    // CORS 头
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-    if (req.method === 'OPTIONS') return res.status(200).end();
-
-    if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'Method not allowed' });
-    }
-
-    const { url } = req.body;
-    if (!url) {
-        return res.status(400).json({ error: 'Missing url' });
-    }
-
-    // 模拟扫描结果（包含前端所需的所有字段）
-    const mockResult = {
-        url: url,
-        basic: {
-            status: 200,
-            headers: { 'content-type': 'text/html', 'server': 'MockServer' },
-            title: 'Mock Page Title',
-            contentLength: 1234
-        },
-        security: {
-            missingHeaders: ['X-Frame-Options', 'X-Content-Type-Options', 'X-XSS-Protection', 'Strict-Transport-Security', 'Content-Security-Policy']
-        },
-        sensitiveFiles: ['/robots.txt'],
-        xss: { vulnerable: false },
-        sqlInjection: { vulnerable: false },
-        directoryTraversal: { vulnerable: false },
-        httpMethods: { allowed: [] },
-        infoLeakage: {},
-        cors: { vulnerable: false, details: 'No CORS headers' },
-        cms: { detected: false }
-    };
-
-    res.status(200).json(mockResult);
-};
+{
+    "sensitivePaths": [
+        "/robots.txt",
+        "/.env",
+        "/.git/config",
+        "/backup.zip",
+        "/admin",
+        "/phpinfo.php",
+        "/wp-config.php.bak",
+        "/config.php",
+        "/backup.sql"
+    ],
+    "xssParams": ["q", "s", "id", "search", "query", "keyword"],
+    "sqlParams": ["id", "page", "user", "post_id", "article_id"],
+    "securityHeaders": [
+        "X-Frame-Options",
+        "X-Content-Type-Options",
+        "X-XSS-Protection",
+        "Strict-Transport-Security",
+        "Content-Security-Policy"
+    ]
+}
