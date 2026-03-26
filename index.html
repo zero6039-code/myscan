@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
@@ -10,18 +10,21 @@
     <div class="container">
         <div class="header">
             <h1>MyScan</h1>
-            <div class="lang-switch">
-                <button id="lang-en" class="lang-btn active">English</button>
-                <button id="lang-zh" class="lang-btn">中文</button>
+            <div class="action-buttons">
+                <div class="lang-switch" role="group" aria-label="Language switch">
+                    <button id="lang-en" class="lang-btn active" aria-label="English">English</button>
+                    <button id="lang-zh" class="lang-btn" aria-label="中文">中文</button>
+                </div>
+                <button id="theme-toggle" class="theme-btn" aria-label="Dark mode">🌙</button>
             </div>
         </div>
 
         <div class="input-group">
-            <input type="text" id="target" placeholder="https://example.com" />
-            <button id="scan-btn">Start Scan</button>
+            <input type="text" id="target" placeholder="https://example.com" aria-label="Target URL" />
+            <button id="scan-btn" aria-label="Start scan">Start Scan</button>
         </div>
 
-        <!-- 进度条区域（即使不用也要存在） -->
+        <!-- 进度条区域（同步模式隐藏） -->
         <div id="progress-container" style="display: none;">
             <div class="progress-bar">
                 <div id="progress-fill" class="progress-fill"></div>
@@ -29,14 +32,23 @@
             <div id="progress-message" class="progress-message"></div>
         </div>
 
+        <!-- 扫描耗时显示 -->
+        <div id="scan-time" class="scan-time" style="display: none;"></div>
+
         <div id="result-container" style="display: none;"></div>
         <div id="error-container" style="display: none;" class="error-card"></div>
-        <div id="loading" style="display: none;" class="loading">Scanning...</div>
+        <div id="loading" style="display: none;" class="loading">
+            <div class="loader"></div>
+            <span>Scanning...</span>
+        </div>
 
         <div id="export-container" style="display: none; text-align: right; margin-top: 16px;">
-            <button id="export-btn" class="export-btn">Export as JSON</button>
+            <button id="export-btn" class="export-btn" aria-label="Export JSON">Export as JSON</button>
+            <button id="pdf-btn" class="export-btn" aria-label="Export PDF" style="background: #dc3545; margin-left: 8px;">Export as PDF</button>
         </div>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>
