@@ -89,6 +89,30 @@ function safeString(obj) {
     return String(obj);
 }
 
+// 辅助：创建卡片
+function createCard(title, contentHtml) {
+    const card = document.createElement('div');
+    card.className = 'result-card';
+    card.innerHTML = `
+        <div class="card-header">📋 ${escapeHtml(title)}</div>
+        <div class="card-body">${contentHtml}</div>
+    `;
+    return card;
+}
+
+// 简单的防XSS
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+    }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+        return c;
+    });
+}
+
 // 渲染扫描结果
 function renderResult(data) {
     resultContainer.innerHTML = '';
@@ -150,30 +174,6 @@ function renderResult(data) {
     window.lastScanData = data;
 }
 
-// 辅助：创建卡片
-function createCard(title, contentHtml) {
-    const card = document.createElement('div');
-    card.className = 'result-card';
-    card.innerHTML = `
-        <div class="card-header">📋 ${escapeHtml(title)}</div>
-        <div class="card-body">${contentHtml}</div>
-    `;
-    return card;
-}
-
-// 简单的防XSS
-function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/[&<>]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        return m;
-    }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
-        return c;
-    });
-}
-
 // 扫描函数
 async function scan() {
     const url = targetInput.value.trim();
@@ -218,5 +218,3 @@ targetInput.addEventListener('keypress', (e) => {
 });
 langEnBtn.addEventListener('click', () => setLanguage('en'));
 langZhBtn.addEventListener('click', () => setLanguage('zh'));
-
-// 初始加载时，如果已有数据（如从历史恢复）不处理；也可以默认渲染空
