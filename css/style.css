@@ -126,7 +126,6 @@ button:hover {
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
-/* 进度条 */
 .progress-bar {
     width: 100%;
     background-color: #e9ecef;
@@ -149,7 +148,6 @@ button:hover {
     margin-bottom: 20px;
 }
 
-/* 卡片样式 - 醒目设计 */
 .result-card {
     background: #ffffff;
     border: none;
@@ -205,8 +203,6 @@ pre {
     font-size: 0.8rem;
     margin-top: 8px;
 }
-
-/* 徽章 */
 .badge {
     display: inline-block;
     background: #eef2ff;
@@ -226,8 +222,6 @@ pre {
     background: #dcfce7;
     color: #166534;
 }
-
-/* 免责声明卡片特殊样式 */
 .disclaimer-card {
     background: #fffbeb;
     border-left: 6px solid #f59e0b;
@@ -239,8 +233,6 @@ pre {
 .disclaimer-card .card-body {
     padding: 12px 24px;
 }
-
-/* 导出按钮 */
 .export-btn {
     background: #28a745;
     box-shadow: none;
@@ -248,8 +240,6 @@ pre {
 .export-btn:hover {
     background: #218838;
 }
-
-/* 响应式 */
 @media (max-width: 640px) {
     .container {
         padding: 20px;
