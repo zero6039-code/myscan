@@ -12,7 +12,7 @@ function checkSecurityHeaders(headers) {
     return required.filter(h => !headers[h.toLowerCase()]);
 }
 
-// 敏感文件探测（硬编码路径，串行请求）
+// 敏感文件探测
 async function checkSensitiveFiles(baseUrl) {
     const sensitivePaths = [
         '/robots.txt', '/.env', '/.git/config', '/backup.zip', '/admin', '/phpinfo.php'
@@ -23,11 +23,26 @@ async function checkSensitiveFiles(baseUrl) {
         try {
             const res = await axios.get(url, { timeout: 2000 });
             if (res.status === 200) found.push(path);
-        } catch (e) {
-            // 忽略超时或404
-        }
+        } catch (e) { /* 忽略 */ }
     }
     return found;
+}
+
+// XSS 反射检测
+async function checkXssReflected(baseUrl) {
+    const payload = '<script>alert("XSS")</script>';
+    const testParams = ['q', 's', 'id', 'search', 'query'];
+    for (const param of testParams) {
+        const testUrl = new URL(baseUrl);
+        testUrl.searchParams.set(param, payload);
+        try {
+            const res = await axios.get(testUrl.href);
+            if (res.data.includes(payload) && !res.data.includes('&lt;script&gt;')) {
+                return { vulnerable: true, param, url: testUrl.href };
+            }
+        } catch (e) { /* 忽略 */ }
+    }
+    return { vulnerable: false };
 }
 
 module.exports = async (req, res) => {
@@ -42,7 +57,7 @@ module.exports = async (req, res) => {
     let targetUrl = url;
     if (!/^https?:\/\//i.test(targetUrl)) targetUrl = 'https://' + targetUrl;
 
-    // 获取基础信息
+    // 基础信息
     let basic = { status: 0, headers: {}, title: '', error: null };
     try {
         const response = await axios.get(targetUrl, { timeout: 5000 });
@@ -58,13 +73,14 @@ module.exports = async (req, res) => {
 
     const missingHeaders = checkSecurityHeaders(basic.headers || {});
     const sensitiveFiles = await checkSensitiveFiles(targetUrl);
+    const xssResult = await checkXssReflected(targetUrl);
 
     const result = {
         url: targetUrl,
         basic,
         security: { missingHeaders },
         sensitiveFiles,
-        xss: { vulnerable: false },
+        xss: xssResult,
         sqlInjection: { vulnerable: false },
         directoryTraversal: { vulnerable: false },
         httpMethods: { allowed: [] },
