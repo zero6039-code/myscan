@@ -1,6 +1,6 @@
 const axios = require('axios');
 const pLimit = require('p-limit');
-const rules = require('../rules.json'); // 从根目录导入规则
+const rules = require('../rules.json'); // 确保 rules.json 在根目录
 
 // 请求限流（最多同时3个请求）
 const limit = pLimit(3);
