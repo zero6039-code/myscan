@@ -1,7 +1,11 @@
 const axios = require('axios');
 const https = require('https');
+const { v4: uuidv4 } = require('uuid'); // 需要安装 uuid
 
-// 增强的 axios 实例（模拟浏览器、忽略证书、超时10秒）
+// 内存存储进度（生产环境请替换为 Redis 或 Vercel KV）
+const tasks = {};
+
+// 增强的 axios 实例
 const axiosInstance = axios.create({
     httpsAgent: new https.Agent({ rejectUnauthorized: false }),
     timeout: 10000,
@@ -16,7 +20,7 @@ const axiosInstance = axios.create({
     }
 });
 
-// 带重试的请求函数（默认重试2次）
+// 带重试的请求函数
 async function fetchUrlWithRetry(url, retries = 2) {
     for (let attempt = 0; attempt <= retries; attempt++) {
         try {
@@ -45,7 +49,7 @@ async function getBasicInfo(url) {
     };
 }
 
-// 检查安全头部缺失
+// 检测安全头部缺失
 function checkSecurityHeaders(headers) {
     const required = [
         'X-Frame-Options',
@@ -70,7 +74,7 @@ async function checkSensitiveFiles(baseUrl) {
         try {
             const res = await axiosInstance.get(url, { timeout: 2000 });
             if (res.status === 200) found.push(path);
-        } catch (e) { /* 忽略错误 */ }
+        } catch (e) { /* 忽略 */ }
     }
     return found;
 }
@@ -113,7 +117,30 @@ async function checkSqlInjection(baseUrl) {
     return { vulnerable: false };
 }
 
-// 主函数
+// 第三方情报：VirusTotal（需要 API Key）
+async function getVirusTotalInfo(domain) {
+    const apiKey = process.env.VIRUSTOTAL_API_KEY; // 在 Vercel 环境变量中设置
+    if (!apiKey) return { error: 'No API key' };
+    try {
+        const url = `https://www.virustotal.com/api/v3/domains/${domain}`;
+        const response = await axios.get(url, {
+            headers: { 'x-apikey': apiKey },
+            timeout: 5000
+        });
+        // 提取关键信息（恶意检测数等）
+        const stats = response.data.data.attributes.last_analysis_stats;
+        return {
+            malicious: stats.malicious,
+            suspicious: stats.suspicious,
+            harmless: stats.harmless,
+            undetected: stats.undetected
+        };
+    } catch (error) {
+        return { error: error.message };
+    }
+}
+
+// 主函数：创建任务，异步执行扫描
 module.exports = async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -126,24 +153,48 @@ module.exports = async (req, res) => {
     let targetUrl = url;
     if (!/^https?:\/\//i.test(targetUrl)) targetUrl = 'http://' + targetUrl;
 
-    try {
-        const basic = await getBasicInfo(targetUrl);
-        const securityMissing = checkSecurityHeaders(basic.headers || {});
-        const sensitiveFiles = await checkSensitiveFiles(targetUrl);
-        const xssResult = await checkXssReflected(targetUrl);
-        const sqlResult = await checkSqlInjection(targetUrl);
+    const taskId = uuidv4();
+    tasks[taskId] = { status: 'pending', progress: 0, message: 'Initializing...' };
 
-        const result = {
-            url: targetUrl,
-            basic,
-            security: { missingHeaders: securityMissing },
-            sensitiveFiles,
-            xss: xssResult,
-            sqlInjection: sqlResult
-        };
-        res.status(200).json(result);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: error.message });
-    }
+    // 异步执行扫描，避免阻塞响应
+    (async () => {
+        try {
+            // 步骤 1: 获取基础信息
+            tasks[taskId] = { status: 'running', progress: 10, message: 'Fetching basic info...' };
+            const basic = await getBasicInfo(targetUrl);
+
+            tasks[taskId] = { status: 'running', progress: 25, message: 'Checking security headers...' };
+            const securityMissing = checkSecurityHeaders(basic.headers || {});
+
+            tasks[taskId] = { status: 'running', progress: 40, message: 'Scanning sensitive files...' };
+            const sensitiveFiles = await checkSensitiveFiles(targetUrl);
+
+            tasks[taskId] = { status: 'running', progress: 60, message: 'Testing XSS...' };
+            const xssResult = await checkXssReflected(targetUrl);
+
+            tasks[taskId] = { status: 'running', progress: 80, message: 'Testing SQL injection...' };
+            const sqlResult = await checkSqlInjection(targetUrl);
+
+            tasks[taskId] = { status: 'running', progress: 90, message: 'Fetching threat intelligence...' };
+            // 提取域名
+            let domain = new URL(targetUrl).hostname;
+            const vtInfo = await getVirusTotalInfo(domain);
+
+            const result = {
+                url: targetUrl,
+                basic,
+                security: { missingHeaders: securityMissing },
+                sensitiveFiles,
+                xss: xssResult,
+                sqlInjection: sqlResult,
+                threatIntel: vtInfo
+            };
+            tasks[taskId] = { status: 'completed', progress: 100, message: 'Scan finished', result };
+        } catch (error) {
+            console.error(error);
+            tasks[taskId] = { status: 'error', message: error.message };
+        }
+    })();
+
+    res.status(202).json({ taskId });
 };
