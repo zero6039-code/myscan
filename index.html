@@ -21,7 +21,7 @@
             <button id="scan-btn">Start Scan</button>
         </div>
 
-        <!-- 进度条区域 -->
+        <!-- 进度条区域（可选，同步模式下隐藏） -->
         <div id="progress-container" style="display: none;">
             <div class="progress-bar">
                 <div id="progress-fill" class="progress-fill"></div>
@@ -29,12 +29,10 @@
             <div id="progress-message" class="progress-message"></div>
         </div>
 
-        <!-- 结果展示区域 -->
         <div id="result-container" style="display: none;"></div>
         <div id="error-container" style="display: none;" class="error-card"></div>
         <div id="loading" style="display: none;" class="loading">Scanning...</div>
 
-        <!-- 导出按钮 -->
         <div id="export-container" style="display: none; text-align: right; margin-top: 16px;">
             <button id="export-btn" class="export-btn">Export as JSON</button>
         </div>
