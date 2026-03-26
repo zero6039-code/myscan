@@ -1,0 +1,22 @@
+{
+    "sensitivePaths": [
+        "/robots.txt",
+        "/.env",
+        "/.git/config",
+        "/backup.zip",
+        "/admin",
+        "/phpinfo.php",
+        "/wp-config.php.bak",
+        "/config.php",
+        "/backup.sql"
+    ],
+    "xssParams": ["q", "s", "id", "search", "query", "keyword"],
+    "sqlParams": ["id", "page", "user", "post_id", "article_id"],
+    "securityHeaders": [
+        "X-Frame-Options",
+        "X-Content-Type-Options",
+        "X-XSS-Protection",
+        "Strict-Transport-Security",
+        "Content-Security-Policy"
+    ]
+}
