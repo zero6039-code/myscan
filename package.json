@@ -1,5 +1,5 @@
 {
-  "name": "myscan-backend",
+  "name": "myscan",
   "version": "1.0.0",
   "dependencies": {
     "axios": "^1.6.0"
