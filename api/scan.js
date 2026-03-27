@@ -1,12 +1,7 @@
 const axios = require('axios');
 const https = require('https');
-const tls = require('tls');
 const pLimit = require('p-limit');
 const rules = require('../rules.json');
-
-// ========== 缓存配置 ==========
-const cache = new Map(); // 内存缓存 { key: { result, timestamp } }
-const CACHE_TTL = 5 * 60 * 1000; // 5分钟
 
 // 请求限流
 const limit = pLimit(3);
@@ -26,7 +21,7 @@ const axiosInstance = axios.create({
     }
 });
 
-// ========== 辅助函数 ==========
+// 带重试的基础请求
 async function fetchUrlWithRetry(url, retries = 2) {
     for (let attempt = 0; attempt <= retries; attempt++) {
         try {
@@ -55,7 +50,7 @@ async function getBasicInfo(url) {
     };
 }
 
-// 2. 安全头部检测（含新增头部）
+// 2. 安全头部检测
 function checkSecurityHeaders(headers) {
     return rules.securityHeaders.filter(h => !headers[h.toLowerCase()]);
 }
@@ -161,7 +156,6 @@ async function checkInfoLeakage(baseUrl) {
             emails: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g,
             phones: /(\+?[0-9]{1,3}[-.]?)?\(?[0-9]{3}\)?[-.]?[0-9]{3}[-.]?[0-9]{4}/g,
             apiKeys: /[A-Za-z0-9]{32,}/g,
-            // 新增
             idCards: /\b[1-9]\d{5}(19|20)\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])\d{3}[\dXx]\b/g,
             bankCards: /\b[0-9]{16,19}\b/g,
             awsKeys: /AKIA[0-9A-Z]{16}\b/g,
@@ -231,81 +225,19 @@ function analyzeCsp(cspHeader) {
     };
 }
 
-// 12. SSL/TLS 检测（新增）
-async function checkSSLConfig(url) {
-    try {
-        const parsed = new URL(url);
-        const hostname = parsed.hostname;
-        const port = parsed.port || (parsed.protocol === 'https:' ? 443 : 80);
-        if (parsed.protocol !== 'https:') {
-            return { error: 'Not an HTTPS site' };
-        }
-
-        return new Promise((resolve) => {
-            const socket = tls.connect(port, hostname, {
-                rejectUnauthorized: false,
-                servername: hostname
-            }, () => {
-                const cert = socket.getPeerCertificate();
-                const protocol = socket.getProtocol();
-                const cipher = socket.getCipher();
-                socket.end();
-
-                // 检查弱协议
-                const weakProtocols = ['SSLv2', 'SSLv3', 'TLSv1', 'TLSv1.1'];
-                const isWeakProtocol = weakProtocols.some(p => protocol === p);
-                // 检查证书有效性
-                const now = new Date();
-                const validFrom = new Date(cert.valid_from);
-                const validTo = new Date(cert.valid_to);
-                const isExpired = now > validTo;
-                const notYetValid = now < validFrom;
-
-                resolve({
-                    protocol,
-                    cipher: cipher.name,
-                    certificate: {
-                        subject: cert.subject,
-                        issuer: cert.issuer,
-                        validFrom: cert.valid_from,
-                        validTo: cert.valid_to,
-                        isExpired,
-                        notYetValid
-                    },
-                    weakProtocol: isWeakProtocol,
-                    vulnerabilities: {
-                        weakProtocol: isWeakProtocol,
-                        expiredCert: isExpired,
-                        notYetValid
-                    }
-                });
-            });
-            socket.on('error', (err) => {
-                resolve({ error: err.message });
-            });
-            socket.setTimeout(5000, () => {
-                socket.destroy();
-                resolve({ error: 'Timeout' });
-            });
-        });
-    } catch (err) {
-        return { error: err.message };
-    }
-}
-
 // 主函数
 module.exports = async (req, res) => {
-    // CORS
+    // 安全 CORS
     const allowedOrigin = process.env.FRONTEND_URL || 'https://myscan-henna.vercel.app';
     res.setHeader('Access-Control-Allow-Origin', allowedOrigin);
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     if (req.method === 'OPTIONS') return res.status(200).end();
     if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-    const { url, depth = 'deep' } = req.body; // 接收深度参数
+    const { url, depth = 'deep' } = req.body;
     if (!url) return res.status(400).json({ error: 'Missing url' });
 
-    // 输入校验：过滤危险协议
+    // 输入校验
     if (/^javascript:/i.test(url) || /^data:/i.test(url) || /^vbscript:/i.test(url)) {
         return res.status(400).json({ error: 'Invalid URL protocol' });
     }
@@ -314,19 +246,11 @@ module.exports = async (req, res) => {
     if (!/^https?:\/\//i.test(targetUrl)) targetUrl = 'https://' + targetUrl;
     targetUrl = targetUrl.replace(/\/$/, '');
 
-    // 缓存键（包含深度）
-    const cacheKey = `${targetUrl}_${depth}`;
-    const cached = cache.get(cacheKey);
-    if (cached && (Date.now() - cached.timestamp) < CACHE_TTL) {
-        return res.status(200).json(cached.result);
-    }
-
     try {
         // 总是执行基础信息和安全头检测
         const basic = await getBasicInfo(targetUrl);
         const securityMissing = checkSecurityHeaders(basic.headers || {});
         const cspAnalysis = analyzeCsp(basic.headers?.['content-security-policy']);
-        const sslConfig = await checkSSLConfig(targetUrl);
 
         let sensitiveFiles = [];
         let xssResult = { vulnerable: false };
@@ -362,12 +286,8 @@ module.exports = async (req, res) => {
             httpMethods: { allowed: httpMethods },
             infoLeakage,
             cors,
-            cms,
-            ssl: sslConfig
+            cms
         };
-
-        // 存入缓存
-        cache.set(cacheKey, { result, timestamp: Date.now() });
 
         res.status(200).json(result);
     } catch (error) {
