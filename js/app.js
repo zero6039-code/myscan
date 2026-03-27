@@ -2,7 +2,7 @@
 const API_BASE = 'https://myscan-henna.vercel.app'; // 替换为您的 Vercel 域名
 const API_SCAN = `${API_BASE}/api/scan`;
 
-// ==================== 国际化文本库（含修复建议和详细解说） ====================
+// ==================== 国际化文本库 ====================
 const i18n = {
     en: {
         scanning: 'Scanning...',
@@ -46,10 +46,34 @@ const i18n = {
         noDangerousMethods: 'No dangerous HTTP methods found',
         dirTraversalNone: 'No directory traversal detected.',
         pdfExport: 'Export as PDF',
-        // 详细解说（新增）
         infoButton: 'Info',
         close: 'Close',
         detailedTitle: 'Detailed Information',
+        corsSafe: 'CORS policy is restrictive (good).',
+        cmsUnknown: 'Unable to detect CMS.',
+        // 修复建议映射（函数返回字符串）
+        remediation: {
+            'X-Frame-Options': 'Missing this header may lead to clickjacking attacks. Recommended: `X-Frame-Options: SAMEORIGIN`',
+            'X-Content-Type-Options': 'Missing this header may lead to MIME type confusion attacks. Recommended: `X-Content-Type-Options: nosniff`',
+            'X-XSS-Protection': 'Missing this header may reduce browser XSS protection. Recommended: `X-XSS-Protection: 1; mode=block`',
+            'Strict-Transport-Security': 'Missing HSTS may allow HTTPS downgrade. Recommended: `Strict-Transport-Security: max-age=31536000; includeSubDomains`',
+            'Content-Security-Policy': 'Missing CSP may lead to XSS risks. Recommended to set a proper policy, e.g., `default-src \'self\'`',
+            '/robots.txt': 'Exposes website directory structure. Recommend restricting sensitive paths or removing unnecessary information.',
+            '/.env': 'Seriously exposes environment variables. Immediately delete or deny access.',
+            '/.git/config': 'Exposes Git repository information. Delete or restrict access.',
+            '/backup.zip': 'Backup file can be downloaded. Remove or set strong access control.',
+            '/admin': 'Admin panel exposed. Recommend adding authentication or hiding the path.',
+            '/phpinfo.php': 'Exposes PHP configuration. Delete this file.',
+            xss: 'Reflected XSS can be exploited to execute malicious scripts. Recommend strict filtering and escaping of user input, and use Content Security Policy.',
+            sql: 'SQL injection can lead to data leakage or tampering. Use parameterized queries, prepared statements, avoid SQL concatenation.',
+            dirTraversal: 'Directory traversal vulnerability can read arbitrary files. Strictly restrict file paths and use whitelist validation.',
+            httpMethods: (methods) => `Dangerous HTTP methods allowed: ${methods.join(', ')}. Recommend disabling unnecessary methods (e.g., PUT, DELETE, TRACE).`,
+            infoLeakage: 'Response may contain sensitive information (emails, phone numbers, API keys). Review and remove such information.',
+            cors: 'CORS misconfiguration may allow any origin to access resources. Restrict `Access-Control-Allow-Origin` to specific trusted domains.',
+            cmsOutdated: 'CMS detected. Keep it updated to avoid known vulnerabilities.',
+            cspUnsafeInline: 'CSP uses `unsafe-inline`, weakening XSS protection. Recommend using nonce or hash instead.',
+            cspMissingDefaultSrc: 'CSP missing `default-src` directive. Recommend adding `default-src \'self\'`.'
+        },
         detailed: {
             securityHeaders: {
                 title: 'Missing Security Headers',
@@ -114,8 +138,8 @@ const i18n = {
         }
     },
     zh: {
-        // 中文字段与英文类似，此处为节省篇幅，请确保与英文结构对应，提供中文详细解说。
-        // 实际部署时需包含所有字段的中文翻译。下面给出简要示例，请根据需求补充完整。
+        // 中文部分省略，但必须与英文结构一致，包含 remediation 和 detailed 对象，并提供中文翻译。
+        // 实际部署时请补全中文内容。以下为示例（用户可自行完善）。
         scanning: '扫描中...',
         errorPrefix: '错误：',
         basicInfo: '基本信息',
@@ -160,6 +184,30 @@ const i18n = {
         infoButton: '详解',
         close: '关闭',
         detailedTitle: '详细说明',
+        corsSafe: 'CORS 策略严格（良好）。',
+        cmsUnknown: '无法识别 CMS。',
+        remediation: {
+            'X-Frame-Options': '缺少该头可能导致点击劫持攻击。建议添加: `X-Frame-Options: SAMEORIGIN`',
+            'X-Content-Type-Options': '缺少该头可能导致 MIME 类型混淆攻击。建议添加: `X-Content-Type-Options: nosniff`',
+            'X-XSS-Protection': '缺少该头可能降低浏览器 XSS 防护。建议添加: `X-XSS-Protection: 1; mode=block`',
+            'Strict-Transport-Security': '缺少 HSTS 可能使 HTTPS 降级。建议添加: `Strict-Transport-Security: max-age=31536000; includeSubDomains`',
+            'Content-Security-Policy': '缺少 CSP 可能导致 XSS 风险。建议设置合适的策略，如: `default-src \'self\'`',
+            '/robots.txt': '暴露了网站目录结构。建议限制敏感路径或移除不必要信息。',
+            '/.env': '严重泄露环境变量。立即删除或禁止访问。',
+            '/.git/config': '泄露 Git 仓库信息。删除或限制访问。',
+            '/backup.zip': '备份文件可被下载。移除或设置强访问控制。',
+            '/admin': '管理后台暴露。建议添加身份验证或隐藏路径。',
+            '/phpinfo.php': '泄露 PHP 配置信息。删除该文件。',
+            xss: '反射型 XSS 可被利用执行恶意脚本。建议对用户输入进行严格过滤和转义，使用内容安全策略。',
+            sql: 'SQL 注入可导致数据泄露或篡改。使用参数化查询、预编译语句，避免拼接 SQL。',
+            dirTraversal: '目录遍历漏洞可读取任意文件。严格限制文件路径，使用白名单验证。',
+            httpMethods: (methods) => `允许危险 HTTP 方法: ${methods.join(', ')}。建议禁用不必要的方法（如 PUT, DELETE, TRACE）。`,
+            infoLeakage: '响应中可能包含敏感信息（邮箱、手机号、API 密钥）。审查并移除这些信息。',
+            cors: 'CORS 配置错误，允许任意来源访问资源。应将 `Access-Control-Allow-Origin` 限制为特定受信任域名。',
+            cmsOutdated: '检测到 CMS。请保持其更新以避免已知漏洞。',
+            cspUnsafeInline: 'CSP 中使用了 unsafe-inline，降低了 XSS 防护强度。建议使用 nonce 或 hash 替代。',
+            cspMissingDefaultSrc: 'CSP 缺少 default-src 指令，可能导致策略不完整。建议添加 default-src \'self\'。'
+        },
         detailed: {
             securityHeaders: {
                 title: '缺失的安全响应头',
@@ -258,16 +306,66 @@ function escapeHtml(str) {
     });
 }
 
-// 创建模态框并显示详细解说
+function getRemediationText(category, detail = null) {
+    const rem = i18n[currentLang].remediation;
+    if (!rem) return '';
+    if (category === 'missingHeaders') return rem[detail] || '';
+    if (category === 'sensitiveFiles') return rem[detail] || '';
+    if (category === 'xss') return rem.xss || '';
+    if (category === 'sql') return rem.sql || '';
+    if (category === 'dirTraversal') return rem.dirTraversal || '';
+    if (category === 'httpMethods') return typeof rem.httpMethods === 'function' ? rem.httpMethods(detail) : rem.httpMethods || '';
+    if (category === 'infoLeakage') return rem.infoLeakage || '';
+    if (category === 'cors') return rem.cors || '';
+    if (category === 'cspUnsafeInline') return rem.cspUnsafeInline || '';
+    if (category === 'cspMissingDefaultSrc') return rem.cspMissingDefaultSrc || '';
+    if (category === 'cms') return rem.cmsOutdated || '';
+    return '';
+}
+
+function createCard(title, contentHtml, extraClass = '', vulnerabilityType = null) {
+    const card = document.createElement('div');
+    card.className = `result-card ${extraClass}`;
+    const copyBtnHtml = `<button class="copy-btn" data-copy="${escapeHtml(contentHtml).replace(/"/g, '&quot;')}">${t('copy')}</button>`;
+    const infoBtnHtml = vulnerabilityType ? `<button class="info-btn" data-type="${vulnerabilityType}" data-title="${escapeHtml(title)}">${t('infoButton')}</button>` : '';
+    card.innerHTML = `
+        <div class="card-header">
+            📋 ${escapeHtml(title)}
+            <div class="card-actions">
+                ${infoBtnHtml}
+                ${copyBtnHtml}
+            </div>
+        </div>
+        <div class="card-body">${contentHtml}</div>
+    `;
+    const copyBtn = card.querySelector('.copy-btn');
+    if (copyBtn) {
+        copyBtn.addEventListener('click', (e) => {
+            const textToCopy = copyBtn.dataset.copy.replace(/<br>/g, '\n').replace(/<[^>]*>/g, '');
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = t('copied');
+                setTimeout(() => copyBtn.textContent = originalText, 1500);
+            });
+        });
+    }
+    const infoBtn = card.querySelector('.info-btn');
+    if (infoBtn) {
+        infoBtn.addEventListener('click', () => {
+            const type = infoBtn.dataset.type;
+            const cardTitle = infoBtn.dataset.title;
+            showDetailedInfo(type, cardTitle);
+        });
+    }
+    return card;
+}
+
 function showDetailedInfo(vulnerabilityType, title) {
-    // 获取当前语言的详细数据
     const details = i18n[currentLang].detailed?.[vulnerabilityType];
     if (!details) {
         console.warn('No detailed info for', vulnerabilityType);
         return;
     }
-
-    // 构建模态框内容
     const modal = document.createElement('div');
     modal.className = 'modal';
     modal.innerHTML = `
@@ -286,11 +384,8 @@ function showDetailedInfo(vulnerabilityType, title) {
             </div>
         </div>
     `;
-
     document.body.appendChild(modal);
     modal.style.display = 'flex';
-
-    // 关闭模态框
     const closeSpan = modal.querySelector('.modal-close');
     closeSpan.onclick = () => modal.remove();
     window.onclick = (event) => {
@@ -298,75 +393,32 @@ function showDetailedInfo(vulnerabilityType, title) {
     };
 }
 
-// 修改 createCard 函数，增加解说按钮
-function createCard(title, contentHtml, extraClass = '', vulnerabilityType = null) {
-    const card = document.createElement('div');
-    card.className = `result-card ${extraClass}`;
-    const copyBtnHtml = `<button class="copy-btn" data-copy="${escapeHtml(contentHtml).replace(/"/g, '&quot;')}">${t('copy')}</button>`;
-    const infoBtnHtml = vulnerabilityType ? `<button class="info-btn" data-type="${vulnerabilityType}" data-title="${escapeHtml(title)}">${t('infoButton')}</button>` : '';
-    card.innerHTML = `
-        <div class="card-header">
-            📋 ${escapeHtml(title)}
-            <div class="card-actions">
-                ${infoBtnHtml}
-                ${copyBtnHtml}
-            </div>
-        </div>
-        <div class="card-body">${contentHtml}</div>
-    `;
-
-    // 复制按钮逻辑
-    const copyBtn = card.querySelector('.copy-btn');
-    if (copyBtn) {
-        copyBtn.addEventListener('click', (e) => {
-            const textToCopy = copyBtn.dataset.copy.replace(/<br>/g, '\n').replace(/<[^>]*>/g, '');
-            navigator.clipboard.writeText(textToCopy).then(() => {
-                const originalText = copyBtn.textContent;
-                copyBtn.textContent = t('copied');
-                setTimeout(() => copyBtn.textContent = originalText, 1500);
-            });
-        });
+async function safeFetchJson(url, options) {
+    const response = await fetch(url, options);
+    const contentType = response.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+        const text = await response.text();
+        throw new Error(t('responseNotJson') + (text.substring(0, 200) || '(empty)'));
     }
-
-    // 解说按钮逻辑
-    const infoBtn = card.querySelector('.info-btn');
-    if (infoBtn) {
-        infoBtn.addEventListener('click', () => {
-            const type = infoBtn.dataset.type;
-            const cardTitle = infoBtn.dataset.title;
-            showDetailedInfo(type, cardTitle);
-        });
-    }
-
-    return card;
+    return await response.json();
 }
 
-// 安全头部卡片 -> vulnerabilityType: 'securityHeaders'
-// 敏感文件卡片 -> 'sensitiveFiles'（但需要细分？我们可以统一使用 'sensitiveFiles'）
-// XSS -> 'xss', SQL -> 'sql', 目录遍历 -> 'directoryTraversal', HTTP方法 -> 'httpMethods', 信息泄露 -> 'infoLeakage', CORS -> 'cors', CMS -> 'cms', CSP -> 'csp'
-
-async function safeFetchJson(url, options) { /* 同前 */ }
-
-// 渲染扫描结果（需要适配新的 createCard 调用）
 function renderResult(data) {
     if (!resultContainer) return;
     resultContainer.innerHTML = '';
     errorContainer.style.display = 'none';
-
     if (scanStartTime) {
         const elapsed = ((Date.now() - scanStartTime) / 1000).toFixed(2);
         scanTimeDiv.textContent = t('scanTime').replace('{time}', elapsed);
         scanTimeDiv.style.display = 'block';
     }
-
-    // 基础信息卡片（无详细解说）
+    // 基础信息卡片（无解说）
     const basicCard = createCard(t('basicInfo'), `
         <div class="info-row"><span class="info-label">${t('urlLabel')}:</span><span class="info-value">${escapeHtml(data.url)}</span></div>
         <div class="info-row"><span class="info-label">${t('statusLabel')}:</span><span class="info-value">${data.basic?.status || '?'}</span></div>
         <div class="info-row"><span class="info-label">${t('titleLabel')}:</span><span class="info-value">${escapeHtml(data.basic?.title || '')}</span></div>
         <div class="info-row"><span class="info-label">${t('headersLabel')}:</span><span class="info-value"><pre>${escapeHtml(JSON.stringify(data.basic?.headers || {}, null, 2))}</pre></span></div>
     `, '', null);
-
     // 安全头部卡片
     const missing = data.security?.missingHeaders || [];
     let securityHtml = '';
@@ -377,7 +429,6 @@ function renderResult(data) {
         securityHtml += `<div class="remediation-box"><strong>🔧 ${t('remediationTitle')}：</strong><br>${missing.map(h => `• ${escapeHtml(h)}: ${getRemediationText('missingHeaders', h)}`).join('<br>')}</div>`;
     }
     const securityCard = createCard(t('securityHeaders'), securityHtml, '', 'securityHeaders');
-
     // 敏感文件卡片
     const sensitive = data.sensitiveFiles || [];
     let sensitiveHtml = '';
@@ -388,7 +439,6 @@ function renderResult(data) {
         sensitiveHtml += `<div class="remediation-box"><strong>🔧 ${t('remediationTitle')}：</strong><br>${sensitive.map(f => `• ${escapeHtml(f)}: ${getRemediationText('sensitiveFiles', f)}`).join('<br>')}</div>`;
     }
     const sensitiveCard = createCard(t('sensitiveFiles'), sensitiveHtml, '', 'sensitiveFiles');
-
     // XSS 卡片
     let xssHtml = '';
     if (data.xss?.vulnerable) {
@@ -398,7 +448,6 @@ function renderResult(data) {
         xssHtml = `<div class="info-value"><span class="badge safe-badge">${t('notVulnerable')}</span> ${t('noXss')}</div>`;
     }
     const xssCard = createCard(t('xss'), xssHtml, '', 'xss');
-
     // SQL 注入卡片
     let sqlHtml = '';
     if (data.sqlInjection?.vulnerable) {
@@ -408,7 +457,6 @@ function renderResult(data) {
         sqlHtml = `<div class="info-value"><span class="badge safe-badge">${t('notVulnerable')}</span> ${t('noSql')}</div>`;
     }
     const sqlCard = createCard(t('sql'), sqlHtml, '', 'sql');
-
     // 目录遍历卡片
     let dirHtml = '';
     if (data.directoryTraversal?.vulnerable) {
@@ -418,7 +466,6 @@ function renderResult(data) {
         dirHtml = `<div class="info-value"><span class="badge safe-badge">${t('notVulnerable')}</span> ${t('dirTraversalNone')}</div>`;
     }
     const dirCard = createCard(t('directoryTraversal'), dirHtml, '', 'directoryTraversal');
-
     // HTTP 方法卡片
     const allowed = data.httpMethods?.allowed || [];
     let httpHtml = '';
@@ -429,7 +476,6 @@ function renderResult(data) {
         httpHtml = `<div class="info-value"><span class="badge safe-badge">${t('noDangerousMethods')}</span></div>`;
     }
     const httpCard = createCard(t('httpMethods'), httpHtml, '', 'httpMethods');
-
     // 信息泄露卡片
     const leaks = data.infoLeakage || {};
     let infoHtml = '';
@@ -443,7 +489,6 @@ function renderResult(data) {
         infoHtml = `<div class="info-value"><span class="badge safe-badge">${t('noSensitiveInfo')}</span></div>`;
     }
     const infoCard = createCard(t('infoLeakage'), infoHtml, '', 'infoLeakage');
-
     // CORS 卡片
     let corsHtml = '';
     if (data.cors?.vulnerable) {
@@ -453,7 +498,6 @@ function renderResult(data) {
         corsHtml = `<div class="info-value"><span class="badge safe-badge">${t('corsSafe')}</span> ${data.cors?.details || ''}</div>`;
     }
     const corsCard = createCard(t('cors'), corsHtml, '', 'cors');
-
     // CMS 卡片
     let cmsHtml = '';
     if (data.cms?.detected) {
@@ -463,7 +507,6 @@ function renderResult(data) {
         cmsHtml = `<div class="info-value">${t('cmsUnknown')}</div>`;
     }
     const cmsCard = createCard(t('cms'), cmsHtml, '', 'cms');
-
     // CSP 卡片
     let cspCard = null;
     if (data.security?.csp) {
@@ -477,11 +520,9 @@ function renderResult(data) {
         }
         cspCard = createCard(t('csp'), cspHtml, '', 'csp');
     }
-
-    // 免责声明卡片（无解说）
+    // 免责声明卡片
     const disclaimerCard = createCard('', `<div style="font-size:14px;">${t('disclaimer')}</div>`, 'disclaimer-card', null);
     disclaimerCard.querySelector('.card-header').innerHTML = `⚠️ ${t('disclaimer')}`;
-
     // 按顺序添加
     resultContainer.appendChild(basicCard);
     resultContainer.appendChild(securityCard);
@@ -495,15 +536,118 @@ function renderResult(data) {
     resultContainer.appendChild(cmsCard);
     if (cspCard) resultContainer.appendChild(cspCard);
     resultContainer.appendChild(disclaimerCard);
-
     resultContainer.style.display = 'block';
     exportContainer.style.display = 'block';
     window.lastScanData = data;
 }
 
-// 导出 JSON, PDF, scan, setLanguage, toggleTheme 等函数与之前相同，此处省略重复部分...
-// 请确保这些函数完整包含在最终文件中（参考之前的完整版本）。
+function exportReport() {
+    if (!window.lastScanData) return;
+    const dataStr = JSON.stringify(window.lastScanData, null, 2);
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `scan_report_${new Date().toISOString()}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+}
 
-// 注意：getRemediationText 函数需要保留（用于修复建议），此处不重复。
+async function exportPDF() {
+    if (!window.lastScanData) return;
+    const element = resultContainer.cloneNode(true);
+    element.querySelectorAll('.copy-btn, .info-btn').forEach(btn => btn.remove());
+    element.style.padding = '20px';
+    element.style.backgroundColor = 'white';
+    element.style.color = 'black';
+    element.style.width = '800px';
+    document.body.appendChild(element);
+    try {
+        const canvas = await html2canvas(element, { scale: 2 });
+        const imgData = canvas.toDataURL('image/png');
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const imgWidth = 190;
+        const pageHeight = 297;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        let heightLeft = imgHeight;
+        let position = 0;
+        pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+        while (heightLeft > 0) {
+            position = heightLeft - imgHeight;
+            pdf.addPage();
+            pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+        }
+        pdf.save(`scan_report_${new Date().toISOString()}.pdf`);
+    } finally {
+        element.remove();
+    }
+}
 
-// 事件绑定等（与之前相同）
+async function scan() {
+    let url = targetInput.value.trim();
+    if (!url) {
+        errorContainer.textContent = t('pleaseEnterUrl');
+        errorContainer.style.display = 'block';
+        return;
+    }
+    if (!/^https?:\/\//i.test(url)) {
+        url = 'https://' + url;
+        targetInput.value = url;
+    }
+    scanBtn.disabled = true;
+    scanBtn.textContent = t('scanning');
+    loadingDiv.style.display = 'block';
+    resultContainer.style.display = 'none';
+    errorContainer.style.display = 'none';
+    exportContainer.style.display = 'none';
+    scanTimeDiv.style.display = 'none';
+    scanStartTime = Date.now();
+    try {
+        const data = await safeFetchJson(API_SCAN, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ url })
+        });
+        renderResult(data);
+    } catch (err) {
+        errorContainer.textContent = t('errorPrefix') + err.message;
+        errorContainer.style.display = 'block';
+    } finally {
+        loadingDiv.style.display = 'none';
+        scanBtn.disabled = false;
+        scanBtn.textContent = currentLang === 'en' ? 'Start Scan' : '开始扫描';
+    }
+}
+
+function setLanguage(lang) {
+    currentLang = lang;
+    langEnBtn.classList.toggle('active', lang === 'en');
+    langZhBtn.classList.toggle('active', lang === 'zh');
+    if (window.lastScanData) renderResult(window.lastScanData);
+    targetInput.placeholder = lang === 'en' ? 'https://example.com' : 'https://example.com';
+    scanBtn.textContent = lang === 'en' ? 'Start Scan' : '开始扫描';
+    exportBtn.textContent = t('export');
+    pdfBtn.textContent = t('pdfExport');
+    const loadingSpan = loadingDiv.querySelector('span');
+    if (loadingSpan) loadingSpan.textContent = t('scanning');
+}
+
+function toggleTheme() {
+    currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', currentTheme);
+    themeToggle.textContent = currentTheme === 'light' ? '🌙' : '☀️';
+}
+
+// 事件绑定
+if (scanBtn) scanBtn.addEventListener('click', scan);
+if (targetInput) targetInput.addEventListener('keypress', (e) => e.key === 'Enter' && scan());
+if (exportBtn) exportBtn.addEventListener('click', exportReport);
+if (pdfBtn) pdfBtn.addEventListener('click', exportPDF);
+if (langEnBtn) langEnBtn.addEventListener('click', () => setLanguage('en'));
+if (langZhBtn) langZhBtn.addEventListener('click', () => setLanguage('zh'));
+if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
+
+setLanguage('en');
