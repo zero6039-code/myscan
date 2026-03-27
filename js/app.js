@@ -265,7 +265,7 @@ const i18n = {
                 scenario: '攻击者可将你的网站嵌入 iframe（点击劫持），或通过 MIME 混淆诱使浏览器执行恶意脚本。',
                 fix: '在服务器配置中添加对应头部。例如 Nginx：\n\nadd_header X-Frame-Options "SAMEORIGIN" always;\nadd_header X-Content-Type-Options "nosniff" always;\nadd_header X-XSS-Protection "1; mode=block" always;\nadd_header Content-Security-Policy "default-src \'self\'" always;'
             },
-            // 其他 detailed 可参考英文部分，为节省篇幅略
+            // 其他详细解说可参考英文部分，为节省篇幅此处省略
         },
         detailedLabels: {
             principle: '攻击原理',
@@ -280,37 +280,10 @@ let scanStartTime = null;
 let currentTheme = 'light';
 let phaseInterval = null;
 
-// DOM 元素
-const targetInput = document.getElementById('target');
-const scanBtn = document.getElementById('scan-btn');
-const resultContainer = document.getElementById('result-container');
-const errorContainer = document.getElementById('error-container');
-const loadingDiv = document.getElementById('loading');
-const exportContainer = document.getElementById('export-container');
-const langEnBtn = document.getElementById('lang-en');
-const langZhBtn = document.getElementById('lang-zh');
-const themeToggle = document.getElementById('theme-toggle');
-const scanTimeDiv = document.getElementById('scan-time');
-const progressContainer = document.getElementById('progress-container');
-const progressFill = document.getElementById('progress-fill');
-const progressMessage = document.getElementById('progress-message');
-
-// 导出菜单相关元素
-const exportMenuBtn = document.getElementById('export-menu-btn');
-const exportModal = document.getElementById('export-modal');
-const shareModal = document.getElementById('share-modal');
-const shareBtn = document.getElementById('share-btn');
-
-// 初始隐藏所有临时UI
-function hideTemporaryUI() {
-    if (loadingDiv) loadingDiv.style.display = 'none';
-    if (progressContainer) progressContainer.style.display = 'none';
-    if (scanTimeDiv) scanTimeDiv.style.display = 'none';
-    if (exportContainer) exportContainer.style.display = 'none';
-    if (resultContainer) resultContainer.style.display = 'none';
-    if (errorContainer) errorContainer.style.display = 'none';
-}
-hideTemporaryUI();
+// DOM 元素引用（稍后会在 DOMContentLoaded 中获取）
+let targetInput, scanBtn, resultContainer, errorContainer, loadingDiv, exportContainer;
+let langEnBtn, langZhBtn, themeToggle, scanTimeDiv, progressContainer, progressFill, progressMessage;
+let exportMenuBtn, exportModal, shareModal, shareBtn, exportJsonBtn, exportPdfBtn, exportHtmlBtn;
 
 // ==================== 辅助函数 ====================
 function t(key) {
@@ -458,7 +431,7 @@ function renderResult(data) {
         <div class="info-row"><span class="info-label">${t('headersLabel')}:</span><span class="info-value"><pre>${escapeHtml(JSON.stringify(data.basic?.headers || {}, null, 2))}</pre></span></div>
     `, '', null, false);
 
-    // 安全头部卡片：有缺失则展开
+    // 安全头部卡片
     const missing = data.security?.missingHeaders || [];
     let securityHtml = '';
     if (missing.length === 0) {
@@ -469,7 +442,7 @@ function renderResult(data) {
     }
     const securityCard = createCard(t('securityHeaders'), securityHtml, '', 'securityHeaders', missing.length === 0);
 
-    // 敏感文件卡片：有发现则展开
+    // 敏感文件卡片
     const sensitive = data.sensitiveFiles || [];
     let sensitiveHtml = '';
     if (sensitive.length === 0) {
@@ -480,7 +453,7 @@ function renderResult(data) {
     }
     const sensitiveCard = createCard(t('sensitiveFiles'), sensitiveHtml, '', 'sensitiveFiles', sensitive.length === 0);
 
-    // XSS 卡片：有漏洞则展开
+    // XSS 卡片
     let xssHtml = '';
     if (data.xss?.vulnerable) {
         xssHtml = `<div class="info-value"><span class="badge vuln-badge">${t('vulnerable')}</span> ${t('parameter')}: ${escapeHtml(data.xss.param)}<br>URL: ${escapeHtml(data.xss.url)}</div>`;
@@ -490,7 +463,7 @@ function renderResult(data) {
     }
     const xssCard = createCard(t('xss'), xssHtml, '', 'xss', !data.xss?.vulnerable);
 
-    // SQL 注入卡片：有漏洞则展开
+    // SQL 注入卡片
     let sqlHtml = '';
     if (data.sqlInjection?.vulnerable) {
         sqlHtml = `<div class="info-value"><span class="badge vuln-badge">${t('vulnerable')}</span> ${t('parameter')}: ${escapeHtml(data.sqlInjection.param)}<br>URL: ${escapeHtml(data.sqlInjection.url)}${data.sqlInjection.note ? `<br>${t('note')}: ${escapeHtml(data.sqlInjection.note)}` : ''}</div>`;
@@ -500,7 +473,7 @@ function renderResult(data) {
     }
     const sqlCard = createCard(t('sql'), sqlHtml, '', 'sql', !data.sqlInjection?.vulnerable);
 
-    // 目录遍历卡片：有漏洞则展开
+    // 目录遍历卡片
     let dirHtml = '';
     if (data.directoryTraversal?.vulnerable) {
         dirHtml = `<div class="info-value"><span class="badge vuln-badge">${t('vulnerable')}</span> ${t('parameter')}: ${escapeHtml(data.directoryTraversal.param)}<br>Payload: ${escapeHtml(data.directoryTraversal.payload)}</div>`;
@@ -510,7 +483,7 @@ function renderResult(data) {
     }
     const dirCard = createCard(t('directoryTraversal'), dirHtml, '', 'directoryTraversal', !data.directoryTraversal?.vulnerable);
 
-    // HTTP 方法卡片：有危险方法则展开
+    // HTTP 方法卡片
     const allowed = data.httpMethods?.allowed || [];
     let httpHtml = '';
     if (allowed.length > 0) {
@@ -521,7 +494,7 @@ function renderResult(data) {
     }
     const httpCard = createCard(t('httpMethods'), httpHtml, '', 'httpMethods', allowed.length === 0);
 
-    // 信息泄露卡片：有敏感信息则展开
+    // 信息泄露卡片
     const leaks = data.infoLeakage || {};
     let infoHtml = '';
     if (Object.keys(leaks).length > 0) {
@@ -535,7 +508,7 @@ function renderResult(data) {
     }
     const infoCard = createCard(t('infoLeakage'), infoHtml, '', 'infoLeakage', Object.keys(leaks).length === 0);
 
-    // CORS 卡片：有漏洞则展开
+    // CORS 卡片
     let corsHtml = '';
     if (data.cors?.vulnerable) {
         corsHtml = `<div class="info-value"><span class="badge vuln-badge">${t('vulnerable')}</span> ${data.cors.details}</div>`;
@@ -545,7 +518,7 @@ function renderResult(data) {
     }
     const corsCard = createCard(t('cors'), corsHtml, '', 'cors', !data.cors?.vulnerable);
 
-    // CMS 卡片：识别到 CMS 则展开
+    // CMS 卡片
     let cmsHtml = '';
     if (data.cms?.detected) {
         cmsHtml = `<div class="info-value">Detected CMS: <strong>${escapeHtml(data.cms.name)}</strong> ${data.cms.version ? `(v${data.cms.version})` : ''}</div>`;
@@ -555,7 +528,7 @@ function renderResult(data) {
     }
     const cmsCard = createCard(t('cms'), cmsHtml, '', 'cms', !data.cms?.detected);
 
-    // CSP 卡片：有风险则展开
+    // CSP 卡片
     let cspCard = null;
     if (data.security?.csp) {
         const csp = data.security.csp;
@@ -570,7 +543,7 @@ function renderResult(data) {
         cspCard = createCard(t('csp'), cspHtml, '', 'csp', !hasIssue);
     }
 
-    // SSL 卡片：有漏洞则展开
+    // SSL 卡片
     let sslCard = null;
     if (data.ssl) {
         let sslHtml = '';
@@ -623,7 +596,6 @@ function renderResult(data) {
     window.lastScanData = data;
 }
 
-// 导出 JSON
 function exportReport() {
     if (!window.lastScanData) return;
     const dataStr = JSON.stringify(window.lastScanData, null, 2);
@@ -636,7 +608,6 @@ function exportReport() {
     URL.revokeObjectURL(url);
 }
 
-// 导出 PDF
 async function exportPDF() {
     if (!window.lastScanData) return;
     const element = resultContainer.cloneNode(true);
@@ -670,7 +641,6 @@ async function exportPDF() {
     }
 }
 
-// 导出 HTML
 async function exportHTML() {
     if (!window.lastScanData) return;
     const element = resultContainer.cloneNode(true);
@@ -694,7 +664,6 @@ async function exportHTML() {
     URL.revokeObjectURL(url);
 }
 
-// 扫描函数（含输入校验）
 async function scan() {
     let url = targetInput.value.trim();
     if (!url) {
@@ -703,14 +672,12 @@ async function scan() {
         return;
     }
 
-    // 危险协议过滤
     if (/^javascript:/i.test(url) || /^data:/i.test(url) || /^vbscript:/i.test(url)) {
         errorContainer.textContent = t('errorPrefix') + 'Invalid URL protocol';
         errorContainer.style.display = 'block';
         return;
     }
 
-    // 基本 URL 格式校验
     let testUrl = url;
     if (!/^https?:\/\//i.test(testUrl)) {
         testUrl = 'http://' + testUrl;
@@ -729,7 +696,6 @@ async function scan() {
         return;
     }
 
-    // 自动补全协议
     if (!/^https?:\/\//i.test(url)) {
         url = 'https://' + url;
         targetInput.value = url;
@@ -747,7 +713,6 @@ async function scan() {
     exportContainer.style.display = 'none';
     scanTimeDiv.style.display = 'none';
 
-    // 阶段列表
     const allPhases = [
         { text: t('phaseBasic') },
         { text: t('phaseSecurity') },
@@ -802,7 +767,6 @@ async function scan() {
     }
 }
 
-// 语言切换
 function setLanguage(lang) {
     currentLang = lang;
     langEnBtn.classList.toggle('active', lang === 'en');
@@ -810,59 +774,17 @@ function setLanguage(lang) {
     if (window.lastScanData) renderResult(window.lastScanData);
     targetInput.placeholder = lang === 'en' ? 'https://example.com' : 'https://example.com';
     scanBtn.textContent = lang === 'en' ? 'Start Scan' : '开始扫描';
-    const exportMenuBtn = document.getElementById('export-menu-btn');
     if (exportMenuBtn) exportMenuBtn.textContent = '📄 Report Export as';
-    const shareBtnEl = document.getElementById('share-btn');
-    if (shareBtnEl) shareBtnEl.textContent = '🔗 Share Report';
+    if (shareBtn) shareBtn.textContent = '🔗 Share Report';
     const loadingSpan = loadingDiv.querySelector('span');
     if (loadingSpan) loadingSpan.textContent = t('scanning');
 }
 
-// 深色模式切换
 function toggleTheme() {
     currentTheme = currentTheme === 'light' ? 'dark' : 'light';
     document.documentElement.setAttribute('data-theme', currentTheme);
     themeToggle.textContent = currentTheme === 'light' ? '🌙' : '☀️';
 }
-
-// 导出菜单和分享功能
-if (exportMenuBtn) {
-    exportMenuBtn.addEventListener('click', () => {
-        exportModal.style.display = 'flex';
-    });
-}
-if (shareBtn) {
-    shareBtn.addEventListener('click', () => {
-        shareModal.style.display = 'flex';
-    });
-}
-document.querySelectorAll('.modal-close').forEach(closeBtn => {
-    closeBtn.addEventListener('click', () => {
-        const modal = closeBtn.closest('.modal');
-        if (modal) modal.style.display = 'none';
-    });
-});
-window.addEventListener('click', (event) => {
-    if (event.target.classList.contains('modal')) {
-        event.target.style.display = 'none';
-    }
-});
-
-const exportJsonBtn = document.getElementById('export-json-btn');
-const exportPdfBtn = document.getElementById('export-pdf-btn');
-const exportHtmlBtn = document.getElementById('export-html-btn');
-if (exportJsonBtn) exportJsonBtn.addEventListener('click', () => {
-    exportModal.style.display = 'none';
-    exportReport();
-});
-if (exportPdfBtn) exportPdfBtn.addEventListener('click', () => {
-    exportModal.style.display = 'none';
-    exportPDF();
-});
-if (exportHtmlBtn) exportHtmlBtn.addEventListener('click', () => {
-    exportModal.style.display = 'none';
-    exportHTML();
-});
 
 function shareOnPlatform(platform) {
     const url = encodeURIComponent(window.location.href);
@@ -876,8 +798,7 @@ function shareOnPlatform(platform) {
             shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
             break;
         case 'messenger':
-            // 需要 Facebook App ID，这里简单跳转（可能无效）
-            shareUrl = `https://www.facebook.com/dialog/send?link=${url}&app_id=123456789`;
+            shareUrl = `https://www.facebook.com/dialog/send?link=${url}&app_id=123456789`; // 需替换为真实 app_id
             break;
         case 'email':
             shareUrl = `mailto:?subject=${title}&body=${url}`;
@@ -895,16 +816,75 @@ function shareOnPlatform(platform) {
     if (shareUrl) window.open(shareUrl, '_blank');
 }
 
-document.querySelectorAll('.share-icon').forEach(icon => {
-    icon.addEventListener('click', () => {
-        const platform = icon.getAttribute('data-platform');
-        shareOnPlatform(platform);
-        shareModal.style.display = 'none';
+// ==================== 页面初始化 ====================
+document.addEventListener('DOMContentLoaded', () => {
+    // 获取所有 DOM 元素
+    targetInput = document.getElementById('target');
+    scanBtn = document.getElementById('scan-btn');
+    resultContainer = document.getElementById('result-container');
+    errorContainer = document.getElementById('error-container');
+    loadingDiv = document.getElementById('loading');
+    exportContainer = document.getElementById('export-container');
+    langEnBtn = document.getElementById('lang-en');
+    langZhBtn = document.getElementById('lang-zh');
+    themeToggle = document.getElementById('theme-toggle');
+    scanTimeDiv = document.getElementById('scan-time');
+    progressContainer = document.getElementById('progress-container');
+    progressFill = document.getElementById('progress-fill');
+    progressMessage = document.getElementById('progress-message');
+    exportMenuBtn = document.getElementById('export-menu-btn');
+    exportModal = document.getElementById('export-modal');
+    shareModal = document.getElementById('share-modal');
+    shareBtn = document.getElementById('share-btn');
+    exportJsonBtn = document.getElementById('export-json-btn');
+    exportPdfBtn = document.getElementById('export-pdf-btn');
+    exportHtmlBtn = document.getElementById('export-html-btn');
+
+    // 初始隐藏所有临时UI
+    function hideTemporaryUI() {
+        if (loadingDiv) loadingDiv.style.display = 'none';
+        if (progressContainer) progressContainer.style.display = 'none';
+        if (scanTimeDiv) scanTimeDiv.style.display = 'none';
+        if (exportContainer) exportContainer.style.display = 'none';
+        if (resultContainer) resultContainer.style.display = 'none';
+        if (errorContainer) errorContainer.style.display = 'none';
+    }
+    hideTemporaryUI();
+
+    // 事件绑定
+    if (scanBtn) scanBtn.addEventListener('click', scan);
+    if (targetInput) targetInput.addEventListener('keypress', (e) => e.key === 'Enter' && scan());
+    if (exportMenuBtn) exportMenuBtn.addEventListener('click', () => { if (exportModal) exportModal.style.display = 'flex'; });
+    if (shareBtn) shareBtn.addEventListener('click', () => { if (shareModal) shareModal.style.display = 'flex'; });
+    if (exportJsonBtn) exportJsonBtn.addEventListener('click', () => { if (exportModal) exportModal.style.display = 'none'; exportReport(); });
+    if (exportPdfBtn) exportPdfBtn.addEventListener('click', () => { if (exportModal) exportModal.style.display = 'none'; exportPDF(); });
+    if (exportHtmlBtn) exportHtmlBtn.addEventListener('click', () => { if (exportModal) exportModal.style.display = 'none'; exportHTML(); });
+    if (langEnBtn) langEnBtn.addEventListener('click', () => setLanguage('en'));
+    if (langZhBtn) langZhBtn.addEventListener('click', () => setLanguage('zh'));
+    if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
+
+    // 模态框关闭
+    document.querySelectorAll('.modal-close').forEach(closeBtn => {
+        closeBtn.addEventListener('click', () => {
+            const modal = closeBtn.closest('.modal');
+            if (modal) modal.style.display = 'none';
+        });
     });
+    window.addEventListener('click', (event) => {
+        if (event.target.classList.contains('modal')) {
+            event.target.style.display = 'none';
+        }
+    });
+
+    // 分享图标
+    document.querySelectorAll('.share-icon').forEach(icon => {
+        icon.addEventListener('click', () => {
+            const platform = icon.getAttribute('data-platform');
+            shareOnPlatform(platform);
+            if (shareModal) shareModal.style.display = 'none';
+        });
+    });
+
+    // 语言初始化
+    setLanguage('en');
 });
-
-// 事件绑定
-if (scanBtn) scanBtn.addEventListener('click', scan);
-if (targetInput) targetInput.addEventListener('keypress', (e) => e.key === 'Enter' && scan());
-
-setLanguage('en');
