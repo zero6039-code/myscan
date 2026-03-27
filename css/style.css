@@ -483,8 +483,9 @@ pre {
     border-top: 1px solid var(--border-color);
     margin-top: 12px;
 }
+/* 分享图标圆形样式 */
 .share-icon {
-    background: #f0f2f5;
+    background: var(--bg-color);
     border: none;
     width: 56px;
     height: 56px;
@@ -494,10 +495,20 @@ pre {
     justify-content: center;
     cursor: pointer;
     transition: all 0.2s ease;
-    color: #495057;
+    color: var(--text-secondary);
 }
 .share-icon:hover {
     transform: scale(1.1);
-    background: #e9ecef;
-    color: #0070f3;
+    background: var(--btn-primary);
+    color: white;
+}
+
+/* 确保图标在深色模式下颜色对比 */
+[data-theme="dark"] .share-icon {
+    background: #2d3748;
+    color: #cbd5e1;
+}
+[data-theme="dark"] .share-icon:hover {
+    background: var(--btn-primary);
+    color: white;
 }
