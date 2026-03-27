@@ -1,5 +1,5 @@
 // ==================== 配置 ====================
-const API_BASE = 'https://tyscan-henna.vercel.app'; // 替换为您的 Vercel 域名
+const API_BASE = 'https://tyscan.vercel.app'; // 替换为您的 Vercel 域名
 const API_SCAN = `${API_BASE}/api/scan`;
 
 // ==================== 国际化文本库 ====================
