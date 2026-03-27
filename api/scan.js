@@ -1,17 +1,25 @@
 const axios = require('axios');
 const https = require('https');
-const tls = require('tls');
-const pLimit = require('p-limit');
-const rules = require('../rules.json');
+const fs = require('fs');
+const path = require('path');
 
-// ========== 缓存配置 ==========
-const cache = new Map(); // 内存缓存 { key: { result, timestamp } }
-const CACHE_TTL = 5 * 60 * 1000; // 5分钟
+// 读取外部规则文件
+let rules = null;
+try {
+    const rulesPath = path.join(__dirname, '..', 'rules.json');
+    const rulesContent = fs.readFileSync(rulesPath, 'utf8');
+    rules = JSON.parse(rulesContent);
+} catch (err) {
+    console.error('读取 rules.json 失败，使用默认规则:', err.message);
+    rules = {
+        sensitivePaths: ['/robots.txt', '/.env', '/.git/config', '/backup.zip', '/admin', '/phpinfo.php'],
+        xssParams: ['q', 's', 'id', 'search', 'query'],
+        sqlParams: ['id', 'page', 'user'],
+        securityHeaders: ['X-Frame-Options', 'X-Content-Type-Options', 'X-XSS-Protection', 'Strict-Transport-Security', 'Content-Security-Policy']
+    };
+}
 
-// 请求限流
-const limit = pLimit(3);
-
-// 增强的 axios 实例
+// 增强的 axios 实例（模拟浏览器、忽略证书）
 const axiosInstance = axios.create({
     httpsAgent: new https.Agent({ rejectUnauthorized: false }),
     timeout: 8000,
@@ -26,7 +34,25 @@ const axiosInstance = axios.create({
     }
 });
 
-// ========== 辅助函数 ==========
+// 手动限流（最多同时3个请求）
+async function runWithConcurrency(tasks, concurrency = 3) {
+    const results = [];
+    const executing = [];
+    for (const task of tasks) {
+        const p = Promise.resolve().then(() => task());
+        results.push(p);
+        if (concurrency <= tasks.length) {
+            const e = p.then(() => executing.splice(executing.indexOf(e), 1));
+            executing.push(e);
+            if (executing.length >= concurrency) {
+                await Promise.race(executing);
+            }
+        }
+    }
+    return Promise.all(results);
+}
+
+// 带重试的基础请求
 async function fetchUrlWithRetry(url, retries = 2) {
     for (let attempt = 0; attempt <= retries; attempt++) {
         try {
@@ -55,24 +81,22 @@ async function getBasicInfo(url) {
     };
 }
 
-// 2. 安全头部检测（含新增头部）
+// 2. 安全头部检测
 function checkSecurityHeaders(headers) {
     return rules.securityHeaders.filter(h => !headers[h.toLowerCase()]);
 }
 
-// 3. 敏感文件探测（限流）
+// 3. 敏感文件探测（使用手动限流）
 async function checkSensitiveFiles(baseUrl) {
     const found = [];
-    const tasks = rules.sensitivePaths.map(path =>
-        limit(async () => {
-            const url = new URL(path, baseUrl).href;
-            try {
-                const res = await axiosInstance.get(url, { timeout: 2000 });
-                if (res.status === 200) found.push(path);
-            } catch (e) { /* 忽略 */ }
-        })
-    );
-    await Promise.all(tasks);
+    const tasks = rules.sensitivePaths.map(path => async () => {
+        const url = new URL(path, baseUrl).href;
+        try {
+            const res = await axiosInstance.get(url, { timeout: 2000 });
+            if (res.status === 200) found.push(path);
+        } catch (e) { /* 忽略 */ }
+    });
+    await runWithConcurrency(tasks, 3);
     return found;
 }
 
@@ -152,7 +176,7 @@ async function checkHttpMethods(baseUrl) {
     return allowed;
 }
 
-// 8. 敏感信息泄露检测（增强）
+// 8. 敏感信息泄露检测
 async function checkInfoLeakage(baseUrl) {
     try {
         const response = await axiosInstance.get(baseUrl);
@@ -160,12 +184,7 @@ async function checkInfoLeakage(baseUrl) {
         const patterns = {
             emails: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g,
             phones: /(\+?[0-9]{1,3}[-.]?)?\(?[0-9]{3}\)?[-.]?[0-9]{3}[-.]?[0-9]{4}/g,
-            apiKeys: /[A-Za-z0-9]{32,}/g,
-            // 新增
-            idCards: /\b[1-9]\d{5}(19|20)\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])\d{3}[\dXx]\b/g,
-            bankCards: /\b[0-9]{16,19}\b/g,
-            awsKeys: /AKIA[0-9A-Z]{16}\b/g,
-            privateKeys: /-----BEGIN (RSA|DSA|EC) PRIVATE KEY-----/g
+            apiKeys: /[A-Za-z0-9]{32,}/g
         };
         const found = {};
         for (const [type, regex] of Object.entries(patterns)) {
@@ -192,7 +211,7 @@ async function checkCors(baseUrl) {
     }
 }
 
-// 10. CMS 指纹识别
+// 10. CMS 指纹识别（简单示例）
 async function detectCms(baseUrl) {
     const cmsSignatures = [
         { name: 'WordPress', paths: ['/wp-content/', '/wp-includes/'] },
@@ -231,125 +250,35 @@ function analyzeCsp(cspHeader) {
     };
 }
 
-// 12. SSL/TLS 检测（新增）
-async function checkSSLConfig(url) {
-    try {
-        const parsed = new URL(url);
-        const hostname = parsed.hostname;
-        const port = parsed.port || (parsed.protocol === 'https:' ? 443 : 80);
-        if (parsed.protocol !== 'https:') {
-            return { error: 'Not an HTTPS site' };
-        }
-
-        return new Promise((resolve) => {
-            const socket = tls.connect(port, hostname, {
-                rejectUnauthorized: false,
-                servername: hostname
-            }, () => {
-                const cert = socket.getPeerCertificate();
-                const protocol = socket.getProtocol();
-                const cipher = socket.getCipher();
-                socket.end();
-
-                // 检查弱协议
-                const weakProtocols = ['SSLv2', 'SSLv3', 'TLSv1', 'TLSv1.1'];
-                const isWeakProtocol = weakProtocols.some(p => protocol === p);
-                // 检查证书有效性
-                const now = new Date();
-                const validFrom = new Date(cert.valid_from);
-                const validTo = new Date(cert.valid_to);
-                const isExpired = now > validTo;
-                const notYetValid = now < validFrom;
-
-                resolve({
-                    protocol,
-                    cipher: cipher.name,
-                    certificate: {
-                        subject: cert.subject,
-                        issuer: cert.issuer,
-                        validFrom: cert.valid_from,
-                        validTo: cert.valid_to,
-                        isExpired,
-                        notYetValid
-                    },
-                    weakProtocol: isWeakProtocol,
-                    vulnerabilities: {
-                        weakProtocol: isWeakProtocol,
-                        expiredCert: isExpired,
-                        notYetValid
-                    }
-                });
-            });
-            socket.on('error', (err) => {
-                resolve({ error: err.message });
-            });
-            socket.setTimeout(5000, () => {
-                socket.destroy();
-                resolve({ error: 'Timeout' });
-            });
-        });
-    } catch (err) {
-        return { error: err.message };
-    }
-}
-
 // 主函数
 module.exports = async (req, res) => {
-    // CORS
-    const allowedOrigin = process.env.FRONTEND_URL || 'https://myscan-henna.vercel.app';
-    res.setHeader('Access-Control-Allow-Origin', allowedOrigin);
+    res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     if (req.method === 'OPTIONS') return res.status(200).end();
     if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-    const { url, depth = 'deep' } = req.body; // 接收深度参数
+    const { url } = req.body;
     if (!url) return res.status(400).json({ error: 'Missing url' });
-
-    // 输入校验：过滤危险协议
-    if (/^javascript:/i.test(url) || /^data:/i.test(url) || /^vbscript:/i.test(url)) {
-        return res.status(400).json({ error: 'Invalid URL protocol' });
-    }
 
     let targetUrl = url;
     if (!/^https?:\/\//i.test(targetUrl)) targetUrl = 'https://' + targetUrl;
-    targetUrl = targetUrl.replace(/\/$/, '');
-
-    // 缓存键（包含深度）
-    const cacheKey = `${targetUrl}_${depth}`;
-    const cached = cache.get(cacheKey);
-    if (cached && (Date.now() - cached.timestamp) < CACHE_TTL) {
-        return res.status(200).json(cached.result);
-    }
 
     try {
-        // 总是执行基础信息和安全头检测
-        const basic = await getBasicInfo(targetUrl);
+        // 并发执行所有独立检测
+        const [basic, sensitiveFiles, xssResult, sqlResult, dirTraversal, httpMethods, infoLeakage, cors, cms] = await Promise.all([
+            getBasicInfo(targetUrl),
+            checkSensitiveFiles(targetUrl),
+            checkXssReflected(targetUrl),
+            checkSqlInjection(targetUrl),
+            checkDirectoryTraversal(targetUrl),
+            checkHttpMethods(targetUrl),
+            checkInfoLeakage(targetUrl),
+            checkCors(targetUrl),
+            detectCms(targetUrl)
+        ]);
+
         const securityMissing = checkSecurityHeaders(basic.headers || {});
         const cspAnalysis = analyzeCsp(basic.headers?.['content-security-policy']);
-        const sslConfig = await checkSSLConfig(targetUrl);
-
-        let sensitiveFiles = [];
-        let xssResult = { vulnerable: false };
-        let sqlResult = { vulnerable: false };
-        let dirTraversal = { vulnerable: false };
-        let httpMethods = [];
-        let infoLeakage = {};
-        let cors = { vulnerable: false, details: 'No CORS headers detected.' };
-        let cms = { detected: false };
-
-        // 深度扫描模式才执行其他检测
-        if (depth === 'deep') {
-            [sensitiveFiles, xssResult, sqlResult, dirTraversal, httpMethods, infoLeakage, cors, cms] = await Promise.all([
-                checkSensitiveFiles(targetUrl),
-                checkXssReflected(targetUrl),
-                checkSqlInjection(targetUrl),
-                checkDirectoryTraversal(targetUrl),
-                checkHttpMethods(targetUrl),
-                checkInfoLeakage(targetUrl),
-                checkCors(targetUrl),
-                detectCms(targetUrl)
-            ]);
-        }
 
         const result = {
             url: targetUrl,
@@ -362,12 +291,8 @@ module.exports = async (req, res) => {
             httpMethods: { allowed: httpMethods },
             infoLeakage,
             cors,
-            cms,
-            ssl: sslConfig
+            cms
         };
-
-        // 存入缓存
-        cache.set(cacheKey, { result, timestamp: Date.now() });
 
         res.status(200).json(result);
     } catch (error) {
