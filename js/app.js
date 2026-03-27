@@ -285,6 +285,7 @@ const i18n = {
 let currentLang = 'en';
 let scanStartTime = null;
 let currentTheme = 'light';
+let progressInterval = null; // 用于模拟进度
 
 // DOM 元素
 const targetInput = document.getElementById('target');
@@ -299,6 +300,22 @@ const langEnBtn = document.getElementById('lang-en');
 const langZhBtn = document.getElementById('lang-zh');
 const themeToggle = document.getElementById('theme-toggle');
 const scanTimeDiv = document.getElementById('scan-time');
+const progressContainer = document.getElementById('progress-container');
+const progressFill = document.getElementById('progress-fill');
+const progressMessage = document.getElementById('progress-message');
+
+// 初始隐藏所有临时UI
+function hideTemporaryUI() {
+    if (loadingDiv) loadingDiv.style.display = 'none';
+    if (progressContainer) progressContainer.style.display = 'none';
+    if (scanTimeDiv) scanTimeDiv.style.display = 'none';
+    if (exportContainer) exportContainer.style.display = 'none';
+    if (resultContainer) resultContainer.style.display = 'none';
+    if (errorContainer) errorContainer.style.display = 'none';
+}
+
+// 页面加载时隐藏所有临时元素
+hideTemporaryUI();
 
 // ==================== 辅助函数 ====================
 function t(key) {
@@ -600,6 +617,34 @@ async function exportPDF() {
     }
 }
 
+// 模拟进度条
+function startProgressSimulation() {
+    if (progressInterval) clearInterval(progressInterval);
+    progressFill.style.width = '0%';
+    progressMessage.textContent = '';
+    let progress = 0;
+    progressInterval = setInterval(() => {
+        if (progress < 95) {
+            progress += Math.random() * 10;
+            if (progress > 95) progress = 95;
+            progressFill.style.width = `${progress}%`;
+            progressMessage.textContent = `${Math.floor(progress)}%`;
+        }
+    }, 300);
+}
+
+function stopProgressSimulation() {
+    if (progressInterval) {
+        clearInterval(progressInterval);
+        progressInterval = null;
+    }
+    progressFill.style.width = '100%';
+    progressMessage.textContent = '100%';
+    setTimeout(() => {
+        if (progressContainer) progressContainer.style.display = 'none';
+    }, 500);
+}
+
 async function scan() {
     let url = targetInput.value.trim();
     if (!url) {
@@ -613,24 +658,31 @@ async function scan() {
     }
     scanBtn.disabled = true;
     scanBtn.textContent = t('scanning');
+    // 显示进度条和加载动画
     loadingDiv.style.display = 'block';
+    progressContainer.style.display = 'block';
+    startProgressSimulation();
     resultContainer.style.display = 'none';
     errorContainer.style.display = 'none';
     exportContainer.style.display = 'none';
     scanTimeDiv.style.display = 'none';
     scanStartTime = Date.now();
+
     try {
         const data = await safeFetchJson(API_SCAN, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ url })
         });
+        stopProgressSimulation();
+        loadingDiv.style.display = 'none';
         renderResult(data);
     } catch (err) {
+        stopProgressSimulation();
+        loadingDiv.style.display = 'none';
         errorContainer.textContent = t('errorPrefix') + err.message;
         errorContainer.style.display = 'block';
     } finally {
-        loadingDiv.style.display = 'none';
         scanBtn.disabled = false;
         scanBtn.textContent = currentLang === 'en' ? 'Start Scan' : '开始扫描';
     }
