@@ -444,3 +444,15 @@ pre {
         font-size: 1rem;
     }
 }
+/* 卡片折叠样式 */
+.card-header {
+    cursor: pointer;
+}
+.collapse-icon {
+    font-size: 18px;
+    margin-right: 8px;
+    user-select: none;
+}
+.card-body.collapsed {
+    display: none;
+}
