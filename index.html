@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>MyScan - Web Vulnerability Scanner</title>
     <link rel="stylesheet" href="css/style.css">
-    <!-- 引入 Font Awesome 6 (免费图标库) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
@@ -24,14 +23,12 @@
         <div class="input-group">
             <input type="text" id="target" placeholder="https://example.com" aria-label="Target URL" />
             <div class="depth-selector">
-                <!-- 默认勾选 Quick Scan -->
                 <label><input type="radio" name="depth" value="quick" checked /> Quick Scan</label>
                 <label><input type="radio" name="depth" value="deep" /> Deep Scan</label>
             </div>
             <button id="scan-btn" aria-label="Start scan">Start Scan</button>
         </div>
 
-        <!-- 进度条区域 -->
         <div id="progress-container" style="display: none;">
             <div class="progress-bar">
                 <div id="progress-fill" class="progress-fill"></div>
@@ -40,7 +37,6 @@
         </div>
 
         <div id="scan-time" class="scan-time" style="display: none;"></div>
-
         <div id="result-container" style="display: none;"></div>
         <div id="error-container" style="display: none;" class="error-card"></div>
         <div id="loading" style="display: none;" class="loading">
@@ -48,13 +44,11 @@
             <span>Scanning...</span>
         </div>
 
-        <!-- 导出和分享按钮区域 -->
         <div id="export-container" style="display: none; text-align: right; margin-top: 16px;">
             <button id="export-menu-btn" class="export-btn">📄 Report Export as</button>
             <button id="share-btn" class="export-btn" style="background: #17a2b8; margin-left: 8px;">🔗 Share Report</button>
         </div>
 
-        <!-- 导出选项模态框 -->
         <div id="export-modal" class="modal" style="display: none;">
             <div class="modal-content" style="max-width: 300px;">
                 <div class="modal-header">
@@ -69,7 +63,6 @@
             </div>
         </div>
 
-        <!-- 分享选项模态框（使用 Font Awesome 图标） -->
         <div id="share-modal" class="modal" style="display: none;">
             <div class="modal-content" style="max-width: 500px;">
                 <div class="modal-header">
