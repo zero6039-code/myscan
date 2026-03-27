@@ -599,6 +599,7 @@ function renderResult(data) {
     // 免责声明卡片（只保留一个）
     const disclaimerCard = createCard('', `<div style="font-size:14px;">${t('disclaimer')}</div>`, 'disclaimer-card', null, false);
     disclaimerCard.querySelector('.card-header').innerHTML = `⚠️ ${t('disclaimer')}`;
+    resultContainer.appendChild(disclaimerCard);   // ← 确保只有这一行
 
     // 按顺序添加
     resultContainer.appendChild(basicCard);
