@@ -532,3 +532,72 @@ pre {
     transform: scale(1.05);
     box-shadow: 0 6px 15px rgba(0,0,0,0.3);
 }
+
+/* 自定义邮箱模态框 */
+.email-modal {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+.email-modal-content {
+    background: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    width: 280px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+}
+.email-modal-header {
+    background: var(--btn-primary);
+    color: white;
+    padding: 10px 15px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.email-modal-close {
+    cursor: pointer;
+    font-size: 20px;
+}
+.email-modal-body {
+    padding: 15px;
+}
+#report-email {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--bg-color);
+    color: var(--text-primary);
+}
+.email-error {
+    color: #dc3545;
+    font-size: 12px;
+    margin-top: 5px;
+}
+.email-modal-footer {
+    padding: 10px 15px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    border-top: 1px solid var(--border-color);
+}
+.email-send-btn, .email-cancel-btn {
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+}
+.email-send-btn {
+    background: var(--btn-primary);
+    color: white;
+    border: none;
+}
+.email-cancel-btn {
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
