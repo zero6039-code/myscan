@@ -774,8 +774,15 @@ function setLanguage(lang) {
     if (window.lastScanData) renderResult(window.lastScanData);
     targetInput.placeholder = lang === 'en' ? 'https://example.com' : 'https://example.com';
     scanBtn.textContent = lang === 'en' ? 'Start Scan' : '开始扫描';
-    if (exportMenuBtn) exportMenuBtn.textContent = '📄 Report Export as';
-    if (shareBtn) shareBtn.textContent = '🔗 Share Report';
+    if (exportMenuBtn) exportMenuBtn.textContent = lang === 'en' ? '📄 Report Export as' : '📄 导出报告';
+    if (shareBtn) shareBtn.textContent = lang === 'en' ? '🔗 Share Report' : '🔗 分享报告';
+    
+    // 更新深度选择器标签
+    const quickLabel = document.getElementById('quick-label');
+    const deepLabel = document.getElementById('deep-label');
+    if (quickLabel) quickLabel.innerHTML = `<input type="radio" name="depth" value="quick" checked /> ${t('quickScan')}`;
+    if (deepLabel) deepLabel.innerHTML = `<input type="radio" name="depth" value="deep" /> ${t('deepScan')}`;
+    
     const loadingSpan = loadingDiv.querySelector('span');
     if (loadingSpan) loadingSpan.textContent = t('scanning');
 }
