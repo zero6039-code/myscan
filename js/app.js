@@ -77,7 +77,7 @@ const i18n = {
         cmsUnknown: 'Unable to detect CMS.',
         quickScan: 'Quick Scan',
         deepScan: 'Deep Scan',
-        upgradeRequired: 'Deep scan is a paid feature. Please upgrade to use it.',
+        upgradeFreeNotice: 'Deep scan is currently free, but will become a paid feature in the future.',
         phaseBasic: 'Fetching basic info...',
         phaseSecurity: 'Checking security headers...',
         phaseSensitive: 'Scanning sensitive files...',
@@ -242,7 +242,7 @@ const i18n = {
         cmsUnknown: '无法识别 CMS。',
         quickScan: '快速扫描',
         deepScan: '深度扫描',
-        upgradeRequired: '深度扫描为付费功能，请升级后使用。',
+        upgradeFreeNotice: '深度扫描目前免费开放，未来将转为付费功能。',
         phaseBasic: '获取基础信息...',
         phaseSecurity: '检测安全头...',
         phaseSensitive: '扫描敏感文件...',
@@ -303,11 +303,11 @@ let scanStartTime = null;
 let currentTheme = 'light';
 let phaseInterval = null;
 
-// DOM 元素引用（稍后会在 DOMContentLoaded 中获取）
+// DOM 元素引用
 let targetInput, scanBtn, resultContainer, errorContainer, loadingDiv, exportContainer;
 let langEnBtn, langZhBtn, themeToggle, scanTimeDiv, progressContainer, progressFill, progressMessage;
 let exportMenuBtn, exportModal, exportJsonBtn, exportPdfBtn, exportHtmlBtn;
-let emailReportBtn; // 邮件按钮
+let emailReportBtn;
 
 // ==================== 辅助函数 ====================
 function t(key) {
@@ -599,7 +599,6 @@ function renderResult(data) {
     // 免责声明卡片（只保留一个）
     const disclaimerCard = createCard('', `<div style="font-size:14px;">${t('disclaimer')}</div>`, 'disclaimer-card', null, false);
     disclaimerCard.querySelector('.card-header').innerHTML = `⚠️ ${t('disclaimer')}`;
-    resultContainer.appendChild(disclaimerCard);   // ← 确保只有这一行
 
     // 按顺序添加
     resultContainer.appendChild(basicCard);
@@ -614,7 +613,7 @@ function renderResult(data) {
     resultContainer.appendChild(cmsCard);
     if (cspCard) resultContainer.appendChild(cspCard);
     if (sslCard) resultContainer.appendChild(sslCard);
-    resultContainer.appendChild(disclaimerCard); // 只添加一次
+    resultContainer.appendChild(disclaimerCard);
 
     resultContainer.style.display = 'block';
     exportContainer.style.display = 'block';
@@ -623,7 +622,6 @@ function renderResult(data) {
 
 function exportReport() {
     if (!window.lastScanData) return;
-    // 添加标注信息
     const exportData = JSON.parse(JSON.stringify(window.lastScanData));
     exportData._note = {
         disclaimer: "⚠️ This report is for authorized security testing only. Unauthorized scanning is prohibited.",
@@ -649,7 +647,6 @@ async function exportPDF() {
     element.style.color = 'black';
     element.style.width = '800px';
     
-    // 添加友情提示区域
     const footer = document.createElement('div');
     footer.style.marginTop = '30px';
     footer.style.padding = '10px';
@@ -718,7 +715,6 @@ async function exportHTML() {
     URL.revokeObjectURL(url);
 }
 
-// 邮件发送功能
 async function sendReportToEmail() {
     if (!window.lastScanData) {
         alert('No scan result available. Please scan a website first.');
@@ -728,7 +724,6 @@ async function sendReportToEmail() {
     const email = prompt('Please enter your email address to receive the report:', '');
     if (!email) return;
 
-    // 生成报告 HTML（不含交互元素）
     const reportElement = resultContainer.cloneNode(true);
     reportElement.querySelectorAll('.copy-btn, .info-btn, .collapse-icon').forEach(btn => btn.remove());
     const reportHtml = reportElement.innerHTML;
@@ -759,14 +754,12 @@ async function scan() {
         return;
     }
 
-    // 危险协议过滤
     if (/^javascript:/i.test(url) || /^data:/i.test(url) || /^vbscript:/i.test(url)) {
         errorContainer.textContent = t('errorPrefix') + 'Invalid URL protocol';
         errorContainer.style.display = 'block';
         return;
     }
 
-    // 基本 URL 格式校验
     let testUrl = url;
     if (!/^https?:\/\//i.test(testUrl)) {
         testUrl = 'http://' + testUrl;
@@ -785,21 +778,17 @@ async function scan() {
         return;
     }
 
-    // 自动补全协议
     if (!/^https?:\/\//i.test(url)) {
         url = 'https://' + url;
         targetInput.value = url;
     }
 
     const depthElem = document.querySelector('input[name="depth"]:checked');
-    let depth = depthElem ? depthElem.value : 'deep';
+    const depth = depthElem ? depthElem.value : 'deep';
 
-    // 付费控制：免费用户不能使用深度扫描
-    if (!isPaidUser && depth === 'deep') {
-        alert(t('upgradeRequired'));
-        const quickRadio = document.querySelector('input[name="depth"][value="quick"]');
-        if (quickRadio) quickRadio.checked = true;
-        depth = 'quick';
+    // 深度扫描免费开放，但弹出提示
+    if (depth === 'deep') {
+        alert(t('upgradeFreeNotice'));
     }
 
     const modules = depth === 'deep' ? PAID_MODULES : FREE_MODULES;
@@ -813,7 +802,6 @@ async function scan() {
     exportContainer.style.display = 'none';
     scanTimeDiv.style.display = 'none';
 
-    // 进度阶段模拟
     let phaseIndex = 0;
     progressFill.style.width = '0%';
     progressMessage.textContent = modules[0].key === 'basic' ? t('phaseBasic') : t('phaseSecurity');
@@ -830,7 +818,6 @@ async function scan() {
 
     scanStartTime = Date.now();
 
-    // 初始化结果对象
     const result = {
         url,
         basic: {},
@@ -847,7 +834,6 @@ async function scan() {
     };
 
     try {
-        // 串行执行每个模块
         for (const module of modules) {
             try {
                 const response = await safeFetchJson(API_BASE + module.endpoint, {
@@ -855,7 +841,6 @@ async function scan() {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ url })
                 });
-                // 将结果合并到 result 中
                 const keys = module.resultKey.split('.');
                 let target = result;
                 for (let i = 0; i < keys.length - 1; i++) {
@@ -866,7 +851,6 @@ async function scan() {
                 target[lastKey] = module.transform(response);
             } catch (err) {
                 console.error(`模块 ${module.key} 失败:`, err);
-                // 可选：设置默认值
             }
         }
 
@@ -898,9 +882,10 @@ function setLanguage(lang) {
     targetInput.placeholder = lang === 'en' ? 'https://example.com' : 'https://example.com';
     scanBtn.textContent = lang === 'en' ? 'Start Scan' : '开始扫描';
     if (exportMenuBtn) exportMenuBtn.textContent = lang === 'en' ? '📄 Report Export as' : '📄 导出报告';
-    if (emailReportBtn) emailReportBtn.textContent = lang === 'en' ? '📧 Email Report' : '📧 邮件报告';
+    if (emailReportBtn) {
+        emailReportBtn.title = lang === 'en' ? 'Send report via email' : '邮件发送报告';
+    }
 
-    // 更新深度选择器标签
     const quickLabel = document.getElementById('quick-label');
     const deepLabel = document.getElementById('deep-label');
     if (quickLabel) quickLabel.innerHTML = `<input type="radio" name="depth" value="quick" checked /> ${t('quickScan')}`;
@@ -918,7 +903,6 @@ function toggleTheme() {
 
 // ==================== 页面初始化 ====================
 document.addEventListener('DOMContentLoaded', () => {
-    // 获取所有 DOM 元素
     targetInput = document.getElementById('target');
     scanBtn = document.getElementById('scan-btn');
     resultContainer = document.getElementById('result-container');
@@ -939,7 +923,6 @@ document.addEventListener('DOMContentLoaded', () => {
     exportHtmlBtn = document.getElementById('export-html-btn');
     emailReportBtn = document.getElementById('email-report-btn');
 
-    // 初始隐藏所有临时UI
     function hideTemporaryUI() {
         if (loadingDiv) loadingDiv.style.display = 'none';
         if (progressContainer) progressContainer.style.display = 'none';
@@ -950,7 +933,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     hideTemporaryUI();
 
-    // 事件绑定
     if (scanBtn) scanBtn.addEventListener('click', scan);
     if (targetInput) targetInput.addEventListener('keypress', (e) => e.key === 'Enter' && scan());
     if (exportMenuBtn) exportMenuBtn.addEventListener('click', () => { if (exportModal) exportModal.style.display = 'flex'; });
@@ -962,7 +944,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
     if (emailReportBtn) emailReportBtn.addEventListener('click', sendReportToEmail);
 
-    // 模态框关闭
     document.querySelectorAll('.modal-close').forEach(closeBtn => {
         closeBtn.addEventListener('click', () => {
             const modal = closeBtn.closest('.modal');
@@ -975,6 +956,5 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 语言初始化
     setLanguage('en');
 });
