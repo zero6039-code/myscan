@@ -32,7 +32,7 @@ module.exports = async (req, res) => {
         service: 'gmail',
         auth: {
             user: 'zero6039@gmail.com',          // 您的 Gmail 地址
-            pass: awftwtzfpvhmbtqg // 应用专用密码（环境变量）
+            pass: 'awftwtzfpvhmbtqg' // 应用专用密码（环境变量）
         }
     });
 
