@@ -483,3 +483,21 @@ pre {
     border-top: 1px solid var(--border-color);
     margin-top: 12px;
 }
+.share-icon {
+    background: #f0f2f5;
+    border: none;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #495057;
+}
+.share-icon:hover {
+    transform: scale(1.1);
+    background: #e9ecef;
+    color: #0070f3;
+}
