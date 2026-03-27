@@ -512,3 +512,23 @@ pre {
     background: var(--btn-primary);
     color: white;
 }
+
+.email-btn {
+    background: linear-gradient(135deg, #ff7e5e, #feb47b);
+    border: none;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    color: white;
+    font-size: 20px;
+}
+.email-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+}
