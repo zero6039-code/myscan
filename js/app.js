@@ -596,7 +596,7 @@ function renderResult(data) {
         sslCard = createCard(t('ssl'), sslHtml, '', 'ssl', !hasVuln);
     }
 
-    // 免责声明卡片
+    // 免责声明卡片（只保留一个）
     const disclaimerCard = createCard('', `<div style="font-size:14px;">${t('disclaimer')}</div>`, 'disclaimer-card', null, false);
     disclaimerCard.querySelector('.card-header').innerHTML = `⚠️ ${t('disclaimer')}`;
 
@@ -613,7 +613,7 @@ function renderResult(data) {
     resultContainer.appendChild(cmsCard);
     if (cspCard) resultContainer.appendChild(cspCard);
     if (sslCard) resultContainer.appendChild(sslCard);
-    resultContainer.appendChild(disclaimerCard);
+    resultContainer.appendChild(disclaimerCard); // 只添加一次
 
     resultContainer.style.display = 'block';
     exportContainer.style.display = 'block';
