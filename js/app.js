@@ -46,6 +46,7 @@ const i18n = {
         cors: 'CORS Configuration',
         cms: 'CMS Fingerprint',
         ssl: 'SSL/TLS Configuration',
+        ssrf: 'SSRF (Server-Side Request Forgery)',
         vulnerable: 'Vulnerable',
         notVulnerable: 'Not Vulnerable',
         parameter: 'Parameter',
@@ -90,6 +91,7 @@ const i18n = {
         phaseCors: 'Checking CORS...',
         phaseCms: 'Detecting CMS...',
         phaseSsl: 'Analyzing SSL/TLS...',
+        phaseSsrf: 'Testing SSRF...',
         phaseComplete: 'Complete!',
         collapse: 'Collapse',
         expand: 'Expand',
@@ -115,7 +117,8 @@ const i18n = {
             cors: 'CORS misconfiguration may allow any origin to access resources. Restrict `Access-Control-Allow-Origin` to specific trusted domains.',
             cmsOutdated: 'CMS detected. Keep it updated to avoid known vulnerabilities.',
             cspUnsafeInline: 'CSP uses `unsafe-inline`, weakening XSS protection. Recommend using nonce or hash instead.',
-            cspMissingDefaultSrc: 'CSP missing `default-src` directive. Recommend adding `default-src \'self\'`.'
+            cspMissingDefaultSrc: 'CSP missing `default-src` directive. Recommend adding `default-src \'self\'`.',
+            ssrf: 'SSRF can allow attackers to make requests to internal services. Validate and sanitize user-supplied URLs, and restrict network access.'
         },
         detailed: {
             securityHeaders: {
@@ -183,6 +186,12 @@ const i18n = {
                 principle: 'Weak SSL/TLS protocols or ciphers can allow attackers to decrypt traffic or perform man-in-the-middle attacks.',
                 scenario: 'An attacker downgrades the connection to SSLv3 and exploits the POODLE vulnerability to steal session cookies.',
                 fix: 'Disable SSLv3, TLSv1.0, TLSv1.1. Use TLSv1.2 or higher. Configure strong cipher suites. Renew certificates before expiry.'
+            },
+            ssrf: {
+                title: 'Server-Side Request Forgery (SSRF)',
+                principle: 'SSRF allows an attacker to make the server send requests to unintended locations, potentially accessing internal services or metadata.',
+                scenario: 'An attacker supplies a URL like http://169.254.169.254/latest/meta-data/ to retrieve cloud instance metadata.',
+                fix: 'Validate and sanitize user-supplied URLs, use allowlists, restrict internal network access, and avoid making requests based on user input.'
             }
         },
         detailedLabels: {
@@ -211,6 +220,7 @@ const i18n = {
         cors: 'CORS 配置',
         cms: 'CMS 指纹',
         ssl: 'SSL/TLS 配置',
+        ssrf: 'SSRF (服务端请求伪造)',
         vulnerable: '存在漏洞',
         notVulnerable: '未发现漏洞',
         parameter: '参数',
@@ -255,6 +265,7 @@ const i18n = {
         phaseCors: '检查 CORS...',
         phaseCms: '识别 CMS...',
         phaseSsl: '分析 SSL/TLS...',
+        phaseSsrf: '测试 SSRF...',
         phaseComplete: '完成！',
         collapse: '折叠',
         expand: '展开',
@@ -280,7 +291,8 @@ const i18n = {
             cors: 'CORS 配置错误，允许任意来源访问资源。应将 `Access-Control-Allow-Origin` 限制为特定受信任域名。',
             cmsOutdated: '检测到 CMS。请保持其更新以避免已知漏洞。',
             cspUnsafeInline: 'CSP 中使用了 unsafe-inline，降低了 XSS 防护强度。建议使用 nonce 或 hash 替代。',
-            cspMissingDefaultSrc: 'CSP 缺少 default-src 指令，可能导致策略不完整。建议添加 default-src \'self\'。'
+            cspMissingDefaultSrc: 'CSP 缺少 default-src 指令，可能导致策略不完整。建议添加 default-src \'self\'。',
+            ssrf: 'SSRF 可允许攻击者向内网服务发起请求。请对用户输入的 URL 进行严格验证，并限制网络访问。'
         },
         detailed: {
             securityHeaders: {
@@ -435,6 +447,7 @@ function getRemediationText(category, detail = null) {
     if (category === 'cspUnsafeInline') return rem.cspUnsafeInline || '';
     if (category === 'cspMissingDefaultSrc') return rem.cspMissingDefaultSrc || '';
     if (category === 'cms') return rem.cmsOutdated || '';
+    if (category === 'ssrf') return rem.ssrf || '';
     return '';
 }
 
@@ -597,7 +610,17 @@ function renderResult(data) {
         sslCard = createCard(t('ssl'), sslHtml, '', 'ssl', !hasVuln);
     }
 
-    // 免责声明卡片（只保留一个）
+    // SSRF 卡片
+    let ssrfHtml = '';
+    if (data.ssrf?.vulnerable) {
+        ssrfHtml = `<div class="info-value"><span class="badge vuln-badge">${t('vulnerable')}</span> ${t('parameter')}: ${escapeHtml(data.ssrf.param)}<br>URL: ${escapeHtml(data.ssrf.url)}${data.ssrf.note ? `<br>${t('note')}: ${escapeHtml(data.ssrf.note)}` : ''}</div>`;
+        ssrfHtml += `<div class="remediation-box"><strong>🔧 ${t('remediationTitle')}：</strong> ${getRemediationText('ssrf')}</div>`;
+    } else {
+        ssrfHtml = `<div class="info-value"><span class="badge safe-badge">${t('notVulnerable')}</span> 未检测到 SSRF 漏洞。</div>`;
+    }
+    const ssrfCard = createCard(t('ssrf'), ssrfHtml, '', 'ssrf', true);
+
+    // 免责声明卡片
     const disclaimerCard = createCard('', `<div style="font-size:14px;">${t('disclaimer')}</div>`, 'disclaimer-card', null, false);
     disclaimerCard.querySelector('.card-header').innerHTML = `⚠️ ${t('disclaimer')}`;
 
@@ -614,6 +637,7 @@ function renderResult(data) {
     resultContainer.appendChild(cmsCard);
     if (cspCard) resultContainer.appendChild(cspCard);
     if (sslCard) resultContainer.appendChild(sslCard);
+    resultContainer.appendChild(ssrfCard);
     resultContainer.appendChild(disclaimerCard);
 
     resultContainer.style.display = 'block';
@@ -831,7 +855,8 @@ async function scan() {
         infoLeakage: {},
         cors: { vulnerable: false, details: '' },
         cms: { detected: false },
-        ssl: null
+        ssl: null,
+        ssrf: { vulnerable: false }
     };
 
     try {
