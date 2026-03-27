@@ -9,6 +9,8 @@
         "X-Content-Type-Options",
         "X-XSS-Protection",
         "Strict-Transport-Security",
-        "Content-Security-Policy"
+        "Content-Security-Policy",
+        "Referrer-Policy",
+        "Permissions-Policy"
     ]
 }
