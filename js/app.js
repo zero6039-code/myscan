@@ -71,7 +71,6 @@ const i18n = {
         collapse: 'Collapse',
         expand: 'Expand',
         remediation: {
-            // 安全头
             'X-Frame-Options': 'Missing this header may lead to clickjacking attacks. Recommended: `X-Frame-Options: SAMEORIGIN`',
             'X-Content-Type-Options': 'Missing this header may lead to MIME type confusion attacks. Recommended: `X-Content-Type-Options: nosniff`',
             'X-XSS-Protection': 'Missing this header may reduce browser XSS protection. Recommended: `X-XSS-Protection: 1; mode=block`',
@@ -79,14 +78,12 @@ const i18n = {
             'Content-Security-Policy': 'Missing CSP may lead to XSS risks. Recommended to set a proper policy, e.g., `default-src \'self\'`',
             'Referrer-Policy': 'Missing Referrer-Policy may leak referrer information. Recommended: `Referrer-Policy: strict-origin-when-cross-origin`',
             'Permissions-Policy': 'Missing Permissions-Policy may allow unwanted browser features. Recommended: `Permissions-Policy: geolocation=(), microphone=(), camera=()`',
-            // 敏感文件
             '/robots.txt': 'Exposes website directory structure. Recommend restricting sensitive paths or removing unnecessary information.',
             '/.env': 'Seriously exposes environment variables. Immediately delete or deny access.',
             '/.git/config': 'Exposes Git repository information. Delete or restrict access.',
             '/backup.zip': 'Backup file can be downloaded. Remove or set strong access control.',
             '/admin': 'Admin panel exposed. Recommend adding authentication or hiding the path.',
             '/phpinfo.php': 'Exposes PHP configuration. Delete this file.',
-            // 通用漏洞
             xss: 'Reflected XSS can be exploited to execute malicious scripts. Recommend strict filtering and escaping of user input, and use Content Security Policy.',
             sql: 'SQL injection can lead to data leakage or tampering. Use parameterized queries, prepared statements, avoid SQL concatenation.',
             dirTraversal: 'Directory traversal vulnerability can read arbitrary files. Strictly restrict file paths and use whitelist validation.',
@@ -98,7 +95,6 @@ const i18n = {
             cspMissingDefaultSrc: 'CSP missing `default-src` directive. Recommend adding `default-src \'self\'`.'
         },
         detailed: {
-            // 为节省篇幅，仅保留必要结构（实际详细解说内容可参考之前完整版本）
             securityHeaders: {
                 title: 'Missing Security Headers',
                 principle: 'Security headers are HTTP response headers that instruct the browser how to behave. Missing them leaves the site vulnerable to attacks like clickjacking, MIME type sniffing, and XSS.',
@@ -269,7 +265,7 @@ const i18n = {
                 scenario: '攻击者可将你的网站嵌入 iframe（点击劫持），或通过 MIME 混淆诱使浏览器执行恶意脚本。',
                 fix: '在服务器配置中添加对应头部。例如 Nginx：\n\nadd_header X-Frame-Options "SAMEORIGIN" always;\nadd_header X-Content-Type-Options "nosniff" always;\nadd_header X-XSS-Protection "1; mode=block" always;\nadd_header Content-Security-Policy "default-src \'self\'" always;'
             },
-            // 其他详细解说可参考英文部分，为节省篇幅此处省略
+            // 其他 detailed 可参考英文部分，为节省篇幅略
         },
         detailedLabels: {
             principle: '攻击原理',
@@ -291,9 +287,6 @@ const resultContainer = document.getElementById('result-container');
 const errorContainer = document.getElementById('error-container');
 const loadingDiv = document.getElementById('loading');
 const exportContainer = document.getElementById('export-container');
-const exportBtn = document.getElementById('export-btn');
-const pdfBtn = document.getElementById('pdf-btn');
-const htmlBtn = document.getElementById('html-btn');
 const langEnBtn = document.getElementById('lang-en');
 const langZhBtn = document.getElementById('lang-zh');
 const themeToggle = document.getElementById('theme-toggle');
@@ -301,6 +294,12 @@ const scanTimeDiv = document.getElementById('scan-time');
 const progressContainer = document.getElementById('progress-container');
 const progressFill = document.getElementById('progress-fill');
 const progressMessage = document.getElementById('progress-message');
+
+// 导出菜单相关元素
+const exportMenuBtn = document.getElementById('export-menu-btn');
+const exportModal = document.getElementById('export-modal');
+const shareModal = document.getElementById('share-modal');
+const shareBtn = document.getElementById('share-btn');
 
 // 初始隐藏所有临时UI
 function hideTemporaryUI() {
@@ -459,7 +458,7 @@ function renderResult(data) {
         <div class="info-row"><span class="info-label">${t('headersLabel')}:</span><span class="info-value"><pre>${escapeHtml(JSON.stringify(data.basic?.headers || {}, null, 2))}</pre></span></div>
     `, '', null, false);
 
-    // 安全头部卡片：有缺失则展开（false），无缺失则折叠（true）
+    // 安全头部卡片：有缺失则展开
     const missing = data.security?.missingHeaders || [];
     let securityHtml = '';
     if (missing.length === 0) {
@@ -811,9 +810,10 @@ function setLanguage(lang) {
     if (window.lastScanData) renderResult(window.lastScanData);
     targetInput.placeholder = lang === 'en' ? 'https://example.com' : 'https://example.com';
     scanBtn.textContent = lang === 'en' ? 'Start Scan' : '开始扫描';
-    exportBtn.textContent = t('export');
-    pdfBtn.textContent = t('pdfExport');
-    htmlBtn.textContent = t('htmlExport');
+    const exportMenuBtn = document.getElementById('export-menu-btn');
+    if (exportMenuBtn) exportMenuBtn.textContent = '📄 Report Export as';
+    const shareBtnEl = document.getElementById('share-btn');
+    if (shareBtnEl) shareBtnEl.textContent = '🔗 Share Report';
     const loadingSpan = loadingDiv.querySelector('span');
     if (loadingSpan) loadingSpan.textContent = t('scanning');
 }
@@ -825,14 +825,86 @@ function toggleTheme() {
     themeToggle.textContent = currentTheme === 'light' ? '🌙' : '☀️';
 }
 
+// 导出菜单和分享功能
+if (exportMenuBtn) {
+    exportMenuBtn.addEventListener('click', () => {
+        exportModal.style.display = 'flex';
+    });
+}
+if (shareBtn) {
+    shareBtn.addEventListener('click', () => {
+        shareModal.style.display = 'flex';
+    });
+}
+document.querySelectorAll('.modal-close').forEach(closeBtn => {
+    closeBtn.addEventListener('click', () => {
+        const modal = closeBtn.closest('.modal');
+        if (modal) modal.style.display = 'none';
+    });
+});
+window.addEventListener('click', (event) => {
+    if (event.target.classList.contains('modal')) {
+        event.target.style.display = 'none';
+    }
+});
+
+const exportJsonBtn = document.getElementById('export-json-btn');
+const exportPdfBtn = document.getElementById('export-pdf-btn');
+const exportHtmlBtn = document.getElementById('export-html-btn');
+if (exportJsonBtn) exportJsonBtn.addEventListener('click', () => {
+    exportModal.style.display = 'none';
+    exportReport();
+});
+if (exportPdfBtn) exportPdfBtn.addEventListener('click', () => {
+    exportModal.style.display = 'none';
+    exportPDF();
+});
+if (exportHtmlBtn) exportHtmlBtn.addEventListener('click', () => {
+    exportModal.style.display = 'none';
+    exportHTML();
+});
+
+function shareOnPlatform(platform) {
+    const url = encodeURIComponent(window.location.href);
+    const title = encodeURIComponent('MyScan Security Report');
+    let shareUrl = '';
+    switch (platform) {
+        case 'whatsapp':
+            shareUrl = `https://wa.me/?text=${title}%20${url}`;
+            break;
+        case 'facebook':
+            shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+            break;
+        case 'messenger':
+            // 需要 Facebook App ID，这里简单跳转（可能无效）
+            shareUrl = `https://www.facebook.com/dialog/send?link=${url}&app_id=123456789`;
+            break;
+        case 'email':
+            shareUrl = `mailto:?subject=${title}&body=${url}`;
+            break;
+        case 'wechat':
+            navigator.clipboard.writeText(window.location.href);
+            alert('Link copied to clipboard. Open WeChat and paste to share.');
+            return;
+        case 'line':
+            shareUrl = `https://line.me/R/msg/text/?${title}%20${url}`;
+            break;
+        default:
+            return;
+    }
+    if (shareUrl) window.open(shareUrl, '_blank');
+}
+
+document.querySelectorAll('.share-icon').forEach(icon => {
+    icon.addEventListener('click', () => {
+        const platform = icon.getAttribute('data-platform');
+        shareOnPlatform(platform);
+        shareModal.style.display = 'none';
+    });
+});
+
 // 事件绑定
 if (scanBtn) scanBtn.addEventListener('click', scan);
 if (targetInput) targetInput.addEventListener('keypress', (e) => e.key === 'Enter' && scan());
-if (exportBtn) exportBtn.addEventListener('click', exportReport);
-if (pdfBtn) pdfBtn.addEventListener('click', exportPDF);
-if (htmlBtn) htmlBtn.addEventListener('click', exportHTML);
-if (langEnBtn) langEnBtn.addEventListener('click', () => setLanguage('en'));
-if (langZhBtn) langZhBtn.addEventListener('click', () => setLanguage('zh'));
-if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
 
 setLanguage('en');
