@@ -456,3 +456,30 @@ pre {
 .card-body.collapsed {
     display: none;
 }
+.export-option {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 40px;
+    margin: 8px;
+    cursor: pointer;
+    font-size: 14px;
+}
+.export-option:hover {
+    background: #218838;
+}
+.share-icon {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    transition: transform 0.2s;
+}
+.share-icon:hover {
+    transform: scale(1.1);
+}
+.modal-footer {
+    border-top: 1px solid var(--border-color);
+    margin-top: 12px;
+}
