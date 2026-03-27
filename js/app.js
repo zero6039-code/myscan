@@ -1,8 +1,8 @@
 // ==================== 配置 ====================
-const API_BASE = 'https://myscan-henna.vercel.app'; // 请替换为您的实际域名
+const API_BASE = 'https://myscan-henna.vercel.app'; // 替换为您的 Vercel 域名
 const API_SCAN = `${API_BASE}/api/scan`;
 
-// ==================== 国际化文本库 ====================
+// ==================== 国际化文本库（完整版） ====================
 const i18n = {
     en: {
         scanning: 'Scanning...',
@@ -69,6 +69,7 @@ const i18n = {
         phaseComplete: 'Complete!',
         collapse: 'Collapse',
         expand: 'Expand',
+        // 修复建议
         remediation: {
             'X-Frame-Options': 'Missing this header may lead to clickjacking attacks. Recommended: `X-Frame-Options: SAMEORIGIN`',
             'X-Content-Type-Options': 'Missing this header may lead to MIME type confusion attacks. Recommended: `X-Content-Type-Options: nosniff`',
@@ -93,6 +94,7 @@ const i18n = {
             cspUnsafeInline: 'CSP uses `unsafe-inline`, weakening XSS protection. Recommend using nonce or hash instead.',
             cspMissingDefaultSrc: 'CSP missing `default-src` directive. Recommend adding `default-src \'self\'`.'
         },
+        // 详细解说
         detailed: {
             securityHeaders: {
                 title: 'Missing Security Headers',
@@ -168,8 +170,6 @@ const i18n = {
         }
     },
     zh: {
-        // 中文部分与英文结构相同，为节省篇幅这里省略，实际需补全所有字段的中文翻译。
-        // 您可以在之前的版本中找到完整中文翻译，这里我们仅给出示例，确保没有缺失。
         scanning: '扫描中...',
         errorPrefix: '错误：',
         basicInfo: '基本信息',
@@ -235,7 +235,6 @@ const i18n = {
         collapse: '折叠',
         expand: '展开',
         remediation: {
-            // 中文修复建议（与英文类似，但需翻译）
             'X-Frame-Options': '缺少该头可能导致点击劫持攻击。建议添加: `X-Frame-Options: SAMEORIGIN`',
             'X-Content-Type-Options': '缺少该头可能导致 MIME 类型混淆攻击。建议添加: `X-Content-Type-Options: nosniff`',
             'X-XSS-Protection': '缺少该头可能降低浏览器 XSS 防护。建议添加: `X-XSS-Protection: 1; mode=block`',
@@ -266,7 +265,66 @@ const i18n = {
                 scenario: '攻击者可将你的网站嵌入 iframe（点击劫持），或通过 MIME 混淆诱使浏览器执行恶意脚本。',
                 fix: '在服务器配置中添加对应头部。例如 Nginx：\n\nadd_header X-Frame-Options "SAMEORIGIN" always;\nadd_header X-Content-Type-Options "nosniff" always;\nadd_header X-XSS-Protection "1; mode=block" always;\nadd_header Content-Security-Policy "default-src \'self\'" always;'
             },
-            // 其他详细解说（中文）请参考之前版本，此处省略
+            sensitiveFiles: {
+                title: '敏感文件',
+                principle: '敏感文件（如 .env、.git/config、备份文件）可能包含凭证、数据库密码或源码。暴露它们可导致系统完全失陷。',
+                scenario: '攻击者找到公开的 .env 文件，获取 AWS 密钥，进而控制云基础设施。',
+                fix: '从 Web 根目录移除此类文件，或通过服务器规则限制访问。例如 Nginx：location ~ /(\\.env|\\.git|backup\\.zip) { deny all; return 404; }'
+            },
+            xss: {
+                title: '跨站脚本 (XSS)',
+                principle: 'XSS 允许攻击者向其他用户查看的网页注入恶意脚本。可窃取 Cookie、会话令牌或代表用户执行操作。',
+                scenario: '攻击者在评论框中注入 <script>alert(\'XSS\')</script>，其他用户查看评论时脚本执行，窃取其会话 Cookie。',
+                fix: '始终转义用户输入。使用内容安全策略（CSP）和上下文感知编码。在 JavaScript 中，插入用户数据时使用 textContent 而非 innerHTML。'
+            },
+            sql: {
+                title: 'SQL 注入',
+                principle: 'SQL 注入发生在用户输入未正确清理并拼接到 SQL 查询时，攻击者可操纵数据库查询。',
+                scenario: '攻击者在登录框输入 \' OR \'1\'=\'1，绕过认证获得管理员权限。',
+                fix: '使用参数化查询（预编译语句）绑定参数。避免动态拼接 SQL。例如 (Node.js)：db.query("SELECT * FROM users WHERE id = ?", [userId])'
+            },
+            directoryTraversal: {
+                title: '目录遍历',
+                principle: '目录遍历漏洞允许攻击者通过操控路径参数（如 ../../etc/passwd）读取服务器上的任意文件。',
+                scenario: '攻击者请求 https://example.com/download?file=../../../etc/passwd，获取系统密码文件。',
+                fix: '验证和清理文件路径。使用允许文件白名单，并去除任何目录遍历序列。在 Node.js 中：path.resolve(baseDir, userPath) 并检查是否以 baseDir 开头。'
+            },
+            httpMethods: {
+                title: 'HTTP 方法',
+                principle: '暴露危险 HTTP 方法（PUT、DELETE、TRACE）可允许攻击者上传恶意文件、删除资源或进行跨站追踪（XST）攻击。',
+                scenario: '攻击者使用 PUT 上传 Webshell 到服务器，然后执行它获得控制权。',
+                fix: '禁用不必要的方法。Nginx 中：limit_except GET POST HEAD { deny all; } 或使用 Web 应用防火墙（WAF）。'
+            },
+            infoLeakage: {
+                title: '信息泄露',
+                principle: 'HTML 响应中的敏感信息（邮箱、电话、API 密钥）可被攻击者收集用于钓鱼、社会工程学或直接攻击。',
+                scenario: '攻击者在页面源码中发现 API 密钥，用于访问你的后端服务。',
+                fix: '检查 HTML 源码中是否包含敏感数据。移除硬编码密钥，对敏感信息使用服务端渲染，并限制错误详情暴露。'
+            },
+            cors: {
+                title: 'CORS 配置错误',
+                principle: '跨域资源共享（CORS）头控制哪些源可以访问你的资源。宽松策略（Access-Control-Allow-Origin: *）可允许恶意站点读取敏感数据。',
+                scenario: '恶意站点向你的 API 发起 AJAX 请求，若 CORS 策略允许任意源，则能读取响应并窃取用户数据。',
+                fix: '将 Access-Control-Allow-Origin 限制为特定受信任域名。避免与凭证一起使用 "*"。在 Express 中：app.use(cors({ origin: "https://trusted.com" }))'
+            },
+            cms: {
+                title: 'CMS 指纹',
+                principle: '暴露 CMS（WordPress、Drupal 等）版本可帮助攻击者针对特定版本已知漏洞进行攻击。',
+                scenario: '攻击者得知你使用 WordPress 5.0，利用已知漏洞获取管理员权限。',
+                fix: '保持 CMS 更新，移除版本元标签，使用安全插件隐藏指纹。'
+            },
+            csp: {
+                title: '内容安全策略 (CSP)',
+                principle: 'CSP 通过限制脚本、样式等资源加载源来缓解 XSS。弱策略（如 unsafe-inline）或缺失 default-src 会降低有效性。',
+                scenario: '攻击者注入脚本，若 CSP 配置不当（允许 unsafe-inline），脚本可执行。',
+                fix: '实施严格 CSP：default-src \'self\'; script-src \'self\' https://trusted.cdn.com; style-src \'self\' \'unsafe-inline\'; 尽可能避免脚本使用 unsafe-inline，改用 nonce 或 hash。'
+            },
+            ssl: {
+                title: 'SSL/TLS 配置',
+                principle: '弱 SSL/TLS 协议或加密套件可允许攻击者解密流量或执行中间人攻击。',
+                scenario: '攻击者将连接降级至 SSLv3，利用 POODLE 漏洞窃取会话 Cookie。',
+                fix: '禁用 SSLv3、TLSv1.0、TLSv1.1。使用 TLSv1.2 或更高版本。配置强加密套件。证书过期前更新。'
+            }
         },
         detailedLabels: {
             principle: '攻击原理',
@@ -323,23 +381,6 @@ function escapeHtml(str) {
         if (m === '>') return '&gt;';
         return m;
     });
-}
-
-function getRemediationText(category, detail = null) {
-    const rem = i18n[currentLang].remediation;
-    if (!rem) return '';
-    if (category === 'missingHeaders') return rem[detail] || '';
-    if (category === 'sensitiveFiles') return rem[detail] || '';
-    if (category === 'xss') return rem.xss || '';
-    if (category === 'sql') return rem.sql || '';
-    if (category === 'dirTraversal') return rem.dirTraversal || '';
-    if (category === 'httpMethods') return typeof rem.httpMethods === 'function' ? rem.httpMethods(detail) : rem.httpMethods || '';
-    if (category === 'infoLeakage') return rem.infoLeakage || '';
-    if (category === 'cors') return rem.cors || '';
-    if (category === 'cspUnsafeInline') return rem.cspUnsafeInline || '';
-    if (category === 'cspMissingDefaultSrc') return rem.cspMissingDefaultSrc || '';
-    if (category === 'cms') return rem.cmsOutdated || '';
-    return '';
 }
 
 function createCard(title, contentHtml, extraClass = '', vulnerabilityType = null, defaultCollapsed = false) {
@@ -436,6 +477,23 @@ async function safeFetchJson(url, options) {
         throw new Error(t('responseNotJson') + (text.substring(0, 200) || '(empty)'));
     }
     return await response.json();
+}
+
+function getRemediationText(category, detail = null) {
+    const rem = i18n[currentLang].remediation;
+    if (!rem) return '';
+    if (category === 'missingHeaders') return rem[detail] || '';
+    if (category === 'sensitiveFiles') return rem[detail] || '';
+    if (category === 'xss') return rem.xss || '';
+    if (category === 'sql') return rem.sql || '';
+    if (category === 'dirTraversal') return rem.dirTraversal || '';
+    if (category === 'httpMethods') return typeof rem.httpMethods === 'function' ? rem.httpMethods(detail) : rem.httpMethods || '';
+    if (category === 'infoLeakage') return rem.infoLeakage || '';
+    if (category === 'cors') return rem.cors || '';
+    if (category === 'cspUnsafeInline') return rem.cspUnsafeInline || '';
+    if (category === 'cspMissingDefaultSrc') return rem.cspMissingDefaultSrc || '';
+    if (category === 'cms') return rem.cmsOutdated || '';
+    return '';
 }
 
 function renderResult(data) {
@@ -567,7 +625,7 @@ function renderResult(data) {
         cspCard = createCard(t('csp'), cspHtml, '', 'csp', true);
     }
 
-    // SSL 卡片（新增，默认折叠）
+    // SSL 卡片（默认折叠）
     let sslCard = null;
     if (data.ssl) {
         let sslHtml = '';
@@ -614,6 +672,7 @@ function renderResult(data) {
     window.lastScanData = data;
 }
 
+// 导出 JSON
 function exportReport() {
     if (!window.lastScanData) return;
     const dataStr = JSON.stringify(window.lastScanData, null, 2);
@@ -626,6 +685,7 @@ function exportReport() {
     URL.revokeObjectURL(url);
 }
 
+// 导出 PDF
 async function exportPDF() {
     if (!window.lastScanData) return;
     const element = resultContainer.cloneNode(true);
@@ -659,6 +719,7 @@ async function exportPDF() {
     }
 }
 
+// 导出 HTML
 async function exportHTML() {
     if (!window.lastScanData) return;
     const element = resultContainer.cloneNode(true);
@@ -682,6 +743,7 @@ async function exportHTML() {
     URL.revokeObjectURL(url);
 }
 
+// 扫描函数
 async function scan() {
     let url = targetInput.value.trim();
     if (!url) {
@@ -712,33 +774,30 @@ async function scan() {
     exportContainer.style.display = 'none';
     scanTimeDiv.style.display = 'none';
 
-    // 模拟进度阶段
-    const phases = [
-        { text: t('phaseBasic'), duration: 800 },
-        { text: t('phaseSecurity'), duration: 500 },
-        { text: t('phaseSensitive'), duration: 1200 },
-        { text: t('phaseXss'), duration: 1000 },
-        { text: t('phaseSql'), duration: 1000 },
-        { text: t('phaseDir'), duration: 800 },
-        { text: t('phaseHttp'), duration: 600 },
-        { text: t('phaseInfo'), duration: 800 },
-        { text: t('phaseCors'), duration: 500 },
-        { text: t('phaseCms'), duration: 700 },
-        { text: t('phaseSsl'), duration: 1000 }
+    // 阶段列表
+    const allPhases = [
+        { text: t('phaseBasic') },
+        { text: t('phaseSecurity') },
+        { text: t('phaseSensitive') },
+        { text: t('phaseXss') },
+        { text: t('phaseSql') },
+        { text: t('phaseDir') },
+        { text: t('phaseHttp') },
+        { text: t('phaseInfo') },
+        { text: t('phaseCors') },
+        { text: t('phaseCms') },
+        { text: t('phaseSsl') }
     ];
+    const phases = depth === 'deep' ? allPhases : allPhases.slice(0, 2);
     let phaseIndex = 0;
-    let progress = 0;
     progressFill.style.width = '0%';
     progressMessage.textContent = phases[0].text;
 
     if (phaseInterval) clearInterval(phaseInterval);
     phaseInterval = setInterval(() => {
-        if (phaseIndex < phases.length) {
-            progressMessage.textContent = phases[phaseIndex].text;
+        if (phaseIndex < phases.length - 1) {
             phaseIndex++;
-        } else {
-            clearInterval(phaseInterval);
-            phaseInterval = null;
+            progressMessage.textContent = phases[phaseIndex].text;
         }
     }, 1000);
 
@@ -770,24 +829,26 @@ async function scan() {
     }
 }
 
+// 语言切换
 function setLanguage(lang) {
     currentLang = lang;
-    if (langEnBtn) langEnBtn.classList.toggle('active', lang === 'en');
-    if (langZhBtn) langZhBtn.classList.toggle('active', lang === 'zh');
+    langEnBtn.classList.toggle('active', lang === 'en');
+    langZhBtn.classList.toggle('active', lang === 'zh');
     if (window.lastScanData) renderResult(window.lastScanData);
-    if (targetInput) targetInput.placeholder = lang === 'en' ? 'https://example.com' : 'https://example.com';
-    if (scanBtn) scanBtn.textContent = lang === 'en' ? 'Start Scan' : '开始扫描';
-    if (exportBtn) exportBtn.textContent = t('export');
-    if (pdfBtn) pdfBtn.textContent = t('pdfExport');
-    if (htmlBtn) htmlBtn.textContent = t('htmlExport');
-    const loadingSpan = loadingDiv ? loadingDiv.querySelector('span') : null;
+    targetInput.placeholder = lang === 'en' ? 'https://example.com' : 'https://example.com';
+    scanBtn.textContent = lang === 'en' ? 'Start Scan' : '开始扫描';
+    exportBtn.textContent = t('export');
+    pdfBtn.textContent = t('pdfExport');
+    htmlBtn.textContent = t('htmlExport');
+    const loadingSpan = loadingDiv.querySelector('span');
     if (loadingSpan) loadingSpan.textContent = t('scanning');
 }
 
+// 深色模式切换
 function toggleTheme() {
     currentTheme = currentTheme === 'light' ? 'dark' : 'light';
     document.documentElement.setAttribute('data-theme', currentTheme);
-    if (themeToggle) themeToggle.textContent = currentTheme === 'light' ? '🌙' : '☀️';
+    themeToggle.textContent = currentTheme === 'light' ? '🌙' : '☀️';
 }
 
 // 事件绑定
