@@ -4,6 +4,10 @@ const tls = require('tls');
 const fs = require('fs');
 const path = require('path');
 
+// ========== 缓存配置 ==========
+const cache = new Map(); // 内存缓存 { key: { result, timestamp } }
+const CACHE_TTL = 5 * 60 * 1000; // 5分钟
+
 // 读取外部规则文件
 let rules = null;
 try {
@@ -251,7 +255,7 @@ function analyzeCsp(cspHeader) {
     };
 }
 
-// ==================== 新增：SSL/TLS 检测（带容错） ====================
+// 12. SSL/TLS 检测（容错）
 async function checkSSLConfig(url) {
     try {
         const parsed = new URL(url);
@@ -330,19 +334,26 @@ async function checkSSLConfig(url) {
     }
 }
 
-// ==================== 主函数 ====================
+// ========== 主函数（已添加缓存） ==========
 module.exports = async (req, res) => {
-    // CORS（可根据需要限制为前端域名）
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     if (req.method === 'OPTIONS') return res.status(200).end();
     if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-    const { url, depth = 'deep' } = req.body; // 前端传入的扫描深度，默认深度扫描
+    const { url, depth = 'deep' } = req.body;
     if (!url) return res.status(400).json({ error: 'Missing url' });
 
     let targetUrl = url;
     if (!/^https?:\/\//i.test(targetUrl)) targetUrl = 'https://' + targetUrl;
+
+    // 缓存键：包含URL和深度模式
+    const cacheKey = `${targetUrl}_${depth}`;
+    const cached = cache.get(cacheKey);
+    if (cached && (Date.now() - cached.timestamp) < CACHE_TTL) {
+        // 命中缓存，直接返回
+        return res.status(200).json(cached.result);
+    }
 
     try {
         // 总是执行基础信息、安全头、CSP 和 SSL 检测
@@ -351,7 +362,6 @@ module.exports = async (req, res) => {
         const cspAnalysis = analyzeCsp(basic.headers?.['content-security-policy']);
         const sslConfig = await checkSSLConfig(targetUrl);
 
-        // 根据深度决定是否执行耗时检测
         let sensitiveFiles = [];
         let xssResult = { vulnerable: false };
         let sqlResult = { vulnerable: false };
@@ -362,7 +372,6 @@ module.exports = async (req, res) => {
         let cms = { detected: false };
 
         if (depth === 'deep') {
-            // 深度扫描：执行所有剩余检测
             [sensitiveFiles, xssResult, sqlResult, dirTraversal, httpMethods, infoLeakage, cors, cms] = await Promise.all([
                 checkSensitiveFiles(targetUrl),
                 checkXssReflected(targetUrl),
@@ -387,8 +396,11 @@ module.exports = async (req, res) => {
             infoLeakage,
             cors,
             cms,
-            ssl: sslConfig   // 新增 SSL 检测结果
+            ssl: sslConfig
         };
+
+        // 存入缓存
+        cache.set(cacheKey, { result, timestamp: Date.now() });
 
         res.status(200).json(result);
     } catch (error) {
