@@ -1,5 +1,5 @@
 // ==================== 配置 ====================
-const API_BASE = 'https://neteye.vercel.app'; // 已更新为您的域名
+const API_BASE = 'https://neteye.vercel.app'; // 替换为您的 Vercel 域名
 // 定义模块列表（免费用户只调用基础模块）
 const FREE_MODULES = [
     { key: 'basic', endpoint: '/api/scan/basic', resultKey: 'basic', transform: (data) => data },
@@ -20,9 +20,6 @@ const PAID_MODULES = [
     { key: 'ssl', endpoint: '/api/scan/ssl', resultKey: 'ssl', transform: (data) => data },
     { key: 'ssrf', endpoint: '/api/scan/ssrf', resultKey: 'ssrf', transform: (data) => data }
 ];
-
-// 临时模拟付费状态（后续替换为从后端获取）
-let isPaidUser = false; // 默认免费用户
 
 // ==================== 国际化文本库 ====================
 const i18n = {
@@ -320,7 +317,7 @@ let phaseInterval = null;
 let targetInput, scanBtn, resultContainer, errorContainer, loadingDiv, exportContainer;
 let langEnBtn, langZhBtn, themeToggle, scanTimeDiv, progressContainer, progressFill, progressMessage;
 let exportMenuBtn, exportModal, exportJsonBtn, exportPdfBtn, exportHtmlBtn;
-let emailReportBtn;
+let emailReportBtn, emailModal, emailClose, emailCancel, emailSend, emailInput, emailError;
 
 // ==================== 辅助函数 ====================
 function t(key) {
@@ -740,14 +737,46 @@ async function exportHTML() {
     URL.revokeObjectURL(url);
 }
 
+// ==================== 邮件发送（右下角模态框） ====================
+function showEmailModal() {
+    if (!emailModal) return;
+    emailModal.style.display = 'block';
+    if (emailInput) emailInput.value = '';
+    if (emailError) emailError.style.display = 'none';
+}
+
+function hideEmailModal() {
+    if (emailModal) emailModal.style.display = 'none';
+}
+
 async function sendReportToEmail() {
     if (!window.lastScanData) {
         alert('No scan result available. Please scan a website first.');
+        hideEmailModal();
         return;
     }
 
-    const email = prompt('Please enter your email address to receive the report:', '');
-    if (!email) return;
+    const email = emailInput ? emailInput.value.trim() : '';
+    if (!email) {
+        if (emailError) {
+            emailError.textContent = 'Please enter an email address.';
+            emailError.style.display = 'block';
+        }
+        return;
+    }
+    const emailPattern = /^[^\s@]+@([^\s@]+\.)+[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+        if (emailError) {
+            emailError.textContent = 'Please enter a valid email address.';
+            emailError.style.display = 'block';
+        }
+        return;
+    }
+
+    if (emailSend) {
+        emailSend.disabled = true;
+        emailSend.textContent = 'Sending...';
+    }
 
     const reportElement = resultContainer.cloneNode(true);
     reportElement.querySelectorAll('.copy-btn, .info-btn, .collapse-icon').forEach(btn => btn.remove());
@@ -761,6 +790,7 @@ async function sendReportToEmail() {
         });
         if (response.ok) {
             alert('Report sent successfully!');
+            hideEmailModal();
         } else {
             const err = await response.json();
             alert(`Failed to send report: ${err.error || 'Unknown error'}`);
@@ -768,9 +798,15 @@ async function sendReportToEmail() {
     } catch (err) {
         console.error(err);
         alert('An error occurred while sending the report.');
+    } finally {
+        if (emailSend) {
+            emailSend.disabled = false;
+            emailSend.textContent = 'Send';
+        }
     }
 }
 
+// ==================== 扫描主函数 ====================
 async function scan() {
     let url = targetInput.value.trim();
     if (!url) {
@@ -948,6 +984,12 @@ document.addEventListener('DOMContentLoaded', () => {
     exportPdfBtn = document.getElementById('export-pdf-btn');
     exportHtmlBtn = document.getElementById('export-html-btn');
     emailReportBtn = document.getElementById('email-report-btn');
+    emailModal = document.getElementById('email-modal');
+    emailClose = document.querySelector('.email-modal-close');
+    emailCancel = document.getElementById('email-cancel-btn');
+    emailSend = document.getElementById('email-send-btn');
+    emailInput = document.getElementById('report-email');
+    emailError = document.getElementById('email-error');
 
     function hideTemporaryUI() {
         if (loadingDiv) loadingDiv.style.display = 'none';
@@ -968,7 +1010,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (langEnBtn) langEnBtn.addEventListener('click', () => setLanguage('en'));
     if (langZhBtn) langZhBtn.addEventListener('click', () => setLanguage('zh'));
     if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
-    if (emailReportBtn) emailReportBtn.addEventListener('click', sendReportToEmail);
+    if (emailReportBtn) emailReportBtn.addEventListener('click', showEmailModal);
+    if (emailSend) emailSend.addEventListener('click', sendReportToEmail);
+    if (emailClose) emailClose.addEventListener('click', hideEmailModal);
+    if (emailCancel) emailCancel.addEventListener('click', hideEmailModal);
+    window.addEventListener('click', (event) => {
+        if (event.target === emailModal) hideEmailModal();
+    });
 
     document.querySelectorAll('.modal-close').forEach(closeBtn => {
         closeBtn.addEventListener('click', () => {
