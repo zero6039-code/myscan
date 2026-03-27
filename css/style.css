@@ -1,4 +1,3 @@
-/* 邮件图标按钮样式（圆形、渐变背景） */
 .email-btn {
     background: linear-gradient(135deg, #ff7e5e, #feb47b);
     border: none;
@@ -18,8 +17,6 @@
     transform: scale(1.05);
     box-shadow: 0 6px 15px rgba(0,0,0,0.3);
 }
-
-/* 自定义邮箱模态框（右下角浮动） */
 .email-modal {
     display: none;
     position: fixed;
