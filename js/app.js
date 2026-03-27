@@ -17,7 +17,8 @@ const PAID_MODULES = [
     { key: 'cors', endpoint: '/api/scan/cors', resultKey: 'cors', transform: (data) => data },
     { key: 'cms', endpoint: '/api/scan/cms', resultKey: 'cms', transform: (data) => data },
     { key: 'csp', endpoint: '/api/scan/csp', resultKey: 'security.csp', transform: (data) => data },
-    { key: 'ssl', endpoint: '/api/scan/ssl', resultKey: 'ssl', transform: (data) => data }
+    { key: 'ssl', endpoint: '/api/scan/ssl', resultKey: 'ssl', transform: (data) => data },
+    { key: 'ssrf', endpoint: '/api/scan/ssrf', resultKey: 'ssrf', transform: (data) => data }
 ];
 
 // 临时模拟付费状态（后续替换为从后端获取）
