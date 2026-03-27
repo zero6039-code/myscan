@@ -1,5 +1,6 @@
 const axios = require('axios');
 const https = require('https');
+const tls = require('tls');
 const fs = require('fs');
 const path = require('path');
 
@@ -211,7 +212,7 @@ async function checkCors(baseUrl) {
     }
 }
 
-// 10. CMS 指纹识别（简单示例）
+// 10. CMS 指纹识别
 async function detectCms(baseUrl) {
     const cmsSignatures = [
         { name: 'WordPress', paths: ['/wp-content/', '/wp-includes/'] },
@@ -250,35 +251,129 @@ function analyzeCsp(cspHeader) {
     };
 }
 
-// 主函数
+// ==================== 新增：SSL/TLS 检测（带容错） ====================
+async function checkSSLConfig(url) {
+    try {
+        const parsed = new URL(url);
+        const hostname = parsed.hostname;
+        const port = parsed.port || (parsed.protocol === 'https:' ? 443 : 80);
+        if (parsed.protocol !== 'https:') {
+            return { error: 'Not an HTTPS site' };
+        }
+
+        return new Promise((resolve) => {
+            const socket = tls.connect(port, hostname, {
+                rejectUnauthorized: false,
+                servername: hostname
+            }, () => {
+                let cert = null;
+                let protocol = null;
+                let cipher = null;
+                try {
+                    cert = socket.getPeerCertificate();
+                    protocol = socket.getProtocol();
+                    cipher = socket.getCipher();
+                } catch (err) {
+                    socket.end();
+                    return resolve({ error: `Failed to retrieve certificate: ${err.message}` });
+                }
+                socket.end();
+
+                if (!cert || Object.keys(cert).length === 0) {
+                    return resolve({ error: 'No certificate received' });
+                }
+
+                const weakProtocols = ['SSLv2', 'SSLv3', 'TLSv1', 'TLSv1.1'];
+                const isWeakProtocol = protocol ? weakProtocols.some(p => protocol === p) : false;
+
+                const now = new Date();
+                let validFrom, validTo, isExpired = false, notYetValid = false;
+                if (cert.valid_from && cert.valid_to) {
+                    validFrom = new Date(cert.valid_from);
+                    validTo = new Date(cert.valid_to);
+                    isExpired = now > validTo;
+                    notYetValid = now < validFrom;
+                } else {
+                    validFrom = 'Unknown';
+                    validTo = 'Unknown';
+                }
+
+                resolve({
+                    protocol: protocol || 'Unknown',
+                    cipher: cipher ? cipher.name : 'Unknown',
+                    certificate: {
+                        subject: cert.subject || {},
+                        issuer: cert.issuer || {},
+                        validFrom,
+                        validTo,
+                        isExpired,
+                        notYetValid
+                    },
+                    weakProtocol: isWeakProtocol,
+                    vulnerabilities: {
+                        weakProtocol: isWeakProtocol,
+                        expiredCert: isExpired,
+                        notYetValid
+                    }
+                });
+            });
+            socket.on('error', (err) => {
+                resolve({ error: err.message });
+            });
+            socket.setTimeout(5000, () => {
+                socket.destroy();
+                resolve({ error: 'Timeout' });
+            });
+        });
+    } catch (err) {
+        return { error: err.message };
+    }
+}
+
+// ==================== 主函数 ====================
 module.exports = async (req, res) => {
+    // CORS（可根据需要限制为前端域名）
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     if (req.method === 'OPTIONS') return res.status(200).end();
     if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-    const { url } = req.body;
+    const { url, depth = 'deep' } = req.body; // 前端传入的扫描深度，默认深度扫描
     if (!url) return res.status(400).json({ error: 'Missing url' });
 
     let targetUrl = url;
     if (!/^https?:\/\//i.test(targetUrl)) targetUrl = 'https://' + targetUrl;
 
     try {
-        // 并发执行所有独立检测
-        const [basic, sensitiveFiles, xssResult, sqlResult, dirTraversal, httpMethods, infoLeakage, cors, cms] = await Promise.all([
-            getBasicInfo(targetUrl),
-            checkSensitiveFiles(targetUrl),
-            checkXssReflected(targetUrl),
-            checkSqlInjection(targetUrl),
-            checkDirectoryTraversal(targetUrl),
-            checkHttpMethods(targetUrl),
-            checkInfoLeakage(targetUrl),
-            checkCors(targetUrl),
-            detectCms(targetUrl)
-        ]);
-
+        // 总是执行基础信息、安全头、CSP 和 SSL 检测
+        const basic = await getBasicInfo(targetUrl);
         const securityMissing = checkSecurityHeaders(basic.headers || {});
         const cspAnalysis = analyzeCsp(basic.headers?.['content-security-policy']);
+        const sslConfig = await checkSSLConfig(targetUrl);
+
+        // 根据深度决定是否执行耗时检测
+        let sensitiveFiles = [];
+        let xssResult = { vulnerable: false };
+        let sqlResult = { vulnerable: false };
+        let dirTraversal = { vulnerable: false };
+        let httpMethods = [];
+        let infoLeakage = {};
+        let cors = { vulnerable: false, details: 'No CORS headers detected.' };
+        let cms = { detected: false };
+
+        if (depth === 'deep') {
+            // 深度扫描：执行所有剩余检测
+            [sensitiveFiles, xssResult, sqlResult, dirTraversal, httpMethods, infoLeakage, cors, cms] = await Promise.all([
+                checkSensitiveFiles(targetUrl),
+                checkXssReflected(targetUrl),
+                checkSqlInjection(targetUrl),
+                checkDirectoryTraversal(targetUrl),
+                checkHttpMethods(targetUrl),
+                checkInfoLeakage(targetUrl),
+                checkCors(targetUrl),
+                detectCms(targetUrl)
+            ]);
+        }
 
         const result = {
             url: targetUrl,
@@ -291,7 +386,8 @@ module.exports = async (req, res) => {
             httpMethods: { allowed: httpMethods },
             infoLeakage,
             cors,
-            cms
+            cms,
+            ssl: sslConfig   // 新增 SSL 检测结果
         };
 
         res.status(200).json(result);
