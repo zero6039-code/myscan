@@ -12,8 +12,8 @@
             <h1>MyScan</h1>
             <div class="action-buttons">
                 <div class="lang-switch" role="group" aria-label="Language switch">
-                    <button id="lang-en" class="lang-btn active" aria-label="English">English</button>
-                    <button id="lang-zh" class="lang-btn" aria-label="中文">中文</button>
+                    <button id="lang-en" class="lang-btn active">English</button>
+                    <button id="lang-zh" class="lang-btn">中文</button>
                 </div>
                 <button id="theme-toggle" class="theme-btn" aria-label="Dark mode">🌙</button>
             </div>
@@ -21,9 +21,14 @@
 
         <div class="input-group">
             <input type="text" id="target" placeholder="https://example.com" aria-label="Target URL" />
+            <div class="depth-selector">
+                <label><input type="radio" name="depth" value="quick" /> Quick Scan</label>
+                <label><input type="radio" name="depth" value="deep" checked /> Deep Scan</label>
+            </div>
             <button id="scan-btn" aria-label="Start scan">Start Scan</button>
         </div>
 
+        <!-- 进度条区域 -->
         <div id="progress-container" style="display: none;">
             <div class="progress-bar">
                 <div id="progress-fill" class="progress-fill"></div>
@@ -43,6 +48,7 @@
         <div id="export-container" style="display: none; text-align: right; margin-top: 16px;">
             <button id="export-btn" class="export-btn" aria-label="Export JSON">Export as JSON</button>
             <button id="pdf-btn" class="export-btn" aria-label="Export PDF" style="background: #dc3545; margin-left: 8px;">Export as PDF</button>
+            <button id="html-btn" class="export-btn" aria-label="Export HTML" style="background: #28a745; margin-left: 8px;">Export as HTML</button>
         </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
