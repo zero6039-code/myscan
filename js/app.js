@@ -51,7 +51,7 @@ const i18n = {
         detailedTitle: 'Detailed Information',
         corsSafe: 'CORS policy is restrictive (good).',
         cmsUnknown: 'Unable to detect CMS.',
-        // 修复建议映射（函数返回字符串）
+        // 修复建议映射
         remediation: {
             'X-Frame-Options': 'Missing this header may lead to clickjacking attacks. Recommended: `X-Frame-Options: SAMEORIGIN`',
             'X-Content-Type-Options': 'Missing this header may lead to MIME type confusion attacks. Recommended: `X-Content-Type-Options: nosniff`',
@@ -74,6 +74,7 @@ const i18n = {
             cspUnsafeInline: 'CSP uses `unsafe-inline`, weakening XSS protection. Recommend using nonce or hash instead.',
             cspMissingDefaultSrc: 'CSP missing `default-src` directive. Recommend adding `default-src \'self\'`.'
         },
+        // 详细解说内容
         detailed: {
             securityHeaders: {
                 title: 'Missing Security Headers',
@@ -135,11 +136,14 @@ const i18n = {
                 scenario: 'An attacker injects a script that would normally be blocked if CSP were properly configured, but unsafe-inline allows it to execute.',
                 fix: 'Implement a strict CSP: default-src \'self\'; script-src \'self\' https://trusted.cdn.com; style-src \'self\' \'unsafe-inline\'; Avoid unsafe-inline for scripts if possible; use nonce or hash.'
             }
+        },
+        detailedLabels: {
+            principle: 'Attack Principle',
+            scenario: 'Attack Scenario',
+            remediation: 'Remediation'
         }
     },
     zh: {
-        // 中文部分省略，但必须与英文结构一致，包含 remediation 和 detailed 对象，并提供中文翻译。
-        // 实际部署时请补全中文内容。以下为示例（用户可自行完善）。
         scanning: '扫描中...',
         errorPrefix: '错误：',
         basicInfo: '基本信息',
@@ -269,6 +273,11 @@ const i18n = {
                 scenario: '攻击者注入脚本，若 CSP 配置不当（允许 unsafe-inline），脚本可执行。',
                 fix: '实施严格 CSP：default-src \'self\'; script-src \'self\' https://trusted.cdn.com; style-src \'self\' \'unsafe-inline\'; 尽可能避免脚本使用 unsafe-inline，改用 nonce 或 hash。'
             }
+        },
+        detailedLabels: {
+            principle: '攻击原理',
+            scenario: '攻击场景',
+            remediation: '修复建议'
         }
     }
 };
@@ -366,6 +375,11 @@ function showDetailedInfo(vulnerabilityType, title) {
         console.warn('No detailed info for', vulnerabilityType);
         return;
     }
+    const labels = i18n[currentLang].detailedLabels || {
+        principle: 'Attack Principle',
+        scenario: 'Attack Scenario',
+        remediation: 'Remediation'
+    };
     const modal = document.createElement('div');
     modal.className = 'modal';
     modal.innerHTML = `
@@ -375,11 +389,11 @@ function showDetailedInfo(vulnerabilityType, title) {
                 <span class="modal-close">&times;</span>
             </div>
             <div class="modal-body">
-                <h4>🔍 Attack Principle</h4>
+                <h4>🔍 ${escapeHtml(labels.principle)}</h4>
                 <p>${escapeHtml(details.principle)}</p>
-                <h4>⚠️ Attack Scenario</h4>
+                <h4>⚠️ ${escapeHtml(labels.scenario)}</h4>
                 <p>${escapeHtml(details.scenario)}</p>
-                <h4>🛠️ Remediation</h4>
+                <h4>🛠️ ${escapeHtml(labels.remediation)}</h4>
                 <pre>${escapeHtml(details.fix)}</pre>
             </div>
         </div>
@@ -412,7 +426,7 @@ function renderResult(data) {
         scanTimeDiv.textContent = t('scanTime').replace('{time}', elapsed);
         scanTimeDiv.style.display = 'block';
     }
-    // 基础信息卡片（无解说）
+    // 基础信息卡片
     const basicCard = createCard(t('basicInfo'), `
         <div class="info-row"><span class="info-label">${t('urlLabel')}:</span><span class="info-value">${escapeHtml(data.url)}</span></div>
         <div class="info-row"><span class="info-label">${t('statusLabel')}:</span><span class="info-value">${data.basic?.status || '?'}</span></div>
