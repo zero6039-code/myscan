@@ -230,7 +230,7 @@ function analyzeCsp(cspHeader) {
     };
 }
 
-// 12. SSL/TLS 配置检测（新增）
+// 12. SSL/TLS 配置检测（增强容错）
 async function checkSSLConfig(url) {
     try {
         const parsed = new URL(url);
@@ -245,29 +245,49 @@ async function checkSSLConfig(url) {
                 rejectUnauthorized: false,
                 servername: hostname
             }, () => {
-                const cert = socket.getPeerCertificate();
-                const protocol = socket.getProtocol();
-                const cipher = socket.getCipher();
+                let cert = null;
+                let protocol = null;
+                let cipher = null;
+                try {
+                    cert = socket.getPeerCertificate();
+                    protocol = socket.getProtocol();
+                    cipher = socket.getCipher();
+                } catch (err) {
+                    socket.end();
+                    return resolve({ error: `Failed to retrieve certificate: ${err.message}` });
+                }
                 socket.end();
+
+                // 如果证书为空（例如连接被重置），返回错误
+                if (!cert || Object.keys(cert).length === 0) {
+                    return resolve({ error: 'No certificate received' });
+                }
 
                 // 检查弱协议
                 const weakProtocols = ['SSLv2', 'SSLv3', 'TLSv1', 'TLSv1.1'];
-                const isWeakProtocol = weakProtocols.some(p => protocol === p);
+                const isWeakProtocol = protocol ? weakProtocols.some(p => protocol === p) : false;
+
                 // 检查证书有效性
                 const now = new Date();
-                const validFrom = new Date(cert.valid_from);
-                const validTo = new Date(cert.valid_to);
-                const isExpired = now > validTo;
-                const notYetValid = now < validFrom;
+                let validFrom, validTo, isExpired = false, notYetValid = false;
+                if (cert.valid_from && cert.valid_to) {
+                    validFrom = new Date(cert.valid_from);
+                    validTo = new Date(cert.valid_to);
+                    isExpired = now > validTo;
+                    notYetValid = now < validFrom;
+                } else {
+                    validFrom = 'Unknown';
+                    validTo = 'Unknown';
+                }
 
-                resolve({
-                    protocol,
-                    cipher: cipher.name,
+                const result = {
+                    protocol: protocol || 'Unknown',
+                    cipher: cipher ? cipher.name : 'Unknown',
                     certificate: {
-                        subject: cert.subject,
-                        issuer: cert.issuer,
-                        validFrom: cert.valid_from,
-                        validTo: cert.valid_to,
+                        subject: cert.subject || {},
+                        issuer: cert.issuer || {},
+                        validFrom: validFrom,
+                        validTo: validTo,
                         isExpired,
                         notYetValid
                     },
@@ -277,7 +297,8 @@ async function checkSSLConfig(url) {
                         expiredCert: isExpired,
                         notYetValid
                     }
-                });
+                };
+                resolve(result);
             });
             socket.on('error', (err) => {
                 resolve({ error: err.message });
