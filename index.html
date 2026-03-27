@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>MyScan - Web Vulnerability Scanner</title>
     <link rel="stylesheet" href="css/style.css">
+    <!-- 引入 Font Awesome 6 (免费图标库) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <div class="container">
@@ -66,7 +68,7 @@
             </div>
         </div>
 
-        <!-- 分享选项模态框 -->
+        <!-- 分享选项模态框（使用 Font Awesome 图标，圆形背景） -->
         <div id="share-modal" class="modal" style="display: none;">
             <div class="modal-content" style="max-width: 500px;">
                 <div class="modal-header">
@@ -74,12 +76,12 @@
                     <span class="modal-close">&times;</span>
                 </div>
                 <div class="modal-body" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px;">
-                    <button class="share-icon" data-platform="whatsapp"><img src="https://cdn.jsdelivr.net/npm/simple-icons@v7/icons/whatsapp.svg" width="32" alt="WhatsApp"></button>
-                    <button class="share-icon" data-platform="facebook"><img src="https://cdn.jsdelivr.net/npm/simple-icons@v7/icons/facebook.svg" width="32" alt="Facebook"></button>
-                    <button class="share-icon" data-platform="messenger"><img src="https://cdn.jsdelivr.net/npm/simple-icons@v7/icons/messenger.svg" width="32" alt="Messenger"></button>
-                    <button class="share-icon" data-platform="email"><img src="https://cdn.jsdelivr.net/npm/simple-icons@v7/icons/gmail.svg" width="32" alt="Email"></button>
-                    <button class="share-icon" data-platform="wechat"><img src="https://cdn.jsdelivr.net/npm/simple-icons@v7/icons/wechat.svg" width="32" alt="WeChat"></button>
-                    <button class="share-icon" data-platform="line"><img src="https://cdn.jsdelivr.net/npm/simple-icons@v7/icons/line.svg" width="32" alt="Line"></button>
+                    <button class="share-icon" data-platform="whatsapp"><i class="fab fa-whatsapp fa-2x"></i></button>
+                    <button class="share-icon" data-platform="facebook"><i class="fab fa-facebook fa-2x"></i></button>
+                    <button class="share-icon" data-platform="messenger"><i class="fab fa-facebook-messenger fa-2x"></i></button>
+                    <button class="share-icon" data-platform="email"><i class="fas fa-envelope fa-2x"></i></button>
+                    <button class="share-icon" data-platform="wechat"><i class="fab fa-weixin fa-2x"></i></button>
+                    <button class="share-icon" data-platform="line"><i class="fab fa-line fa-2x"></i></button>
                 </div>
                 <div class="modal-footer" style="padding: 12px; text-align: center;">
                     <small>Click icon to share this page</small>
