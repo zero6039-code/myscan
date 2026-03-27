@@ -8,7 +8,7 @@ const rules = require('../rules.json');
 const cache = new Map(); // 内存缓存 { key: { result, timestamp } }
 const CACHE_TTL = 5 * 60 * 1000; // 5分钟
 
-// 请求限流（最多同时3个）
+// 请求限流
 const limit = pLimit(3);
 
 // 增强的 axios 实例
@@ -55,7 +55,7 @@ async function getBasicInfo(url) {
     };
 }
 
-// 2. 安全头部检测
+// 2. 安全头部检测（含新增头部）
 function checkSecurityHeaders(headers) {
     return rules.securityHeaders.filter(h => !headers[h.toLowerCase()]);
 }
@@ -161,6 +161,7 @@ async function checkInfoLeakage(baseUrl) {
             emails: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g,
             phones: /(\+?[0-9]{1,3}[-.]?)?\(?[0-9]{3}\)?[-.]?[0-9]{3}[-.]?[0-9]{4}/g,
             apiKeys: /[A-Za-z0-9]{32,}/g,
+            // 新增
             idCards: /\b[1-9]\d{5}(19|20)\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])\d{3}[\dXx]\b/g,
             bankCards: /\b[0-9]{16,19}\b/g,
             awsKeys: /AKIA[0-9A-Z]{16}\b/g,
@@ -230,7 +231,7 @@ function analyzeCsp(cspHeader) {
     };
 }
 
-// 12. SSL/TLS 配置检测（增强容错）
+// 12. SSL/TLS 检测（新增）
 async function checkSSLConfig(url) {
     try {
         const parsed = new URL(url);
@@ -245,49 +246,29 @@ async function checkSSLConfig(url) {
                 rejectUnauthorized: false,
                 servername: hostname
             }, () => {
-                let cert = null;
-                let protocol = null;
-                let cipher = null;
-                try {
-                    cert = socket.getPeerCertificate();
-                    protocol = socket.getProtocol();
-                    cipher = socket.getCipher();
-                } catch (err) {
-                    socket.end();
-                    return resolve({ error: `Failed to retrieve certificate: ${err.message}` });
-                }
+                const cert = socket.getPeerCertificate();
+                const protocol = socket.getProtocol();
+                const cipher = socket.getCipher();
                 socket.end();
-
-                // 如果证书为空（例如连接被重置），返回错误
-                if (!cert || Object.keys(cert).length === 0) {
-                    return resolve({ error: 'No certificate received' });
-                }
 
                 // 检查弱协议
                 const weakProtocols = ['SSLv2', 'SSLv3', 'TLSv1', 'TLSv1.1'];
-                const isWeakProtocol = protocol ? weakProtocols.some(p => protocol === p) : false;
-
+                const isWeakProtocol = weakProtocols.some(p => protocol === p);
                 // 检查证书有效性
                 const now = new Date();
-                let validFrom, validTo, isExpired = false, notYetValid = false;
-                if (cert.valid_from && cert.valid_to) {
-                    validFrom = new Date(cert.valid_from);
-                    validTo = new Date(cert.valid_to);
-                    isExpired = now > validTo;
-                    notYetValid = now < validFrom;
-                } else {
-                    validFrom = 'Unknown';
-                    validTo = 'Unknown';
-                }
+                const validFrom = new Date(cert.valid_from);
+                const validTo = new Date(cert.valid_to);
+                const isExpired = now > validTo;
+                const notYetValid = now < validFrom;
 
-                const result = {
-                    protocol: protocol || 'Unknown',
-                    cipher: cipher ? cipher.name : 'Unknown',
+                resolve({
+                    protocol,
+                    cipher: cipher.name,
                     certificate: {
-                        subject: cert.subject || {},
-                        issuer: cert.issuer || {},
-                        validFrom: validFrom,
-                        validTo: validTo,
+                        subject: cert.subject,
+                        issuer: cert.issuer,
+                        validFrom: cert.valid_from,
+                        validTo: cert.valid_to,
                         isExpired,
                         notYetValid
                     },
@@ -297,8 +278,7 @@ async function checkSSLConfig(url) {
                         expiredCert: isExpired,
                         notYetValid
                     }
-                };
-                resolve(result);
+                });
             });
             socket.on('error', (err) => {
                 resolve({ error: err.message });
@@ -313,7 +293,7 @@ async function checkSSLConfig(url) {
     }
 }
 
-// ========== 主函数 ==========
+// 主函数
 module.exports = async (req, res) => {
     // CORS
     const allowedOrigin = process.env.FRONTEND_URL || 'https://myscan-henna.vercel.app';
@@ -322,7 +302,7 @@ module.exports = async (req, res) => {
     if (req.method === 'OPTIONS') return res.status(200).end();
     if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-    const { url, depth = 'deep' } = req.body; // 接收前端传来的深度参数
+    const { url, depth = 'deep' } = req.body; // 接收深度参数
     if (!url) return res.status(400).json({ error: 'Missing url' });
 
     // 输入校验：过滤危险协议
@@ -342,7 +322,7 @@ module.exports = async (req, res) => {
     }
 
     try {
-        // 总是执行基础信息和安全头检测（这些很快）
+        // 总是执行基础信息和安全头检测
         const basic = await getBasicInfo(targetUrl);
         const securityMissing = checkSecurityHeaders(basic.headers || {});
         const cspAnalysis = analyzeCsp(basic.headers?.['content-security-policy']);
@@ -357,7 +337,7 @@ module.exports = async (req, res) => {
         let cors = { vulnerable: false, details: 'No CORS headers detected.' };
         let cms = { detected: false };
 
-        // 深度扫描模式才执行其他耗时检测
+        // 深度扫描模式才执行其他检测
         if (depth === 'deep') {
             [sensitiveFiles, xssResult, sqlResult, dirTraversal, httpMethods, infoLeakage, cors, cms] = await Promise.all([
                 checkSensitiveFiles(targetUrl),
