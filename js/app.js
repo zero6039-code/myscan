@@ -895,24 +895,33 @@ async function scan() {
 
     try {
         for (const module of modules) {
-            try {
-                const response = await safeFetchJson(API_BASE + module.endpoint, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ url })
-                });
-                const keys = module.resultKey.split('.');
-                let target = result;
-                for (let i = 0; i < keys.length - 1; i++) {
-                    if (!target[keys[i]]) target[keys[i]] = {};
-                    target = target[keys[i]];
-                }
-                const lastKey = keys[keys.length - 1];
-                target[lastKey] = module.transform(response);
-            } catch (err) {
-                console.error(`模块 ${module.key} 失败:`, err);
+    try {
+        const response = await safeFetchJson(API_BASE + module.endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ url })
+        });
+        // 针对 basic 模块特殊处理（因为它返回了多个字段）
+        if (module.key === 'basic') {
+            result.basic = response.basic;
+            result.security.missingHeaders = response.missingHeaders;
+            result.security.csp = response.csp;
+            result.ssl = response.ssl;
+        } else {
+            // 其他模块仍按原逻辑处理
+            const keys = module.resultKey.split('.');
+            let target = result;
+            for (let i = 0; i < keys.length - 1; i++) {
+                if (!target[keys[i]]) target[keys[i]] = {};
+                target = target[keys[i]];
             }
+            const lastKey = keys[keys.length - 1];
+            target[lastKey] = module.transform(response);
         }
+    } catch (err) {
+        console.error(`模块 ${module.key} 失败:`, err);
+    }
+}
 
         if (phaseInterval) clearInterval(phaseInterval);
         progressFill.style.width = '100%';
