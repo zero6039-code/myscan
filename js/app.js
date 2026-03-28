@@ -1,10 +1,5 @@
 // ==================== 配置 ====================
-const API_BASE = 'https://neteye.vercel.app'; // 替换为您的 Vercel 域名
-// 定义模块列表（免费用户只调用基础模块）
-const FREE_MODULES = [
-    { key: 'basic', endpoint: '/api/scan/basic', resultKey: 'basic', transform: (data) => data },
-    { key: 'security', endpoint: '/api/scan/security-headers', resultKey: 'security.missingHeaders', transform: (data) => data.missingHeaders }
-];
+const API_BASE = 'https://neteye.vercel.app'; // 修正拼写
 
 const PAID_MODULES = [
     ...FREE_MODULES,
