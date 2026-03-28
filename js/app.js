@@ -1,6 +1,11 @@
 // ==================== 配置 ====================
 const API_BASE = 'https://neteye.vercel.app'; // 修正拼写
 
+const FREE_MODULES = [
+    { key: 'basic', endpoint: '/api/scan/basic', resultKey: 'basic', transform: (data) => data.basic }
+    // 基础模块已包含安全头、CSP、SSL，因此不再单独调用
+];
+
 const PAID_MODULES = [
     ...FREE_MODULES,
     { key: 'sensitive', endpoint: '/api/scan/sensitive-files', resultKey: 'sensitiveFiles', transform: (data) => data },
@@ -11,8 +16,6 @@ const PAID_MODULES = [
     { key: 'info', endpoint: '/api/scan/info-leakage', resultKey: 'infoLeakage', transform: (data) => data },
     { key: 'cors', endpoint: '/api/scan/cors', resultKey: 'cors', transform: (data) => data },
     { key: 'cms', endpoint: '/api/scan/cms', resultKey: 'cms', transform: (data) => data },
-    { key: 'csp', endpoint: '/api/scan/csp', resultKey: 'security.csp', transform: (data) => data },
-    { key: 'ssl', endpoint: '/api/scan/ssl', resultKey: 'ssl', transform: (data) => data },
     { key: 'ssrf', endpoint: '/api/scan/ssrf', resultKey: 'ssrf', transform: (data) => data }
 ];
 
