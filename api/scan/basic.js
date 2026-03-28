@@ -1,5 +1,7 @@
 const axios = require('axios');
 const https = require('https');
+const tls = require('tls');
+const rules = require('../../rules.json');
 
 const axiosInstance = axios.create({
     httpsAgent: new https.Agent({ rejectUnauthorized: false }),
@@ -29,6 +31,103 @@ async function fetchUrlWithRetry(url, retries = 2) {
     }
 }
 
+function checkSecurityHeaders(headers) {
+    return rules.securityHeaders.filter(h => !headers[h.toLowerCase()]);
+}
+
+function analyzeCsp(cspHeader) {
+    if (!cspHeader) return null;
+    const directives = {};
+    cspHeader.split(';').forEach(part => {
+        const [key, ...values] = part.trim().split(' ');
+        directives[key] = values;
+    });
+    const hasUnsafe = directives['script-src']?.includes("'unsafe-inline'") || directives['script-src']?.includes("'unsafe-eval'");
+    const missingDefault = !directives['default-src'];
+    return {
+        directives,
+        issues: { unsafeInline: hasUnsafe, missingDefaultSrc: missingDefault }
+    };
+}
+
+async function checkSSLConfig(url) {
+    try {
+        const parsed = new URL(url);
+        const hostname = parsed.hostname;
+        const port = parsed.port || (parsed.protocol === 'https:' ? 443 : 80);
+        if (parsed.protocol !== 'https:') {
+            return { error: 'Not an HTTPS site' };
+        }
+
+        return new Promise((resolve) => {
+            const socket = tls.connect(port, hostname, {
+                rejectUnauthorized: false,
+                servername: hostname
+            }, () => {
+                let cert = null;
+                let protocol = null;
+                let cipher = null;
+                try {
+                    cert = socket.getPeerCertificate();
+                    protocol = socket.getProtocol();
+                    cipher = socket.getCipher();
+                } catch (err) {
+                    socket.end();
+                    return resolve({ error: `Failed to retrieve certificate: ${err.message}` });
+                }
+                socket.end();
+
+                if (!cert || Object.keys(cert).length === 0) {
+                    return resolve({ error: 'No certificate received' });
+                }
+
+                const weakProtocols = ['SSLv2', 'SSLv3', 'TLSv1', 'TLSv1.1'];
+                const isWeakProtocol = protocol ? weakProtocols.some(p => protocol === p) : false;
+
+                const now = new Date();
+                let validFrom, validTo, isExpired = false, notYetValid = false;
+                if (cert.valid_from && cert.valid_to) {
+                    validFrom = new Date(cert.valid_from);
+                    validTo = new Date(cert.valid_to);
+                    isExpired = now > validTo;
+                    notYetValid = now < validFrom;
+                } else {
+                    validFrom = 'Unknown';
+                    validTo = 'Unknown';
+                }
+
+                resolve({
+                    protocol: protocol || 'Unknown',
+                    cipher: cipher ? cipher.name : 'Unknown',
+                    certificate: {
+                        subject: cert.subject || {},
+                        issuer: cert.issuer || {},
+                        validFrom,
+                        validTo,
+                        isExpired,
+                        notYetValid
+                    },
+                    weakProtocol: isWeakProtocol,
+                    vulnerabilities: {
+                        weakProtocol: isWeakProtocol,
+                        expiredCert: isExpired,
+                        notYetValid
+                    }
+                });
+            });
+            socket.on('error', (err) => {
+                resolve({ error: err.message });
+            });
+            socket.setTimeout(5000, () => {
+                socket.destroy();
+                resolve({ error: 'Timeout' });
+            });
+        });
+    } catch (err) {
+        return { error: err.message };
+    }
+}
+
 module.exports = async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -46,11 +145,23 @@ module.exports = async (req, res) => {
         if (response.error) {
             return res.json({ error: response.error, status: response.status });
         }
-        res.json({
+
+        const basic = {
             status: response.status,
             headers: response.headers,
             title: (response.data.match(/<title>(.*?)<\/title>/i) || [])[1] || '',
             contentLength: response.data.length
+        };
+
+        const missingHeaders = checkSecurityHeaders(response.headers);
+        const cspAnalysis = analyzeCsp(response.headers?.['content-security-policy']);
+        const sslConfig = await checkSSLConfig(targetUrl);
+
+        res.json({
+            basic,
+            missingHeaders,
+            csp: cspAnalysis,
+            ssl: sslConfig
         });
     } catch (err) {
         res.status(500).json({ error: err.message });
