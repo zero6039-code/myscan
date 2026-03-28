@@ -1,9 +1,9 @@
 // ==================== 配置 ====================
-const API_BASE = 'https://neteye.vercel.app'; // 修正拼写
+const API_BASE = 'https://neteye.vercel.app'; // 已更新为您的域名
 
+// 模块定义（合并 basic 模块，其他保持不变）
 const FREE_MODULES = [
     { key: 'basic', endpoint: '/api/scan/basic', resultKey: 'basic', transform: (data) => data.basic }
-    // 基础模块已包含安全头、CSP、SSL，因此不再单独调用
 ];
 
 const PAID_MODULES = [
@@ -895,33 +895,31 @@ async function scan() {
 
     try {
         for (const module of modules) {
-    try {
-        const response = await safeFetchJson(API_BASE + module.endpoint, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ url })
-        });
-        // 针对 basic 模块特殊处理（因为它返回了多个字段）
-        if (module.key === 'basic') {
-            result.basic = response.basic;
-            result.security.missingHeaders = response.missingHeaders;
-            result.security.csp = response.csp;
-            result.ssl = response.ssl;
-        } else {
-            // 其他模块仍按原逻辑处理
-            const keys = module.resultKey.split('.');
-            let target = result;
-            for (let i = 0; i < keys.length - 1; i++) {
-                if (!target[keys[i]]) target[keys[i]] = {};
-                target = target[keys[i]];
+            try {
+                const response = await safeFetchJson(API_BASE + module.endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url })
+                });
+                if (module.key === 'basic') {
+                    result.basic = response.basic;
+                    result.security.missingHeaders = response.missingHeaders;
+                    result.security.csp = response.csp;
+                    result.ssl = response.ssl;
+                } else {
+                    const keys = module.resultKey.split('.');
+                    let target = result;
+                    for (let i = 0; i < keys.length - 1; i++) {
+                        if (!target[keys[i]]) target[keys[i]] = {};
+                        target = target[keys[i]];
+                    }
+                    const lastKey = keys[keys.length - 1];
+                    target[lastKey] = module.transform(response);
+                }
+            } catch (err) {
+                console.error(`模块 ${module.key} 失败:`, err);
             }
-            const lastKey = keys[keys.length - 1];
-            target[lastKey] = module.transform(response);
         }
-    } catch (err) {
-        console.error(`模块 ${module.key} 失败:`, err);
-    }
-}
 
         if (phaseInterval) clearInterval(phaseInterval);
         progressFill.style.width = '100%';
