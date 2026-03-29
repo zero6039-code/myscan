@@ -296,7 +296,72 @@ const i18n = {
                 scenario: '攻击者可将你的网站嵌入 iframe（点击劫持），或通过 MIME 混淆诱使浏览器执行恶意脚本。',
                 fix: '在服务器配置中添加对应头部。例如 Nginx：\n\nadd_header X-Frame-Options "SAMEORIGIN" always;\nadd_header X-Content-Type-Options "nosniff" always;\nadd_header X-XSS-Protection "1; mode=block" always;\nadd_header Content-Security-Policy "default-src \'self\'" always;'
             },
-            // 其他详细解说可参考英文部分，为节省篇幅此处省略（实际部署需保留完整）
+            sensitiveFiles: {
+                title: '敏感文件',
+                principle: '敏感文件（如 .env、.git/config、备份文件）可能包含凭证、数据库密码或源码。暴露它们可导致系统完全失陷。',
+                scenario: '攻击者找到公开的 .env 文件，获取 AWS 密钥，进而控制云基础设施。',
+                fix: '从 Web 根目录移除此类文件，或通过服务器规则限制访问。例如 Nginx：location ~ /(\\.env|\\.git|backup\\.zip) { deny all; return 404; }'
+            },
+            xss: {
+                title: '跨站脚本 (XSS)',
+                principle: 'XSS 允许攻击者向其他用户查看的网页注入恶意脚本。可窃取 Cookie、会话令牌或代表用户执行操作。',
+                scenario: '攻击者在评论框中注入 <script>alert(\'XSS\')</script>，其他用户查看评论时脚本执行，窃取其会话 Cookie。',
+                fix: '始终转义用户输入。使用内容安全策略（CSP）和上下文感知编码。在 JavaScript 中，插入用户数据时使用 textContent 而非 innerHTML。'
+            },
+            sql: {
+                title: 'SQL 注入',
+                principle: 'SQL 注入发生在用户输入未正确清理并拼接到 SQL 查询时，攻击者可操纵数据库查询。',
+                scenario: '攻击者在登录框输入 \' OR \'1\'=\'1，绕过认证获得管理员权限。',
+                fix: '使用参数化查询（预编译语句）绑定参数。避免动态拼接 SQL。例如 (Node.js)：db.query("SELECT * FROM users WHERE id = ?", [userId])'
+            },
+            directoryTraversal: {
+                title: '目录遍历',
+                principle: '目录遍历漏洞允许攻击者通过操控路径参数（如 ../../etc/passwd）读取服务器上的任意文件。',
+                scenario: '攻击者请求 https://example.com/download?file=../../../etc/passwd，获取系统密码文件。',
+                fix: '验证和清理文件路径。使用允许文件白名单，并去除任何目录遍历序列。在 Node.js 中：path.resolve(baseDir, userPath) 并检查是否以 baseDir 开头。'
+            },
+            httpMethods: {
+                title: 'HTTP 方法',
+                principle: '暴露危险 HTTP 方法（PUT、DELETE、TRACE）可允许攻击者上传恶意文件、删除资源或进行跨站追踪（XST）攻击。',
+                scenario: '攻击者使用 PUT 上传 Webshell 到服务器，然后执行它获得控制权。',
+                fix: '禁用不必要的方法。Nginx 中：limit_except GET POST HEAD { deny all; } 或使用 Web 应用防火墙（WAF）。'
+            },
+            infoLeakage: {
+                title: '信息泄露',
+                principle: 'HTML 响应中的敏感信息（邮箱、电话、API 密钥）可被攻击者收集用于钓鱼、社会工程学或直接攻击。',
+                scenario: '攻击者在页面源码中发现 API 密钥，用于访问你的后端服务。',
+                fix: '检查 HTML 源码中是否包含敏感数据。移除硬编码密钥，对敏感信息使用服务端渲染，并限制错误详情暴露。'
+            },
+            cors: {
+                title: 'CORS 配置错误',
+                principle: '跨域资源共享（CORS）头控制哪些源可以访问你的资源。宽松策略（Access-Control-Allow-Origin: *）可允许恶意站点读取敏感数据。',
+                scenario: '恶意站点向你的 API 发起 AJAX 请求，若 CORS 策略允许任意源，则能读取响应并窃取用户数据。',
+                fix: '将 Access-Control-Allow-Origin 限制为特定受信任域名。避免与凭证一起使用 "*"。在 Express 中：app.use(cors({ origin: "https://trusted.com" }))'
+            },
+            cms: {
+                title: 'CMS 指纹',
+                principle: '暴露 CMS（WordPress、Drupal 等）版本可帮助攻击者针对特定版本已知漏洞进行攻击。',
+                scenario: '攻击者得知你使用 WordPress 5.0，利用已知漏洞获取管理员权限。',
+                fix: '保持 CMS 更新，移除版本元标签，使用安全插件隐藏指纹。'
+            },
+            csp: {
+                title: '内容安全策略 (CSP)',
+                principle: 'CSP 通过限制脚本、样式等资源加载源来缓解 XSS。弱策略（如 unsafe-inline）或缺失 default-src 会降低有效性。',
+                scenario: '攻击者注入脚本，若 CSP 配置不当（允许 unsafe-inline），脚本可执行。',
+                fix: '实施严格 CSP：default-src \'self\'; script-src \'self\' https://trusted.cdn.com; style-src \'self\' \'unsafe-inline\'; 尽可能避免脚本使用 unsafe-inline，改用 nonce 或 hash。'
+            },
+            ssl: {
+                title: 'SSL/TLS 配置',
+                principle: '弱 SSL/TLS 协议或加密套件可允许攻击者解密流量或执行中间人攻击。',
+                scenario: '攻击者将连接降级至 SSLv3，利用 POODLE 漏洞窃取会话 Cookie。',
+                fix: '禁用 SSLv3、TLSv1.0、TLSv1.1。使用 TLSv1.2 或更高版本。配置强加密套件。证书过期前更新。'
+            },
+            ssrf: {
+                title: 'SSRF (服务端请求伪造)',
+                principle: 'SSRF 允许攻击者让服务器向非预期的位置发起请求，可能访问内部服务或元数据。',
+                scenario: '攻击者提供 http://169.254.169.254/latest/meta-data/ 的 URL，尝试获取云实例元数据。',
+                fix: '验证并清理用户提供的 URL，使用白名单，限制内部网络访问，避免基于用户输入发起请求。'
+            }
         },
         detailedLabels: {
             principle: '攻击原理',
