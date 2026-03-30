@@ -910,9 +910,8 @@ function toggleTheme() {
 // ==================== 折叠/展开功能 ====================
 function setupCollapse(btn, content) {
     if (!btn || !content) return;
-    const isCollapsed = content.classList.contains('collapsed');
     const updateIcon = () => {
-        btn.textContent = content.classList.contains('collapsed') ? '▶' : '▼';
+    btn.textContent = content.classList.contains('collapsed') ? '+' : '−';
     };
     btn.addEventListener('click', () => {
         content.classList.toggle('collapsed');
