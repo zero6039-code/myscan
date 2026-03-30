@@ -1,7 +1,28 @@
+// api/scan/sensitive-files.js (或其他你使用的文件名)
 const axios = require('axios');
 const https = require('https');
 const tls = require('tls');
-const rules = require('../../rules.json');
+const dns = require('dns').promises;   // 新增：用于域名解析
+const path = require('path');
+
+// 安全加载 rules.json，避免路径错误导致崩溃
+let rules = { securityHeaders: [] };
+try {
+    // 使用绝对路径更可靠（在 Vercel 中，__dirname 指向 /var/task/api/scan）
+    const rulesPath = path.join(__dirname, '../../rules.json');
+    rules = require(rulesPath);
+} catch (err) {
+    console.warn('⚠️  rules.json 加载失败，将使用默认安全头列表:', err.message);
+    // 默认安全头列表（若文件缺失）
+    rules.securityHeaders = [
+        'strict-transport-security',
+        'content-security-policy',
+        'x-frame-options',
+        'x-content-type-options',
+        'referrer-policy',
+        'permissions-policy'
+    ];
+}
 
 const axiosInstance = axios.create({
     httpsAgent: new https.Agent({ rejectUnauthorized: false }),
@@ -32,7 +53,7 @@ async function fetchUrlWithRetry(url, retries = 2) {
 }
 
 function checkSecurityHeaders(headers) {
-    // 扩展安全头列表（已在 rules.json 中定义，但可在此额外补充）
+    // 返回缺失的安全头
     return rules.securityHeaders.filter(h => !headers[h.toLowerCase()]);
 }
 
@@ -45,7 +66,6 @@ function analyzeCsp(cspHeader) {
     });
     const hasUnsafe = directives['script-src']?.includes("'unsafe-inline'") || directives['script-src']?.includes("'unsafe-eval'");
     const missingDefault = !directives['default-src'];
-    // 额外检查是否使用了 nonce 或 hash
     const usesNonce = directives['script-src']?.some(v => v.startsWith("'nonce-")) || false;
     const usesHash = directives['script-src']?.some(v => v.startsWith("'sha256-")) || false;
     return {
@@ -88,7 +108,6 @@ async function checkSSLConfig(url) {
                 const weakProtocols = ['SSLv2', 'SSLv3', 'TLSv1', 'TLSv1.1'];
                 const isWeakProtocol = protocol ? weakProtocols.some(p => protocol === p) : false;
 
-                // 检查弱加密套件（常见不安全）
                 const weakCiphers = ['NULL', 'EXPORT', 'DES', 'RC4', 'MD5'];
                 const isWeakCipher = cipher && weakCiphers.some(c => cipher.name.includes(c));
 
@@ -138,10 +157,29 @@ async function checkSSLConfig(url) {
     }
 }
 
-// 威胁情报查询（保持原样）
+// 修复威胁情报查询：先解析IP，并添加API Key（从环境变量读取）
 async function getThreatIntel(hostname) {
     try {
-        const response = await axios.get(`https://api.contrastcyber.com/v1/ip/${hostname}`, { timeout: 3000 });
+        // 1. 如果已经是IP则直接使用，否则解析
+        let ip = hostname;
+        if (!/^\d+\.\d+\.\d+\.\d+$/.test(hostname)) {
+            const ips = await dns.resolve4(hostname);
+            if (ips.length === 0) return null;
+            ip = ips[0];
+        }
+
+        // 2. 获取API Key（在 Vercel 环境变量中设置 THREAT_INTEL_API_KEY）
+        const apiKey = process.env.THREAT_INTEL_API_KEY;
+        if (!apiKey) {
+            console.warn('⚠️ 威胁情报 API Key 未配置，跳过查询');
+            return null;
+        }
+
+        // 3. 调用真正的威胁情报 API（示例为 contrastcyber.com，请根据实际文档修改）
+        const response = await axios.get(`https://api.contrastcyber.com/v1/ip/${ip}`, {
+            timeout: 3000,
+            headers: { 'Authorization': `Bearer ${apiKey}` } // 根据API要求修改认证方式
+        });
         const data = response.data;
         return {
             is_malicious: data.is_malicious,
@@ -194,6 +232,7 @@ module.exports = async (req, res) => {
             threatIntel
         });
     } catch (err) {
+        console.error('扫描接口内部错误:', err);
         res.status(500).json({ error: err.message });
     }
 };
