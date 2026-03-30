@@ -1,13 +1,14 @@
 // api/scan/ssrf.js
 const axios = require('axios');
 const https = require('https');
-const pLimit = require('p-limit');
 
-const limit = pLimit(3); // 并发控制，最多同时3个请求
+// 1. 移除原来的 require 和 limit 定义
+// const pLimit = require('p-limit');
+// const limit = pLimit(3);
 
 const axiosInstance = axios.create({
     httpsAgent: new https.Agent({ rejectUnauthorized: false }),
-    timeout: 3000, // 缩短到3秒
+    timeout: 3000,
     headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
@@ -19,15 +20,20 @@ const axiosInstance = axios.create({
     }
 });
 
-// 精简的测试列表（可根据需要调整）
-const testParams = ['url', 'src', 'dest', 'redirect']; // 减少参数数量
+const testParams = ['url', 'src', 'dest', 'redirect'];
 const internalUrls = [
     'http://169.254.169.254/latest/meta-data/',
     'http://localhost:80/',
     'http://127.0.0.1:80/'
-]; // 减少内部地址
+];
 
+// 2. 将 checkSSRF 改为异步函数，内部动态导入 p-limit
 async function checkSSRF(baseUrl) {
+    // 动态导入 ES 模块，获取默认导出
+    const pLimitModule = await import('p-limit');
+    const pLimit = pLimitModule.default;
+    const limit = pLimit(3); // 并发限制
+
     const tasks = [];
     for (const param of testParams) {
         for (const internal of internalUrls) {
@@ -48,7 +54,6 @@ async function checkSSRF(baseUrl) {
         }
     }
 
-    // 并发执行，一旦有结果立即返回
     const results = await Promise.all(tasks.map(task => limit(task)));
     for (const result of results) {
         if (result && result.vulnerable) return result;
