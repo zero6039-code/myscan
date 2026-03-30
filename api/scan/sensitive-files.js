@@ -1,9 +1,8 @@
 const axios = require('axios');
 const https = require('https');
-const pLimit = require('p-limit');
 const rules = require('../../rules.json');
 
-// 安全加载敏感路径列表，避免因 rules.json 缺失而崩溃
+// 安全加载敏感路径列表
 const sensitivePaths = rules && rules.sensitivePaths && Array.isArray(rules.sensitivePaths)
     ? rules.sensitivePaths
     : [
@@ -11,7 +10,24 @@ const sensitivePaths = rules && rules.sensitivePaths && Array.isArray(rules.sens
         '/wp-config.php.bak', '/config.php', '/backup.sql'
     ];
 
-const limit = pLimit(3);
+// 自定义并发控制（最多同时 3 个请求）
+async function runWithConcurrency(tasks, concurrency = 3) {
+    const results = [];
+    const executing = [];
+    for (const task of tasks) {
+        const p = Promise.resolve().then(() => task());
+        results.push(p);
+        if (concurrency <= tasks.length) {
+            const e = p.then(() => executing.splice(executing.indexOf(e), 1));
+            executing.push(e);
+            if (executing.length >= concurrency) {
+                await Promise.race(executing);
+            }
+        }
+    }
+    return Promise.all(results);
+}
+
 const axiosInstance = axios.create({
     httpsAgent: new https.Agent({ rejectUnauthorized: false }),
     timeout: 8000,
@@ -40,18 +56,16 @@ module.exports = async (req, res) => {
 
     try {
         const found = [];
-        const tasks = sensitivePaths.map(path =>
-            limit(async () => {
-                const testUrl = new URL(path, targetUrl).href;
-                try {
-                    const res = await axiosInstance.get(testUrl, { timeout: 2000 });
-                    if (res.status === 200) found.push(path);
-                } catch (e) {
-                    // 忽略超时、404 等错误
-                }
-            })
-        );
-        await Promise.all(tasks);
+        const tasks = sensitivePaths.map(path => async () => {
+            const testUrl = new URL(path, targetUrl).href;
+            try {
+                const res = await axiosInstance.get(testUrl, { timeout: 2000 });
+                if (res.status === 200) found.push(path);
+            } catch (e) {
+                // 忽略错误
+            }
+        });
+        await runWithConcurrency(tasks, 3);
         res.json(found);
     } catch (err) {
         console.error(err);
