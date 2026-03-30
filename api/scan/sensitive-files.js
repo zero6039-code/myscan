@@ -3,6 +3,14 @@ const https = require('https');
 const pLimit = require('p-limit');
 const rules = require('../../rules.json');
 
+// 安全加载敏感路径列表，避免因 rules.json 缺失而崩溃
+const sensitivePaths = rules && rules.sensitivePaths && Array.isArray(rules.sensitivePaths)
+    ? rules.sensitivePaths
+    : [
+        '/robots.txt', '/.env', '/.git/config', '/backup.zip', '/admin', '/phpinfo.php',
+        '/wp-config.php.bak', '/config.php', '/backup.sql'
+    ];
+
 const limit = pLimit(3);
 const axiosInstance = axios.create({
     httpsAgent: new https.Agent({ rejectUnauthorized: false }),
@@ -32,18 +40,21 @@ module.exports = async (req, res) => {
 
     try {
         const found = [];
-        const tasks = rules.sensitivePaths.map(path =>
+        const tasks = sensitivePaths.map(path =>
             limit(async () => {
                 const testUrl = new URL(path, targetUrl).href;
                 try {
                     const res = await axiosInstance.get(testUrl, { timeout: 2000 });
                     if (res.status === 200) found.push(path);
-                } catch (e) {}
+                } catch (e) {
+                    // 忽略超时、404 等错误
+                }
             })
         );
         await Promise.all(tasks);
         res.json(found);
     } catch (err) {
+        console.error(err);
         res.status(500).json({ error: err.message });
     }
 };
