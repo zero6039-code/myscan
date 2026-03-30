@@ -1,9 +1,13 @@
+// api/scan/ssrf.js
 const axios = require('axios');
 const https = require('https');
+const pLimit = require('p-limit');
+
+const limit = pLimit(3); // 并发控制，最多同时3个请求
 
 const axiosInstance = axios.create({
     httpsAgent: new https.Agent({ rejectUnauthorized: false }),
-    timeout: 8000,
+    timeout: 3000, // 缩短到3秒
     headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
@@ -12,59 +16,42 @@ const axiosInstance = axios.create({
         'Connection': 'keep-alive',
         'Upgrade-Insecure-Requests': '1',
         'Referer': 'https://www.google.com/'
-    },
-    maxRedirects: 10,
-    validateStatus: (status) => status < 500
+    }
 });
 
-function isInternalIP(hostname) {
-    const parts = hostname.split('.');
-    if (parts.length === 4) {
-        const first = parseInt(parts[0], 10);
-        const second = parseInt(parts[1], 10);
-        if (first === 10) return true;
-        if (first === 172 && second >= 16 && second <= 31) return true;
-        if (first === 192 && second === 168) return true;
-        if (first === 127) return true;
-    }
-    return hostname === 'localhost' || hostname === '0.0.0.0' || hostname === '[::1]';
-}
+// 精简的测试列表（可根据需要调整）
+const testParams = ['url', 'src', 'dest', 'redirect']; // 减少参数数量
+const internalUrls = [
+    'http://169.254.169.254/latest/meta-data/',
+    'http://localhost:80/',
+    'http://127.0.0.1:80/'
+]; // 减少内部地址
 
 async function checkSSRF(baseUrl) {
-    const testParams = ['url', 'src', 'dest', 'redirect', 'return', 'path', 'load', 'fetch', 'location', 'callback', 'domain'];
-    const internalUrls = [
-        'http://169.254.169.254/latest/meta-data/',
-        'http://localhost:80/',
-        'http://127.0.0.1:80/',
-        'http://0.0.0.0:80/',
-        'http://[::1]:80/',
-        'http://10.0.0.1/',
-        'http://172.16.0.1/',
-        'http://192.168.0.1/',
-        'file:///etc/passwd'
-    ];
+    const tasks = [];
     for (const param of testParams) {
         for (const internal of internalUrls) {
             const testUrl = new URL(baseUrl);
             testUrl.searchParams.set(param, internal);
-            try {
-                const response = await axiosInstance.get(testUrl.href);
-                // 检查最终请求的 URL 是否指向内网
-                const finalUrl = response.request?.res?.responseUrl || testUrl.href;
-                let finalHostname;
+            tasks.push(async () => {
                 try {
-                    finalHostname = new URL(finalUrl).hostname;
-                } catch (e) { continue; }
-                if (isInternalIP(finalHostname)) {
-                    return { vulnerable: true, param, url: testUrl.href, note: 'Internal IP reached via SSRF' };
+                    const res = await axiosInstance.get(testUrl.href);
+                    const sensitiveKeywords = ['root:', 'instance-id', 'admin', 'passwd'];
+                    if (sensitiveKeywords.some(k => res.data.toLowerCase().includes(k))) {
+                        return { vulnerable: true, param, url: testUrl.href, note: 'Possible SSRF vulnerability detected' };
+                    }
+                } catch (e) {
+                    // 忽略超时或错误
                 }
-                // 检查响应内容中是否包含敏感内容
-                const sensitiveKeywords = ['root:', 'instance-id', 'admin', 'passwd', 'secret'];
-                if (sensitiveKeywords.some(k => response.data.toLowerCase().includes(k))) {
-                    return { vulnerable: true, param, url: testUrl.href, note: 'Possible SSRF vulnerability detected' };
-                }
-            } catch (e) {}
+                return null;
+            });
         }
+    }
+
+    // 并发执行，一旦有结果立即返回
+    const results = await Promise.all(tasks.map(task => limit(task)));
+    for (const result of results) {
+        if (result && result.vulnerable) return result;
     }
     return { vulnerable: false };
 }
@@ -85,6 +72,7 @@ module.exports = async (req, res) => {
         const result = await checkSSRF(targetUrl);
         res.json(result);
     } catch (err) {
+        console.error(err);
         res.status(500).json({ error: err.message });
     }
 };
