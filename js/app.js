@@ -892,6 +892,10 @@ function setLanguage(lang) {
         aboutContent.innerHTML = aboutTextArray.map(p => `<p>${escapeHtml(p)}</p>`).join('');
     }
 
+    // 更新关于卡片标题（新增）
+    const aboutHeaderSpan = document.querySelector('#about-card .card-header span');
+    if (aboutHeaderSpan) aboutHeaderSpan.innerHTML = `📌 ${t('aboutTitle')}`;    
+
     const quickLabel = document.getElementById('quick-label');
     const deepLabel = document.getElementById('deep-label');
     if (quickLabel) quickLabel.innerHTML = `<input type="radio" name="depth" value="quick" checked /> ${t('quickScan')}`;
