@@ -16,6 +16,15 @@ const axiosInstance = axios.create({
     }
 });
 
+const xssPayloads = [
+    '<script>alert("XSS")</script>',
+    '<img src=x onerror=alert(1)>',
+    '<svg onload=alert(1)>',
+    '"><script>alert(1)</script>',
+    "';alert(1);//",
+    'javascript:alert(1)'
+];
+
 module.exports = async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -28,16 +37,27 @@ module.exports = async (req, res) => {
     let targetUrl = url;
     if (!/^https?:\/\//i.test(targetUrl)) targetUrl = 'https://' + targetUrl;
 
-    const payload = '<script>alert("XSS")</script>';
     for (const param of rules.xssParams) {
-        const testUrl = new URL(targetUrl);
-        testUrl.searchParams.set(param, payload);
-        try {
-            const res = await axiosInstance.get(testUrl.href);
-            if (res.data.includes(payload) && !res.data.includes('&lt;script&gt;')) {
-                return res.json({ vulnerable: true, param, url: testUrl.href });
-            }
-        } catch (e) {}
+        for (const payload of xssPayloads) {
+            const testUrl = new URL(targetUrl);
+            testUrl.searchParams.set(param, payload);
+            try {
+                const resData = await axiosInstance.get(testUrl.href);
+                // 检查 payload 是否未被编码直接反射
+                if (resData.data.includes(payload) && !resData.data.includes('&lt;script&gt;')) {
+                    return res.json({ vulnerable: true, param, url: testUrl.href, payload });
+                }
+                // 检查是否在属性中反射（如 value="payload"）
+                const attrPattern = new RegExp(`${param}=["'][^"']*${escapeRegex(payload)}[^"']*["']`);
+                if (attrPattern.test(resData.data)) {
+                    return res.json({ vulnerable: true, param, url: testUrl.href, payload, note: 'Reflected in attribute' });
+                }
+            } catch (e) {}
+        }
     }
     res.json({ vulnerable: false });
 };
+
+function escapeRegex(str) {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
