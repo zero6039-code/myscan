@@ -525,6 +525,10 @@ function renderResult(data) {
         }
         const intelCard = createCard('🔍 外部威胁情报', intelHtml, '', 'threatIntel', true);
         resultContainer.appendChild(intelCard);
+        } else {
+            // 未获取到情报时显示友好提示（可选）
+            const intelCard = createCard('🔍 外部威胁情报', '<div class="info-value">威胁情报暂不可用（请确保后端已集成 API）</div>', '', null, true);
+            resultContainer.appendChild(intelCard);
     }
 
     // SSRF 卡片
