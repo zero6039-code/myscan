@@ -128,6 +128,42 @@ async function checkSSLConfig(url) {
     }
 }
 
+// ==================== 新增：威胁情报查询 ====================
+async function getThreatIntel(hostname) {
+    try {
+        // 使用 ContrastAPI 免费服务（无需 API Key，可商用）
+        const response = await axios.get(`https://api.contrastcyber.com/v1/ip/${hostname}`, { timeout: 3000 });
+        const data = response.data;
+        return {
+            is_malicious: data.is_malicious,
+            risk_score: data.risk_score,
+            malware_families: data.malware_families,
+            open_ports: data.ports
+        };
+    } catch (error) {
+        console.error('威胁情报获取失败:', error.message);
+        return null;
+    }
+}
+
+// 可选：CVE 漏洞情报示例（需要根据检测到的软件版本构造 CVE ID）
+async function getCVEInfo(cveId) {
+    if (!cveId) return null;
+    try {
+        const response = await axios.get(`https://api.contrastcyber.com/v1/cve/${cveId}`, { timeout: 3000 });
+        const data = response.data;
+        return {
+            id: data.id,
+            description: data.description,
+            epss_score: data.epss?.score,
+            kev: data.kev
+        };
+    } catch (error) {
+        console.error('CVE情报获取失败:', error.message);
+        return null;
+    }
+}
+
 module.exports = async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -157,11 +193,21 @@ module.exports = async (req, res) => {
         const cspAnalysis = analyzeCsp(response.headers?.['content-security-policy']);
         const sslConfig = await checkSSLConfig(targetUrl);
 
+        // 获取威胁情报（从 URL 提取域名/IP）
+        let hostname = new URL(targetUrl).hostname;
+        const threatIntel = await getThreatIntel(hostname);
+
+        // 可选：根据扫描到的版本查询 CVE（示例，实际需要您从其他模块获取）
+        // const detectedCveId = 'CVE-2024-3094'; // 示例
+        // const cveInfo = await getCVEInfo(detectedCveId);
+
         res.json({
             basic,
             missingHeaders,
             csp: cspAnalysis,
-            ssl: sslConfig
+            ssl: sslConfig,
+            threatIntel,           // 新增
+            // cveInfo            // 可选
         });
     } catch (err) {
         res.status(500).json({ error: err.message });
