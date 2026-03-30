@@ -670,6 +670,27 @@ function renderResult(data) {
         sslCard = createCard(t('ssl'), sslHtml, '', 'ssl', !hasVuln);
     }
 
+    // 在 renderResult 函数中，添加以下代码（放在 sslCard 之后）
+    if (data.threatIntel) {
+        const intel = data.threatIntel;
+        let intelHtml = '';
+        if (intel.is_malicious) {
+            intelHtml = `<div class="info-value"><span class="badge vuln-badge">⚠️ 该 IP 被标记为恶意</span><br>`;
+            intelHtml += `风险评分: ${intel.risk_score}<br>`;
+            if (intel.malware_families && intel.malware_families.length) {
+                intelHtml += `关联恶意软件: ${intel.malware_families.join(', ')}<br>`;
+            }
+            if (intel.open_ports && intel.open_ports.length) {
+                intelHtml += `开放端口: ${intel.open_ports.join(', ')}`;
+            }
+            intelHtml += `</div><div class="remediation-box"><strong>🔧 建议：</strong> 该主机可能存在风险，请进一步检查。`;
+        } else {
+            intelHtml = `<div class="info-value"><span class="badge safe-badge">IP 信誉良好</span></div>`;
+        }
+        const intelCard = createCard('🔍 外部威胁情报', intelHtml, '', 'threatIntel', true);
+        resultContainer.appendChild(intelCard);
+    }
+
     // SSRF 卡片
     let ssrfHtml = '';
     if (data.ssrf?.vulnerable) {
