@@ -27,19 +27,23 @@ module.exports = async (req, res) => {
     let targetUrl = url;
     if (!/^https?:\/\//i.test(targetUrl)) targetUrl = 'https://' + targetUrl;
 
-    const dangerousMethods = ['PUT', 'DELETE', 'TRACE', 'OPTIONS'];
+    const dangerousMethods = ['PUT', 'DELETE', 'TRACE', 'OPTIONS', 'PATCH', 'COPY', 'MOVE', 'PROPFIND', 'MKCOL', 'LOCK', 'UNLOCK'];
     const allowed = [];
     for (const method of dangerousMethods) {
         try {
-            const res = await axiosInstance.request({
+            const resMethod = await axiosInstance.request({
                 method: method,
                 url: targetUrl,
-                timeout: 3000
+                timeout: 3000,
+                validateStatus: (status) => status < 500 // 允许所有 4xx 也视为允许（但实际需判断）
             });
-            if (res.status !== 405 && res.status !== 404) {
+            // 如果状态码不是 405 且不是 404，则视为允许
+            if (resMethod.status !== 405 && resMethod.status !== 404) {
                 allowed.push(method);
             }
-        } catch (e) {}
+        } catch (e) {
+            // 忽略错误
+        }
     }
     res.json(allowed);
 };
