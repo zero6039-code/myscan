@@ -601,3 +601,8 @@ pre {
     border: 1px solid var(--border-color);
     color: var(--text-primary);
 }
+
+input[name="depth"]:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
