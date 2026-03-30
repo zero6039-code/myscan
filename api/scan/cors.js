@@ -30,11 +30,22 @@ module.exports = async (req, res) => {
     try {
         const response = await axiosInstance.options(targetUrl, { timeout: 3000 });
         const allowOrigin = response.headers['access-control-allow-origin'];
-        if (allowOrigin === '*') {
-            res.json({ vulnerable: true, details: 'Access-Control-Allow-Origin: * allows any origin.' });
-        } else {
-            res.json({ vulnerable: false, details: 'CORS policy is restrictive.' });
-        }
+        const allowCredentials = response.headers['access-control-allow-credentials'];
+        const allowMethods = response.headers['access-control-allow-methods'];
+        const allowHeaders = response.headers['access-control-allow-headers'];
+
+        let details = [];
+        if (allowOrigin === '*') details.push('Access-Control-Allow-Origin: * allows any origin.');
+        if (allowCredentials === 'true' && allowOrigin === '*') details.push('Credentials allowed with wildcard origin (insecure).');
+        if (allowMethods && allowMethods.includes('*')) details.push('Access-Control-Allow-Methods: * is too permissive.');
+        if (allowHeaders && allowHeaders.includes('*')) details.push('Access-Control-Allow-Headers: * is too permissive.');
+
+        const vulnerable = allowOrigin === '*' || (allowCredentials === 'true' && allowOrigin === '*');
+        res.json({
+            vulnerable,
+            details: details.length ? details.join(' ') : 'CORS policy is restrictive (good).',
+            raw: { allowOrigin, allowCredentials, allowMethods, allowHeaders }
+        });
     } catch (e) {
         res.json({ vulnerable: false, details: 'No CORS headers detected.' });
     }
