@@ -33,7 +33,14 @@ module.exports = async (req, res) => {
         const patterns = {
             emails: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g,
             phones: /(\+?[0-9]{1,3}[-.]?)?\(?[0-9]{3}\)?[-.]?[0-9]{3}[-.]?[0-9]{4}/g,
-            apiKeys: /[A-Za-z0-9]{32,}/g
+            apiKeys: /[A-Za-z0-9]{32,}/g,
+            idCards: /\b[1-9]\d{5}(19|20)\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])\d{3}[\dXx]\b/g,
+            bankCards: /\b[0-9]{16,19}\b/g,
+            awsKeys: /AKIA[0-9A-Z]{16}\b/g,
+            jwt: /eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}/g,
+            privateKeys: /-----BEGIN (RSA|DSA|EC) PRIVATE KEY-----/g,
+            databaseUrls: /(?:jdbc|mysql|postgresql|mongodb):\/\/[^\s]+/g,
+            internalIPs: /\b(10\.\d{1,3}\.\d{1,3}\.\d{1,3}|172\.(1[6-9]|2[0-9]|3[0-1])\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3})\b/g
         };
         const found = {};
         for (const [type, regex] of Object.entries(patterns)) {
