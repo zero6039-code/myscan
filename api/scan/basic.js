@@ -32,6 +32,7 @@ async function fetchUrlWithRetry(url, retries = 2) {
 }
 
 function checkSecurityHeaders(headers) {
+    // 扩展安全头列表（已在 rules.json 中定义，但可在此额外补充）
     return rules.securityHeaders.filter(h => !headers[h.toLowerCase()]);
 }
 
@@ -44,9 +45,12 @@ function analyzeCsp(cspHeader) {
     });
     const hasUnsafe = directives['script-src']?.includes("'unsafe-inline'") || directives['script-src']?.includes("'unsafe-eval'");
     const missingDefault = !directives['default-src'];
+    // 额外检查是否使用了 nonce 或 hash
+    const usesNonce = directives['script-src']?.some(v => v.startsWith("'nonce-")) || false;
+    const usesHash = directives['script-src']?.some(v => v.startsWith("'sha256-")) || false;
     return {
         directives,
-        issues: { unsafeInline: hasUnsafe, missingDefaultSrc: missingDefault }
+        issues: { unsafeInline: hasUnsafe, missingDefaultSrc: missingDefault, usesNonce, usesHash }
     };
 }
 
@@ -84,6 +88,10 @@ async function checkSSLConfig(url) {
                 const weakProtocols = ['SSLv2', 'SSLv3', 'TLSv1', 'TLSv1.1'];
                 const isWeakProtocol = protocol ? weakProtocols.some(p => protocol === p) : false;
 
+                // 检查弱加密套件（常见不安全）
+                const weakCiphers = ['NULL', 'EXPORT', 'DES', 'RC4', 'MD5'];
+                const isWeakCipher = cipher && weakCiphers.some(c => cipher.name.includes(c));
+
                 const now = new Date();
                 let validFrom, validTo, isExpired = false, notYetValid = false;
                 if (cert.valid_from && cert.valid_to) {
@@ -108,8 +116,10 @@ async function checkSSLConfig(url) {
                         notYetValid
                     },
                     weakProtocol: isWeakProtocol,
+                    weakCipher: isWeakCipher,
                     vulnerabilities: {
                         weakProtocol: isWeakProtocol,
+                        weakCipher: isWeakCipher,
                         expiredCert: isExpired,
                         notYetValid
                     }
@@ -128,10 +138,9 @@ async function checkSSLConfig(url) {
     }
 }
 
-// ==================== 新增：威胁情报查询 ====================
+// 威胁情报查询（保持原样）
 async function getThreatIntel(hostname) {
     try {
-        // 使用 ContrastAPI 免费服务（无需 API Key，可商用）
         const response = await axios.get(`https://api.contrastcyber.com/v1/ip/${hostname}`, { timeout: 3000 });
         const data = response.data;
         return {
@@ -142,24 +151,6 @@ async function getThreatIntel(hostname) {
         };
     } catch (error) {
         console.error('威胁情报获取失败:', error.message);
-        return null;
-    }
-}
-
-// 可选：CVE 漏洞情报示例（需要根据检测到的软件版本构造 CVE ID）
-async function getCVEInfo(cveId) {
-    if (!cveId) return null;
-    try {
-        const response = await axios.get(`https://api.contrastcyber.com/v1/cve/${cveId}`, { timeout: 3000 });
-        const data = response.data;
-        return {
-            id: data.id,
-            description: data.description,
-            epss_score: data.epss?.score,
-            kev: data.kev
-        };
-    } catch (error) {
-        console.error('CVE情报获取失败:', error.message);
         return null;
     }
 }
@@ -192,22 +183,15 @@ module.exports = async (req, res) => {
         const missingHeaders = checkSecurityHeaders(response.headers);
         const cspAnalysis = analyzeCsp(response.headers?.['content-security-policy']);
         const sslConfig = await checkSSLConfig(targetUrl);
-
-        // 获取威胁情报（从 URL 提取域名/IP）
-        let hostname = new URL(targetUrl).hostname;
+        const hostname = new URL(targetUrl).hostname;
         const threatIntel = await getThreatIntel(hostname);
-
-        // 可选：根据扫描到的版本查询 CVE（示例，实际需要您从其他模块获取）
-        // const detectedCveId = 'CVE-2024-3094'; // 示例
-        // const cveInfo = await getCVEInfo(detectedCveId);
 
         res.json({
             basic,
             missingHeaders,
             csp: cspAnalysis,
             ssl: sslConfig,
-            threatIntel,           // 新增
-            // cveInfo            // 可选
+            threatIntel
         });
     } catch (err) {
         res.status(500).json({ error: err.message });
