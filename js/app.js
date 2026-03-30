@@ -94,10 +94,10 @@ const i18n = {
         legalNoticeText: '⚠️ This tool is for authorized security testing only. Unauthorized scanning is prohibited. By using this tool, you agree that you have explicit permission to test the target. Any illegal use is strictly forbidden. Users are responsible for complying with all applicable laws and regulations.',
         aboutTitle: 'About NetEye',
         aboutText: [
-            'NetEye is a professional web vulnerability scanner designed for security researchers, developers, and IT professionals. It helps you identify common security flaws in your own websites or authorized targets.',
-            '⚠️ Responsible Use: Always ensure you have explicit permission before scanning any website. Use this tool for educational purposes, internal security testing, and improving your own systems.',
+            'NetEye is a professional web vulnerability scanner designed for users of all levels—security researchers, web developers, students, and IT professionals. It helps you identify common security flaws in your own websites or authorized targets.',
+            '⚠️ Responsible Use: Always obtain explicit permission before scanning any website. This tool is intended for educational purposes, internal security testing, and improving your own systems. NetEye does not encourage illegal use and is not responsible for any irresponsible actions.',
             '🔍 Learning Resource: NetEye provides detailed remediation suggestions for each detected vulnerability, helping you understand the attack principle and how to fix it.',
-            '🛡️ Compliance: NetEye does not store any scan results permanently. All data is processed in real-time and never shared with third parties.'
+            '🛡️ Compliance: NetEye does not permanently store any scan results. All data is processed in real-time and never shared with third parties.'
         ],
         firstTimeDisclaimer: 'By using NetEye, you confirm that you have obtained explicit authorization to scan the target website. Unauthorized scanning may be illegal. Do you agree?',
         remediation: {
@@ -278,9 +278,9 @@ const i18n = {
         legalNoticeText: '⚠️ 本工具仅供授权的安全测试使用。未经授权扫描他人网站属违法行为。使用本工具即表示您已获得目标网站的明确授权。任何非法使用将被严格禁止。用户需自行遵守所有适用法律法规。',
         aboutTitle: '关于 NetEye',
         aboutText: [
-            'NetEye 是一款专业的网页漏洞扫描器，专为安全研究人员、开发者和 IT 专业人士设计。帮助您识别自己网站或授权目标中的常见安全漏洞。',
-            '⚠️ 负责任使用：扫描任何网站前，请务必获得明确授权。本工具仅用于教育目的、内部安全测试和改善自身系统。',
-            '🔍 学习资源：NetEye 为每个检测到的漏洞提供详细的修复建议，帮助您理解攻击原理及修复方法。',
+            'NetEye 是一款专业的网页漏洞扫描器，提供给无论有无经验者、安全研究人员、网页开发者、学生 和 IT 专业人士设计。帮助您识别自己网站或授权目标中的常见安全漏洞。',
+            '⚠️ 负责任使用：扫描任何网站前，请务必获得明确授权。本工具仅用于教育目的、内部安全测试和改善自身系统 ，本工具一概不提倡非法使用，也不为任何不负责任的行为负责。',
+            '🔍 学习资源和教育用途：NetEye 为每个检测到的漏洞提供详细的修复建议，帮助您理解攻击原理及修复方法。',
             '🛡️ 合规性：NetEye 不永久存储任何扫描结果。所有数据实时处理，绝不与第三方共享。'
         ],
         firstTimeDisclaimer: '使用 NetEye 即表示您确认已获得扫描目标网站的明确授权。未经授权的扫描可能违法。您是否同意？',
