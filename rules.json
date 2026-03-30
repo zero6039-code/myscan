@@ -1,14 +1,9 @@
 {
     "sensitivePaths": [
-        "/robots.txt",
-        "/.env",
-        "/.git/config",
-        "/backup.zip",
-        "/admin",
-        "/phpinfo.php",
-        "/wp-config.php.bak",
-        "/config.php",
-        "/backup.sql"
+        "/robots.txt", "/.env", "/.git/config", "/backup.zip", "/admin", "/phpinfo.php",
+    "/wp-config.php.bak", "/config.php", "/backup.sql", "/.aws/credentials", "/.ssh/id_rsa",
+    "/.bash_history", "/.git/HEAD", "/.svn/entries", "/.htaccess", "/.htpasswd",
+    "/web.config", "/appsettings.json", "/secrets.yml", "/credentials.json"
     ],
     "xssParams": ["q", "s", "id", "search", "query", "keyword"],
     "sqlParams": ["id", "page", "user", "post_id", "article_id"],
