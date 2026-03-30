@@ -892,12 +892,23 @@ async function sendReportToEmail() {
 
 // ==================== 扫描主函数 ====================
 async function scan() {
-    let url = targetInput.value.trim();
-    if (!url) {
-        errorContainer.textContent = t('pleaseEnterUrl');
-        errorContainer.style.display = 'block';
-        return;
+    // 获取深度选择器中的所有单选按钮
+    const depthRadios = document.querySelectorAll('input[name="depth"]');
+    // 禁用它们（扫描期间不可切换）
+    depthRadios.forEach(radio => radio.disabled = true);
+
+    // ... 原有扫描逻辑（校验 URL、获取深度等） ...
+    try {
+        // ... 扫描请求 ...
+    } catch (err) {
+        // ... 错误处理 ...
+    } finally {
+        // 扫描结束后启用
+        depthRadios.forEach(radio => radio.disabled = false);
+        scanBtn.disabled = false;
+    scanBtn.textContent = currentLang === 'en' ? 'Start Scan' : '开始扫描';
     }
+}      
 
     if (/^javascript:/i.test(url) || /^data:/i.test(url) || /^vbscript:/i.test(url)) {
         errorContainer.textContent = t('errorPrefix') + 'Invalid URL protocol';
