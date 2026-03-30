@@ -4,19 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>NetEye - Web Vulnerability Scanner</title>
-    <!-- 添加 favicon（使用您上传的 neteye.png） -->
     <link rel="icon" type="image/png" href="/neteye.png">
     <link rel="stylesheet" href="css/style.css">
-    <!-- Font Awesome 6 图标库 -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0-beta3/css/all.css">
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>
-                <!-- 在标题前显示图标 -->
-                <img src="/neteye.png" alt="NetEye" style="height: 32px; vertical-align: middle;"> NetEye
-            </h1>
+            <h1><img src="/neteye.png" alt="NetEye" style="height: 32px; vertical-align: middle;"> NetEye</h1>
             <div class="action-buttons">
                 <div class="lang-switch" role="group" aria-label="Language switch">
                     <button id="lang-en" class="lang-btn active">English</button>
@@ -33,6 +28,31 @@
                 <label id="deep-label"><input type="radio" name="depth" value="deep" /> Deep Scan</label>
             </div>
             <button id="scan-btn" aria-label="Start scan">Start Scan</button>
+        </div>
+
+        <!-- 法律免责声明区域（始终显示） -->
+        <div id="legal-notice" class="legal-notice">
+            <div class="notice-header">
+                <i class="fas fa-gavel"></i> <span id="notice-title">Legal Disclaimer</span>
+                <button id="notice-collapse-btn" class="collapse-btn">▼</button>
+            </div>
+            <div id="notice-content" class="notice-content">
+                <p id="notice-text">⚠️ This tool is for authorized security testing only. Unauthorized scanning is prohibited. By using this tool, you agree that you have explicit permission to test the target. Any illegal use is strictly forbidden. Users are responsible for complying with all applicable laws and regulations.</p>
+            </div>
+        </div>
+
+        <!-- 关于 NetEye 折叠卡片（始终显示） -->
+        <div id="about-card" class="about-card">
+            <div class="card-header">
+                <span>📌 About NetEye</span>
+                <button id="about-collapse-btn" class="collapse-btn">▼</button>
+            </div>
+            <div id="about-content" class="about-content">
+                <p>NetEye is a professional web vulnerability scanner designed for security researchers, developers, and IT professionals. It helps you identify common security flaws in your own websites or authorized targets.</p>
+                <p>⚠️ <strong>Responsible Use:</strong> Always ensure you have explicit permission before scanning any website. Use this tool for educational purposes, internal security testing, and improving your own systems.</p>
+                <p>🔍 <strong>Learning Resource:</strong> NetEye provides detailed remediation suggestions for each detected vulnerability, helping you understand the attack principle and how to fix it.</p>
+                <p>🛡️ <strong>Compliance:</strong> NetEye does not store any scan results permanently. All data is processed in real-time and never shared with third parties.</p>
+            </div>
         </div>
 
         <!-- 进度条区域 -->
