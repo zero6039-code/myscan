@@ -15,17 +15,19 @@
     window.addEventListener('resize', resize);
     resize();
 
-    // 绘制科技网格（颜色调亮为 rgba(100,200,255,0.2)）
+    const STEP = 100; // 网格间距
+
+    // 绘制网格
     function drawGrid() {
         ctx.strokeStyle = 'rgba(100, 200, 255, 0.2)';
         ctx.lineWidth = 1;
-        for (let x = 0; x <= w; x += 50) {
+        for (let x = 0; x <= w; x += STEP) {
             ctx.beginPath();
             ctx.moveTo(x, 0);
             ctx.lineTo(x, h);
             ctx.stroke();
         }
-        for (let y = 0; y <= h; y += 50) {
+        for (let y = 0; y <= h; y += STEP) {
             ctx.beginPath();
             ctx.moveTo(0, y);
             ctx.lineTo(w, y);
@@ -33,80 +35,130 @@
         }
     }
 
-    // 红色流动线条（9条）
+    // 单条脉冲线
     class FlowLine {
         constructor() {
-            this.reset();
-        }
-        reset() {
-            this.x = Math.random() * w;
-            this.y = Math.random() * h;
-            const angle = Math.random() * Math.PI * 2;
-            const speed = 1.0 + Math.random() * 2.0;
-            this.vx = Math.cos(angle) * speed;
-            this.vy = Math.sin(angle) * speed;
-            this.tailLen = 30 + Math.floor(Math.random() * 40);
+            this.active = false;
             this.tail = [];
-            for (let i = 0; i < this.tailLen; i++) {
-                this.tail.push({
-                    x: this.x - this.vx * i * 0.8,
-                    y: this.y - this.vy * i * 0.8
-                });
-            }
+            this.tailLen = 100;          // 长拖尾
+            this.x = 0;
+            this.y = 0;
+            this.vx = 0;
+            this.vy = 0;
+            this.timer = null;
         }
+
+        start() {
+            const dir = Math.floor(Math.random() * 4);
+            // 2 秒走完全屏（120 帧）
+            const speedX = w / 120;
+            const speedY = h / 120;
+
+            switch(dir) {
+                case 0: // 左→右
+                    this.x = -20;
+                    this.y = Math.floor(Math.random() * (h / STEP)) * STEP;
+                    this.vx = speedX;
+                    this.vy = 0;
+                    break;
+                case 1: // 右→左
+                    this.x = w + 20;
+                    this.y = Math.floor(Math.random() * (h / STEP)) * STEP;
+                    this.vx = -speedX;
+                    this.vy = 0;
+                    break;
+                case 2: // 上→下
+                    this.x = Math.floor(Math.random() * (w / STEP)) * STEP;
+                    this.y = -20;
+                    this.vx = 0;
+                    this.vy = speedY;
+                    break;
+                case 3: // 下→上
+                    this.x = Math.floor(Math.random() * (w / STEP)) * STEP;
+                    this.y = h + 20;
+                    this.vx = 0;
+                    this.vy = -speedY;
+                    break;
+            }
+            this.tail = [];          // 不预填充，自然生成
+            this.active = true;
+        }
+
         update() {
+            if (!this.active) return false;
+
             this.x += this.vx;
             this.y += this.vy;
-            if (this.x < -50) this.x = w + 50;
-            if (this.x > w + 50) this.x = -50;
-            if (this.y < -50) this.y = h + 50;
-            if (this.y > h + 50) this.y = -50;
-            this.tail.push({ x: this.x, y: this.y });
+
+            // 记录尾迹（间隔 1 像素）
+            if (this.tail.length === 0 || 
+                Math.abs(this.tail[this.tail.length-1].x - this.x) > 1 ||
+                Math.abs(this.tail[this.tail.length-1].y - this.y) > 1) {
+                this.tail.push({ x: this.x, y: this.y });
+            }
             if (this.tail.length > this.tailLen) {
                 this.tail.shift();
             }
+
+            // 检测尾部最旧的点（拖尾末端）是否完全离开屏幕
+            if (this.tail.length > 0) {
+                const tailEnd = this.tail[0]; // 最旧的点
+                const margin = 50;
+                const out = (tailEnd.x < -margin || tailEnd.x > w + margin || tailEnd.y < -margin || tailEnd.y > h + margin);
+                if (out) {
+                    this.active = false;
+                    this.tail = [];
+                    clearTimeout(this.timer);
+                    this.timer = setTimeout(() => this.start(), 200);
+                    return false;
+                }
+            }
+            return true;
         }
+
         draw(ctx) {
-            if (this.tail.length < 2) return;
+            if (!this.active || this.tail.length < 2) return;
+
             for (let i = 1; i < this.tail.length; i++) {
-                const progress = i / this.tail.length;
-                const alpha = 0.1 + progress * 0.8;
+                const progress = i / this.tail.length; // 0~1，尾部→头部
+                const alpha = 0.03 + progress * 0.67;
+                const widthFactor = Math.sin(progress * Math.PI);
+                const lineWidth = 0.2 + widthFactor * 1.3;
                 ctx.beginPath();
-                ctx.moveTo(this.tail[i - 1].x, this.tail[i - 1].y);
+                ctx.moveTo(this.tail[i-1].x, this.tail[i-1].y);
                 ctx.lineTo(this.tail[i].x, this.tail[i].y);
                 ctx.strokeStyle = `rgba(255, 50, 50, ${alpha})`;
-                ctx.lineWidth = 1.2 + progress * 1.5;
-                ctx.shadowColor = 'rgba(255, 0, 0, 0.3)';
-                ctx.shadowBlur = 8;
+                ctx.lineWidth = lineWidth;
+                ctx.shadowColor = 'rgba(255,0,0,0.08)';
+                ctx.shadowBlur = 3;
                 ctx.stroke();
             }
             ctx.shadowBlur = 0;
         }
     }
 
-    // 9 条红色线条
-    const flowLines = [];
-    const lineCount = 9;
-    for (let i = 0; i < lineCount; i++) {
-        flowLines.push(new FlowLine());
-    }
+    const flowLine = new FlowLine();
+    flowLine.start();
 
     function animate() {
         ctx.clearRect(0, 0, w, h);
         drawGrid();
-        flowLines.forEach(line => {
-            line.update();
-            line.draw(ctx);
-        });
+        flowLine.update();
+        flowLine.draw(ctx);
         requestAnimationFrame(animate);
     }
 
     animate();
 
     window.addEventListener('resize', () => {
-        flowLines.forEach(line => {
-            if (line.x > w) line.x = w * 0.5;
-            if (line.y > h) line.y = h * 0.5;
-        });
+        if (flowLine.active) {
+            const margin = 200;
+            if (flowLine.x < -margin || flowLine.x > w + margin || flowLine.y < -margin || flowLine.y > h + margin) {
+                flowLine.active = false;
+                flowLine.tail = [];
+                clearTimeout(flowLine.timer);
+                flowLine.timer = setTimeout(() => flowLine.start(), 200);
+            }
+        }
     });
 })();
