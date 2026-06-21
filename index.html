@@ -9,34 +9,32 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0-beta3/css/all.css">
 </head>
-<body><canvas id="bg-canvas" style="position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; z-index: -2; pointer-events: none;" width="1920" height="945"></canvas>
+<body>
     <!-- 背景画布由 js/bg-canvas.js 动态生成 -->
-
     <div class="container">
         <div class="header">
             <h1><img src="/neteye.png" alt="NetEye" style="height: 200px; vertical-align: middle;"> NetEye</h1>
             <div class="lang-switch">
-    		<button id="lang-toggle" class="lang-toggle-btn" aria-label="Select language">
-        	    🌐
-   	        </button>
-    		<ul id="lang-dropdown" class="lang-dropdown" style="display: none;">
-        	    <li data-lang="en" class="lang-option active">English</li>
-        	    <li data-lang="zh" class="lang-option">中文</li>
-       		    <li data-lang="ms" class="lang-option">Bahasa Melayu</li>
-    		</ul>
-	    </div>
+                <button id="lang-toggle" class="lang-toggle-btn" aria-label="Select language">
+                    🌐
+                </button>
+                <ul id="lang-dropdown" class="lang-dropdown" style="display: none;">
+                    <li data-lang="en" class="lang-option active">English</li>
+                    <li data-lang="zh" class="lang-option">中文</li>
+                    <li data-lang="ms" class="lang-option">Bahasa Melayu</li>
+                </ul>
+            </div>
         </div>
 
         <div class="input-group">
             <input type="text" id="target" placeholder="https://example.com" aria-label="Target URL">
             <div class="depth-selector">
-                <label id="quick-label"><input type="radio" name="depth" value="quick" checked=""> Quick Scan</label>
+                <label id="quick-label"><input type="radio" name="depth" value="quick" checked> Quick Scan</label>
                 <label id="deep-label"><input type="radio" name="depth" value="deep"> Deep Scan</label>
             </div>
             <button id="scan-btn" aria-label="Start scan">Start Scan</button>
         </div>
 
-        <!-- 法律免责声明区域（无边框，默认收起） -->
         <div id="legal-notice" class="info-card">
             <div class="info-card-header">
                 <i class="fas fa-gavel"></i> <span id="notice-title">Legal Disclaimer</span>
@@ -47,16 +45,16 @@
             </div>
         </div>
 
-        <!-- 关于 NetEye 折叠卡片（无边框，默认收起） -->
         <div id="about-card" class="info-card">
             <div class="info-card-header">
                 <span>📌 About NetEye</span>
                 <button id="about-collapse-btn" class="collapse-btn">+</button>
             </div>
-            <div id="about-content" class="info-card-content collapsed"><p>NetEye is a professional web vulnerability scanner designed for users of all levels—security researchers, web developers, students, and IT professionals. It helps you identify common security flaws in your own websites or authorized targets.</p><p>⚠️ Responsible Use: Always obtain explicit permission before scanning any website. This tool is intended for educational purposes, internal security testing, and improving your own systems. NetEye does not encourage illegal use and is not responsible for any irresponsible actions.</p><p>🔍 Learning Resource: NetEye provides detailed remediation suggestions for each detected vulnerability, helping you understand the attack principle and how to fix it.</p><p>🛡️ Compliance: NetEye does not permanently store any scan results. All data is processed in real-time and never shared with third parties.</p></div>
+            <div id="about-content" class="info-card-content collapsed">
+                <!-- 由 js 动态填充 -->
+            </div>
         </div>
 
-        <!-- 进度条区域 -->
         <div id="progress-container" style="display: none;">
             <div class="progress-bar">
                 <div id="progress-fill" class="progress-fill"></div>
@@ -65,7 +63,6 @@
         </div>
 
         <div id="scan-time" class="scan-time" style="display: none;"></div>
-
         <div id="result-container" style="display: none;"></div>
         <div id="error-container" style="display: none;" class="error-card"></div>
         <div id="loading" style="display: none;" class="loading">
@@ -73,7 +70,6 @@
             <span>Scanning...</span>
         </div>
 
-        <!-- 导出和邮件按钮区域 -->
         <div id="export-container" style="display: none; text-align: right; margin-top: 16px;">
             <button id="export-menu-btn" class="export-btn">📄 Report Export as</button>
             <button id="email-report-btn" class="email-btn" title="Send report via email">
@@ -81,12 +77,11 @@
             </button>
         </div>
 
-        <!-- 导出选项模态框 -->
         <div id="export-modal" class="modal" style="display: none;">
             <div class="modal-content" style="max-width: 300px;">
                 <div class="modal-header">
                     <h3>Export Report</h3>
-                    <span class="modal-close">×</span>
+                    <span class="modal-close">&times;</span>
                 </div>
                 <div class="modal-body" style="text-align: center;">
                     <button id="export-json-btn" class="export-option">Export as JSON</button>
@@ -96,12 +91,11 @@
             </div>
         </div>
 
-        <!-- 自定义邮箱输入模态框（右下角） -->
         <div id="email-modal" class="email-modal">
             <div class="email-modal-content">
                 <div class="email-modal-header">
                     <span>Send Report via Email</span>
-                    <span class="email-modal-close">×</span>
+                    <span class="email-modal-close">&times;</span>
                 </div>
                 <div class="email-modal-body">
                     <input type="email" id="report-email" placeholder="Enter your email address" autocomplete="off">
@@ -115,15 +109,12 @@
         </div>
     </div>
 
-    <!-- 第三方库 -->
-    <script src="./NetEye - Web Vulnerability Scanner_files/html2canvas.min.js.download"></script>
-    <script src="./NetEye - Web Vulnerability Scanner_files/jspdf.umd.min.js.download"></script>
-
-    <!-- 背景绘制脚本（网格 + 红色流动线） -->
-    <script src="./NetEye - Web Vulnerability Scanner_files/bg-canvas.js.download"></script>
-
+    <!-- 第三方库（CDN） -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- 背景绘制脚本 -->
+    <script src="js/bg-canvas.js"></script>
     <!-- 主应用脚本 -->
-    <script src="./NetEye - Web Vulnerability Scanner_files/app.js.download"></script>
-
-
-</body></html>
+    <script src="js/app.js"></script>
+</body>
+</html>
