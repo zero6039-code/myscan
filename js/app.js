@@ -388,6 +388,190 @@ const i18n = {
             scenario: '攻击场景',
             remediation: '修复建议'
         }
+    },
+    ms: {
+        scanning: 'Mengimbas...',
+        errorPrefix: 'Ralat: ',
+        invalidUrl: 'Sila masukkan URL yang sah (contoh: https://example.com)',
+        basicInfo: 'Maklumat Asas',
+        urlLabel: 'URL',
+        statusLabel: 'Status HTTP',
+        titleLabel: 'Tajuk Halaman',
+        headersLabel: 'Header Respons',
+        securityHeaders: 'Header Keselamatan yang Hilang',
+        sensitiveFiles: 'Fail Sensitif Ditemui',
+        xss: 'XSS (Skrip Merentas Laman)',
+        sql: 'Suntikan SQL',
+        directoryTraversal: 'Laluan Direktori',
+        httpMethods: 'Kaedah HTTP',
+        infoLeakage: 'Kebocoran Maklumat',
+        csp: 'Analisis CSP',
+        cors: 'Konfigurasi CORS',
+        cms: 'Cap Jari CMS',
+        ssl: 'Konfigurasi SSL/TLS',
+        ssrf: 'SSRF (Pemalsuan Permintaan Sebelah Pelayan)',
+        vulnerable: 'Terdedah',
+        notVulnerable: 'Tidak Terdedah',
+        parameter: 'Parameter',
+        note: 'Nota',
+        noMissingHeaders: 'Tiada header keselamatan yang hilang (bagus!)',
+        noSensitiveFiles: 'Tiada fail sensitif ditemui.',
+        noXss: 'Tiada XSS pantulan dikesan.',
+        noSql: 'Tiada suntikan SQL dikesan.',
+        unknown: 'Tidak Diketahui',
+        errorFetch: 'Gagal mengambil keputusan imbasan.',
+        pleaseEnterUrl: 'Sila masukkan URL.',
+        disclaimer: '⚠️ Alat ini hanya untuk ujian keselamatan yang dibenarkan. Gunakan secara bertanggungjawab.',
+        export: 'Eksport sebagai JSON',
+        responseNotJson: 'Pelayan mengembalikan respons bukan JSON: ',
+        remediationTitle: 'Pembaikan',
+        copy: 'Salin',
+        copied: 'Disalin!',
+        scanTime: 'Imbasan selesai dalam {time}s',
+        foundSensitive: 'Maklumat sensitif ditemui',
+        noSensitiveInfo: 'Tiada kebocoran maklumat yang jelas',
+        dangerousMethods: 'Kaedah berbahaya dibenarkan',
+        noDangerousMethods: 'Tiada kaedah HTTP berbahaya ditemui',
+        dirTraversalNone: 'Tiada laluan direktori dikesan.',
+        pdfExport: 'Eksport sebagai PDF',
+        htmlExport: 'Eksport sebagai HTML',
+        infoButton: 'Maklumat',
+        close: 'Tutup',
+        detailedTitle: 'Maklumat Terperinci',
+        corsSafe: 'Dasar CORS adalah ketat (baik).',
+        cmsUnknown: 'Tidak dapat mengesan CMS.',
+        quickScan: 'Imbasan Pantas',
+        deepScan: 'Imbasan Mendalam',
+        upgradeFreeNotice: 'Imbasan mendalam kini percuma, tetapi akan menjadi ciri berbayar pada masa hadapan.',
+        phaseBasic: 'Mengambil maklumat asas...',
+        phaseSecurity: 'Memeriksa header keselamatan...',
+        phaseSensitive: 'Mengimbas fail sensitif...',
+        phaseXss: 'Menguji XSS...',
+        phaseSql: 'Menguji suntikan SQL...',
+        phaseDir: 'Menguji laluan direktori...',
+        phaseHttp: 'Memeriksa kaedah HTTP...',
+        phaseInfo: 'Menganalisis kebocoran maklumat...',
+        phaseCors: 'Memeriksa CORS...',
+        phaseCms: 'Mengesan CMS...',
+        phaseSsl: 'Menganalisis SSL/TLS...',
+        phaseSsrf: 'Menguji SSRF...',
+        phaseComplete: 'Selesai!',
+        collapse: 'Lipat',
+        expand: 'Kembangkan',
+        legalNoticeTitle: 'Penafian Undang-undang',
+        legalNoticeText: '⚠️ Alat ini hanya untuk ujian keselamatan yang dibenarkan. Imbasan tanpa kebenaran adalah dilarang. Dengan menggunakan alat ini, anda bersetuju bahawa anda mempunyai kebenaran eksplisit untuk menguji sasaran. Sebarang penggunaan haram adalah dilarang sama sekali. Pengguna bertanggungjawab mematuhi semua undang-undang dan peraturan yang berkenaan.',
+        aboutTitle: 'Mengenai NetEye',
+        aboutText: [
+            'NetEye adalah pengimbas kelemahan web profesional yang direka untuk pengguna dari pelbagai peringkat—penyelidik keselamatan, pembangun web, pelajar, dan profesional IT. Ia membantu anda mengenal pasti kelemahan keselamatan biasa di laman web anda sendiri atau sasaran yang dibenarkan.',
+            '⚠️ Penggunaan Bertanggungjawab: Sentiasa dapatkan kebenaran eksplisit sebelum mengimbas mana-mana laman web. Alat ini bertujuan untuk tujuan pendidikan, ujian keselamatan dalaman, dan menambah baik sistem anda sendiri. NetEye tidak menggalakkan penggunaan haram dan tidak bertanggungjawab atas sebarang tindakan tidak bertanggungjawab.',
+            '🔍 Sumber Pembelajaran: NetEye menyediakan cadangan pembaikan terperinci untuk setiap kelemahan yang dikesan, membantu anda memahami prinsip serangan dan cara membetulkannya.',
+            '🛡️ Pematuhan: NetEye tidak menyimpan secara kekal sebarang keputusan imbasan. Semua data diproses secara masa nyata dan tidak pernah dikongsi dengan pihak ketiga.'
+        ],
+        firstTimeDisclaimer: 'Dengan menggunakan NetEye, anda mengesahkan bahawa anda telah mendapat kebenaran eksplisit untuk mengimbas laman web sasaran. Imbasan tanpa kebenaran mungkin menyalahi undang-undang. Adakah anda bersetuju?',
+        remediation: {
+            'X-Frame-Options': 'Kehilangan header ini boleh membawa kepada serangan clickjacking. Disyorkan: `X-Frame-Options: SAMEORIGIN`',
+            'X-Content-Type-Options': 'Kehilangan header ini boleh membawa kepada serangan kekeliruan jenis MIME. Disyorkan: `X-Content-Type-Options: nosniff`',
+            'X-XSS-Protection': 'Kehilangan header ini boleh mengurangkan perlindungan XSS penyemak imbas. Disyorkan: `X-XSS-Protection: 1; mode=block`',
+            'Strict-Transport-Security': 'Kehilangan HSTS boleh membenarkan penurunan taraf HTTPS. Disyorkan: `Strict-Transport-Security: max-age=31536000; includeSubDomains`',
+            'Content-Security-Policy': 'Kehilangan CSP boleh membawa kepada risiko XSS. Disyorkan untuk menetapkan dasar yang sesuai, contohnya `default-src \'self\'`',
+            'Referrer-Policy': 'Kehilangan Referrer-Policy boleh membocorkan maklumat perujuk. Disyorkan: `Referrer-Policy: strict-origin-when-cross-origin`',
+            'Permissions-Policy': 'Kehilangan Permissions-Policy boleh membenarkan ciri penyemak imbas yang tidak diingini. Disyorkan: `Permissions-Policy: geolocation=(), microphone=(), camera=()`',
+            '/robots.txt': 'Mendedahkan struktur direktori laman web. Disyorkan untuk mengehadkan laluan sensitif atau mengeluarkan maklumat yang tidak perlu.',
+            '/.env': 'Mendedahkan pembolehubah persekitaran secara serius. Padam atau nafikan akses segera.',
+            '/.git/config': 'Mendedahkan maklumat repositori Git. Padam atau hadkan akses.',
+            '/backup.zip': 'Fail sandaran boleh dimuat turun. Keluarkan atau tetapkan kawalan akses yang kuat.',
+            '/admin': 'Panel pentadbir terdedah. Disyorkan untuk menambah pengesahan atau menyembunyikan laluan.',
+            '/phpinfo.php': 'Mendedahkan konfigurasi PHP. Padam fail ini.',
+            xss: 'XSS pantulan boleh dieksploitasi untuk melaksanakan skrip berniat jahat. Disyorkan penapisan dan pengelakan input pengguna yang ketat, dan gunakan Dasar Keselamatan Kandungan.',
+            sql: 'Suntikan SQL boleh menyebabkan kebocoran atau pengubahan data. Gunakan pertanyaan berparameter, penyata bersedia, elakkan penggabungan SQL.',
+            dirTraversal: 'Kelemahan laluan direktori boleh membaca fail arbitrari. Sekat laluan fail dengan ketat dan gunakan pengesahan senarai putih.',
+            httpMethods: (methods) => `Kaedah HTTP berbahaya dibenarkan: ${methods.join(', ')}. Disyorkan untuk melumpuhkan kaedah yang tidak perlu (cth. PUT, DELETE, TRACE).`,
+            infoLeakage: 'Respons mungkin mengandungi maklumat sensitif (e-mel, nombor telefon, kunci API). Semak dan keluarkan maklumat tersebut.',
+            cors: 'Konfigurasi CORS yang salah mungkin membenarkan sebarang asal mengakses sumber. Hadkan `Access-Control-Allow-Origin` ke domain dipercayai tertentu.',
+            cmsOutdated: 'CMS dikesan. Pastikan ia dikemas kini untuk mengelakkan kelemahan yang diketahui.',
+            cspUnsafeInline: 'CSP menggunakan `unsafe-inline`, melemahkan perlindungan XSS. Disyorkan menggunakan nonce atau hash sebagai ganti.',
+            cspMissingDefaultSrc: 'CSP kehilangan arahan `default-src`. Disyorkan untuk menambah `default-src \'self\'`.',
+            ssrf: 'SSRF boleh membenarkan penyerang membuat permintaan ke perkhidmatan dalaman. Sah dan bersihkan URL yang dibekalkan oleh pengguna, dan hadkan akses rangkaian.'
+        },
+        detailed: {
+            securityHeaders: {
+                title: 'Header Keselamatan yang Hilang',
+                principle: 'Header keselamatan adalah header respons HTTP yang memberitahu penyemak imbas bagaimana untuk bertindak. Kehilangan mereka menjadikan laman web terdedah kepada serangan seperti clickjacking, menghidu jenis MIME, dan XSS.',
+                scenario: 'Penyerang boleh membenamkan laman web anda dalam iframe (clickjacking) atau memperdayakan penyemak imbas untuk melaksanakan skrip berniat jahat melalui kekeliruan MIME.',
+                fix: 'Tambah header yang sesuai dalam konfigurasi pelayan anda. Contohnya, dalam Nginx:\n\nadd_header X-Frame-Options "SAMEORIGIN" always;\nadd_header X-Content-Type-Options "nosniff" always;\nadd_header X-XSS-Protection "1; mode=block" always;\nadd_header Content-Security-Policy "default-src \'self\'" always;'
+            },
+            sensitiveFiles: {
+                title: 'Fail Sensitif',
+                principle: 'Fail sensitif (seperti .env, .git/config, fail sandaran) mungkin mengandungi bukti kelayakan, kata laluan pangkalan data, atau kod sumber. Pendedahan mereka boleh membawa kepada kompromi sistem sepenuhnya.',
+                scenario: 'Penyerang menemui fail .env yang boleh diakses secara umum yang mengandungi kunci AWS dan menggunakannya untuk mengakses infrastruktur awan anda.',
+                fix: 'Alih keluar fail tersebut dari akar web atau hadkan akses melalui peraturan pelayan. Untuk Nginx: location ~ /(\\.env|\\.git|backup\\.zip) { deny all; return 404; }'
+            },
+            xss: {
+                title: 'Skrip Merentas Laman (XSS)',
+                principle: 'XSS membenarkan penyerang menyuntik skrip berniat jahat ke dalam halaman web yang dilihat oleh pengguna lain. Ia boleh mencuri kuki, token sesi, atau melakukan tindakan bagi pihak pengguna.',
+                scenario: 'Penyerang menyuntik <script>alert(\'XSS\')</script> ke dalam medan komen. Apabila pengguna lain melihat komen, skrip itu dilaksanakan, mencuri kuki sesi mereka.',
+                fix: 'Sentiasa elakkan input pengguna. Gunakan Dasar Keselamatan Kandungan (CSP) dan pengekodan sedar konteks. Dalam JavaScript, gunakan textContent dan bukannya innerHTML semasa memasukkan data pengguna.'
+            },
+            sql: {
+                title: 'Suntikan SQL',
+                principle: 'Suntikan SQL berlaku apabila input pengguna tidak disanitasi dengan betul dan digabungkan ke dalam pertanyaan SQL, membenarkan penyerang memanipulasi pertanyaan pangkalan data.',
+                scenario: 'Penyerang memasukkan \' OR \'1\'=\'1 dalam medan log masuk, memintas pengesahan dan mendapat akses pentadbir.',
+                fix: 'Gunakan pertanyaan berparameter (penyata bersedia) dengan parameter terikat. Elakkan penggabungan SQL dinamik. Contoh (Node.js): db.query("SELECT * FROM users WHERE id = ?", [userId])'
+            },
+            directoryTraversal: {
+                title: 'Laluan Direktori',
+                principle: 'Kelemahan laluan direktori membenarkan penyerang membaca fail arbitrari pada pelayan dengan memanipulasi parameter laluan (contohnya, ../../etc/passwd).',
+                scenario: 'Penyerang meminta https://example.com/download?file=../../../etc/passwd dan memperoleh fail kata laluan sistem.',
+                fix: 'Sahkan dan bersihkan laluan fail. Gunakan senarai putih fail yang dibenarkan dan buang sebarang urutan travers direktori. Dalam Node.js: path.resolve(baseDir, userPath) dan periksa sama ada ia bermula dengan baseDir.'
+            },
+            httpMethods: {
+                title: 'Kaedah HTTP',
+                principle: 'Mendedahkan kaedah HTTP berbahaya (PUT, DELETE, TRACE) boleh membenarkan penyerang memuat naik fail berniat jahat, memadam sumber, atau melakukan serangan rentas-surih (XST).',
+                scenario: 'Penyerang menggunakan PUT untuk memuat naik cangkerang web ke pelayan, kemudian melaksanakannya untuk mendapatkan kawalan.',
+                fix: 'Lumpuhkan kaedah yang tidak perlu. Dalam Nginx: limit_except GET POST HEAD { deny all; } Atau gunakan tembok api aplikasi web (WAF).'
+            },
+            infoLeakage: {
+                title: 'Kebocoran Maklumat',
+                principle: 'Maklumat sensitif (e-mel, nombor telefon, kunci API) dalam respons HTML boleh dikutip oleh penyerang untuk pancingan data, kejuruteraan sosial, atau serangan langsung.',
+                scenario: 'Penyerang menemui kunci API dalam sumber halaman dan menggunakannya untuk mengakses perkhidmatan backend anda.',
+                fix: 'Semak sumber HTML untuk data sensitif. Alih keluar rahsia yang dikodkan keras, gunakan rendering sebelah pelayan untuk maklumat sensitif, dan hadkan pendedahan butiran ralat.'
+            },
+            cors: {
+                title: 'Konfigurasi CORS Salah',
+                principle: 'Header Cross-Origin Resource Sharing (CORS) mengawal asal mana yang boleh mengakses sumber anda. Dasar permisif (Access-Control-Allow-Origin: *) boleh membenarkan laman berniat jahat membaca data sensitif.',
+                scenario: 'Laman berniat jahat membuat permintaan AJAX ke API anda, dan jika dasar CORS anda membenarkan sebarang asal, ia boleh membaca respons dan mencuri data pengguna.',
+                fix: 'Hadkan Access-Control-Allow-Origin ke domain dipercayai tertentu. Elakkan menggunakan "*" dengan kelayakan. Dalam Express: app.use(cors({ origin: "https://trusted.com" }))'
+            },
+            cms: {
+                title: 'Cap Jari CMS',
+                principle: 'Mendedahkan CMS (WordPress, Drupal, dll.) versi membantu penyerang mensasarkan kelemahan yang diketahui khusus untuk versi tersebut.',
+                scenario: 'Penyerang mengetahui laman web anda menggunakan WordPress 5.0 dan mengeksploitasi kelemahan yang diketahui untuk mendapatkan akses pentadbir.',
+                fix: 'Pastikan CMS dikemas kini, buang tag versi meta, dan gunakan pemalam keselamatan untuk menyembunyikan cap jari.'
+            },
+            csp: {
+                title: 'Dasar Keselamatan Kandungan (CSP)',
+                principle: 'CSP mengurangkan XSS dengan mengehadkan sumber mana skrip, gaya, dan sumber lain boleh dimuatkan. Dasar yang lemah (cth. unsafe-inline) atau kekurangan default-src mengurangkan keberkesanan.',
+                scenario: 'Penyerang menyuntik skrip yang biasanya akan disekat jika CSP dikonfigurasi dengan betul, tetapi unsafe-inline membenarkannya melaksanakan.',
+                fix: 'Laksanakan CSP yang ketat: default-src \'self\'; script-src \'self\' https://trusted.cdn.com; style-src \'self\' \'unsafe-inline\'; Elakkan unsafe-inline untuk skrip jika boleh; gunakan nonce atau hash.'
+            },
+            ssl: {
+                title: 'Konfigurasi SSL/TLS',
+                principle: 'Protokol atau sifir SSL/TLS yang lemah boleh membenarkan penyerang menyahsulit trafik atau melakukan serangan orang tengah.',
+                scenario: 'Penyerang menurunkan taraf sambungan ke SSLv3 dan mengeksploitasi kelemahan POODLE untuk mencuri kuki sesi.',
+                fix: 'Lumpuhkan SSLv3, TLSv1.0, TLSv1.1. Gunakan TLSv1.2 atau lebih tinggi. Konfigurasikan suites sifir yang kuat. Perbaharui sijil sebelum tamat tempoh.'
+            },
+            ssrf: {
+                title: 'SSRF (Pemalsuan Permintaan Sebelah Pelayan)',
+                principle: 'SSRF membenarkan penyerang membuat pelayan menghantar permintaan ke lokasi yang tidak diingini, berpotensi mengakses perkhidmatan dalaman atau metadata.',
+                scenario: 'Penyerang membekalkan URL seperti http://169.254.169.254/latest/meta-data/ untuk mendapatkan metadata contoh awan.',
+                fix: 'Sahkan dan bersihkan URL yang dibekalkan oleh pengguna, gunakan senarai putih, hadkan akses rangkaian dalaman, dan elakkan membuat permintaan berdasarkan input pengguna.'
+            }
+        },
+        detailedLabels: {
+            principle: 'Prinsip Serangan',
+            scenario: 'Senario Serangan',
+            remediation: 'Pembaikan'
+        }
     }
 };
 
@@ -397,7 +581,8 @@ let phaseInterval = null;
 
 // DOM 元素引用
 let targetInput, scanBtn, resultContainer, errorContainer, loadingDiv, exportContainer;
-let langEnBtn, langZhBtn, scanTimeDiv, progressContainer, progressFill, progressMessage;
+let langToggle, langDropdown, langOptions;
+let scanTimeDiv, progressContainer, progressFill, progressMessage;
 let exportMenuBtn, exportModal, exportJsonBtn, exportPdfBtn, exportHtmlBtn;
 let emailReportBtn, emailModal, emailClose, emailCancel, emailSend, emailInput, emailError;
 let noticeTitle, noticeText, noticeCollapseBtn, noticeContent;
@@ -912,9 +1097,7 @@ async function sendReportToEmail() {
 
 // ==================== 扫描主函数 ====================
 async function scan() {
-    // 获取深度选择器中的所有单选按钮
     const depthRadios = document.querySelectorAll('input[name="depth"]');
-    // 禁用它们（扫描期间不可切换）
     depthRadios.forEach(radio => radio.disabled = true);
 
     let url = targetInput.value.trim();
@@ -959,7 +1142,6 @@ async function scan() {
     const depthElem = document.querySelector('input[name="depth"]:checked');
     const depth = depthElem ? depthElem.value : 'deep';
 
-    // 深度扫描免费开放，但弹出提示
     if (depth === 'deep') {
         alert(t('upgradeFreeNotice'));
     }
@@ -1051,33 +1233,35 @@ async function scan() {
         errorContainer.style.display = 'block';
     } finally {
         scanBtn.disabled = false;
-        scanBtn.textContent = currentLang === 'en' ? 'Start Scan' : '开始扫描';
-        // 启用深度选择器
+        scanBtn.textContent = currentLang === 'en' ? 'Start Scan' : (currentLang === 'zh' ? '开始扫描' : 'Mula Imbas');
         depthRadios.forEach(radio => radio.disabled = false);
     }
 }
 
 function setLanguage(lang) {
     currentLang = lang;
-    langEnBtn.classList.toggle('active', lang === 'en');
-    langZhBtn.classList.toggle('active', lang === 'zh');
+    // 更新下拉菜单高亮
+    if (langOptions) {
+        langOptions.forEach(opt => {
+            opt.classList.toggle('active', opt.dataset.lang === lang);
+        });
+    }
     if (window.lastScanData) renderResult(window.lastScanData);
-    targetInput.placeholder = lang === 'en' ? 'https://example.com' : 'https://example.com';
-    scanBtn.textContent = lang === 'en' ? 'Start Scan' : '开始扫描';
-    if (exportMenuBtn) exportMenuBtn.textContent = lang === 'en' ? '📄 Report Export as' : '📄 导出报告';
+    targetInput.placeholder = 'https://example.com';
+    scanBtn.textContent = lang === 'en' ? 'Start Scan' : (lang === 'zh' ? '开始扫描' : 'Mula Imbas');
+    if (exportMenuBtn) {
+        exportMenuBtn.textContent = lang === 'en' ? '📄 Report Export as' : (lang === 'zh' ? '📄 导出报告' : '📄 Eksport Laporan');
+    }
     if (emailReportBtn) {
-        emailReportBtn.title = lang === 'en' ? 'Send report via email' : '邮件发送报告';
+        emailReportBtn.title = lang === 'en' ? 'Send report via email' : (lang === 'zh' ? '邮件发送报告' : 'Hantar laporan melalui e-mel');
     }
 
-    // 更新法律声明文本
     if (noticeTitle) noticeTitle.textContent = t('legalNoticeTitle');
     if (noticeText) noticeText.textContent = t('legalNoticeText');
-    // 更新关于NetEye内容
     if (aboutContent) {
         const aboutTextArray = t('aboutText');
         aboutContent.innerHTML = aboutTextArray.map(p => `<p>${escapeHtml(p)}</p>`).join('');
     }
-    // 更新关于卡片标题
     const aboutHeaderSpan = document.querySelector('#about-card .info-card-header span');
     if (aboutHeaderSpan) aboutHeaderSpan.innerHTML = `📌 ${t('aboutTitle')}`;
 
@@ -1110,8 +1294,6 @@ function checkFirstVisit() {
         const userConfirmed = confirm(t('firstTimeDisclaimer'));
         if (userConfirmed) {
             localStorage.setItem('neteye_consent', 'true');
-        } else {
-            // 如果用户拒绝，可以禁用扫描按钮或跳转，这里我们仅记录，不强制
         }
     }
 }
@@ -1124,8 +1306,6 @@ document.addEventListener('DOMContentLoaded', () => {
     errorContainer = document.getElementById('error-container');
     loadingDiv = document.getElementById('loading');
     exportContainer = document.getElementById('export-container');
-    langEnBtn = document.getElementById('lang-en');
-    langZhBtn = document.getElementById('lang-zh');
     scanTimeDiv = document.getElementById('scan-time');
     progressContainer = document.getElementById('progress-container');
     progressFill = document.getElementById('progress-fill');
@@ -1148,6 +1328,9 @@ document.addEventListener('DOMContentLoaded', () => {
     noticeContent = document.getElementById('notice-content');
     aboutCollapseBtn = document.getElementById('about-collapse-btn');
     aboutContent = document.getElementById('about-content');
+    langToggle = document.getElementById('lang-toggle');
+    langDropdown = document.getElementById('lang-dropdown');
+    langOptions = document.querySelectorAll('.lang-option');
 
     function hideTemporaryUI() {
         if (loadingDiv) loadingDiv.style.display = 'none';
@@ -1159,11 +1342,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     hideTemporaryUI();
 
-    // 设置折叠功能
     setupCollapse(noticeCollapseBtn, noticeContent);
     setupCollapse(aboutCollapseBtn, aboutContent);
 
-    // 检查首次访问
     checkFirstVisit();
 
     if (scanBtn) scanBtn.addEventListener('click', scan);
@@ -1172,8 +1353,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (exportJsonBtn) exportJsonBtn.addEventListener('click', () => { if (exportModal) exportModal.style.display = 'none'; exportReport(); });
     if (exportPdfBtn) exportPdfBtn.addEventListener('click', () => { if (exportModal) exportModal.style.display = 'none'; exportPDF(); });
     if (exportHtmlBtn) exportHtmlBtn.addEventListener('click', () => { if (exportModal) exportModal.style.display = 'none'; exportHTML(); });
-    if (langEnBtn) langEnBtn.addEventListener('click', () => setLanguage('en'));
-    if (langZhBtn) langZhBtn.addEventListener('click', () => setLanguage('zh'));
     if (emailReportBtn) emailReportBtn.addEventListener('click', showEmailModal);
     if (emailSend) emailSend.addEventListener('click', sendReportToEmail);
     if (emailClose) emailClose.addEventListener('click', hideEmailModal);
@@ -1193,6 +1372,33 @@ document.addEventListener('DOMContentLoaded', () => {
             event.target.style.display = 'none';
         }
     });
+
+    // 语言下拉菜单交互
+    if (langToggle) {
+        langToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (langDropdown) {
+                const isOpen = langDropdown.style.display === 'block';
+                langDropdown.style.display = isOpen ? 'none' : 'block';
+            }
+        });
+    }
+    if (langOptions) {
+        langOptions.forEach(opt => {
+            opt.addEventListener('click', () => {
+                const lang = opt.dataset.lang;
+                if (lang) setLanguage(lang);
+                if (langDropdown) langDropdown.style.display = 'none';
+            });
+        });
+    }
+    // 点击页面其他区域关闭下拉菜单
+    document.addEventListener('click', () => {
+        if (langDropdown) langDropdown.style.display = 'none';
+    });
+    if (langDropdown) {
+        langDropdown.addEventListener('click', (e) => e.stopPropagation());
+    }
 
     setLanguage('en');
 });
