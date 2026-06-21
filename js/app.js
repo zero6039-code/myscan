@@ -1134,7 +1134,6 @@ document.addEventListener('DOMContentLoaded', () => {
     exportContainer = document.getElementById('export-container');
     langEnBtn = document.getElementById('lang-en');
     langZhBtn = document.getElementById('lang-zh');
-    themeToggle = document.getElementById('theme-toggle');
     scanTimeDiv = document.getElementById('scan-time');
     progressContainer = document.getElementById('progress-container');
     progressFill = document.getElementById('progress-fill');
@@ -1183,7 +1182,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (exportHtmlBtn) exportHtmlBtn.addEventListener('click', () => { if (exportModal) exportModal.style.display = 'none'; exportHTML(); });
     if (langEnBtn) langEnBtn.addEventListener('click', () => setLanguage('en'));
     if (langZhBtn) langZhBtn.addEventListener('click', () => setLanguage('zh'));
-    if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
     if (emailReportBtn) emailReportBtn.addEventListener('click', showEmailModal);
     if (emailSend) emailSend.addEventListener('click', sendReportToEmail);
     if (emailClose) emailClose.addEventListener('click', hideEmailModal);
