@@ -7,8 +7,44 @@
     <link rel="icon" type="image/png" href="/neteye.png" sizes="64x64">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0-beta3/css/all.css">
+
+    <!-- 强制背景为黑色（覆盖 style.css 中的定义） -->
+    <style>
+        body {
+            background: #000000 !important;
+            margin: 0;
+            min-height: 100vh;
+        }
+        /* 粒子容器固定在最底层，不阻挡交互 */
+        #tsparticles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+        /* 主容器保证内容在粒子之上 */
+        .container {
+            position: relative;
+            z-index: 1;
+        }
+        /* 可选：让卡片半透明，更融合黑色背景（可不加） */
+        .info-card, .input-group, #result-container, #export-container {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(4px);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        /* 如果之前的卡片有白色背景，可以覆盖，但为了兼容不强制 */
+    </style>
 </head>
 <body>
+    <!-- 粒子背景容器 -->
+    <div id="tsparticles"></div>
+
     <div class="container">
         <div class="header">
             <h1><img src="/neteye.png" alt="NetEye" style="height: 64px; vertical-align: middle;"> NetEye</h1>
@@ -110,8 +146,17 @@
             </div>
         </div>
     </div>
+
+    <!-- 第三方库 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <!-- tsParticles 核心库 -->
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
+    <!-- 粒子配置 -->
+    <script src="js/particles-config.js"></script>
+
+    <!-- 主应用脚本 -->
     <script src="js/app.js"></script>
 </body>
 </html>
