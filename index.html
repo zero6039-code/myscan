@@ -1,33 +1,36 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-theme="dark">
-<head>
-    <meta charset="UTF-8">
+<!-- saved from url=(0026)https://neteye.vercel.app/ -->
+<html lang="zh-CN" data-theme="dark"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>NetEye - Web Vulnerability Scanner</title>
-    <link rel="icon" type="image/png" href="/neteye.png" sizes="64x64">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0-beta3/css/all.css">
+    <link rel="icon" type="image/png" href="./NetEye - Web Vulnerability Scanner_files/neteye.png" sizes="64x64">
+    <link rel="stylesheet" href="./NetEye - Web Vulnerability Scanner_files/style.css">
+    <link rel="stylesheet" href="./NetEye - Web Vulnerability Scanner_files/all.css">
 </head>
-<body>
+<body><canvas id="bg-canvas" style="position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; z-index: -2; pointer-events: none;" width="1920" height="945"></canvas>
     <!-- 背景画布由 js/bg-canvas.js 动态生成 -->
 
     <div class="container">
         <div class="header">
-            <h1><img src="/neteye.png" alt="NetEye" style="height: 64px; vertical-align: middle;"> NetEye</h1>
-            <div class="action-buttons">
-                <div class="lang-switch" role="group" aria-label="Language switch">
-                    <button id="lang-en" class="lang-btn active">English</button>
-                    <button id="lang-zh" class="lang-btn">中文</button>
-                </div>
-                <!-- 主题切换按钮已移除 -->
-            </div>
+            <h1><img src="./NetEye - Web Vulnerability Scanner_files/neteye.png" alt="NetEye" style="height: 200px; vertical-align: middle;"> NetEye</h1>
+            <div class="lang-switch">
+    		<button id="lang-toggle" class="lang-toggle-btn" aria-label="Select language">
+        	    🌐
+   	        </button>
+    		<ul id="lang-dropdown" class="lang-dropdown" style="display: none;">
+        	    <li data-lang="en" class="lang-option active">English</li>
+        	    <li data-lang="zh" class="lang-option">中文</li>
+       		    <li data-lang="ms" class="lang-option">Bahasa Melayu</li>
+    		</ul>
+	    </div>
         </div>
 
         <div class="input-group">
-            <input type="text" id="target" placeholder="https://example.com" aria-label="Target URL" />
+            <input type="text" id="target" placeholder="https://example.com" aria-label="Target URL">
             <div class="depth-selector">
-                <label id="quick-label"><input type="radio" name="depth" value="quick" checked /> Quick Scan</label>
-                <label id="deep-label"><input type="radio" name="depth" value="deep" /> Deep Scan</label>
+                <label id="quick-label"><input type="radio" name="depth" value="quick" checked=""> Quick Scan</label>
+                <label id="deep-label"><input type="radio" name="depth" value="deep"> Deep Scan</label>
             </div>
             <button id="scan-btn" aria-label="Start scan">Start Scan</button>
         </div>
@@ -49,9 +52,7 @@
                 <span>📌 About NetEye</span>
                 <button id="about-collapse-btn" class="collapse-btn">+</button>
             </div>
-            <div id="about-content" class="info-card-content collapsed">
-                <!-- 内容由 js 动态填充 -->
-            </div>
+            <div id="about-content" class="info-card-content collapsed"><p>NetEye is a professional web vulnerability scanner designed for users of all levels—security researchers, web developers, students, and IT professionals. It helps you identify common security flaws in your own websites or authorized targets.</p><p>⚠️ Responsible Use: Always obtain explicit permission before scanning any website. This tool is intended for educational purposes, internal security testing, and improving your own systems. NetEye does not encourage illegal use and is not responsible for any irresponsible actions.</p><p>🔍 Learning Resource: NetEye provides detailed remediation suggestions for each detected vulnerability, helping you understand the attack principle and how to fix it.</p><p>🛡️ Compliance: NetEye does not permanently store any scan results. All data is processed in real-time and never shared with third parties.</p></div>
         </div>
 
         <!-- 进度条区域 -->
@@ -84,7 +85,7 @@
             <div class="modal-content" style="max-width: 300px;">
                 <div class="modal-header">
                     <h3>Export Report</h3>
-                    <span class="modal-close">&times;</span>
+                    <span class="modal-close">×</span>
                 </div>
                 <div class="modal-body" style="text-align: center;">
                     <button id="export-json-btn" class="export-option">Export as JSON</button>
@@ -99,7 +100,7 @@
             <div class="email-modal-content">
                 <div class="email-modal-header">
                     <span>Send Report via Email</span>
-                    <span class="email-modal-close">&times;</span>
+                    <span class="email-modal-close">×</span>
                 </div>
                 <div class="email-modal-body">
                     <input type="email" id="report-email" placeholder="Enter your email address" autocomplete="off">
@@ -114,13 +115,14 @@
     </div>
 
     <!-- 第三方库 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="./NetEye - Web Vulnerability Scanner_files/html2canvas.min.js.download"></script>
+    <script src="./NetEye - Web Vulnerability Scanner_files/jspdf.umd.min.js.download"></script>
 
     <!-- 背景绘制脚本（网格 + 红色流动线） -->
-    <script src="js/bg-canvas.js"></script>
+    <script src="./NetEye - Web Vulnerability Scanner_files/bg-canvas.js.download"></script>
 
     <!-- 主应用脚本 -->
-    <script src="js/app.js"></script>
-</body>
-</html>
+    <script src="./NetEye - Web Vulnerability Scanner_files/app.js.download"></script>
+
+
+</body></html>
