@@ -5,51 +5,49 @@
 }
 
 :root {
-    --bg-color: #f0f2f5;
-    --card-bg: white;
-    --text-primary: #1e293b;
-    --text-secondary: #334155;
-    --border-color: #e9ecef;
-    --header-bg: #f8fafc;
+    --bg-color: #000000;
+    --card-bg: rgba(255,255,255,0.06);
+    --text-primary: #e2e8f0;
+    --text-secondary: #94a3b8;
+    --border-color: rgba(255,255,255,0.08);
+    --header-bg: rgba(255,255,255,0.05);
     --btn-primary: #0070f3;
     --btn-hover: #005bb5;
-    --remediation-bg: #fef3c7;
+    --remediation-bg: rgba(255,200,100,0.1);
     --remediation-border: #f59e0b;
-    --danger-bg: #fee2e2;
-    --danger-text: #991b1b;
-    --safe-bg: #dcfce7;
-    --safe-text: #166534;
-    --badge-bg: #eef2ff;
-    --badge-text: #1e40af;
+    --danger-bg: rgba(220,38,38,0.2);
+    --danger-text: #fecaca;
+    --safe-bg: rgba(34,197,94,0.2);
+    --safe-text: #bbf7d0;
+    --badge-bg: rgba(255,255,255,0.1);
+    --badge-text: #93c5fd;
 }
 
-/* 强制固定深色主题（覆盖变量） */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #000000 !important;  /* 黑色背景 */
+    background: #000000 !important;
     padding: 20px;
     line-height: 1.6;
     min-height: 100vh;
-    color: #e2e8f0;  /* 固定浅色文字 */
+    color: var(--text-primary);
     transition: background 0.3s, color 0.3s;
 }
 
+/* 主容器：透明，无内边距，内容贴边 */
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    background: rgba(255, 255, 255, 0.06) !important;
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 24px;
-    box-shadow: 0 20px 35px -10px rgba(0,0,0,0.1);
-    overflow: hidden;
-    padding: 28px 32px 40px;
-    transition: all 0.3s;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 12px 20px 40px 20px;
     position: relative;
     z-index: 1;
 }
 
+/* 头部：标题靠左，按钮靠右 */
 .header {
     display: flex;
     justify-content: space-between;
@@ -57,6 +55,7 @@ body {
     margin-bottom: 28px;
     flex-wrap: wrap;
     gap: 12px;
+    padding: 0;
 }
 
 h1 {
@@ -67,12 +66,22 @@ h1 {
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+h1 img {
+    height: 64px;
+    vertical-align: middle;
+    margin-right: 8px;
 }
 
 .action-buttons {
     display: flex;
     gap: 12px;
     align-items: center;
+    margin: 0;
 }
 
 .lang-switch {
@@ -102,11 +111,17 @@ h1 {
 .input-group {
     display: flex;
     gap: 16px;
-    margin-bottom: 32px;
+    margin: 0 auto 32px auto;   /* 上下间距，左右自动居中 */
     flex-wrap: wrap;
-    background: rgba(255,255,255,0.05);
-    padding: 16px;
+    background: rgba(255, 255, 255, 0.08);
+    padding: 16px 20px;
     border-radius: 16px;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: 1px solid rgba(255,255,255,0.06);
+    max-width: 1200px;          /* 限制最大宽度，大屏上不会太宽 */
+    width: 100%;
+    box-sizing: border-box;
 }
 
 input {
@@ -215,6 +230,7 @@ button:disabled {
     margin-bottom: 16px;
 }
 
+/* 结果卡片（保持原有半透明，但无强制毛玻璃，可保留原有样式） */
 .result-card {
     background: rgba(255,255,255,0.06);
     border: 1px solid rgba(255,255,255,0.08);
@@ -418,7 +434,7 @@ pre {
 
 @media (max-width: 640px) {
     .container {
-        padding: 20px;
+        padding: 12px 16px 30px 16px;
     }
     .info-label {
         min-width: 110px;
@@ -486,7 +502,7 @@ pre {
     color: white;
 }
 
-/* ==================== 邮件图标及邮箱模态框样式 ==================== */
+/* 邮件图标及邮箱模态框样式 */
 .email-btn {
     background: linear-gradient(135deg, #ff7e5e, #feb47b);
     border: none;
@@ -575,12 +591,18 @@ pre {
     color: #94a3b8;
 }
 
-/* 信息卡片（无边框，用于法律声明和关于NetEye） */
+/* 信息卡片（无边框，用于法律声明和关于NetEye）半透明毛玻璃 */
 .info-card {
-    margin: 20px 0;
-    background: rgba(255,255,255,0.03);
+    margin: 20px auto;          /* 左右自动居中 */
+    background: rgba(255, 255, 255, 0.06);
     border-radius: 12px;
     overflow: hidden;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: 1px solid rgba(255,255,255,0.06);
+    max-width: 1200px;          /* 与输入框保持一致 */
+    width: 100%;
+    box-sizing: border-box;
 }
 .info-card-header {
     display: flex;
@@ -610,5 +632,106 @@ pre {
     display: none;
 }
 
-/* 无主题切换按钮，固定深色 */
 /* 背景画布由 bg-canvas.js 控制，无需额外样式 */
+/* 主题切换按钮已移除，无相关样式 */
+
+/* 语言切换下拉菜单 */
+.lang-switch {
+    position: relative;
+    display: inline-block;
+}
+
+.lang-toggle-btn {
+    background: transparent !important;
+    border: none !important;
+    font-size: 28px;  /* 增大 emoji */
+    width: auto;
+    height: auto;
+    padding: 4px 8px;
+    color: #cbd5e1;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.lang-toggle-btn:hover {
+    transform: scale(1.1);
+    color: white;
+}
+
+.lang-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background: rgba(20, 20, 40, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    min-width: 140px;
+    padding: 6px 0;
+    list-style: none;
+    margin: 0;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    z-index: 100;
+}
+
+.lang-dropdown li {
+    padding: 6px 20px;   /* 原为 10px 20px，上下减少 */
+    margin: 1px 6px;     /* 原为 2px 6px，微调 */
+    font-size: 14px;
+}
+.lang-dropdown li:hover {
+    background: rgba(255,255,255,0.1);
+    color: white;
+}
+.lang-dropdown li.active {
+    background: var(--btn-primary);
+    color: white;
+    font-weight: 600;
+}
+
+/* 主容器：占满全屏，无左右内边距 */
+.container {
+    max-width: 100%;          /* 占满全屏 */
+    margin: 0 auto;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 12px 0 40px 0;   /* 左右内边距为 0，上下保留 */
+    position: relative;
+    z-index: 1;
+}
+
+/* 头部：完全贴边 */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 0 0 0 0;         /* 确保没有任何内边距 */
+}
+
+h1 {
+    font-size: 32px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    padding-left: 0;          /* 确保无左内边距 */
+}
+
+h1 img {
+    height: 64px;
+    vertical-align: middle;
+    margin-right: 8px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin: 0;
+    padding-right: 0;         /* 确保无右内边距 */
+}
