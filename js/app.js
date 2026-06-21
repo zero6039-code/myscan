@@ -393,12 +393,11 @@ const i18n = {
 
 let currentLang = 'en';
 let scanStartTime = null;
-let currentTheme = 'light';
 let phaseInterval = null;
 
 // DOM 元素引用
 let targetInput, scanBtn, resultContainer, errorContainer, loadingDiv, exportContainer;
-let langEnBtn, langZhBtn, themeToggle, scanTimeDiv, progressContainer, progressFill, progressMessage;
+let langEnBtn, langZhBtn, scanTimeDiv, progressContainer, progressFill, progressMessage;
 let exportMenuBtn, exportModal, exportJsonBtn, exportPdfBtn, exportHtmlBtn;
 let emailReportBtn, emailModal, emailClose, emailCancel, emailSend, emailInput, emailError;
 let noticeTitle, noticeText, noticeCollapseBtn, noticeContent;
@@ -727,7 +726,6 @@ function renderResult(data) {
     }
     const ssrfCard = createCard(t('ssrf'), ssrfHtml, '', 'ssrf', true);
 
-    // 免责声明卡片（扫描结果中不再重复显示法律声明，因为已在页面顶部显示）
     // 按顺序添加
     resultContainer.appendChild(basicCard);
     resultContainer.appendChild(securityCard);
@@ -1090,12 +1088,6 @@ function setLanguage(lang) {
 
     const loadingSpan = loadingDiv.querySelector('span');
     if (loadingSpan) loadingSpan.textContent = t('scanning');
-}
-
-function toggleTheme() {
-    currentTheme = currentTheme === 'light' ? 'dark' : 'light';
-    document.documentElement.setAttribute('data-theme', currentTheme);
-    themeToggle.textContent = currentTheme === 'light' ? '🌙' : '☀️';
 }
 
 // ==================== 折叠功能 ====================
