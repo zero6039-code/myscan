@@ -6,6 +6,9 @@
     document.body.prepend(canvas);
     
     const ctx = canvas.getContext('2d');
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+
     let w, h;
 
     function resize() {
@@ -15,11 +18,11 @@
     window.addEventListener('resize', resize);
     resize();
 
-    const STEP = 100; // 网格间距
+    const STEP = 110; // 网格间距
 
     // 绘制网格
     function drawGrid() {
-        ctx.strokeStyle = 'rgba(100, 200, 255, 0.2)';
+        ctx.strokeStyle = 'rgba(100, 200, 255, 0.1)';
         ctx.lineWidth = 1;
         for (let x = 0; x <= w; x += STEP) {
             ctx.beginPath();
@@ -40,7 +43,7 @@
         constructor() {
             this.active = false;
             this.tail = [];
-            this.tailLen = 100;          // 长拖尾
+            this.tailLen = 90;          // 长拖尾
             this.x = 0;
             this.y = 0;
             this.vx = 0;
@@ -51,8 +54,8 @@
         start() {
             const dir = Math.floor(Math.random() * 4);
             // 2 秒走完全屏（120 帧）
-            const speedX = w / 120;
-            const speedY = h / 120;
+            const speedX = w / 180;
+            const speedY = h / 180;
 
             switch(dir) {
                 case 0: // 左→右
@@ -92,8 +95,8 @@
 
             // 记录尾迹（间隔 1 像素）
             if (this.tail.length === 0 || 
-                Math.abs(this.tail[this.tail.length-1].x - this.x) > 1 ||
-                Math.abs(this.tail[this.tail.length-1].y - this.y) > 1) {
+                Math.abs(this.tail[this.tail.length-1].x - this.x) > 0.3 ||
+                Math.abs(this.tail[this.tail.length-1].y - this.y) > 0.3) {
                 this.tail.push({ x: this.x, y: this.y });
             }
             if (this.tail.length > this.tailLen) {
@@ -123,7 +126,7 @@
                 const progress = i / this.tail.length; // 0~1，尾部→头部
                 const alpha = 0.03 + progress * 0.67;
                 const widthFactor = Math.sin(progress * Math.PI);
-                const lineWidth = 0.2 + widthFactor * 1.3;
+                const lineWidth = 0.3 + widthFactor * 1.5;
                 ctx.beginPath();
                 ctx.moveTo(this.tail[i-1].x, this.tail[i-1].y);
                 ctx.lineTo(this.tail[i].x, this.tail[i].y);
