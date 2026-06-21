@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             move: {
                 enable: true,
-                speed: 1.5,
+                speed: 3.0,
                 direction: "none",
                 random: true,
                 straight: false,
