@@ -1,13 +1,19 @@
-// js/bg-canvas.js
+// js/bg-canvas.js - 独立背景动画，不依赖任何其他脚本
 (function() {
+    console.log('✅ bg-canvas.js loaded'); // 调试日志
+
+    // 创建画布
     const canvas = document.createElement('canvas');
     canvas.id = 'bg-canvas';
     canvas.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; z-index:-2; pointer-events:none;';
+    // 将画布插入 body 最前面（确保在所有内容之下）
     document.body.prepend(canvas);
     
     const ctx = canvas.getContext('2d');
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = 'high';
+    // 设置线帽为圆角，避免颗粒感
+    ctx.lineCap = 'round';
 
     let w, h;
 
@@ -38,62 +44,70 @@
         }
     }
 
-    // 单条脉冲线
+    // 单条脉冲线（基于时间插值，3秒走完）
     class FlowLine {
         constructor() {
             this.active = false;
             this.tail = [];
-            this.tailLen = 90;          // 长拖尾
+            this.tailLen = 90;
             this.x = 0;
             this.y = 0;
-            this.vx = 0;
-            this.vy = 0;
             this.timer = null;
+            this.startTime = 0;
+            this.duration = 3000; // 3秒
+            this.startX = 0;
+            this.startY = 0;
+            this.endX = 0;
+            this.endY = 0;
         }
 
         start() {
             const dir = Math.floor(Math.random() * 4);
-            // 2 秒走完全屏（120 帧）
-            const speedX = w / 180;
-            const speedY = h / 180;
-
+            const offset = 20;
             switch(dir) {
                 case 0: // 左→右
-                    this.x = -20;
-                    this.y = Math.floor(Math.random() * (h / STEP)) * STEP;
-                    this.vx = speedX;
-                    this.vy = 0;
+                    this.startX = -offset;
+                    this.startY = Math.floor(Math.random() * (h / STEP)) * STEP;
+                    this.endX = w + offset;
+                    this.endY = this.startY;
                     break;
                 case 1: // 右→左
-                    this.x = w + 20;
-                    this.y = Math.floor(Math.random() * (h / STEP)) * STEP;
-                    this.vx = -speedX;
-                    this.vy = 0;
+                    this.startX = w + offset;
+                    this.startY = Math.floor(Math.random() * (h / STEP)) * STEP;
+                    this.endX = -offset;
+                    this.endY = this.startY;
                     break;
                 case 2: // 上→下
-                    this.x = Math.floor(Math.random() * (w / STEP)) * STEP;
-                    this.y = -20;
-                    this.vx = 0;
-                    this.vy = speedY;
+                    this.startX = Math.floor(Math.random() * (w / STEP)) * STEP;
+                    this.startY = -offset;
+                    this.endX = this.startX;
+                    this.endY = h + offset;
                     break;
                 case 3: // 下→上
-                    this.x = Math.floor(Math.random() * (w / STEP)) * STEP;
-                    this.y = h + 20;
-                    this.vx = 0;
-                    this.vy = -speedY;
+                    this.startX = Math.floor(Math.random() * (w / STEP)) * STEP;
+                    this.startY = h + offset;
+                    this.endX = this.startX;
+                    this.endY = -offset;
                     break;
             }
-            this.tail = [];          // 不预填充，自然生成
+            this.x = this.startX;
+            this.y = this.startY;
+            this.startTime = performance.now();
+            this.tail = [];
             this.active = true;
         }
 
         update() {
             if (!this.active) return false;
 
-            this.x += this.vx;
-            this.y += this.vy;
+            const elapsed = (performance.now() - this.startTime) / this.duration;
+            const progress = Math.min(elapsed, 1.0);
 
-            // 记录尾迹（间隔 1 像素）
+            // 线性插值
+            this.x = this.startX + (this.endX - this.startX) * progress;
+            this.y = this.startY + (this.endY - this.startY) * progress;
+
+            // 记录尾迹（采样间隔 0.3 像素）
             if (this.tail.length === 0 || 
                 Math.abs(this.tail[this.tail.length-1].x - this.x) > 0.3 ||
                 Math.abs(this.tail[this.tail.length-1].y - this.y) > 0.3) {
@@ -103,18 +117,12 @@
                 this.tail.shift();
             }
 
-            // 检测尾部最旧的点（拖尾末端）是否完全离开屏幕
-            if (this.tail.length > 0) {
-                const tailEnd = this.tail[0]; // 最旧的点
-                const margin = 50;
-                const out = (tailEnd.x < -margin || tailEnd.x > w + margin || tailEnd.y < -margin || tailEnd.y > h + margin);
-                if (out) {
-                    this.active = false;
-                    this.tail = [];
-                    clearTimeout(this.timer);
-                    this.timer = setTimeout(() => this.start(), 200);
-                    return false;
-                }
+            if (progress >= 1.0) {
+                this.active = false;
+                this.tail = [];
+                clearTimeout(this.timer);
+                this.timer = setTimeout(() => this.start(), 200);
+                return false;
             }
             return true;
         }
@@ -123,7 +131,7 @@
             if (!this.active || this.tail.length < 2) return;
 
             for (let i = 1; i < this.tail.length; i++) {
-                const progress = i / this.tail.length; // 0~1，尾部→头部
+                const progress = i / this.tail.length;
                 const alpha = 0.03 + progress * 0.67;
                 const widthFactor = Math.sin(progress * Math.PI);
                 const lineWidth = 0.3 + widthFactor * 1.5;
@@ -164,4 +172,6 @@
             }
         }
     });
+
+    console.log('✅ bg-canvas.js initialized'); // 调试日志
 })();
