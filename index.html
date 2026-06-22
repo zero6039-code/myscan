@@ -3,21 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>DewSecure.png - Web Vulnerability Scanner</title>
-    <!-- 图标路径修正 -->
-    <link rel="icon" type="image/png" href="/DewSecure.png" sizes="64x64">
-    <link rel="stylesheet" href="css/style.css">
+    <title>DewSecure - Web Security</title>
+    <link rel="icon" type="image/png" href="/DewSecure.png" sizes="128x128">
+    <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0-beta3/css/all.css">
+    <!-- 确保背景黑色 -->
+    <style>
+        body { background: #000; margin: 0; padding: 0; min-height: 100vh; }
+        .container { max-width: 100%; padding: 12px 20px 40px; background: transparent; position: relative; z-index: 1; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; flex-wrap: wrap; gap: 12px; }
+        h1 { font-size: 56px; margin: 0; display: flex; align-items: center; background: linear-gradient(120deg, #0070f3, #00a6f4); background-clip: text; -webkit-background-clip: text; color: transparent; }
+        h1 img { height: 160px; width: 160px; object-fit: contain; border-radius: 50%; margin-right: 16px; }
+        .lang-switch { position: relative; display: inline-block; }
+        .lang-toggle-btn { background: transparent; border: none; font-size: 40px; color: #cbd5e1; cursor: pointer; padding: 0; }
+        .lang-toggle-btn:hover { transform: scale(1.1); color: white; }
+        .lang-dropdown { position: absolute; top: calc(100% + 8px); right: 0; background: rgba(20,20,40,0.85); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; min-width: 140px; padding: 6px 0; list-style: none; margin: 0; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 100; }
+        .lang-dropdown li { padding: 6px 20px; margin: 1px 6px; font-size: 14px; color: #cbd5e1; cursor: pointer; border-radius: 6px; }
+        .lang-dropdown li:hover { background: rgba(255,255,255,0.1); color: white; }
+        .lang-dropdown li.active { background: #0070f3; color: white; font-weight: 600; }
+        .placeholder-message { text-align: center; }
+        .placeholder-message p { color: #94a3b8; font-size: 1.2rem; margin-top: 60px; background: rgba(255,255,255,0.03); padding: 20px 40px; border-radius: 12px; backdrop-filter: blur(2px); border: 1px solid rgba(255,255,255,0.05); display: inline-block; }
+        #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; pointer-events: none; }
+    </style>
 </head>
 <body>
-    <!-- 背景画布由 js/bg-canvas.js 动态生成 -->
     <div class="container">
         <div class="header">
-            <h1><img src="/neteye.png" alt="DewSecure.png" style="height: 64px; vertical-align: middle;"> NetEye</h1>
+            <h1><img src="/DewSecure.png" alt="DewSecure"> DewSecure</h1>
             <div class="lang-switch">
-                <button id="lang-toggle" class="lang-toggle-btn" aria-label="Select language">
-                    🌐
-                </button>
+                <button id="lang-toggle" class="lang-toggle-btn">🌐</button>
                 <ul id="lang-dropdown" class="lang-dropdown" style="display: none;">
                     <li data-lang="en" class="lang-option active">English</li>
                     <li data-lang="zh" class="lang-option">中文</li>
@@ -25,96 +39,12 @@
                 </ul>
             </div>
         </div>
-
-        <div class="input-group">
-            <input type="text" id="target" placeholder="https://example.com" aria-label="Target URL">
-            <div class="depth-selector">
-                <label id="quick-label"><input type="radio" name="depth" value="quick" checked> Quick Scan</label>
-                <label id="deep-label"><input type="radio" name="depth" value="deep"> Deep Scan</label>
-            </div>
-            <button id="scan-btn" aria-label="Start scan">Start Scan</button>
-        </div>
-
-        <div id="legal-notice" class="info-card">
-            <div class="info-card-header">
-                <i class="fas fa-gavel"></i> <span id="notice-title">Legal Disclaimer</span>
-                <button id="notice-collapse-btn" class="collapse-btn">+</button>
-            </div>
-            <div id="notice-content" class="info-card-content collapsed">
-                <p id="notice-text">⚠️ This tool is for authorized security testing only. Unauthorized scanning is prohibited. By using this tool, you agree that you have explicit permission to test the target. Any illegal use is strictly forbidden. Users are responsible for complying with all applicable laws and regulations.</p>
-            </div>
-        </div>
-
-        <div id="about-card" class="info-card">
-            <div class="info-card-header">
-                <span>📌 About NetEye</span>
-                <button id="about-collapse-btn" class="collapse-btn">+</button>
-            </div>
-            <div id="about-content" class="info-card-content collapsed">
-                <!-- 由 js 动态填充 -->
-            </div>
-        </div>
-
-        <div id="progress-container" style="display: none;">
-            <div class="progress-bar">
-                <div id="progress-fill" class="progress-fill"></div>
-            </div>
-            <div id="progress-message" class="progress-message"></div>
-        </div>
-
-        <div id="scan-time" class="scan-time" style="display: none;"></div>
-        <div id="result-container" style="display: none;"></div>
-        <div id="error-container" style="display: none;" class="error-card"></div>
-        <div id="loading" style="display: none;" class="loading">
-            <div class="loader"></div>
-            <span>Scanning...</span>
-        </div>
-
-        <div id="export-container" style="display: none; text-align: right; margin-top: 16px;">
-            <button id="export-menu-btn" class="export-btn">📄 Report Export as</button>
-            <button id="email-report-btn" class="email-btn" title="Send report via email">
-                <i class="fas fa-envelope"></i>
-            </button>
-        </div>
-
-        <div id="export-modal" class="modal" style="display: none;">
-            <div class="modal-content" style="max-width: 300px;">
-                <div class="modal-header">
-                    <h3>Export Report</h3>
-                    <span class="modal-close">&times;</span>
-                </div>
-                <div class="modal-body" style="text-align: center;">
-                    <button id="export-json-btn" class="export-option">Export as JSON</button>
-                    <button id="export-pdf-btn" class="export-option">Export as PDF</button>
-                    <button id="export-html-btn" class="export-option">Export as HTML</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="email-modal" class="email-modal">
-            <div class="email-modal-content">
-                <div class="email-modal-header">
-                    <span>Send Report via Email</span>
-                    <span class="email-modal-close">&times;</span>
-                </div>
-                <div class="email-modal-body">
-                    <input type="email" id="report-email" placeholder="Enter your email address" autocomplete="off">
-                    <div id="email-error" class="email-error" style="display: none;">Please enter a valid email address.</div>
-                </div>
-                <div class="email-modal-footer">
-                    <button id="email-send-btn" class="email-send-btn">Send</button>
-                    <button id="email-cancel-btn" class="email-cancel-btn">Cancel</button>
-                </div>
-            </div>
+        <div class="placeholder-message">
+            <p>🚀 重构中，新功能即将上线...</p>
         </div>
     </div>
 
-    <!-- 第三方库（CDN） -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <!-- 背景绘制脚本 -->
-    <script src="js/bg-canvas.js"></script>
-    <!-- 主应用脚本 -->
-    <script src="js/app.js"></script>
+    <script src="/js/bg-canvas.js"></script>
+    <script src="/js/app.js"></script>
 </body>
 </html>
