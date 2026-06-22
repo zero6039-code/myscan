@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>NetEye - Web Vulnerability Scanner</title>
-    <!-- 图标路径修正 -->
     <link rel="icon" type="image/png" href="/neteye.png" sizes="64x64">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0-beta3/css/all.css">
@@ -13,7 +12,7 @@
     <!-- 背景画布由 js/bg-canvas.js 动态生成 -->
     <div class="container">
         <div class="header">
-            <h1><img src="/neteye.png" alt="NetEye" style="height: 200px; vertical-align: middle;"> NetEye</h1>
+            <h1><img src="/neteye.png" alt="NetEye" style="height: 64px; vertical-align: middle;"> NetEye</h1>
             <div class="lang-switch">
                 <button id="lang-toggle" class="lang-toggle-btn" aria-label="Select language">
                     🌐
@@ -26,95 +25,17 @@
             </div>
         </div>
 
-        <div class="input-group">
-            <input type="text" id="target" placeholder="https://example.com" aria-label="Target URL">
-            <div class="depth-selector">
-                <label id="quick-label"><input type="radio" name="depth" value="quick" checked> Quick Scan</label>
-                <label id="deep-label"><input type="radio" name="depth" value="deep"> Deep Scan</label>
-            </div>
-            <button id="scan-btn" aria-label="Start scan">Start Scan</button>
-        </div>
-
-        <div id="legal-notice" class="info-card">
-            <div class="info-card-header">
-                <i class="fas fa-gavel"></i> <span id="notice-title">Legal Disclaimer</span>
-                <button id="notice-collapse-btn" class="collapse-btn">+</button>
-            </div>
-            <div id="notice-content" class="info-card-content collapsed">
-                <p id="notice-text">⚠️ This tool is for authorized security testing only. Unauthorized scanning is prohibited. By using this tool, you agree that you have explicit permission to test the target. Any illegal use is strictly forbidden. Users are responsible for complying with all applicable laws and regulations.</p>
-            </div>
-        </div>
-
-        <div id="about-card" class="info-card">
-            <div class="info-card-header">
-                <span>📌 About NetEye</span>
-                <button id="about-collapse-btn" class="collapse-btn">+</button>
-            </div>
-            <div id="about-content" class="info-card-content collapsed">
-                <!-- 由 js 动态填充 -->
-            </div>
-        </div>
-
-        <div id="progress-container" style="display: none;">
-            <div class="progress-bar">
-                <div id="progress-fill" class="progress-fill"></div>
-            </div>
-            <div id="progress-message" class="progress-message"></div>
-        </div>
-
-        <div id="scan-time" class="scan-time" style="display: none;"></div>
-        <div id="result-container" style="display: none;"></div>
-        <div id="error-container" style="display: none;" class="error-card"></div>
-        <div id="loading" style="display: none;" class="loading">
-            <div class="loader"></div>
-            <span>Scanning...</span>
-        </div>
-
-        <div id="export-container" style="display: none; text-align: right; margin-top: 16px;">
-            <button id="export-menu-btn" class="export-btn">📄 Report Export as</button>
-            <button id="email-report-btn" class="email-btn" title="Send report via email">
-                <i class="fas fa-envelope"></i>
-            </button>
-        </div>
-
-        <div id="export-modal" class="modal" style="display: none;">
-            <div class="modal-content" style="max-width: 300px;">
-                <div class="modal-header">
-                    <h3>Export Report</h3>
-                    <span class="modal-close">&times;</span>
-                </div>
-                <div class="modal-body" style="text-align: center;">
-                    <button id="export-json-btn" class="export-option">Export as JSON</button>
-                    <button id="export-pdf-btn" class="export-option">Export as PDF</button>
-                    <button id="export-html-btn" class="export-option">Export as HTML</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="email-modal" class="email-modal">
-            <div class="email-modal-content">
-                <div class="email-modal-header">
-                    <span>Send Report via Email</span>
-                    <span class="email-modal-close">&times;</span>
-                </div>
-                <div class="email-modal-body">
-                    <input type="email" id="report-email" placeholder="Enter your email address" autocomplete="off">
-                    <div id="email-error" class="email-error" style="display: none;">Please enter a valid email address.</div>
-                </div>
-                <div class="email-modal-footer">
-                    <button id="email-send-btn" class="email-send-btn">Send</button>
-                    <button id="email-cancel-btn" class="email-cancel-btn">Cancel</button>
-                </div>
-            </div>
+        <!-- 删除的三个栏目已移除，此处可放未来新内容 -->
+        <div class="placeholder-message">
+            <p style="text-align: center; color: #94a3b8; font-size: 1.2rem; margin-top: 60px;">
+                🚀 重构中，新功能即将上线...
+            </p>
         </div>
     </div>
 
-    <!-- 第三方库（CDN） -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <!-- 背景绘制脚本 -->
+    <!-- 背景绘制脚本（独立运行） -->
     <script src="js/bg-canvas.js"></script>
-    <!-- 主应用脚本 -->
+    <!-- 精简后的主脚本（仅语言切换） -->
     <script src="js/app.js"></script>
 </body>
 </html>
