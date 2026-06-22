@@ -1,182 +1,261 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-theme="dark">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>DewSecure - Web Security</title>
-    <link rel="icon" type="image/png" href="/DewSecure.png" sizes="128x128">
-    <link rel="stylesheet" href="css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DewSecure</title>
+    <!-- 仅用于语言切换图标，也可删掉 -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0-beta3/css/all.css">
     <style>
-        /* 强制黑色背景，覆盖所有冲突 */
+        /* ===== 全局重置 ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body {
-            background: #000000 !important;
-            margin: 0;
-            padding: 0;
+            width: 100%;
             min-height: 100vh;
+            background: #000000;
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
         }
+        /* ===== 背景画布容器（固定底层） ===== */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            pointer-events: none;
+            display: block;
+        }
+        /* ===== 内容容器 ===== */
         .container {
-            background: transparent !important;
-            backdrop-filter: none !important;
-            border: none !important;
-            box-shadow: none !important;
-            padding: 12px 0 40px 0 !important;
-            max-width: 100% !important;
             position: relative;
             z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px 30px;
         }
+        /* ===== 头部 ===== */
         .header {
-            display: flex !important;
-            justify-content: space-between !important;
-            align-items: center !important;
-            padding: 0 !important;
-            margin-bottom: 28px !important;
-            flex-wrap: wrap !important;
-            gap: 12px !important;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
         }
-        /* 标题加大，图标略缩小 */
-        h1 {
-            font-size: 56px !important;   /* 加大标题 */
-            margin: 0;
+        .logo-area {
             display: flex;
             align-items: center;
-            padding-left: 0 !important;
-            background: linear-gradient(120deg, #0070f3, #00a6f4);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
+            gap: 16px;
         }
-        h1 img {
-            height: 160px !important;      /* 从 200px 减至 160px */
-            width: 160px !important;
-            object-fit: contain !important;
-            border-radius: 50% !important;
-            vertical-align: middle;
-            margin-right: 16px;
+        .logo-img {
+            height: 200px;
+            width: 200px;
+            object-fit: contain;
+            border-radius: 50%;
             background: transparent;
+        }
+        .logo-text {
+            font-size: 56px;
+            font-weight: 700;
+            background: linear-gradient(120deg, #0070f3, #00a6f4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         .lang-switch {
             position: relative;
             display: inline-block;
         }
-        .lang-toggle-btn {
-            background: transparent !important;
-            border: none !important;
-            font-size: 40px !important;
-            padding: 0 !important;
-            margin: 0 !important;
-            color: #cbd5e1 !important;
+        .lang-toggle {
+            background: transparent;
+            border: none;
+            font-size: 40px;
+            color: #cbd5e1;
             cursor: pointer;
-            transition: all 0.2s;
-            line-height: 1;
-            box-shadow: none !important;
+            padding: 0 8px;
+            transition: 0.2s;
         }
-        .lang-toggle-btn:hover {
+        .lang-toggle:hover {
             transform: scale(1.1);
-            color: white;
+            color: #fff;
         }
         .lang-dropdown {
             position: absolute;
             top: calc(100% + 8px);
             right: 0;
-            background: rgba(20, 20, 40, 0.85);
+            background: rgba(20,20,40,0.9);
             backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
             border: 1px solid rgba(255,255,255,0.1);
             border-radius: 12px;
             min-width: 140px;
             padding: 6px 0;
             list-style: none;
-            margin: 0;
+            display: none;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            z-index: 100;
         }
         .lang-dropdown li {
             padding: 6px 20px;
-            margin: 1px 6px;
-            font-size: 14px;
             color: #cbd5e1;
             cursor: pointer;
             border-radius: 6px;
-            transition: all 0.15s;
+            transition: 0.15s;
         }
         .lang-dropdown li:hover {
             background: rgba(255,255,255,0.1);
-            color: white;
+            color: #fff;
         }
         .lang-dropdown li.active {
             background: #0070f3;
-            color: white;
-            font-weight: 600;
+            color: #fff;
         }
-        .placeholder-message {
+        /* ===== 占位内容 ===== */
+        .placeholder {
             text-align: center;
+            margin-top: 80px;
         }
-        .placeholder-message p {
-            color: #94a3b8;
-            font-size: 1.2rem;
-            margin-top: 60px;
-            background: rgba(255,255,255,0.03);
-            padding: 20px 40px;
-            border-radius: 12px;
-            backdrop-filter: blur(2px);
-            border: 1px solid rgba(255,255,255,0.05);
+        .placeholder p {
             display: inline-block;
-        }
-        #bg-canvas {
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            width: 100% !important;
-            height: 100% !important;
-            z-index: -2 !important;
-            pointer-events: none !important;
-        }
-        button.lang-toggle-btn {
-            background: transparent !important;
-            border: none !important;
-        }
-        .lang-switch button {
-            background: transparent !important;
+            padding: 20px 40px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            backdrop-filter: blur(4px);
+            font-size: 1.2rem;
+            color: #94a3b8;
         }
     </style>
 </head>
 <body>
+
+    <!-- ===== 背景画布 ===== -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- ===== 主内容 ===== -->
     <div class="container">
         <div class="header">
-            <h1><img src="/DewSecure.png" alt="DewSecure"> DewSecure</h1>
+            <div class="logo-area">
+                <img class="logo-img" src="/DewSecure.png" alt="DewSecure">
+                <span class="logo-text">DewSecure</span>
+            </div>
             <div class="lang-switch">
-                <button id="lang-toggle" class="lang-toggle-btn" aria-label="Select language">
-                    🌐
-                </button>
-                <ul id="lang-dropdown" class="lang-dropdown" style="display: none;">
-                    <li data-lang="en" class="lang-option active">English</li>
-                    <li data-lang="zh" class="lang-option">中文</li>
-                    <li data-lang="ms" class="lang-option">Bahasa Melayu</li>
+                <button class="lang-toggle" id="langToggle">🌐</button>
+                <ul class="lang-dropdown" id="langDropdown">
+                    <li data-lang="en" class="active">English</li>
+                    <li data-lang="zh">中文</li>
+                    <li data-lang="ms">Bahasa Melayu</li>
                 </ul>
             </div>
         </div>
-        <div class="placeholder-message">
+        <div class="placeholder">
             <p>🚀 重构中，新功能即将上线...</p>
         </div>
     </div>
 
-    <!-- ===== 加载背景脚本 ===== -->
-    <script src="js/bg-canvas.js"></script>
-    <!-- 检测加载状态 -->
+    <!-- ==================== 背景脚本（独立） ==================== -->
     <script>
         (function() {
-            setTimeout(function() {
-                const canvas = document.querySelector('#bg-canvas');
-                if (canvas) {
-                    console.log('✅ Canvas 创建成功，尺寸:', canvas.width, 'x', canvas.height);
-                } else {
-                    console.error('❌ Canvas 未找到，请检查 js/bg-canvas.js 路径');
+            console.log('🔥 背景脚本开始执行');
+
+            const canvas = document.getElementById('bg-canvas');
+            if (!canvas) {
+                console.error('❌ 未找到 canvas');
+                return;
+            }
+            const ctx = canvas.getContext('2d');
+            let w, h;
+
+            function resize() {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            const STEP = 80;
+
+            // 绘制亮色网格（透明度高）
+            function drawGrid() {
+                ctx.strokeStyle = 'rgba(100, 200, 255, 0.7)';
+                ctx.lineWidth = 2;
+                for (let x = 0; x <= w; x += STEP) {
+                    ctx.beginPath();
+                    ctx.moveTo(x, 0);
+                    ctx.lineTo(x, h);
+                    ctx.stroke();
                 }
-            }, 500);
+                for (let y = 0; y <= h; y += STEP) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(w, y);
+                    ctx.stroke();
+                }
+            }
+
+            // 红色线条（粗、发光、动态移动）
+            let posX = 0;
+            function drawLine() {
+                ctx.strokeStyle = 'rgba(255, 50, 50, 0.95)';
+                ctx.lineWidth = 6;
+                ctx.shadowColor = 'rgba(255, 0, 0, 0.6)';
+                ctx.shadowBlur = 20;
+                ctx.beginPath();
+                ctx.moveTo(posX, 0);
+                ctx.lineTo(posX + 150, h);
+                ctx.stroke();
+                ctx.shadowBlur = 0;
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, w, h);
+                drawGrid();
+                drawLine();
+                posX += 2.5;
+                if (posX > w + 50) posX = -150;
+                requestAnimationFrame(animate);
+            }
+
+            animate();
+            console.log('✅ 背景动画已启动');
         })();
     </script>
-    <!-- 语言切换脚本 -->
-    <script src="js/app.js"></script>
+
+    <!-- ==================== 语言切换脚本（简单实现） ==================== -->
+    <script>
+        (function() {
+            const toggle = document.getElementById('langToggle');
+            const dropdown = document.getElementById('langDropdown');
+            const options = dropdown.querySelectorAll('li');
+
+            toggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isOpen = dropdown.style.display === 'block';
+                dropdown.style.display = isOpen ? 'none' : 'block';
+            });
+
+            options.forEach(opt => {
+                opt.addEventListener('click', () => {
+                    options.forEach(o => o.classList.remove('active'));
+                    opt.classList.add('active');
+                    dropdown.style.display = 'none';
+                    // 更新占位文本（简单演示）
+                    const lang = opt.dataset.lang;
+                    const place = document.querySelector('.placeholder p');
+                    if (place) {
+                        if (lang === 'en') place.textContent = '🚀 Under reconstruction, new features coming soon...';
+                        else if (lang === 'zh') place.textContent = '🚀 重构中，新功能即将上线...';
+                        else if (lang === 'ms') place.textContent = '🚀 Dalam pembinaan semula, ciri baharu akan datang...';
+                    }
+                });
+            });
+
+            document.addEventListener('click', () => {
+                dropdown.style.display = 'none';
+            });
+            dropdown.addEventListener('click', (e) => e.stopPropagation());
+        })();
+    </script>
+
 </body>
 </html>
