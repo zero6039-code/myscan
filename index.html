@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>DewSecure - Web Security</title>
-    <link rel="icon" type="image/png" href="/DewSecure.png" sizes="64x64">
+    <!-- 使用 DewSecure.png 作为 favicon，建议准备 64x64 或更大的正方形 PNG -->
+    <link rel="icon" type="image/png" href="/DewSecure.png" sizes="128x128">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0-beta3/css/all.css">
     <style>
-        /* 强制黑色背景，覆盖所有冲突 */
+        /* ===== 强制黑色背景，覆盖所有冲突 ===== */
         html, body {
             background: #000000 !important;
             margin: 0;
@@ -23,6 +24,8 @@
             box-shadow: none !important;
             padding: 12px 0 40px 0 !important;
             max-width: 100% !important;
+            position: relative;
+            z-index: 1;
         }
         .header {
             display: flex !important;
@@ -34,18 +37,21 @@
             gap: 12px !important;
         }
         h1 {
-            font-size: 32px;
+            font-size: 36px;  /* 相应放大标题文字 */
             margin: 0;
             display: flex;
             align-items: center;
             padding-left: 0 !important;
         }
+        /* ===== 左上角 Logo：200px 正圆 ===== */
         h1 img {
-            height: 80px !important;
-            width: 80px !important;        /* 固定宽高，确保正圆 */
-            object-fit: contain !important; /* 保持比例，圆形图片显示为正圆 */
+            height: 200px !important;
+            width: 200px !important;
+            object-fit: contain !important;
+            border-radius: 50% !important;   /* 强制圆形裁切（如果图片本身不是圆形，会自动裁成圆形） */
             vertical-align: middle;
-            margin-right: 12px;
+            margin-right: 16px;
+            background: transparent;
         }
         .lang-switch {
             position: relative;
@@ -54,15 +60,16 @@
         .lang-toggle-btn {
             background: transparent !important;
             border: none !important;
-            font-size: 36px !important;
+            font-size: 40px !important;      /* 加大地球图标 */
             width: auto !important;
             height: auto !important;
-            padding: 0 8px !important;
+            padding: 0 !important;
+            margin: 0 !important;
             color: #cbd5e1 !important;
             cursor: pointer;
             transition: all 0.2s;
             line-height: 1;
-            box-shadow: none !important;   /* 移除可能存在的阴影 */
+            box-shadow: none !important;
         }
         .lang-toggle-btn:hover {
             transform: scale(1.1);
@@ -116,24 +123,29 @@
             border: 1px solid rgba(255,255,255,0.05);
             display: inline-block;
         }
-        /* 确保 canvas 在最底层 */
+        /* ===== 确保 canvas 在最底层 ===== */
         #bg-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -2;
-            pointer-events: none;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            z-index: -2 !important;
+            pointer-events: none !important;
         }
-        /* 移除所有可能给地球按钮加背景的全局样式 */
+        /* 移除所有可能的按钮背景 */
         button.lang-toggle-btn {
             background: transparent !important;
             border: none !important;
         }
+        /* 防止其他全局样式干扰 */
+        .lang-switch button {
+            background: transparent !important;
+        }
     </style>
 </head>
 <body>
+    <!-- 背景画布由 js/bg-canvas.js 动态生成 -->
     <div class="container">
         <div class="header">
             <h1><img src="/DewSecure.png" alt="DewSecure"> DewSecure</h1>
@@ -153,6 +165,7 @@
         </div>
     </div>
 
+    <!-- ===== 重要：检查这两个文件是否存在且路径正确 ===== -->
     <script src="js/bg-canvas.js"></script>
     <script src="js/app.js"></script>
 </body>
