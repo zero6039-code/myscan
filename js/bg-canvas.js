@@ -1,68 +1,70 @@
-// 最终版背景动画 - 基于测试成功的网格绘制
 (function() {
     console.log('🟢 最终背景动画启动');
 
-    // 创建画布
-    const canvas = document.createElement('canvas');
-    canvas.id = 'bg-canvas';
-    canvas.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; z-index:-2; pointer-events:none;';
-    document.body.prepend(canvas);
-
-    const ctx = canvas.getContext('2d');
-    let w, h;
-
-    function resize() {
-        w = canvas.width = window.innerWidth;
-        h = canvas.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resize);
-    resize();
-
-    const STEP = 110; // 网格间距
-
-    // 绘制网格（与测试代码完全相同，保证可见）
-    function drawGrid() {
-        ctx.strokeStyle = 'rgba(100, 200, 255, 0.8)';
-        ctx.lineWidth = 2;
-        for (let x = 0; x <= w; x += STEP) {
-            ctx.beginPath();
-            ctx.moveTo(x, 0);
-            ctx.lineTo(x, h);
-            ctx.stroke();
+    // 1. 确保在 body 准备好后执行，避开插件注入干扰
+    const initCanvas = () => {
+        if (!document.body) {
+            setTimeout(initCanvas, 100);
+            return;
         }
-        for (let y = 0; y <= h; y += STEP) {
-            ctx.beginPath();
-            ctx.moveTo(0, y);
-            ctx.lineTo(w, y);
-            ctx.stroke();
+
+        const canvas = document.createElement('canvas');
+        canvas.id = 'bg-canvas';
+        // 使用绝对定位，确保它独立于 body 的内容流
+        canvas.style.cssText = 'position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:-9999; pointer-events:none;';
+        
+        // 避开直接操作 body 的 prepend，防止干扰到插件监听器
+        document.documentElement.appendChild(canvas);
+
+        const ctx = canvas.getContext('2d');
+        let w, h;
+
+        function resize() {
+            w = canvas.width = window.innerWidth;
+            h = canvas.height = window.innerHeight;
         }
-    }
+        window.addEventListener('resize', resize);
+        resize();
 
-    // 移动的红色线条（粗、亮、带发光）
-    let pos = 0;
+        const STEP = 110;
 
-    function drawLine() {
-        ctx.strokeStyle = 'rgba(255, 50, 50, 0.9)';
-        ctx.lineWidth = 4;
-        ctx.shadowColor = 'rgba(255,0,0,0.5)';
-        ctx.shadowBlur = 10;
-        ctx.beginPath();
-        // 绘制从左下到右上的斜线（动态移动）
-        ctx.moveTo(pos, 0);
-        ctx.lineTo(pos + 120, h);
-        ctx.stroke();
-        ctx.shadowBlur = 0;
-    }
+        function drawGrid() {
+            ctx.strokeStyle = 'rgba(100, 200, 255, 0.8)';
+            ctx.lineWidth = 2;
+            for (let x = 0; x <= w; x += STEP) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+            }
+            for (let y = 0; y <= h; y += STEP) {
+                ctx.beginPath();
+                ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+            }
+        }
 
-    function animate() {
-        ctx.clearRect(0, 0, w, h);
-        drawGrid();
-        drawLine();
-        pos += 2.5; // 移动速度
-        if (pos > w + 20) pos = -120; // 循环
-        requestAnimationFrame(animate);
-    }
+        let pos = 0;
+        function drawLine() {
+            ctx.strokeStyle = 'rgba(255, 50, 50, 0.9)';
+            ctx.lineWidth = 4;
+            ctx.shadowColor = 'rgba(255,0,0,0.5)';
+            ctx.shadowBlur = 10;
+            ctx.beginPath();
+            ctx.moveTo(pos, 0);
+            ctx.lineTo(pos + 120, h);
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+        }
 
-    animate();
-    console.log('✅ 最终背景动画已启动，网格+红线可见');
+        function animate() {
+            ctx.clearRect(0, 0, w, h);
+            drawGrid();
+            drawLine();
+            pos += 2.5;
+            if (pos > w + 20) pos = -120;
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    };
+
+    initCanvas();
 })();
