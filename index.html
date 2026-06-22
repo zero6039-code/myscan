@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0-beta3/css/all.css">
     <style>
-        /* 全部内联样式，确保背景黑色、布局正确 */
+        /* 强制黑色背景，覆盖所有冲突 */
         html, body {
             background: #000000 !important;
             margin: 0;
@@ -34,8 +34,9 @@
             flex-wrap: wrap !important;
             gap: 12px !important;
         }
+        /* 标题加大，图标略缩小 */
         h1 {
-            font-size: 52px !important;
+            font-size: 56px !important;   /* 加大标题 */
             margin: 0;
             display: flex;
             align-items: center;
@@ -46,8 +47,8 @@
             color: transparent;
         }
         h1 img {
-            height: 200px !important;
-            width: 200px !important;
+            height: 160px !important;      /* 从 200px 减至 160px */
+            width: 160px !important;
             object-fit: contain !important;
             border-radius: 50% !important;
             vertical-align: middle;
@@ -160,23 +161,22 @@
         </div>
     </div>
 
-    <!-- ===== 先加载 bg-canvas.js ===== -->
+    <!-- ===== 加载背景脚本 ===== -->
     <script src="js/bg-canvas.js"></script>
-    <!-- 调试：检查 canvas 是否创建成功 -->
+    <!-- 检测加载状态 -->
     <script>
         (function() {
-            // 延迟 500ms 检查，确保脚本已执行
             setTimeout(function() {
                 const canvas = document.querySelector('#bg-canvas');
                 if (canvas) {
-                    console.log('✅ Canvas 元素存在，尺寸:', canvas.width, 'x', canvas.height);
+                    console.log('✅ Canvas 创建成功，尺寸:', canvas.width, 'x', canvas.height);
                 } else {
-                    console.error('❌ 未找到 #bg-canvas，请检查 bg-canvas.js 是否加载');
+                    console.error('❌ Canvas 未找到，请检查 js/bg-canvas.js 路径');
                 }
             }, 500);
         })();
     </script>
-    <!-- 加载 app.js（语言切换功能） -->
+    <!-- 语言切换脚本 -->
     <script src="js/app.js"></script>
 </body>
 </html>
