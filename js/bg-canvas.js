@@ -1,18 +1,16 @@
 // js/bg-canvas.js - 独立背景动画，不依赖任何其他脚本
 (function() {
-    console.log('✅ bg-canvas.js loaded'); // 调试日志
+    console.log('✅ bg-canvas.js 已加载');
 
     // 创建画布
     const canvas = document.createElement('canvas');
     canvas.id = 'bg-canvas';
     canvas.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; z-index:-2; pointer-events:none;';
-    // 将画布插入 body 最前面（确保在所有内容之下）
     document.body.prepend(canvas);
-    
+
     const ctx = canvas.getContext('2d');
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = 'high';
-    // 设置线帽为圆角，避免颗粒感
     ctx.lineCap = 'round';
 
     let w, h;
@@ -24,9 +22,8 @@
     window.addEventListener('resize', resize);
     resize();
 
-    const STEP = 110; // 网格间距
+    const STEP = 110;
 
-    // 绘制网格
     function drawGrid() {
         ctx.strokeStyle = 'rgba(100, 200, 255, 0.1)';
         ctx.lineWidth = 1;
@@ -44,7 +41,6 @@
         }
     }
 
-    // 单条脉冲线（基于时间插值，3秒走完）
     class FlowLine {
         constructor() {
             this.active = false;
@@ -54,7 +50,7 @@
             this.y = 0;
             this.timer = null;
             this.startTime = 0;
-            this.duration = 3000; // 3秒
+            this.duration = 3000;
             this.startX = 0;
             this.startY = 0;
             this.endX = 0;
@@ -65,25 +61,25 @@
             const dir = Math.floor(Math.random() * 4);
             const offset = 20;
             switch(dir) {
-                case 0: // 左→右
+                case 0:
                     this.startX = -offset;
                     this.startY = Math.floor(Math.random() * (h / STEP)) * STEP;
                     this.endX = w + offset;
                     this.endY = this.startY;
                     break;
-                case 1: // 右→左
+                case 1:
                     this.startX = w + offset;
                     this.startY = Math.floor(Math.random() * (h / STEP)) * STEP;
                     this.endX = -offset;
                     this.endY = this.startY;
                     break;
-                case 2: // 上→下
+                case 2:
                     this.startX = Math.floor(Math.random() * (w / STEP)) * STEP;
                     this.startY = -offset;
                     this.endX = this.startX;
                     this.endY = h + offset;
                     break;
-                case 3: // 下→上
+                case 3:
                     this.startX = Math.floor(Math.random() * (w / STEP)) * STEP;
                     this.startY = h + offset;
                     this.endX = this.startX;
@@ -99,15 +95,11 @@
 
         update() {
             if (!this.active) return false;
-
             const elapsed = (performance.now() - this.startTime) / this.duration;
             const progress = Math.min(elapsed, 1.0);
-
-            // 线性插值
             this.x = this.startX + (this.endX - this.startX) * progress;
             this.y = this.startY + (this.endY - this.startY) * progress;
 
-            // 记录尾迹（采样间隔 0.3 像素）
             if (this.tail.length === 0 || 
                 Math.abs(this.tail[this.tail.length-1].x - this.x) > 0.3 ||
                 Math.abs(this.tail[this.tail.length-1].y - this.y) > 0.3) {
@@ -129,7 +121,6 @@
 
         draw(ctx) {
             if (!this.active || this.tail.length < 2) return;
-
             for (let i = 1; i < this.tail.length; i++) {
                 const progress = i / this.tail.length;
                 const alpha = 0.03 + progress * 0.67;
@@ -173,5 +164,5 @@
         }
     });
 
-    console.log('✅ bg-canvas.js initialized'); // 调试日志
+    console.log('✅ bg-canvas.js 初始化完成');
 })();
