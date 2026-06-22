@@ -4,15 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>NetEye - Web Vulnerability Scanner</title>
-    <link rel="icon" type="image/png" href="/neteye.png" sizes="64x64">
+    <!-- 图标改为 DewSecure.png -->
+    <link rel="icon" type="image/png" href="/DewSecure.png" sizes="64x64">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0-beta3/css/all.css">
 </head>
 <body>
-    <!-- 背景画布由 js/bg-canvas.js 动态生成 -->
     <div class="container">
         <div class="header">
-            <h1><img src="/neteye.png" alt="NetEye" style="height: 64px; vertical-align: middle;"> NetEye</h1>
+            <!-- 标题图片改为 DewSecure.png -->
+            <h1><img src="/DewSecure.png" alt="DewSecure" style="height: 200px; vertical-align: middle;"> NetEye</h1>
             <div class="lang-switch">
                 <button id="lang-toggle" class="lang-toggle-btn" aria-label="Select language">
                     🌐
@@ -25,7 +26,6 @@
             </div>
         </div>
 
-        <!-- 删除的三个栏目已移除，此处可放未来新内容 -->
         <div class="placeholder-message">
             <p style="text-align: center; color: #94a3b8; font-size: 1.2rem; margin-top: 60px;">
                 🚀 重构中，新功能即将上线...
@@ -33,9 +33,7 @@
         </div>
     </div>
 
-    <!-- 背景绘制脚本（独立运行） -->
     <script src="js/bg-canvas.js"></script>
-    <!-- 精简后的主脚本（仅语言切换） -->
     <script src="js/app.js"></script>
 </body>
 </html>
