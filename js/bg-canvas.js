@@ -1,8 +1,7 @@
-// js/bg-canvas.js - 独立背景动画，不依赖任何其他脚本
+// js/bg-canvas.js - 高可见版本（调试用）
 (function() {
-    console.log('✅ bg-canvas.js 已加载');
+    console.log('✅ bg-canvas.js loaded');
 
-    // 创建画布
     const canvas = document.createElement('canvas');
     canvas.id = 'bg-canvas';
     canvas.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; z-index:-2; pointer-events:none;';
@@ -24,9 +23,10 @@
 
     const STEP = 110;
 
+    // 网格：透明度从 0.1 提升到 0.5，线宽加粗
     function drawGrid() {
-        ctx.strokeStyle = 'rgba(100, 200, 255, 0.1)';
-        ctx.lineWidth = 1;
+        ctx.strokeStyle = 'rgba(100, 200, 255, 0.5)';
+        ctx.lineWidth = 1.5;
         for (let x = 0; x <= w; x += STEP) {
             ctx.beginPath();
             ctx.moveTo(x, 0);
@@ -59,7 +59,7 @@
 
         start() {
             const dir = Math.floor(Math.random() * 4);
-            const offset = 20;
+            const offset = 200;
             switch(dir) {
                 case 0:
                     this.startX = -offset;
@@ -123,16 +123,17 @@
             if (!this.active || this.tail.length < 2) return;
             for (let i = 1; i < this.tail.length; i++) {
                 const progress = i / this.tail.length;
-                const alpha = 0.03 + progress * 0.67;
+                // 线条透明度从 0.2 到 1.0，完全可见
+                const alpha = 0.2 + progress * 0.8;
                 const widthFactor = Math.sin(progress * Math.PI);
-                const lineWidth = 0.3 + widthFactor * 1.5;
+                const lineWidth = 1.0 + widthFactor * 3.0;
                 ctx.beginPath();
                 ctx.moveTo(this.tail[i-1].x, this.tail[i-1].y);
                 ctx.lineTo(this.tail[i].x, this.tail[i].y);
                 ctx.strokeStyle = `rgba(255, 50, 50, ${alpha})`;
                 ctx.lineWidth = lineWidth;
-                ctx.shadowColor = 'rgba(255,0,0,0.08)';
-                ctx.shadowBlur = 3;
+                ctx.shadowColor = 'rgba(255,0,0,0.2)';
+                ctx.shadowBlur = 5;
                 ctx.stroke();
             }
             ctx.shadowBlur = 0;
@@ -164,5 +165,5 @@
         }
     });
 
-    console.log('✅ bg-canvas.js 初始化完成');
+    console.log('✅ bg-canvas.js initialized (high visibility)');
 })();
