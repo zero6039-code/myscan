@@ -1,6 +1,4 @@
-// 1. 声明一个安全的全局可访问语言追踪变量
 window.currentLang = 'en';
-// 全局缓存英文包，作为最后的降级方案，防止别的脚本乱切语言导致字段缺失
 window.fallbackTranslations = null; 
 
 // 预先静默加载英文基础包
@@ -16,46 +14,61 @@ async function initFallback() {
 }
 initFallback();
 
-// 2. 异步加载语言包并更新 DOM 的核心函数
+// 渲染黑客骨架屏的函数
+function injectSkeleton(element, type) {
+    if (type === 'hero_title') {
+        element.innerHTML = '<span class="skeleton-line skeleton-title"></span>';
+    } else if (type === 'hero_desc') {
+        element.innerHTML = '<span class="skeleton-line"></span><span class="skeleton-line" style="width: 75%; margin: 12px auto 0;"></span>';
+    }
+}
+
 async function loadLanguage(lang) {
     try {
         console.log(`[i18n] 正在请求语言包: /locales/${lang}.json`);
         
+        // 渲染文本前，先对主视觉区上锁并展示骨架屏
+        const titleEl = document.querySelector("[data-i18n='hero_title']");
+        const descEl = document.querySelector("[data-i18n='hero_desc']");
+        if (titleEl) injectSkeleton(titleEl, 'hero_title');
+        if (descEl) injectSkeleton(descEl, 'hero_desc');
+
         const response = await fetch(`/locales/${lang}.json`);
         if (!response.ok) throw new Error(`无法加载语言文件: ${lang}`);
         const translations = await response.json();
 
         // 动态更新页面标题
-        const titleKey = "page_title";
-        if (translations[titleKey]) {
-            document.title = translations[titleKey];
-        } else if (window.fallbackTranslations && window.fallbackTranslations[titleKey]) {
-            document.title = window.fallbackTranslations[titleKey];
+        if (translations["page_title"]) {
+            document.title = translations["page_title"];
         }
 
-        // 遍历并动态更新所有带有 data-i18n 属性的标签内容
+        // 遍历并动态更新所有标签
         const elements = document.querySelectorAll("[data-i18n]");
         elements.forEach(element => {
             const key = element.getAttribute("data-i18n");
-            
-            if (translations[key]) {
-                // A 方案：当前语言包有，直接用当前语言包
-                element.innerHTML = translations[key];
-            } else if (window.fallbackTranslations && window.fallbackTranslations[key]) {
-                // B 方案（防御降级）：当前语言包没有（比如 zh/ms 没写），用英文兜底，绝不留白或保留硬编码
-                element.innerHTML = window.fallbackTranslations[key];
-                console.warn(`[i18n] 字段 [${key}] 在 [${lang}.json] 中缺失，已自动使用英文兜底。`);
+            let targetText = translations[key];
+
+            // 降级兜底策略
+            if (!targetText && window.fallbackTranslations && window.fallbackTranslations[key]) {
+                targetText = window.fallbackTranslations[key];
+            }
+
+            if (targetText) {
+                // 只有确实拿到文本时，才覆盖掉骨架屏并触发淡入
+                element.innerHTML = targetText;
+                element.classList.remove("is-skeleton"); 
+            } else {
+                // 如果实在什么都没有，保持骨架屏形态
+                if (key === 'hero_title' || key === 'hero_desc') {
+                     element.classList.add("is-skeleton");
+                }
             }
         });
 
-        // 成功后，同步更新状态持久化缓存与全局变量
         localStorage.setItem("preferred_lang", lang);
         window.currentLang = lang;
-
-        // 更新语言选择器高亮 UI
         updateDropdownUI(lang);
 
-        // 关键架构联动：重新触发数字滚动动画
         if (typeof triggerStatsCounter === "function") {
             triggerStatsCounter();
         }
@@ -67,7 +80,6 @@ async function loadLanguage(lang) {
     }
 }
 
-// 3. 更新语言下拉菜单的高亮 UI 状态
 function updateDropdownUI(activeLang) {
     const options = document.querySelectorAll(".lang-option");
     options.forEach(option => {
@@ -79,20 +91,16 @@ function updateDropdownUI(activeLang) {
     });
 }
 
-// 4. 确保 DOM 树完全建立后执行初始化
 document.addEventListener("DOMContentLoaded", () => {
-    // 默认初始语言设置为英文
     const defaultLang = 'en'; 
     loadLanguage(defaultLang);
 
-    // 绑定点击事件
     const langOptions = document.querySelectorAll(".lang-option");
     langOptions.forEach(option => {
         option.addEventListener("click", (e) => {
             e.preventDefault();
             e.stopPropagation();
             const selectedLang = option.getAttribute("data-lang");
-            
             if (selectedLang !== window.currentLang) {
                 loadLanguage(selectedLang);
             }
