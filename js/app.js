@@ -39,8 +39,8 @@ function setLanguage(lang) {
 }
 
 /**
- * 核心：初始化并触发数字滚动动画
- * @param {number} targetNumber - 需要滚动到的目标数字，例如 69 或 125
+ * 核心：初始化并触发数字滚动动画（基于精准百分比位移）
+ * @param {number} targetNumber - 需要滚动到的目标数字
  */
 function animateCounter(targetNumber) {
     const counterContainer = document.getElementById("stats-counter");
@@ -68,20 +68,20 @@ function animateCounter(targetNumber) {
         return slot;
     });
 
-    // 2. 强制浏览器重绘 (Reflow)
+    // 2. 强制浏览器重绘 (Reflow) 确保网格和高度就绪
     counterContainer.offsetHeight;
 
-    // 3. 执行向上滚动：100% 代表整个槽高（10个数字），每个数字完美占据 10%
+    // 3. 执行向上滚动：基于百分比计算，彻底隔离 DOM 像素渲染带来的各种断层干扰
     digitStringArray.forEach((digitChar, index) => {
         const targetDigit = parseInt(digitChar, 10);
         
         setTimeout(() => {
-            // 直接使用百分比位移，彻底剥离 JS 获取高度受到的 DOM 渲染干扰
             slots[index].style.transform = `translateY(-${targetDigit * 10}%)`;
-        }, index * 50);
+        }, index * 50); // 增加逐位滚动的错落动效
     });
 }
-// 4. 页面加载完毕后自动运行（移到了外层，修复了原配置无法触发的 Bug）
+
+// 4. 页面加载完毕后总线初始化
 document.addEventListener('DOMContentLoaded', () => {
     // 初始化多语言切换点击事件
     const options = document.querySelectorAll('.lang-option');
@@ -95,12 +95,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // 默认加载中文语言
     setLanguage('zh');
 
-    // 自动初始化并触发滚动数字
+    // 自动读取 data-target 并安全初始化数字滚动
     const counterContainer = document.getElementById("stats-counter");
     if (counterContainer) {
         const target = parseInt(counterContainer.getAttribute("data-target"), 10) || 69;
         setTimeout(() => {
             animateCounter(target);
-        }, 300);
+        }, 300); // 略微延时以避开多语言 DOM 调整造成的重绘冲突
     }
 });
