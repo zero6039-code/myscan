@@ -19,25 +19,47 @@ const i18n = {
     }
 };
 
+let currentLang = 'en';
+
 function setLanguage(lang) {
     currentLang = lang;
     document.querySelectorAll('.lang-option').forEach(opt => {
         opt.classList.toggle('active', opt.dataset.lang === lang);
     });
     
-    // 更新占位文案
+    // 更新页面中间文字占位内容
     const p = document.querySelector('.placeholder-message p');
     if (p) p.textContent = i18n[lang].placeholder;
 
-    // 自动更新所有带有 data-i18n 属性的导航元素
+    // 智能更新带多语言属性的代码节点（保护下拉小剪头）
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.dataset.i18n;
         if (i18n[lang][key]) {
-            // 保留图标元素
             const icon = el.querySelector('i');
-            el.textContent = i18n[lang][key];
+            el.textContent = i18n[lang][key] + ' ';
             if (icon) el.appendChild(icon);
         }
     });
 }
-// ... 后续保持你原有的 DOMContentLoaded 事件监听逻辑 ...
+
+document.addEventListener('DOMContentLoaded', () => {
+    const toggle = document.getElementById('lang-toggle');
+    const dropdown = document.getElementById('lang-dropdown');
+    const options = document.querySelectorAll('.lang-option');
+
+    toggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+    });
+    options.forEach(opt => {
+        opt.addEventListener('click', () => {
+            setLanguage(opt.dataset.lang);
+            dropdown.style.display = 'none';
+        });
+    });
+    document.addEventListener('click', () => { dropdown.style.display = 'none'; });
+    dropdown.addEventListener('click', e => e.stopPropagation());
+    
+    // 初始化默认为中文版本展示
+    setLanguage('zh');
+});
