@@ -543,48 +543,40 @@ h8.hero-title, .hero-title {
 /* ==========================================================================
    7. 🌌 量子黑客骨架屏加载流 (Quantum Skeleton Loader)
    ========================================================================== */
-
-/* 骨架条基础样式 */
 .skeleton-line {
     display: block;
     width: 100%;
-    height: 18px; /* 描述文字的骨架厚度 */
+    height: 18px;
     background: linear-gradient(90deg, #0d0d14 25%, #161b26 50%, #0d0d14 75%);
     background-size: 200% 100%;
     border-radius: 4px;
     animation: hackPulse 1.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-    box-shadow: inset 0 0 10px rgba(0, 166, 244, 0.05);
     margin: 0 auto;
 }
 
-/* 标题专属的超粗骨架条 */
 .skeleton-title {
     max-width: 580px;
-    height: 42px; /* 完美契合你 42px 的大标题高度 */
+    height: 42px;
     border-radius: 8px;
     background: linear-gradient(90deg, #07070c 25%, #111a2e 50%, #07070c 75%);
     background-size: 200% 100%;
 }
 
-/* 脉冲流光动画：模拟黑客矩阵解码流 */
 @keyframes hackPulse {
-    0% {
-        background-position: 200% 0;
-    }
-    100% {
-        background-position: -200% 0;
-    }
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
 }
 
-/* 核心防闪烁联动：一旦国际化 JS 注入了真实文本，骨架条被瞬间覆盖，文字平滑淡入 */
-.hero-title:not(:empty), .hero-desc:not(:empty) {
-    animation: textDecodeFade 0.3s cubic-bezier(0.4, 0, 0.2, 1) both;
+/* 核心防闪烁：只有当内部包含真实的翻译文字（而不是骨架屏 span 标签）时，才触发文字解码淡入 */
+.hero-title:not(:empty):not(:has(span)), 
+.hero-desc:not(:empty):not(:has(span)) {
+    animation: textDecodeFade 0.4s cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 
 @keyframes textDecodeFade {
     from {
         opacity: 0;
-        transform: translateY(4px);
+        transform: translateY(6px);
     }
     to {
         opacity: 1;
