@@ -377,7 +377,7 @@ h1 img {
 }
 
 /* ==========================================================================
-   5. 主体内容展位样式 (H5 极致科技感大 Banner)
+   5. 主体内容展位样式 (H8 极致科技感大 Banner)
    ========================================================================== */
 .placeholder-message {
     text-align: center;
@@ -389,13 +389,14 @@ h1 img {
 }
 
 .hero-content {
-    max-width: 1000px; /* 适度加宽容器，适应更大的字体排版 */
+    max-width: 1000px;
     animation: fadeInHero 1s cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 
-/* 重新定义的 H5 主标题 */
-.hero-title {
-    font-size: 42px;                  /* 虽然是 H5 标签，但在 CSS 中强行放大至 42px，满足您的“大 H5”需求 */
+/* 重新定义的 H8 主标题选择器 */
+h8.hero-title, .hero-title {
+    display: block;                   /* 👈 关键：强制让非标准的 h8 标签作为块级元素换行渲染 */
+    font-size: 42px;                  /* 👈 依然保持你要求的大尺寸 (42px) */
     margin: 0 0 28px 0;
     line-height: 1.4;
     background: linear-gradient(135deg, #ffffff 40%, #a5b4fc 100%);
@@ -404,20 +405,20 @@ h1 img {
     color: transparent;
     
     /* ⚡ 极致科技感去粗体魔改 */
-    font-weight: 400 !important;      /* 彻底剥离默认粗体，使用利落的中轻字重 */
-    letter-spacing: 2px;              /* 拉开字间距，营造黑客矩阵/安全网格的硬核冷峻感 */
+    font-weight: 400 !important;      /* 彻底剥离粗体，使用中轻字重 */
+    letter-spacing: 2px;              /* 拉开字间距，营造黑客矩阵的冷峻感 */
 }
 
-/* 重新定义的下方描述文本段落 */
+/* 重新定义的描述文本段落 */
 .hero-desc {
-    font-size: 18px;                  /* 👈 将字体大小从原先的 14px/15px 大幅调大至 18px，清晰易读 */
-    line-height: 1.8;                 /* 配合大字体，增加行高，防止文字挤压 */
-    color: #cbd5e1;                   /* 采用优雅的高级科技灰 */
+    font-size: 18px;                  /* 保持放大的 18px */
+    line-height: 1.8;
+    color: #cbd5e1;
     max-width: 850px;
     margin: 0 auto;
     
     /* ⚡ 科技感字体匹配 */
-    font-weight: 300 !important;      /* 使用极细纤细的字重，配合大字级，是非常高级的现代化 Web3 设计质感 */
+    font-weight: 300 !important;      /* 极细线条配合大字级，是非常现代的高级 Web3 质感 */
     letter-spacing: 0.5px;
 }
 /* ==========================================================================
