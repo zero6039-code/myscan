@@ -32,8 +32,8 @@
         h1 { font-size: 56px; margin: 0; display: flex; align-items: center; background: linear-gradient(120deg, #0070f3, #00a6f4); background-clip: text; -webkit-background-clip: text; color: transparent; white-space: nowrap; }
         h1 img { height: 160px; width: 160px; object-fit: contain; border-radius: 50%; margin-right: 16px; }
         
-        /* 导航菜单：完全置于正中间 */
-        .nav-menu { display: flex; gap: 50px; margin-top: 15px; flex: 1; justify-content: center; }
+        /* 导航菜单：通过 margin 调整整体往左挪动约 2 个格子的距离 (约 80px-100px) */
+        .nav-menu { display: flex; gap: 50px; margin-top: 15px; flex: 1; justify-content: center; margin-left: -90px; }
         .nav-item { position: relative; cursor: pointer; padding: 25px 0; font-size: 16px; font-weight: 500; color: #cbd5e1; transition: color 0.2s; }
         .nav-item:hover { color: #fff; }
 
@@ -59,10 +59,10 @@
         }
         .nav-item:hover .mega-dropdown { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
         
-        /* 下拉面板左侧通栏大介绍：完美贴合图1文字 */
-        .dropdown-intro { width: 240px; display: flex; flex-direction: column; justify-content: flex-start; border-right: 1px solid rgba(255, 255, 255, 0.06); padding-right: 24px; }
-        .dropdown-intro h3 { margin: 0 0 10px 0; font-size: 18px; color: #fff; font-weight: 600; }
-        .dropdown-intro p { margin: 0; font-size: 13px; color: #8896a7; line-height: 1.6; }
+        /* 下拉面板左侧通栏大介绍 */
+        .dropdown-intro { width: 260px; display: flex; flex-direction: column; justify-content: flex-start; border-right: 1px solid rgba(255, 255, 255, 0.06); padding-right: 24px; }
+        .dropdown-intro h3 { margin: 0 0 12px 0; font-size: 22px; color: #fff; font-weight: 600; letter-spacing: 0.5px; }
+        .dropdown-intro p { margin: 0; font-size: 13px; color: #8896a7; line-height: 1.6; text-align: justify; }
 
         /* 下拉面板右侧：2x2 的小图卡片网格布局 */
         .dropdown-grid { display: grid; grid-template-columns: repeat(2, minmax(220px, max-content)); gap: 16px; }
@@ -85,10 +85,10 @@
         .dropdown-link .title { font-size: 15px; font-weight: 600; color: #fff; white-space: nowrap; }
         .dropdown-link .desc { font-size: 12px; color: #8896a7; margin-top: 4px; white-space: nowrap; }
 
-        /* 右侧交互区固定：防止影响居中 */
+        /* 右侧交互区固定 */
         .header-right { display: flex; align-items: center; gap: 45px; height: 100%; margin-top: 15px; min-width: max-content; }
 
-        /* 右侧统计区：大尺寸、普通粗细 */
+        /* 右侧统计区 */
         .nav-stats { text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 100px; }
         .nav-stats .count { font-size: 56px; font-weight: normal; color: #fff; line-height: 1; letter-spacing: -1px; transition: color 0.3s; }
         .nav-stats .label { font-size: 13px; color: #888; margin-top: 6px; display: block; transition: color 0.3s; white-space: nowrap; }
@@ -100,7 +100,6 @@
         .lang-switch { position: relative; display: inline-block; }
         .lang-toggle-btn { background: transparent; border: none; font-size: 40px; color: #cbd5e1; cursor: pointer; padding: 0; transition: transform 0.2s, color 0.2s; line-height: 1; }
         
-        /* 语言下拉菜单 */
         .lang-dropdown { position: absolute; top: calc(100% + 12px); right: 0; background: rgba(20,20,40,0.9); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; min-width: 150px; padding: 8px 0; list-style: none; margin: 0; box-shadow: 0 10px 30px rgba(0,0,0,0.6); z-index: 200; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.25s ease; }
         .lang-switch:hover .lang-dropdown { opacity: 1; visibility: visible; transform: translateY(0); }
         .lang-dropdown li { padding: 10px 20px; margin: 2px 6px; font-size: 14px; color: #cbd5e1; cursor: pointer; border-radius: 6px; transition: all 0.2s; }
@@ -125,23 +124,23 @@
                     <div class="mega-dropdown">
                         <div class="dropdown-intro">
                             <h3>解决方案</h3>
-                            <p>为您 中小企业网站或个人网站提供漏洞与高阶源码安全审计服务。助力企业打造安全闭环和合规解决方案与风险管理。</p>
+                            <p>为您 中小企业网站或个人网站提供安全和合规解决方案与风险管理。</p>
                         </div>
                         
                         <div class="dropdown-grid">
                             <a href="#" class="dropdown-link">
                                 <div class="icon-box">
-                                    <i class="fa-solid fa-code-solid fa-code"></i>
+                                    <i class="fa-solid fa-code"></i>
                                 </div>
                                 <div class="text-box">
                                     <span class="title">代码审核</span>
-                                    <span class="desc">人工 + AI深度审计</span>
+                                    <span class="desc">人工 + AI深度审查</span>
                                 </div>
                             </a>
 
                             <a href="#" class="dropdown-link">
                                 <div class="icon-box">
-                                    <i class="fa-solid fa-shield-halved"></i>
+                                    <i class="fa-solid fa-crosshairs"></i>
                                 </div>
                                 <div class="text-box">
                                     <span class="title">渗透测试</span>
@@ -173,7 +172,15 @@
                 </div>
 
                 <div class="nav-item">
-                    <span data-i18n="company">公司介绍</span>
+                    <span data-i18n="company">关于公司</span>
+                    <div class="mega-dropdown">
+                        <div class="dropdown-intro" style="width: 500px; border-right: none; padding-right: 0;">
+                            <h3>关于公司</h3>
+                            <p style="font-size: 14px; color: #cbd5e1; line-height: 1.8; margin-top: 8px;">
+                                DewSecure 多年来活跃于各大漏洞赏金平台，深度参与众多项目的渗透测试与高阶代码审计，积累了丰富的实战经验。如今 AI 重新定义安全边界并且重塑全球网络安全格局，带来前所未有的复杂挑战，DewSecure 始终致力于维护数字世界的安全防线。
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </nav>
 
