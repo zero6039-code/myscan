@@ -1,0 +1,42 @@
+{
+  "page_title": "DewSecure - Professional Web Security Audit Services",
+  "meta_desc": "DewSecure focuses on providing high-level smart contract auditing, DeFi security defense, automated vulnerability scanning, and comprehensive on-chain tracking.",
+  "nav_solution": "Solutions",
+  "nav_company": "About Us",
+  "nav_disclaimer": "Disclaimer",
+  "stats_label": "Clients Served",
+  "placeholder_text": "🚀 Under reconstruction, new features coming soon...",
+  
+  "sol_intro_title": "Solutions",
+  "sol_intro_desc": "Providing security, compliance solutions, and risk management for your SME or personal websites.",
+  
+  "sol_item1_title": "Code Review",
+  "sol_item1_desc": "Manual + AI Deep Review",
+  "sol_item2_title": "Penetration Testing",
+  "sol_item2_desc": "Simulated Deep Attacks",
+  "sol_item3_title": "Formal Verification",
+  "sol_item3_desc": "Mathematically Verified Code",
+  "sol_item4_title": "Audit Report",
+  "sol_item4_desc": "Audit Reports & Remediation",
+  "sol_item5_title": "Security Consulting",
+  "sol_item5_desc": "Learn More",
+  
+  "comp_intro_title": "About Company",
+  "comp_intro_desc": "DewSecure has been active in major bug bounty platforms for years, deeply participating in penetration testing and code auditing. As AI redefines security boundaries and reshapes the global cybersecurity landscape, DewSecure remains committed to defending the digital world.",
+  
+  "disc_intro_title": "Disclaimer",
+  "disc_intro_desc": "Legal compliance and limitation of liability statement for DewSecure security services.",
+  
+  "disc_t1": "1. Nature of Service",
+  "disc_d1": "Penetration testing, code auditing, and consulting services provided by DewSecure are intended to help discover and remediate risks. All tests are conducted within the scope of written authorization.",
+  "disc_t2": "2. Technical Limitations",
+  "disc_d2": "Despite professional techniques, due to evolving attack methods and environmental complexity, we cannot guarantee that tested systems will be absolutely free of vulnerabilities in the future.",
+  "disc_t3": "3. Third-Party Liability",
+  "disc_d3": "Testing may involve access to client systems or networks. DewSecure is not liable for losses caused by third-party products, services, or failure to patch vulnerabilities in time.",
+  "disc_t4": "4. Website Content",
+  "disc_d4": "Information on this site is for reference only and does not constitute professional legal or technical advice. DewSecure reserves the right to modify content without notice.",
+  "disc_t5": "5. Intellectual Property",
+  "disc_d5": "Reports, tools, and methodologies generated during the service belong to DewSecure unless otherwise agreed in writing.",
+  "disc_t6": "6. Limitation of Liability",
+  "disc_d6": "To the maximum extent permitted by law, DewSecure is not liable for any indirect, incidental, special, or consequential damages resulting from the use or inability to use this service."
+}
