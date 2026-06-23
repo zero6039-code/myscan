@@ -21,7 +21,7 @@ body {
 }
 
 /* ==========================================================================
-   2. 头部控制总线布局 (Header)
+   2. 头部控制总线布局 (Header) - 调整 Logo 的整体相对位移
    ========================================================================== */
 .header {
     display: flex;
@@ -33,13 +33,15 @@ body {
     height: 160px;
 }
 
-/* 左侧 Logo 区 */
+/* 左侧 Logo 区：整体向右移动 24px，向下移动 12px */
 .header-left {
     display: flex;
     align-items: center;
     min-width: max-content;
+    transform: translate(24px, 12px); /* 核心位移矩阵：(X轴向右, Y轴向下) */
 }
 
+/* 超大 Logo 文字：去除加粗，注入极客科技感线条 */
 h1 {
     font-size: 56px;
     margin: 0;
@@ -50,6 +52,11 @@ h1 {
     -webkit-background-clip: text;
     color: transparent;
     white-space: nowrap;
+    
+    /* ⚡ 科技感字体魔改核心 */
+    font-weight: 300 !important;      /* 彻底剥离粗体，使用极细线条凸显冷峻科技感 */
+    letter-spacing: 3px;              /* 增大字间距，模拟数字仪表盘与屏幕矩阵排版 */
+    text-shadow: 0 0 20px rgba(0, 166, 244, 0.2); /* 增加微弱的量子霓虹余晖 */
 }
 
 h1 img {
@@ -370,7 +377,7 @@ h1 img {
 }
 
 /* ==========================================================================
-   5. 主体内容展位样式 (高级 Web3 科技感大 Banner)
+   5. 主体内容展位样式 (H3 科技感大 Banner)
    ========================================================================== */
 .placeholder-message {
     text-align: center;
@@ -386,61 +393,19 @@ h1 img {
     animation: fadeInHero 1s cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 
-/* 超大标题：科技渐变色 */
+/* 重新定义的 H3 主标题 */
 .hero-title {
-    font-size: 52px;
-    font-weight: 800;
+    font-size: 38px;                  /* 缩减至符合 H3 视觉梯度的大小 */
     margin: 0 0 24px 0;
-    line-height: 1.25;
-    letter-spacing: -0.5px;
-    background: linear-gradient(135deg, #ffffff 30%, #a5b4fc 100%);
+    line-height: 1.3;
+    background: linear-gradient(135deg, #ffffff 40%, #a5b4fc 100%);
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
-}
-
-/* 下方段落文字 */
-.hero-desc {
-    color: #94a3b8;
-    font-size: 16px;
-    line-height: 1.8;
-    margin: 0 auto;
-    max-width: 760px;
-    background: rgba(255, 255, 255, 0.02);
-    padding: 24px 44px;
-    border-radius: 16px;
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
-    text-align: justify;
-}
-
-/* 动效：淡入与微微上浮 */
-@keyframes fadeInHero {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* 📱 移动端自适应微调 */
-@media screen and (max-width: 1024px) {
-    .placeholder-message {
-        min-height: 380px;
-    }
-    .hero-title {
-        font-size: 32px;
-        line-height: 1.3;
-    }
-    .hero-desc {
-        font-size: 14px;
-        padding: 16px 24px;
-        line-height: 1.6;
-    }
+    
+    /* ⚡ 科技感字体魔改核心 */
+    font-weight: 400 !important;      /* 绝不使用粗体，保持洗练的中轻型字重 */
+    letter-spacing: 2px;              /* 适度拉开字距，提升代码审计平台的秩序感 */
 }
 /* ==========================================================================
    6. 📱 移动端/自适应响应式媒体查询
