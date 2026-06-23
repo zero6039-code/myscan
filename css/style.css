@@ -86,7 +86,7 @@ h1 img {
     color: #fff;
 }
 
-/* 面板下拉单外层 - CertiK 风格 */
+/* 面板下拉单外层 */
 .mega-dropdown {
     position: absolute;
     top: 68px;
@@ -240,7 +240,7 @@ h1 img {
     min-width: max-content;
 }
 
-/* 4.1 数字滚动模块【🔥 完美闭环无断层解决方案】 */
+/* 4.1 数字滚动模块【🔥 强力加锁完美防断层版】 */
 .nav-stats {
     text-align: center;
     cursor: pointer;
@@ -266,16 +266,16 @@ h1 img {
 
 /* 计数器可视视窗 */
 .counter-runner {
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    height: 56px;               /* 刚性死高度，防止变形 */
-    line-height: 56px;
-    overflow: hidden;           /* 【核心】裁剪并隐藏上下多余数字，杜绝断层 */
-    font-size: 56px;
-    font-weight: normal;
-    color: #fff;
-    min-width: 70px;
+    display: inline-flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    height: 56px !important;               /* 严格控制容器高度 */
+    line-height: 56px !important;          /* 强制行高垂直居中 */
+    overflow: hidden !important;           /* 核心：裁切可视区以外的所有数字 */
+    font-size: 56px !important;
+    font-weight: normal !important;
+    color: #fff !important;
+    min-width: 70px !important;
     transition: color 0.3s;
 }
 
@@ -285,23 +285,24 @@ h1 img {
 
 /* 独立列槽 */
 .counter-digit-slot {
-    height: 56px;
-    line-height: 56px;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    transition: transform 2.5s cubic-bezier(0.1, 1, 0.1, 1);
+    height: 56px !important;
+    line-height: 56px !important;
+    position: relative !important;
+    display: flex !important;
+    flex-direction: column !important;
+    transition: transform 2.5s cubic-bezier(0.1, 1, 0.1, 1) !important;
 }
 
 /* 槽位内部的单个具体数字 */
 .counter-digit-slot span {
-    display: block;
-    height: 56px;               /* 每一个数字像素高度绝对契合遮罩 */
-    line-height: 56px;
-    text-align: center;
-    white-space: nowrap;        /* 强制禁止折行 */
-    padding: 0 2px;
-    box-sizing: border-box;
+    display: block !important;
+    height: 56px !important;               /* 每一个数字必须精准等于父级高度 */
+    line-height: 56px !important;          /* 杜绝因为外部继承产生行高塌陷 */
+    text-align: center !important;
+    white-space: nowrap !important;        
+    padding: 0 2px !important;
+    margin: 0 !important;                  /* 严防任何外边距挤压 */
+    box-sizing: border-box !important;
 }
 
 /* 4.2 多语言环境 🌐 模块 */
@@ -432,21 +433,23 @@ h1 img {
         font-size: 15px;
     }
     
-    /* 移动端缩小滚动数字组件的尺寸，防止溢出换行 */
+    /* 📱 移动端重新锁死 38px 物理高度，确保滚动对齐 */
     .counter-runner {
-        height: 38px;
-        font-size: 38px;
-        min-width: 50px;
+        height: 38px !important;
+        font-size: 38px !important;
+        min-width: 50px !important;
+        line-height: 38px !important;
     }
     
     .counter-digit-slot {
-        height: 38px;
-        line-height: 38px;
+        height: 38px !important;
+        line-height: 38px !important;
     }
     
     .counter-digit-slot span {
-        height: 38px;
-        line-height: 38px;
+        height: 38px !important;
+        line-height: 38px !important;
+        margin: 0 !important;
     }
     
     .mega-dropdown {
