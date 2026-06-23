@@ -1,4 +1,4 @@
-// 初始化当前语言变量（全局或作用域顶层声明）
+// 初始化当前语言变量
 let currentLang = 'en';
 
 // 异步加载语言包并更新 DOM
@@ -19,7 +19,6 @@ async function loadLanguage(lang) {
         elements.forEach(element => {
             const key = element.getAttribute("data-i18n");
             if (translations[key]) {
-                // 使用 innerHTML 允许 JSON 中的基础格式化标签，若追求极致安全可换回 textContent
                 element.innerHTML = translations[key];
             }
         });
@@ -55,13 +54,13 @@ function updateDropdownUI(activeLang) {
 
 // 确保 DOM 加载完毕后执行初始化与事件绑定
 document.addEventListener("DOMContentLoaded", () => {
-    // 1. 每次加载网页，如果没有手动切换过，都强制默认使用 'en' (英文)
+    // 强制指定 'en' 作为每次初始渲染的默认语言
     const defaultLang = 'en'; 
     
-    // 执行初始语言加载（修正了原先 setLanguage 的命名错误）
+    // 执行初始语言加载
     loadLanguage(defaultLang);
 
-    // 2. 绑定单一点击事件源，防止 app.js 与 i18n.js 重复绑定造成的动画混乱
+    // 绑定单一点击事件源
     const langOptions = document.querySelectorAll(".lang-option");
     langOptions.forEach(option => {
         option.addEventListener("click", (e) => {
