@@ -72,12 +72,16 @@ function animateCounter(targetNumber) {
     counterContainer.offsetHeight;
 
     // 3. 开始执行向上滚动
+// 3. 开始执行向上滚动（改为使用固定高度位移，彻底解决 image_0b007c.png 中的断层问题）
     digitStringArray.forEach((digitChar, index) => {
         const targetDigit = parseInt(digitChar, 10);
-        const translateYPercentage = targetDigit * 10; 
         
+        // 关键修改：直接计算精准的像素或em位移（这里采用每行 56px 的绝对高度）
+        // 如果在移动端，它会自动读取当前元素的设计高度，这里直接用行高乘以数字最安全
         setTimeout(() => {
-            slots[index].style.transform = `translateY(-${translateYPercentage}%)`;
+            // 获取当前槽位单行的高度（动态适应 PC 端的 56px 和移动端的 38px）
+            const lineHeight = slots[index].offsetHeight / 10; 
+            slots[index].style.transform = `translateY(-${targetDigit * lineHeight}px)`;
         }, index * 50);
     });
 }
