@@ -19,9 +19,8 @@
     window.addEventListener('resize', resize);
     resize();
 
-    const STEP = 110; // 网格间距 110
+    const STEP = 110;
 
-    // 网格颜色更浅
     function drawGrid() {
         ctx.strokeStyle = 'rgba(100, 200, 255, 0.08)';
         ctx.lineWidth = 1;
@@ -39,7 +38,6 @@
         }
     }
 
-    // 红色线条类（尾部完全离开后才结束）
     class FlowLine {
         constructor() {
             this.active = false;
@@ -54,33 +52,31 @@
             this.startY = 0;
             this.endX = 0;
             this.endY = 0;
-            // 增加一个标志，表示是否已经到达终点（但继续移动直到尾部离开）
-            this.reachedEnd = false;
         }
 
         start() {
             const dir = Math.floor(Math.random() * 4);
-            const offset = 20;
+            const offset = 200; // 起点和终点都在屏幕外较远
             switch(dir) {
-                case 0:
+                case 0: // 左→右
                     this.startX = -offset;
                     this.startY = Math.floor(Math.random() * (h / STEP)) * STEP;
                     this.endX = w + offset;
                     this.endY = this.startY;
                     break;
-                case 1:
+                case 1: // 右→左
                     this.startX = w + offset;
                     this.startY = Math.floor(Math.random() * (h / STEP)) * STEP;
                     this.endX = -offset;
                     this.endY = this.startY;
                     break;
-                case 2:
+                case 2: // 上→下
                     this.startX = Math.floor(Math.random() * (w / STEP)) * STEP;
                     this.startY = -offset;
                     this.endX = this.startX;
                     this.endY = h + offset;
                     break;
-                case 3:
+                case 3: // 下→上
                     this.startX = Math.floor(Math.random() * (w / STEP)) * STEP;
                     this.startY = h + offset;
                     this.endX = this.startX;
@@ -92,37 +88,20 @@
             this.startTime = performance.now();
             this.tail = [];
             this.active = true;
-            this.reachedEnd = false;
         }
 
         update() {
             if (!this.active) return false;
 
             const elapsed = (performance.now() - this.startTime) / this.duration;
-            let progress = Math.min(elapsed, 1.0);
+            // 不限制 progress，允许超过 1.0，线条会匀速穿过屏幕并继续前进
+            const progress = elapsed;
 
-            // 如果已经到达终点，但尾部还没离开，则继续移动（超出终点额外移动一段）
-            let extra = 0;
-            if (progress >= 1.0) {
-                this.reachedEnd = true;
-                // 继续移动，让线条超出终点，直到尾部离开
-                extra = (elapsed - 1.0) * (this.duration / 100); // 额外的移动量
-                // 限制额外移动量，防止无限远
-                const maxExtra = 300; // 额外移动最多300像素
-                if (extra > maxExtra) extra = maxExtra;
-            }
+            // 线性插值计算位置
+            this.x = this.startX + (this.endX - this.startX) * progress;
+            this.y = this.startY + (this.endY - this.startY) * progress;
 
-            // 计算当前坐标（在终点基础上再偏移 extra 距离）
-            const dx = this.endX - this.startX;
-            const dy = this.endY - this.startY;
-            const len = Math.sqrt(dx*dx + dy*dy);
-            if (len === 0) return false;
-            const unitX = dx / len;
-            const unitY = dy / len;
-            this.x = this.startX + dx * progress + unitX * extra;
-            this.y = this.startY + dy * progress + unitY * extra;
-
-            // 记录尾迹
+            // 记录尾迹（采样间隔 0.3 像素）
             if (this.tail.length === 0 || 
                 Math.abs(this.tail[this.tail.length-1].x - this.x) > 0.3 ||
                 Math.abs(this.tail[this.tail.length-1].y - this.y) > 0.3) {
@@ -141,7 +120,8 @@
                     this.active = false;
                     this.tail = [];
                     clearTimeout(this.timer);
-                    this.timer = setTimeout(() => this.start(), 200);
+                    // 立即生成下一条（无延迟）
+                    this.timer = setTimeout(() => this.start(), 0);
                     return false;
                 }
             }
@@ -151,11 +131,10 @@
         draw(ctx) {
             if (!this.active || this.tail.length < 2) return;
             for (let i = 1; i < this.tail.length; i++) {
-                const progress = i / this.tail.length;
+                const progress = i / this.tail.length; // 0~1 尾部→头部
                 const alpha = 0.02 + progress * 0.35;
                 const widthFactor = Math.sin(progress * Math.PI);
-                // 加粗线条：最大宽度从 1.2 提高到 2.5
-                const lineWidth = 0.5 + widthFactor * 2.0;
+                const lineWidth = 0.5 + widthFactor * 2.0; // 最大宽度 2.5
                 ctx.beginPath();
                 ctx.moveTo(this.tail[i-1].x, this.tail[i-1].y);
                 ctx.lineTo(this.tail[i].x, this.tail[i].y);
@@ -189,7 +168,7 @@
                 flowLine.active = false;
                 flowLine.tail = [];
                 clearTimeout(flowLine.timer);
-                flowLine.timer = setTimeout(() => flowLine.start(), 200);
+                flowLine.timer = setTimeout(() => flowLine.start(), 0);
             }
         }
     });
