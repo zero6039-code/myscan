@@ -1,4 +1,4 @@
-// 背景动画 - 亮色网格 + 红线移动
+// 背景动画 - 淡网格 + 红线条沿网格方向移动（带拖尾）
 (function() {
     const canvas = document.createElement('canvas');
     canvas.id = 'bg-canvas';
@@ -6,6 +6,10 @@
     document.body.prepend(canvas);
 
     const ctx = canvas.getContext('2d');
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    ctx.lineCap = 'round';
+
     let w, h;
 
     function resize() {
@@ -15,11 +19,12 @@
     window.addEventListener('resize', resize);
     resize();
 
-    const STEP = 80;
+    const STEP = 150; // 网格间距调大
 
+    // 网格颜色更浅
     function drawGrid() {
-        ctx.strokeStyle = 'rgba(100, 200, 255, 0.9)';
-        ctx.lineWidth = 2;
+        ctx.strokeStyle = 'rgba(100, 200, 255, 0.08)';
+        ctx.lineWidth = 1;
         for (let x = 0; x <= w; x += STEP) {
             ctx.beginPath();
             ctx.moveTo(x, 0);
@@ -34,28 +39,127 @@
         }
     }
 
-    let posX = 0;
+    // 红色线条类（基于真实时间，沿网格方向）
+    class FlowLine {
+        constructor() {
+            this.active = false;
+            this.tail = [];
+            this.tailLen = 80;
+            this.x = 0;
+            this.y = 0;
+            this.timer = null;
+            this.startTime = 0;
+            this.duration = 3000; // 3秒走完
+            this.startX = 0;
+            this.startY = 0;
+            this.endX = 0;
+            this.endY = 0;
+        }
 
-    function drawLine() {
-        ctx.strokeStyle = 'rgba(255, 0, 0, 1)';
-        ctx.lineWidth = 6;
-        ctx.shadowColor = 'rgba(255, 0, 0, 0.8)';
-        ctx.shadowBlur = 20;
-        ctx.beginPath();
-        ctx.moveTo(posX, 0);
-        ctx.lineTo(posX + 150, h);
-        ctx.stroke();
-        ctx.shadowBlur = 0;
+        start() {
+            const dir = Math.floor(Math.random() * 4); // 0:左→右, 1:右→左, 2:上→下, 3:下→上
+            const offset = 20;
+            switch(dir) {
+                case 0:
+                    this.startX = -offset;
+                    this.startY = Math.floor(Math.random() * (h / STEP)) * STEP;
+                    this.endX = w + offset;
+                    this.endY = this.startY;
+                    break;
+                case 1:
+                    this.startX = w + offset;
+                    this.startY = Math.floor(Math.random() * (h / STEP)) * STEP;
+                    this.endX = -offset;
+                    this.endY = this.startY;
+                    break;
+                case 2:
+                    this.startX = Math.floor(Math.random() * (w / STEP)) * STEP;
+                    this.startY = -offset;
+                    this.endX = this.startX;
+                    this.endY = h + offset;
+                    break;
+                case 3:
+                    this.startX = Math.floor(Math.random() * (w / STEP)) * STEP;
+                    this.startY = h + offset;
+                    this.endX = this.startX;
+                    this.endY = -offset;
+                    break;
+            }
+            this.x = this.startX;
+            this.y = this.startY;
+            this.startTime = performance.now();
+            this.tail = [];
+            this.active = true;
+        }
+
+        update() {
+            if (!this.active) return false;
+            const elapsed = (performance.now() - this.startTime) / this.duration;
+            const progress = Math.min(elapsed, 1.0);
+            this.x = this.startX + (this.endX - this.startX) * progress;
+            this.y = this.startY + (this.endY - this.startY) * progress;
+
+            if (this.tail.length === 0 || 
+                Math.abs(this.tail[this.tail.length-1].x - this.x) > 0.3 ||
+                Math.abs(this.tail[this.tail.length-1].y - this.y) > 0.3) {
+                this.tail.push({ x: this.x, y: this.y });
+            }
+            if (this.tail.length > this.tailLen) {
+                this.tail.shift();
+            }
+
+            if (progress >= 1.0) {
+                this.active = false;
+                this.tail = [];
+                clearTimeout(this.timer);
+                this.timer = setTimeout(() => this.start(), 200);
+                return false;
+            }
+            return true;
+        }
+
+        draw(ctx) {
+            if (!this.active || this.tail.length < 2) return;
+            for (let i = 1; i < this.tail.length; i++) {
+                const progress = i / this.tail.length;
+                const alpha = 0.02 + progress * 0.35; // 更淡的拖尾
+                const widthFactor = Math.sin(progress * Math.PI);
+                const lineWidth = 0.5 + widthFactor * 1.2;
+                ctx.beginPath();
+                ctx.moveTo(this.tail[i-1].x, this.tail[i-1].y);
+                ctx.lineTo(this.tail[i].x, this.tail[i].y);
+                ctx.strokeStyle = `rgba(255, 50, 50, ${alpha})`;
+                ctx.lineWidth = lineWidth;
+                ctx.shadowColor = 'rgba(255,0,0,0.05)';
+                ctx.shadowBlur = 3;
+                ctx.stroke();
+            }
+            ctx.shadowBlur = 0;
+        }
     }
+
+    const flowLine = new FlowLine();
+    flowLine.start();
 
     function animate() {
         ctx.clearRect(0, 0, w, h);
         drawGrid();
-        drawLine();
-        posX += 3;
-        if (posX > w + 50) posX = -150;
+        flowLine.update();
+        flowLine.draw(ctx);
         requestAnimationFrame(animate);
     }
 
     animate();
+
+    window.addEventListener('resize', () => {
+        if (flowLine.active) {
+            const margin = 200;
+            if (flowLine.x < -margin || flowLine.x > w + margin || flowLine.y < -margin || flowLine.y > h + margin) {
+                flowLine.active = false;
+                flowLine.tail = [];
+                clearTimeout(flowLine.timer);
+                flowLine.timer = setTimeout(() => flowLine.start(), 200);
+            }
+        }
+    });
 })();
