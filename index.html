@@ -2,43 +2,69 @@
 <html lang="zh-CN" data-theme="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DewSecure - Web Security</title>
-    <link rel="icon" type="image/png" href="/DewSecure.png" sizes="128x128">
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" type="image/png" href="/DewSecure.png">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0-beta3/css/all.css">
-    <!-- 确保背景黑色 -->
+    <link rel="stylesheet" href="/css/style.css">
     <style>
-        body { background: #000; margin: 0; padding: 0; min-height: 100vh; }
-        .container { max-width: 100%; padding: 12px 20px 40px; background: transparent; position: relative; z-index: 1; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; flex-wrap: wrap; gap: 12px; }
-        h1 { font-size: 56px; margin: 0; display: flex; align-items: center; background: linear-gradient(120deg, #0070f3, #00a6f4); background-clip: text; -webkit-background-clip: text; color: transparent; }
-        h1 img { height: 160px; width: 160px; object-fit: contain; border-radius: 50%; margin-right: 16px; }
-        .lang-switch { position: relative; display: inline-block; }
-        .lang-toggle-btn { background: transparent; border: none; font-size: 40px; color: #cbd5e1; cursor: pointer; padding: 0; }
-        .lang-toggle-btn:hover { transform: scale(1.1); color: white; }
-        .lang-dropdown { position: absolute; top: calc(100% + 8px); right: 0; background: rgba(20,20,40,0.85); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; min-width: 140px; padding: 6px 0; list-style: none; margin: 0; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 100; }
-        .lang-dropdown li { padding: 6px 20px; margin: 1px 6px; font-size: 14px; color: #cbd5e1; cursor: pointer; border-radius: 6px; }
-        .lang-dropdown li:hover { background: rgba(255,255,255,0.1); color: white; }
-        .lang-dropdown li.active { background: #0070f3; color: white; font-weight: 600; }
-        .placeholder-message { text-align: center; }
-        .placeholder-message p { color: #94a3b8; font-size: 1.2rem; margin-top: 60px; background: rgba(255,255,255,0.03); padding: 20px 40px; border-radius: 12px; backdrop-filter: blur(2px); border: 1px solid rgba(255,255,255,0.05); display: inline-block; }
-        #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; pointer-events: none; }
+        body { background: #000; margin: 0; padding: 0; color: #fff; font-family: 'Segoe UI', sans-serif; }
+        
+        /* 导航栏整体容器 */
+        .navbar { display: flex; align-items: center; justify-content: space-between; padding: 20px 50px; z-index: 100; position: relative; }
+        .logo { font-size: 24px; font-weight: bold; display: flex; align-items: center; }
+        .logo img { height: 40px; margin-right: 12px; }
+
+        /* 居中菜单 */
+        .nav-menu { display: flex; gap: 40px; }
+        .nav-item { position: relative; cursor: pointer; padding: 10px 0; font-weight: 500; transition: 0.3s; }
+        .nav-item:hover { color: #0070f3; }
+
+        /* 顺滑下拉菜单 */
+        .dropdown { position: absolute; top: 100%; left: 0; background: #111; border: 1px solid #333; border-radius: 8px; padding: 10px 0; min-width: 150px; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .dropdown a { display: block; padding: 8px 20px; color: #ccc; text-decoration: none; }
+        .nav-item:hover .dropdown { opacity: 1; visibility: visible; transform: translateY(0); }
+
+        /* 右侧统计栏 */
+        .nav-stats { text-align: right; cursor: pointer; transition: 0.3s; padding-right: 20px; }
+        .nav-stats .label { font-size: 12px; color: #888; display: block; }
+        .nav-stats .count { font-size: 28px; font-weight: 800; }
+        .nav-stats:hover .label, .nav-stats:hover .count { color: #ff4d4d; }
+
+        /* 原有样式兼容 */
+        .container { max-width: 100%; padding: 0; }
+        .placeholder-message { display: flex; justify-content: center; align-items: center; min-height: 400px; }
+        .placeholder-message p { color: #94a3b8; font-size: 1.5rem; background: rgba(255,255,255,0.05); padding: 20px 40px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06); }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1><img src="/DewSecure.png" alt="DewSecure"> DewSecure</h1>
+    <nav class="navbar">
+        <div class="logo"><img src="/DewSecure.png"> DewSecure</div>
+        <div class="nav-menu">
+            <div class="nav-item">产品 <i class="fa fa-chevron-down"></i>
+                <div class="dropdown">
+                    <a href="#">安全审计</a><a href="#">漏洞扫描</a>
+                </div>
+            </div>
+            <div class="nav-item">解决方案 <i class="fa fa-chevron-down"></i>
+                <div class="dropdown">
+                    <a href="#">DeFi 安全</a><a href="#">链上追踪</a>
+                </div>
+            </div>
+            <div class="nav-item">公司介绍</div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <div class="nav-stats">
+                <span class="label">服务客户</span>
+                <span class="count">69</span>
+            </div>
             <div class="lang-switch">
-                <button id="lang-toggle" class="lang-toggle-btn">🌐</button>
-                <ul id="lang-dropdown" class="lang-dropdown" style="display: none;">
-                    <li data-lang="en" class="lang-option active">English</li>
-                    <li data-lang="zh" class="lang-option">中文</li>
-                    <li data-lang="ms" class="lang-option">Bahasa Melayu</li>
-                </ul>
+                <button id="lang-toggle" style="background:none; border:none; color:#fff; cursor:pointer; font-size:24px;">🌐</button>
             </div>
         </div>
+    </nav>
+
+    <div class="container">
         <div class="placeholder-message">
             <p>🚀 重构中，新功能即将上线...</p>
         </div>
