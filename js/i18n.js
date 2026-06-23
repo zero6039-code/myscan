@@ -1,20 +1,21 @@
-// 初始化当前语言变量
-let currentLang = 'en';
+// 1. 声明一个安全的全局可访问语言追踪变量，默认设置为 'en'
+window.currentLang = 'en';
 
-// 异步加载语言包并更新 DOM
+// 2. 异步加载语言包并更新 DOM 的核心函数
 async function loadLanguage(lang) {
     try {
-        // 请确保您的项目根目录下有 /locales/zh.json, /locales/en.json, /locales/ms.json
+        console.log(`[i18n] 正在请求语言包: /locales/${lang}.json`);
+        
         const response = await fetch(`/locales/${lang}.json`);
         if (!response.ok) throw new Error(`无法加载语言文件: ${lang}`);
         const translations = await response.json();
 
-        // 1. 动态更新页面标题
+        // 动态更新页面标题
         if (translations["page_title"]) {
             document.title = translations["page_title"];
         }
 
-        // 2. 遍历并动态更新所有带有 data-i18n 属性的标签内容
+        // 遍历并动态更新所有带有 data-i18n 属性的标签内容
         const elements = document.querySelectorAll("[data-i18n]");
         elements.forEach(element => {
             const key = element.getAttribute("data-i18n");
@@ -23,24 +24,26 @@ async function loadLanguage(lang) {
             }
         });
 
-        // 3. 状态持久化与变量更新
+        // 成功后，同步更新状态持久化缓存与全局变量
         localStorage.setItem("preferred_lang", lang);
-        currentLang = lang;
+        window.currentLang = lang;
 
-        // 4. 更新语言选择器高亮
+        // 更新语言选择器高亮 UI
         updateDropdownUI(lang);
 
-        // ✨ 关键架构联动：多语言文本渲染完成后，重新触发数字滚动动画
+        // 关键架构联动：重新触发数字滚动动画
         if (typeof triggerStatsCounter === "function") {
             triggerStatsCounter();
         }
+        
+        console.log(`[i18n] 语言已成功切换至: ${lang}`);
 
     } catch (error) {
-        console.error("国际化架构加载失败:", error);
+        console.error("国际化架构加载失败，请检查 /locales/ 路径及 JSON 格式:", error);
     }
 }
 
-// 更新语言下拉菜单的高亮 UI 状态
+// 3. 更新语言下拉菜单的高亮 UI 状态
 function updateDropdownUI(activeLang) {
     const options = document.querySelectorAll(".lang-option");
     options.forEach(option => {
@@ -52,21 +55,23 @@ function updateDropdownUI(activeLang) {
     });
 }
 
-// 确保 DOM 加载完毕后执行初始化与事件绑定
+// 4. 确保 DOM 树完全建立后，按照严格的拓扑顺序执行初始化
 document.addEventListener("DOMContentLoaded", () => {
-    // 强制指定 'en' 作为每次初始渲染的默认语言
+    // 强制每次刷新或首次进入时默认显示 'en' (英文)
     const defaultLang = 'en'; 
     
-    // 执行初始语言加载
+    // 步骤 A：先安全启动初始语言加载，确保 window.currentLang 得到正确写入
     loadLanguage(defaultLang);
 
-    // 绑定单一点击事件源
+    // 步骤 B：绑定点击事件，直接通过绑定的属性实时对比，防止作用域死锁
     const langOptions = document.querySelectorAll(".lang-option");
     langOptions.forEach(option => {
         option.addEventListener("click", (e) => {
             e.stopPropagation();
             const selectedLang = option.getAttribute("data-lang");
-            if (selectedLang !== currentLang) {
+            
+            // 健壮性检查：如果点击的语言和当前激活的语言不同，才触发异步异步抓取
+            if (selectedLang !== window.currentLang) {
                 loadLanguage(selectedLang);
             }
         });
