@@ -32,8 +32,8 @@
         h1 { font-size: 56px; margin: 0; display: flex; align-items: center; background: linear-gradient(120deg, #0070f3, #00a6f4); background-clip: text; -webkit-background-clip: text; color: transparent; white-space: nowrap; }
         h1 img { height: 160px; width: 160px; object-fit: contain; border-radius: 50%; margin-right: 16px; }
         
-        /* 导航菜单：通过 margin 调整整体往左挪动约 2 个格子的距离 (约 80px-100px) */
-        .nav-menu { display: flex; gap: 50px; margin-top: 15px; flex: 1; justify-content: center; margin-left: -90px; }
+        /* 导航菜单：微调向左挪动的距离平衡新增菜单后的居中感 */
+        .nav-menu { display: flex; gap: 50px; margin-top: 15px; flex: 1; justify-content: center; margin-left: -50px; }
         .nav-item { position: relative; cursor: pointer; padding: 25px 0; font-size: 16px; font-weight: 500; color: #cbd5e1; transition: color 0.2s; }
         .nav-item:hover { color: #fff; }
 
@@ -68,7 +68,7 @@
         .dropdown-grid { display: grid; grid-template-columns: repeat(2, minmax(220px, max-content)); gap: 16px; }
         
         /* 下拉小卡片样式包装与小图图标 */
-        .dropdown-link { display: flex; align-items: flex-start; gap: 14px; padding: 12px 16px; border-radius: 10px; text-decoration: none; transition: background 0.2s, transform 0.2s; }
+        .dropdown-link { display: flex; flex-start: gap: 14px; padding: 12px 16px; border-radius: 10px; text-decoration: none; transition: background 0.2s, transform 0.2s; gap: 14px; }
         .dropdown-link:hover { background: rgba(255, 255, 255, 0.05); transform: translateY(-1px); }
         
         /* 小图标样式容器 */
@@ -84,6 +84,12 @@
         .dropdown-link .text-box { display: flex; flex-direction: column; }
         .dropdown-link .title { font-size: 15px; font-weight: 600; color: #fff; white-space: nowrap; }
         .dropdown-link .desc { font-size: 12px; color: #8896a7; margin-top: 4px; white-space: nowrap; }
+
+        /* 免责声明专属宽面板：多条款规整排版 */
+        .disclaimer-grid { display: grid; grid-template-columns: repeat(2, 340px); gap: 20px 24px; }
+        .disclaimer-item { display: flex; flex-direction: column; gap: 4px; }
+        .disclaimer-item h4 { margin: 0; font-size: 14px; color: #00a6f4; font-weight: 600; }
+        .disclaimer-item p { margin: 0; font-size: 12px; color: #cbd5e1; line-height: 1.6; text-align: justify; }
 
         /* 右侧交互区固定 */
         .header-right { display: flex; align-items: center; gap: 45px; height: 100%; margin-top: 15px; min-width: max-content; }
@@ -179,6 +185,43 @@
                             <p style="font-size: 14px; color: #cbd5e1; line-height: 1.8; margin-top: 8px;">
                                 DewSecure 多年来活跃于各大漏洞赏金平台，深度参与众多项目的渗透测试与高阶代码审计，积累了丰富的实战经验。如今 AI 重新定义安全边界并且重塑全球网络安全格局，带来前所未有的复杂挑战，DewSecure 始终致力于维护数字世界的安全防线。
                             </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nav-item">
+                    <span data-i18n="disclaimer">免责声明</span>
+                    <div class="mega-dropdown">
+                        <div class="dropdown-intro" style="width: 200px;">
+                            <h3>免责声明</h3>
+                            <p>DewSecure 安全服务法律合规与服务性质责任限制说明。</p>
+                        </div>
+                        
+                        <div class="disclaimer-grid">
+                            <div class="disclaimer-item">
+                                <h4>1. 服务性质声明</h4>
+                                <p>DewSecure 提供的渗透测试、代码审计及安全咨询服务，旨在帮助客户发现和修复潜在安全风险。所有测试均在客户书面授权范围内进行，并严格遵循行业标准与合规要求。</p>
+                            </div>
+                            <div class="disclaimer-item">
+                                <h4>2. 技术局限性</h4>
+                                <p>尽管 DewSecure 采取专业的技术手段和严谨的评估流程，但由于网络攻击手段的不断演变及系统环境的复杂性，我们无法保证经过测试的系统在未来绝对不存在任何安全漏洞或风险。</p>
+                            </div>
+                            <div class="disclaimer-item">
+                                <h4>3. 第三方责任</h4>
+                                <p>本服务涉及的测试过程可能涉及对客户系统、数据或网络的访问。DewSecure 不对因第三方产品、服务或客户未及时修补漏洞而导致的任何损失承担责任。</p>
+                            </div>
+                            <div class="disclaimer-item">
+                                <h4>4. 网站内容</h4>
+                                <p>本网站所含信息仅供一般参考，不构成专业法律或技术建议。DewSecure 保留随时修改或更新网站内容的权利，无需另行通知。</p>
+                            </div>
+                            <div class="disclaimer-item">
+                                <h4>5. 知识产权</h4>
+                                <p>DewSecure 在服务过程中产生的报告、工具、方法论等智力成果，知识产权归属 DewSecure 所有，除非另有书面约定。</p>
+                            </div>
+                            <div class="disclaimer-item">
+                                <h4>6. 责任限制</h4>
+                                <p>在适用法律允许的最大范围内，DewSecure 不对因使用或无法使用本服务而造成的任何间接、附带、特殊或惩罚性损害承担责任，无论该损害是否基于合同、侵权或其他法律理论。</p>
+                            </div>
                         </div>
                     </div>
                 </div>
