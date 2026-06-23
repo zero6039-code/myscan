@@ -1,4 +1,3 @@
-// 背景动画 - 淡网格 + 两条红色线条（不同步）
 (function() {
     const canvas = document.createElement('canvas');
     canvas.id = 'bg-canvas';
@@ -20,6 +19,8 @@
     resize();
 
     const STEP = 110;
+    const DURATION = 3000;          // 3秒走完全程
+    const OFFSET = 200;             // 屏幕外偏移量
 
     function drawGrid() {
         ctx.strokeStyle = 'rgba(100, 200, 255, 0.08)';
@@ -38,6 +39,12 @@
         }
     }
 
+    // 获取所有网格线位置
+    function getGridIndices(maxVal) {
+        const count = Math.floor(maxVal / STEP) + 1;
+        return Array.from({ length: count }, (_, i) => i * STEP);
+    }
+
     class FlowLine {
         constructor() {
             this.active = false;
@@ -46,47 +53,46 @@
             this.x = 0;
             this.y = 0;
             this.startTime = 0;
-            this.duration = 3000; // 3秒走完全程
+            this.duration = DURATION;
             this.startX = 0;
             this.startY = 0;
             this.endX = 0;
             this.endY = 0;
+            this.direction = 0; // 0:左→右, 1:右→左, 2:上→下, 3:下→上
         }
 
-        start() {
-            const dir = Math.floor(Math.random() * 4);
-            // 将起点和终点都设在屏幕外较远（200px），确保线条能完整穿过
-            const offset = 200;
-            switch(dir) {
+        start(direction, gridPos) {
+            this.direction = direction;
+            switch (direction) {
                 case 0: // 左→右
-                    this.startX = -offset;
-                    this.startY = Math.floor(Math.random() * (h / STEP)) * STEP;
-                    this.endX = w + offset;
-                    this.endY = this.startY;
+                    this.startX = -OFFSET;
+                    this.startY = gridPos;
+                    this.endX = w + OFFSET;
+                    this.endY = gridPos;
                     break;
                 case 1: // 右→左
-                    this.startX = w + offset;
-                    this.startY = Math.floor(Math.random() * (h / STEP)) * STEP;
-                    this.endX = -offset;
-                    this.endY = this.startY;
+                    this.startX = w + OFFSET;
+                    this.startY = gridPos;
+                    this.endX = -OFFSET;
+                    this.endY = gridPos;
                     break;
                 case 2: // 上→下
-                    this.startX = Math.floor(Math.random() * (w / STEP)) * STEP;
-                    this.startY = -offset;
-                    this.endX = this.startX;
-                    this.endY = h + offset;
+                    this.startX = gridPos;
+                    this.startY = -OFFSET;
+                    this.endX = gridPos;
+                    this.endY = h + OFFSET;
                     break;
                 case 3: // 下→上
-                    this.startX = Math.floor(Math.random() * (w / STEP)) * STEP;
-                    this.startY = h + offset;
-                    this.endX = this.startX;
-                    this.endY = -offset;
+                    this.startX = gridPos;
+                    this.startY = h + OFFSET;
+                    this.endX = gridPos;
+                    this.endY = -OFFSET;
                     break;
             }
             this.x = this.startX;
             this.y = this.startY;
             this.startTime = performance.now();
-            this.tail = [];
+            this.tail = [{ x: this.x, y: this.y }];
             this.active = true;
         }
 
@@ -94,33 +100,30 @@
             if (!this.active) return false;
 
             const elapsed = (performance.now() - this.startTime) / this.duration;
-            // 关键修改：不再限制 progress 最大为 1，允许继续前进
-            const progress = elapsed; 
+            // 关键修复：不设上限，让线条持续运动直到尾部完全离开
+            const progress = elapsed;
 
-            // 更新位置（线性插值）
             this.x = this.startX + (this.endX - this.startX) * progress;
             this.y = this.startY + (this.endY - this.startY) * progress;
 
-            // 记录尾迹（采样间隔 0.3 像素）
-            if (this.tail.length === 0 || 
-                Math.abs(this.tail[this.tail.length-1].x - this.x) > 0.3 ||
-                Math.abs(this.tail[this.tail.length-1].y - this.y) > 0.3) {
+            if (this.tail.length === 0 ||
+                Math.abs(this.tail[this.tail.length - 1].x - this.x) > 0.3 ||
+                Math.abs(this.tail[this.tail.length - 1].y - this.y) > 0.3) {
                 this.tail.push({ x: this.x, y: this.y });
             }
             if (this.tail.length > this.tailLen) {
                 this.tail.shift();
             }
 
-            // 检测尾部最旧的点是否完全离开屏幕
-            if (this.tail.length > 0) {
+            // 尾部完全离开屏幕且进度足够才结束
+            if (progress >= 1.0 && this.tail.length > 0) {
                 const tailEnd = this.tail[0];
                 const margin = 50;
-                const out = (tailEnd.x < -margin || tailEnd.x > w + margin || tailEnd.y < -margin || tailEnd.y > h + margin);
+                const out = (tailEnd.x < -margin || tailEnd.x > w + margin ||
+                             tailEnd.y < -margin || tailEnd.y > h + margin);
                 if (out) {
-                    // 尾部已完全离开，立即重置（无延迟）
                     this.active = false;
                     this.tail = [];
-                    this.start(); // 直接开始下一条
                     return false;
                 }
             }
@@ -135,7 +138,7 @@
                 const widthFactor = Math.sin(progress * Math.PI);
                 const lineWidth = 0.5 + widthFactor * 2.0;
                 ctx.beginPath();
-                ctx.moveTo(this.tail[i-1].x, this.tail[i-1].y);
+                ctx.moveTo(this.tail[i - 1].x, this.tail[i - 1].y);
                 ctx.lineTo(this.tail[i].x, this.tail[i].y);
                 ctx.strokeStyle = `rgba(255, 50, 50, ${alpha})`;
                 ctx.lineWidth = lineWidth;
@@ -147,34 +150,152 @@
         }
     }
 
-    // 创建两条线
-    const line1 = new FlowLine();
-    const line2 = new FlowLine();
+    const lineA = new FlowLine();
+    const lineB = new FlowLine();
+    const lineC = new FlowLine();
 
-    line1.start();
-    // 第二条延迟 1.5~2.5 秒启动，避免同步
-    setTimeout(() => {
-        line2.start();
-    }, 1500 + Math.random() * 1000);
+    // 获取当前所有活跃的线条
+    function getActiveLines() {
+        const active = [];
+        if (lineA.active) active.push(lineA);
+        if (lineB.active) active.push(lineB);
+        if (lineC.active) active.push(lineC);
+        return active;
+    }
 
+    // 选择不与活跃线条冲突的路径
+    function choosePathForNewLine() {
+        const activeLines = getActiveLines();
+        const forbiddenHoriz = new Set(); // 禁止的水平轨道 (y)
+        const forbiddenVert = new Set();  // 禁止的垂直轨道 (x)
+
+        for (const line of activeLines) {
+            if (line.direction === 0 || line.direction === 1) {
+                forbiddenHoriz.add(line.startY);
+            } else {
+                forbiddenVert.add(line.startX);
+            }
+        }
+
+        const horizIndices = getGridIndices(h).filter(y => !forbiddenHoriz.has(y));
+        const vertIndices = getGridIndices(w).filter(x => !forbiddenVert.has(x));
+
+        const canHorizontal = horizIndices.length > 0;
+        const canVertical = vertIndices.length > 0;
+
+        // 极端情况（所有网格线都被占用）则随机选一条
+        if (!canHorizontal && !canVertical) {
+            const dir = Math.floor(Math.random() * 4);
+            if (dir <= 1) {
+                const allY = getGridIndices(h);
+                return { dir, pos: allY[Math.floor(Math.random() * allY.length)] };
+            } else {
+                const allX = getGridIndices(w);
+                return { dir, pos: allX[Math.floor(Math.random() * allX.length)] };
+            }
+        }
+
+        const allowedDirs = [];
+        if (canHorizontal) allowedDirs.push(0, 1);
+        if (canVertical) allowedDirs.push(2, 3);
+        const chosenDir = allowedDirs[Math.floor(Math.random() * allowedDirs.length)];
+
+        if (chosenDir <= 1) {
+            const y = horizIndices[Math.floor(Math.random() * horizIndices.length)];
+            return { dir: chosenDir, pos: y };
+        } else {
+            const x = vertIndices[Math.floor(Math.random() * vertIndices.length)];
+            return { dir: chosenDir, pos: x };
+        }
+    }
+
+    // 为指定线条安排自动循环
+    function scheduleLineLoop(line) {
+        const restart = () => {
+            // 只在完全停止时重启
+            if (!line.active && line.tail.length === 0) {
+                const { dir, pos } = choosePathForNewLine();
+                line.start(dir, pos);
+            }
+        };
+        // 使用 MutationObserver 或者直接在动画循环中检查更方便
+        // 这里采用动画循环中统一处理，避免定时器累积
+        line._pendingRestart = false; // 标记，防止重复重启
+    }
+
+    // 动画循环
     function animate() {
         ctx.clearRect(0, 0, w, h);
         drawGrid();
 
-        line1.update();
-        line1.draw(ctx);
+        lineA.update();
+        lineB.update();
+        lineC.update();
 
-        line2.update();
-        line2.draw(ctx);
+        lineA.draw(ctx);
+        lineB.draw(ctx);
+        lineC.draw(ctx);
+
+        // 每条线结束后自动重启（避让轨道）
+        [lineA, lineB, lineC].forEach(line => {
+            if (!line.active && line.tail.length === 0 && !line._restartScheduled) {
+                line._restartScheduled = true;
+                // 微延迟确保旧线条完全清除，避免闪烁
+                setTimeout(() => {
+                    line._restartScheduled = false;
+                    if (!line.active) {
+                        const { dir, pos } = choosePathForNewLine();
+                        line.start(dir, pos);
+                    }
+                }, 10);
+            }
+        });
 
         requestAnimationFrame(animate);
     }
 
+    // 初始延时启动
+    const timers = [];
+    function startAllWithDelay() {
+        // 清除旧定时器
+        timers.forEach(clearTimeout);
+        timers.length = 0;
+
+        // A线立即启动
+        const { dir: dirA, pos: posA } = choosePathForNewLine();
+        lineA.start(dirA, posA);
+
+        // B线 1.5秒后启动
+        timers.push(setTimeout(() => {
+            const { dir, pos } = choosePathForNewLine();
+            lineB.start(dir, pos);
+        }, 1500));
+
+        // C线 2.5秒后启动
+        timers.push(setTimeout(() => {
+            const { dir, pos } = choosePathForNewLine();
+            lineC.start(dir, pos);
+        }, 2500));
+    }
+
+    startAllWithDelay();
     animate();
 
-    // 窗口大小变化时简单处理，防止线条跑飞
+    // 窗口缩放时重置所有状态
     window.addEventListener('resize', () => {
-        // 如果线条超出新边界，强制重置（但我们的 update 中会自动检测尾部离开）
-        // 这里仅做保护，非必须
+        // 停止所有线条
+        lineA.active = false;
+        lineB.active = false;
+        lineC.active = false;
+        lineA.tail = [];
+        lineB.tail = [];
+        lineC.tail = [];
+        // 清除重启标记
+        lineA._restartScheduled = false;
+        lineB._restartScheduled = false;
+        lineC._restartScheduled = false;
+
+        // 重新按延时启动
+        startAllWithDelay();
     });
 })();
