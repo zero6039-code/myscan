@@ -19,7 +19,7 @@
     window.addEventListener('resize', resize);
     resize();
 
-    const STEP = 150; // 网格间距调大
+    const STEP = 110; // 网格间距 110
 
     // 网格颜色更浅
     function drawGrid() {
@@ -39,7 +39,7 @@
         }
     }
 
-    // 红色线条类（基于真实时间，沿网格方向）
+    // 红色线条类（尾部完全离开后才结束）
     class FlowLine {
         constructor() {
             this.active = false;
@@ -54,10 +54,12 @@
             this.startY = 0;
             this.endX = 0;
             this.endY = 0;
+            // 增加一个标志，表示是否已经到达终点（但继续移动直到尾部离开）
+            this.reachedEnd = false;
         }
 
         start() {
-            const dir = Math.floor(Math.random() * 4); // 0:左→右, 1:右→左, 2:上→下, 3:下→上
+            const dir = Math.floor(Math.random() * 4);
             const offset = 20;
             switch(dir) {
                 case 0:
@@ -90,15 +92,37 @@
             this.startTime = performance.now();
             this.tail = [];
             this.active = true;
+            this.reachedEnd = false;
         }
 
         update() {
             if (!this.active) return false;
-            const elapsed = (performance.now() - this.startTime) / this.duration;
-            const progress = Math.min(elapsed, 1.0);
-            this.x = this.startX + (this.endX - this.startX) * progress;
-            this.y = this.startY + (this.endY - this.startY) * progress;
 
+            const elapsed = (performance.now() - this.startTime) / this.duration;
+            let progress = Math.min(elapsed, 1.0);
+
+            // 如果已经到达终点，但尾部还没离开，则继续移动（超出终点额外移动一段）
+            let extra = 0;
+            if (progress >= 1.0) {
+                this.reachedEnd = true;
+                // 继续移动，让线条超出终点，直到尾部离开
+                extra = (elapsed - 1.0) * (this.duration / 100); // 额外的移动量
+                // 限制额外移动量，防止无限远
+                const maxExtra = 300; // 额外移动最多300像素
+                if (extra > maxExtra) extra = maxExtra;
+            }
+
+            // 计算当前坐标（在终点基础上再偏移 extra 距离）
+            const dx = this.endX - this.startX;
+            const dy = this.endY - this.startY;
+            const len = Math.sqrt(dx*dx + dy*dy);
+            if (len === 0) return false;
+            const unitX = dx / len;
+            const unitY = dy / len;
+            this.x = this.startX + dx * progress + unitX * extra;
+            this.y = this.startY + dy * progress + unitY * extra;
+
+            // 记录尾迹
             if (this.tail.length === 0 || 
                 Math.abs(this.tail[this.tail.length-1].x - this.x) > 0.3 ||
                 Math.abs(this.tail[this.tail.length-1].y - this.y) > 0.3) {
@@ -108,12 +132,18 @@
                 this.tail.shift();
             }
 
-            if (progress >= 1.0) {
-                this.active = false;
-                this.tail = [];
-                clearTimeout(this.timer);
-                this.timer = setTimeout(() => this.start(), 200);
-                return false;
+            // 检测尾部最旧的点是否完全离开屏幕
+            if (this.tail.length > 0) {
+                const tailEnd = this.tail[0];
+                const margin = 50;
+                const out = (tailEnd.x < -margin || tailEnd.x > w + margin || tailEnd.y < -margin || tailEnd.y > h + margin);
+                if (out) {
+                    this.active = false;
+                    this.tail = [];
+                    clearTimeout(this.timer);
+                    this.timer = setTimeout(() => this.start(), 200);
+                    return false;
+                }
             }
             return true;
         }
@@ -122,9 +152,10 @@
             if (!this.active || this.tail.length < 2) return;
             for (let i = 1; i < this.tail.length; i++) {
                 const progress = i / this.tail.length;
-                const alpha = 0.02 + progress * 0.35; // 更淡的拖尾
+                const alpha = 0.02 + progress * 0.35;
                 const widthFactor = Math.sin(progress * Math.PI);
-                const lineWidth = 0.5 + widthFactor * 1.2;
+                // 加粗线条：最大宽度从 1.2 提高到 2.5
+                const lineWidth = 0.5 + widthFactor * 2.0;
                 ctx.beginPath();
                 ctx.moveTo(this.tail[i-1].x, this.tail[i-1].y);
                 ctx.lineTo(this.tail[i].x, this.tail[i].y);
