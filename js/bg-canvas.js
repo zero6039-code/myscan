@@ -1,4 +1,4 @@
-// 背景动画 - 淡网格 + 两条红色线条沿网格方向移动（带拖尾）
+// 背景动画 - 淡网格 + 两条红色线条（不同步）
 (function() {
     const canvas = document.createElement('canvas');
     canvas.id = 'bg-canvas';
@@ -46,18 +46,16 @@
             this.x = 0;
             this.y = 0;
             this.startTime = 0;
-            this.duration = 3000; // 3秒走完
+            this.duration = 3000;
             this.startX = 0;
             this.startY = 0;
             this.endX = 0;
             this.endY = 0;
-            // 随机颜色微调（红/橙红差异，视觉上更自然）
-            this.hue = Math.floor(Math.random() * 20) + 340; // 340~360 红色系
         }
 
         start() {
             const dir = Math.floor(Math.random() * 4);
-            const offset = 200;
+            const offset = 20; // 屏幕外一点点，头部快速进入
             switch(dir) {
                 case 0:
                     this.startX = -offset;
@@ -95,7 +93,7 @@
             if (!this.active) return false;
 
             const elapsed = (performance.now() - this.startTime) / this.duration;
-            const progress = elapsed; // 不限制，允许超过1.0
+            const progress = Math.min(elapsed, 1.0); // 限制最大1，头部到终点即结束
 
             this.x = this.startX + (this.endX - this.startX) * progress;
             this.y = this.startY + (this.endY - this.startY) * progress;
@@ -109,16 +107,12 @@
                 this.tail.shift();
             }
 
-            // 尾部完全离开屏幕 → 同步重置，立即开始新线条
-            if (this.tail.length > 0) {
-                const tailEnd = this.tail[0];
-                const margin = 50;
-                const out = (tailEnd.x < -margin || tailEnd.x > w + margin || tailEnd.y < -margin || tailEnd.y > h + margin);
-                if (out) {
-                    // 直接重置，不依赖 setTimeout
-                    this.start();
-                    return false; // 告诉调用者已重置，无需再更新
-                }
+            // 头部到达终点时，立即结束（不等尾部）
+            if (progress >= 1.0) {
+                this.active = false;
+                // 延迟 200ms 后启动下一条（保证视觉连续）
+                setTimeout(() => this.start(), 200);
+                return false;
             }
             return true;
         }
@@ -133,10 +127,9 @@
                 ctx.beginPath();
                 ctx.moveTo(this.tail[i-1].x, this.tail[i-1].y);
                 ctx.lineTo(this.tail[i].x, this.tail[i].y);
-                // 使用动态色相（红色系微调）
-                ctx.strokeStyle = `hsla(${this.hue}, 90%, 50%, ${alpha})`;
+                ctx.strokeStyle = `rgba(255, 50, 50, ${alpha})`;
                 ctx.lineWidth = lineWidth;
-                ctx.shadowColor = `hsla(${this.hue}, 90%, 50%, 0.05)`;
+                ctx.shadowColor = 'rgba(255,0,0,0.05)';
                 ctx.shadowBlur = 3;
                 ctx.stroke();
             }
@@ -148,18 +141,16 @@
     const line1 = new FlowLine();
     const line2 = new FlowLine();
 
-    line1.start(); // 第一条立即启动
-
-    // 第二条延迟 1~2 秒启动，避免同步
+    line1.start();
+    // 第二条延迟 1.5~2.5 秒启动，避免同步
     setTimeout(() => {
         line2.start();
-    }, 1000 + Math.random() * 1000);
+    }, 1500 + Math.random() * 1000);
 
     function animate() {
         ctx.clearRect(0, 0, w, h);
         drawGrid();
 
-        // 更新并绘制两条线
         line1.update();
         line1.draw(ctx);
 
@@ -171,8 +162,18 @@
 
     animate();
 
+    // 窗口大小变化时重置，防止线条跑飞
     window.addEventListener('resize', () => {
-        // 如果线条超出新边界，强制重置（但我们的自动重置已处理）
-        // 可留空，因为 update() 中会检测尾部离开
+        // 简单处理：如果线条超出新边界，强制重置
+        if (line1.x > w + 100 || line1.x < -100 || line1.y > h + 100 || line1.y < -100) {
+            line1.active = false;
+            line1.tail = [];
+            setTimeout(() => line1.start(), 100);
+        }
+        if (line2.x > w + 100 || line2.x < -100 || line2.y > h + 100 || line2.y < -100) {
+            line2.active = false;
+            line2.tail = [];
+            setTimeout(() => line2.start(), 100);
+        }
     });
 })();
