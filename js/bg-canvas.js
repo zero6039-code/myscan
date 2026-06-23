@@ -46,7 +46,7 @@
             this.x = 0;
             this.y = 0;
             this.startTime = 0;
-            this.duration = 3000;
+            this.duration = 3000; // 3秒走完全程
             this.startX = 0;
             this.startY = 0;
             this.endX = 0;
@@ -55,27 +55,28 @@
 
         start() {
             const dir = Math.floor(Math.random() * 4);
-            const offset = 20; // 屏幕外一点点，头部快速进入
+            // 将起点和终点都设在屏幕外较远（200px），确保线条能完整穿过
+            const offset = 200;
             switch(dir) {
-                case 0:
+                case 0: // 左→右
                     this.startX = -offset;
                     this.startY = Math.floor(Math.random() * (h / STEP)) * STEP;
                     this.endX = w + offset;
                     this.endY = this.startY;
                     break;
-                case 1:
+                case 1: // 右→左
                     this.startX = w + offset;
                     this.startY = Math.floor(Math.random() * (h / STEP)) * STEP;
                     this.endX = -offset;
                     this.endY = this.startY;
                     break;
-                case 2:
+                case 2: // 上→下
                     this.startX = Math.floor(Math.random() * (w / STEP)) * STEP;
                     this.startY = -offset;
                     this.endX = this.startX;
                     this.endY = h + offset;
                     break;
-                case 3:
+                case 3: // 下→上
                     this.startX = Math.floor(Math.random() * (w / STEP)) * STEP;
                     this.startY = h + offset;
                     this.endX = this.startX;
@@ -93,11 +94,14 @@
             if (!this.active) return false;
 
             const elapsed = (performance.now() - this.startTime) / this.duration;
-            const progress = Math.min(elapsed, 1.0); // 限制最大1，头部到终点即结束
+            // 关键修改：不再限制 progress 最大为 1，允许继续前进
+            const progress = elapsed; 
 
+            // 更新位置（线性插值）
             this.x = this.startX + (this.endX - this.startX) * progress;
             this.y = this.startY + (this.endY - this.startY) * progress;
 
+            // 记录尾迹（采样间隔 0.3 像素）
             if (this.tail.length === 0 || 
                 Math.abs(this.tail[this.tail.length-1].x - this.x) > 0.3 ||
                 Math.abs(this.tail[this.tail.length-1].y - this.y) > 0.3) {
@@ -107,12 +111,18 @@
                 this.tail.shift();
             }
 
-            // 头部到达终点时，立即结束（不等尾部）
-            if (progress >= 1.0) {
-                this.active = false;
-                // 延迟 200ms 后启动下一条（保证视觉连续）
-                setTimeout(() => this.start(), 200);
-                return false;
+            // 检测尾部最旧的点是否完全离开屏幕
+            if (this.tail.length > 0) {
+                const tailEnd = this.tail[0];
+                const margin = 50;
+                const out = (tailEnd.x < -margin || tailEnd.x > w + margin || tailEnd.y < -margin || tailEnd.y > h + margin);
+                if (out) {
+                    // 尾部已完全离开，立即重置（无延迟）
+                    this.active = false;
+                    this.tail = [];
+                    this.start(); // 直接开始下一条
+                    return false;
+                }
             }
             return true;
         }
@@ -162,18 +172,9 @@
 
     animate();
 
-    // 窗口大小变化时重置，防止线条跑飞
+    // 窗口大小变化时简单处理，防止线条跑飞
     window.addEventListener('resize', () => {
-        // 简单处理：如果线条超出新边界，强制重置
-        if (line1.x > w + 100 || line1.x < -100 || line1.y > h + 100 || line1.y < -100) {
-            line1.active = false;
-            line1.tail = [];
-            setTimeout(() => line1.start(), 100);
-        }
-        if (line2.x > w + 100 || line2.x < -100 || line2.y > h + 100 || line2.y < -100) {
-            line2.active = false;
-            line2.tail = [];
-            setTimeout(() => line2.start(), 100);
-        }
+        // 如果线条超出新边界，强制重置（但我们的 update 中会自动检测尾部离开）
+        // 这里仅做保护，非必须
     });
 })();
