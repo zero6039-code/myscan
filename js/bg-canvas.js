@@ -1,4 +1,4 @@
-// 背景动画 - 淡网格 + 红线条沿网格方向移动（带拖尾）
+// 背景动画 - 淡网格 + 两条红色线条沿网格方向移动（带拖尾）
 (function() {
     const canvas = document.createElement('canvas');
     canvas.id = 'bg-canvas';
@@ -45,38 +45,39 @@
             this.tailLen = 80;
             this.x = 0;
             this.y = 0;
-            this.timer = null;
             this.startTime = 0;
             this.duration = 3000; // 3秒走完
             this.startX = 0;
             this.startY = 0;
             this.endX = 0;
             this.endY = 0;
+            // 随机颜色微调（红/橙红差异，视觉上更自然）
+            this.hue = Math.floor(Math.random() * 20) + 340; // 340~360 红色系
         }
 
         start() {
             const dir = Math.floor(Math.random() * 4);
-            const offset = 200; // 起点和终点都在屏幕外较远
+            const offset = 200;
             switch(dir) {
-                case 0: // 左→右
+                case 0:
                     this.startX = -offset;
                     this.startY = Math.floor(Math.random() * (h / STEP)) * STEP;
                     this.endX = w + offset;
                     this.endY = this.startY;
                     break;
-                case 1: // 右→左
+                case 1:
                     this.startX = w + offset;
                     this.startY = Math.floor(Math.random() * (h / STEP)) * STEP;
                     this.endX = -offset;
                     this.endY = this.startY;
                     break;
-                case 2: // 上→下
+                case 2:
                     this.startX = Math.floor(Math.random() * (w / STEP)) * STEP;
                     this.startY = -offset;
                     this.endX = this.startX;
                     this.endY = h + offset;
                     break;
-                case 3: // 下→上
+                case 3:
                     this.startX = Math.floor(Math.random() * (w / STEP)) * STEP;
                     this.startY = h + offset;
                     this.endX = this.startX;
@@ -94,14 +95,11 @@
             if (!this.active) return false;
 
             const elapsed = (performance.now() - this.startTime) / this.duration;
-            // 不限制 progress，允许超过 1.0，线条会匀速穿过屏幕并继续前进
-            const progress = elapsed;
+            const progress = elapsed; // 不限制，允许超过1.0
 
-            // 线性插值计算位置
             this.x = this.startX + (this.endX - this.startX) * progress;
             this.y = this.startY + (this.endY - this.startY) * progress;
 
-            // 记录尾迹（采样间隔 0.3 像素）
             if (this.tail.length === 0 || 
                 Math.abs(this.tail[this.tail.length-1].x - this.x) > 0.3 ||
                 Math.abs(this.tail[this.tail.length-1].y - this.y) > 0.3) {
@@ -111,18 +109,15 @@
                 this.tail.shift();
             }
 
-            // 检测尾部最旧的点是否完全离开屏幕
+            // 尾部完全离开屏幕 → 同步重置，立即开始新线条
             if (this.tail.length > 0) {
                 const tailEnd = this.tail[0];
                 const margin = 50;
                 const out = (tailEnd.x < -margin || tailEnd.x > w + margin || tailEnd.y < -margin || tailEnd.y > h + margin);
                 if (out) {
-                    this.active = false;
-                    this.tail = [];
-                    clearTimeout(this.timer);
-                    // 立即生成下一条（无延迟）
-                    this.timer = setTimeout(() => this.start(), 0);
-                    return false;
+                    // 直接重置，不依赖 setTimeout
+                    this.start();
+                    return false; // 告诉调用者已重置，无需再更新
                 }
             }
             return true;
@@ -131,16 +126,17 @@
         draw(ctx) {
             if (!this.active || this.tail.length < 2) return;
             for (let i = 1; i < this.tail.length; i++) {
-                const progress = i / this.tail.length; // 0~1 尾部→头部
+                const progress = i / this.tail.length;
                 const alpha = 0.02 + progress * 0.35;
                 const widthFactor = Math.sin(progress * Math.PI);
-                const lineWidth = 0.5 + widthFactor * 2.0; // 最大宽度 2.5
+                const lineWidth = 0.5 + widthFactor * 2.0;
                 ctx.beginPath();
                 ctx.moveTo(this.tail[i-1].x, this.tail[i-1].y);
                 ctx.lineTo(this.tail[i].x, this.tail[i].y);
-                ctx.strokeStyle = `rgba(255, 50, 50, ${alpha})`;
+                // 使用动态色相（红色系微调）
+                ctx.strokeStyle = `hsla(${this.hue}, 90%, 50%, ${alpha})`;
                 ctx.lineWidth = lineWidth;
-                ctx.shadowColor = 'rgba(255,0,0,0.05)';
+                ctx.shadowColor = `hsla(${this.hue}, 90%, 50%, 0.05)`;
                 ctx.shadowBlur = 3;
                 ctx.stroke();
             }
@@ -148,28 +144,35 @@
         }
     }
 
-    const flowLine = new FlowLine();
-    flowLine.start();
+    // 创建两条线
+    const line1 = new FlowLine();
+    const line2 = new FlowLine();
+
+    line1.start(); // 第一条立即启动
+
+    // 第二条延迟 1~2 秒启动，避免同步
+    setTimeout(() => {
+        line2.start();
+    }, 1000 + Math.random() * 1000);
 
     function animate() {
         ctx.clearRect(0, 0, w, h);
         drawGrid();
-        flowLine.update();
-        flowLine.draw(ctx);
+
+        // 更新并绘制两条线
+        line1.update();
+        line1.draw(ctx);
+
+        line2.update();
+        line2.draw(ctx);
+
         requestAnimationFrame(animate);
     }
 
     animate();
 
     window.addEventListener('resize', () => {
-        if (flowLine.active) {
-            const margin = 200;
-            if (flowLine.x < -margin || flowLine.x > w + margin || flowLine.y < -margin || flowLine.y > h + margin) {
-                flowLine.active = false;
-                flowLine.tail = [];
-                clearTimeout(flowLine.timer);
-                flowLine.timer = setTimeout(() => flowLine.start(), 0);
-            }
-        }
+        // 如果线条超出新边界，强制重置（但我们的自动重置已处理）
+        // 可留空，因为 update() 中会检测尾部离开
     });
 })();
