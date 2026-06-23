@@ -1,5 +1,5 @@
 /* ==========================================================================
-   1. 基础全局样式与重置 (Global Styles)
+   1. 基础全局样式与暗黑网格风重置 (Global Styles)
    ========================================================================== */
 * {
     margin: 0;
@@ -8,11 +8,20 @@
 }
 
 body {
-    background-color: #0b0b0f;
+    background-color: #050508;
     color: #ffffff;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
+}
+
+/* 补回你原本炫酷的网页红黑背景网格线效果 */
+.placeholder-message, body {
+    background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    background-position: center;
 }
 
 .container {
@@ -20,17 +29,19 @@ body {
     max-width: 1440px;
     margin: 0 auto;
     padding: 0 40px;
+    height: 100%; /* 确保子元素能撑满 Header 的 90px */
 }
 
 /* ==========================================================================
-   2. 导航栏布局 (Header Styles)
+   2. 导航栏布局与 Logo 微调 (Header Styles)
    ========================================================================== */
 .header {
     width: 100%;
     height: 90px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    background-color: rgba(11, 11, 15, 0.8);
-    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    background-color: rgba(5, 5, 8, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     position: fixed;
     top: 0;
     left: 0;
@@ -38,7 +49,6 @@ body {
 }
 
 .header-container {
-    height: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -47,36 +57,37 @@ body {
 /* 💡 Logo 区域：往右下方偏移微调 */
 .logo-link {
     text-decoration: none;
+    display: block;
 }
 
 .brand-logo-group {
     display: flex;
     align-items: center;
     gap: 12px;
-    transform: translate(15px, 8px); /* 向右移 15px，向下移 8px */
-    transition: transform 0.3s ease;
+    transform: translate(15px, 8px); /* 精准向右下偏移 */
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .brand-logo-img {
-    height: 38px;
-    width: 38px;
+    height: 42px;
+    width: 42px;
     object-fit: contain;
 }
 
 .brand-name {
     color: #ffffff;
-    font-size: 24px;
+    font-size: 26px;
     font-weight: 700;
     letter-spacing: -0.5px;
 }
 
 /* ==========================================================================
-   3. 中央菜单与下拉面板样式 (Navigation Menu & Dropdowns)
+   3. 中央主菜单与下拉悬浮面板样式 (Navigation Dropdowns)
    ========================================================================== */
 .nav-menu {
     display: flex;
     align-items: center;
-    gap: 36px;
+    gap: 40px;
     height: 100%;
 }
 
@@ -85,38 +96,38 @@ body {
     height: 100%;
     display: flex;
     align-items: center;
-    cursor: pointer;
 }
 
 .nav-link-text {
     font-size: 15px;
     color: #94a3b8;
-    transition: color 0.3s ease;
+    text-decoration: none;
+    transition: color 0.2s ease;
+    user-select: none;
 }
 
 .nav-item:hover .nav-link-text {
     color: #ffffff;
 }
 
-/* 通用巨型下拉面板 */
+/* 统一巨型下拉面板样式基类 */
 .mega-dropdown {
     position: absolute;
-    top: 100%;
+    top: 90px; /* 紧贴 Header 下边缘 */
     left: 50%;
-    transform: translateX(-50%) translateY(10px);
-    background: #111116;
+    transform: translateX(-50%) translateY(12px);
+    background: #0d0d12;
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 16px;
     padding: 24px;
-    width: max-content;
-    min-width: 280px;
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 40px 80px rgba(0, 0, 0, 0.7);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* 悬浮激活触发 */
 .nav-item:hover .mega-dropdown {
     opacity: 1;
     visibility: visible;
@@ -127,12 +138,13 @@ body {
 .dropdown-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 8px;
+    gap: 6px;
+    min-width: 200px;
 }
 
 .dropdown-link {
     display: block;
-    padding: 12px 16px;
+    padding: 12px 18px;
     border-radius: 8px;
     text-decoration: none;
     transition: background 0.2s ease;
@@ -145,19 +157,18 @@ body {
 .dropdown-link .title {
     color: #ffffff;
     font-size: 15px;
-    font-weight: 500;
 }
 
-/* 公司介绍特定宽度 */
-.company-dropdown {
-    width: 320px;
+/* 调整公司介绍尺寸 */
+.company-box {
+    width: 340px;
 }
 
 .dropdown-panel-title {
     font-size: 18px;
     font-weight: 600;
     color: #ffffff;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 
 .dropdown-panel-desc {
@@ -166,15 +177,15 @@ body {
     line-height: 1.6;
 }
 
-/* 免责声明大型双栏面板 (图3修复) */
-.disclaimer-dropdown {
-    width: 800px;
+/* 免责声明双栏控制 */
+.disclaimer-box {
+    width: 820px;
     display: flex;
     gap: 40px;
 }
 
 .disclaimer-left {
-    width: 260px;
+    width: 250px;
     border-right: 1px solid rgba(255, 255, 255, 0.06);
     padding-right: 24px;
 }
@@ -200,15 +211,15 @@ body {
 }
 
 /* ==========================================================================
-   4. 右侧控制区、多语言、以及数字滚动槽
+   4. 右侧控制区、多语言、以及数字滚动槽 (PC锁死 56px 高度)
    ========================================================================== */
 .header-right {
     display: flex;
     align-items: center;
-    gap: 32px;
+    gap: 36px;
+    height: 100%;
 }
 
-/* 语言切换 */
 .lang-selector {
     display: flex;
     align-items: center;
@@ -220,6 +231,7 @@ body {
     color: #64748b;
     cursor: pointer;
     transition: color 0.2s ease;
+    font-weight: 500;
 }
 
 .lang-option:hover, .lang-option.active {
@@ -227,25 +239,22 @@ body {
 }
 
 .lang-split {
-    color: #334155;
+    color: #27272a;
 }
 
-/* 滚动数字容器 */
 .nav-stats {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
 }
 
 .nav-stats .label {
     font-size: 11px;
     color: #64748b;
     margin-top: 4px;
-    letter-spacing: 0.5px;
 }
 
-/* 核心滚动视窗：PC 端锁死 56px 高度 */
+/* 数字槽对齐加锁 */
 .counter-runner {
     display: inline-flex !important;
     overflow: hidden !important;
@@ -254,7 +263,6 @@ body {
     font-size: 56px !important;
     font-weight: 700;
     color: #ffffff;
-    letter-spacing: -1px;
 }
 
 .counter-digit-slot {
@@ -270,13 +278,11 @@ body {
     height: 56px !important;
     line-height: 56px !important;
     text-align: center;
-    margin: 0 !important;
     padding: 0 2px !important;
-    box-sizing: border-box !important;
 }
 
 /* ==========================================================================
-   5. 主体内容展位样式 (高级无粗体 Web3 科技感 Hero 区域)
+   5. 高级无粗体 Web3 科技感 Hero 展现区
    ========================================================================== */
 .placeholder-message {
     text-align: center;
@@ -284,56 +290,55 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    padding: 90px 24px 40px 24px; /* 避开固定导航栏高度 */
+    padding-top: 90px; /* 防止标题被固定的 Header 挡住 */
 }
 
 .hero-content {
-    max-width: 1100px;
-    animation: fadeInHero 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+    max-width: 1050px;
+    animation: fadeInHero 1s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-/* 高级细体超大标题 */
+/* 高级科技感大字号（去掉粗体） */
 .hero-title {
     font-size: 64px;
-    font-weight: 300; /* 去掉粗体，改为高端轻量级 */
+    font-weight: 300; /* 高级轻量化字重 */
     letter-spacing: -1.5px;
-    line-height: 1.15;
-    margin: 0 0 32px 0;
-    background: linear-gradient(180deg, #ffffff 40%, rgba(255, 255, 255, 0.65) 100%);
+    line-height: 1.2;
+    margin-bottom: 36px;
+    background: linear-gradient(180deg, #ffffff 30%, rgba(255, 255, 255, 0.6) 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    text-shadow: 0 0 80px rgba(165, 180, 252, 0.08);
 }
 
-/* 描述文本玻璃卡片 */
+/* 描述卡片 */
 .hero-desc {
     color: #94a3b8;
     font-size: 16px;
     line-height: 1.8;
     margin: 0 auto;
-    max-width: 840px;
-    font-weight: 400;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
-    padding: 28px 48px;
+    max-width: 800px;
+    background: rgba(255, 255, 255, 0.02);
+    padding: 32px 48px;
     border-radius: 20px;
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.06);
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
     text-align: justify;
 }
 
 @keyframes fadeInHero {
-    from { opacity: 0; transform: translateY(30px); }
+    from { opacity: 0; transform: translateY(24px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
 /* ==========================================================================
-   6. 📱 移动端与自适应媒体查询 (Responsive Media Queries)
+   6. 📱 移动端自适应响应式锁死
    ========================================================================== */
 @media screen and (max-width: 1024px) {
     .container {
-        padding: 16px 20px;
+        padding: 0 24px;
     }
     
     .header {
@@ -343,8 +348,7 @@ body {
     
     .header-container {
         flex-direction: column;
-        gap: 20px;
-        height: auto;
+        gap: 16px;
         padding: 16px 0;
     }
     
@@ -354,42 +358,30 @@ body {
     
     .nav-menu {
         width: 100%;
-        gap: 20px;
+        gap: 16px;
         justify-content: center;
         flex-wrap: wrap;
     }
     
     .nav-item {
         height: auto;
-        padding: 8px 0;
     }
     
-    /* 📱 移动端滚动数字严格锁定 38px 高度 */
-    .counter-runner {
+    /* 📱 移动端滚动数字锁死 38px 高度 */
+    .counter-runner, .counter-digit-slot, .counter-digit-slot span {
         height: 38px !important;
         font-size: 38px !important;
         line-height: 38px !important;
     }
     
-    .counter-digit-slot {
-        height: 38px !important;
-        line-height: 38px !important;
-    }
-    
-    .counter-digit-slot span {
-        height: 38px !important;
-        line-height: 38px !important;
-    }
-    
-    /* 移动端主内容区缩放 */
     .placeholder-message {
         min-height: auto;
-        padding: 40px 16px;
+        padding: 60px 16px;
     }
     
     .hero-title {
-        font-size: 36px;
-        font-weight: 400; /* 移动端低分辨率下稍微加深防止笔画发虚 */
+        font-size: 34px;
+        font-weight: 400; /* 移动端防虚化 */
         letter-spacing: -0.5px;
     }
     
@@ -398,33 +390,26 @@ body {
         padding: 20px 24px;
     }
     
-    /* 移动端折叠面板逻辑回退 */
-    .mega-dropdown {
+    /* 下拉面板移动端平铺 */
+    .mega-dropdown, .disclaimer-box {
         position: fixed;
         top: auto;
         bottom: 0;
         left: 0;
         transform: none;
         width: 100vw;
-        max-height: 75vh;
+        max-height: 70vh;
         overflow-y: auto;
         border-radius: 20px 20px 0 0;
         flex-direction: column;
-        gap: 20px;
-    }
-    
-    .disclaimer-dropdown {
-        width: 100vw;
-        flex-direction: column;
-        gap: 20px;
+        gap: 16px;
     }
     
     .disclaimer-left {
         width: 100%;
         border-right: none;
-        padding-right: 0;
+        padding-bottom: 12px;
         border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-        padding-bottom: 16px;
     }
     
     .disclaimer-grid {
