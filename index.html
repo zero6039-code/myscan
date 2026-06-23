@@ -27,23 +27,24 @@
         /* 头部总线控制布局 */
         .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; position: relative; z-index: 100; height: 160px; }
         
-        /* 左侧区：保持原本的巨大 H1 视觉重量 */
-        .header-left { display: flex; align-items: center; gap: 40px; }
+        /* 左侧区：加大 gap 让右边的菜单更靠右 */
+        .header-left { display: flex; align-items: center; gap: 80px; flex: 1; }
         h1 { font-size: 56px; margin: 0; display: flex; align-items: center; background: linear-gradient(120deg, #0070f3, #00a6f4); background-clip: text; -webkit-background-clip: text; color: transparent; white-space: nowrap; }
         h1 img { height: 160px; width: 160px; object-fit: contain; border-radius: 50%; margin-right: 16px; }
         
-        /* 中间菜单紧跟左侧移动，取消展开箭头 */
-        .nav-menu { display: flex; gap: 35px; margin-top: 15px; }
-        .nav-item { position: relative; cursor: pointer; padding: 15px 0; font-size: 16px; font-weight: 500; color: #cbd5e1; transition: color 0.2s; }
+        /* 中间菜单紧跟左侧移动，右移一个格子感 */
+        .nav-menu { display: flex; gap: 40px; margin-top: 15px; margin-left: auto; padding-right: 40px; }
+        .nav-item { position: relative; cursor: pointer; padding: 25px 0; font-size: 16px; font-weight: 500; color: #cbd5e1; transition: color 0.2s; }
         .nav-item:hover { color: #fff; }
 
-        /* 丝滑多列大面板下拉单 */
-        .mega-dropdown { position: absolute; top: 110px; left: 0; width: 620px; background: rgba(13, 13, 20, 0.92); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.7); display: grid; grid-template-columns: 1fr 1fr; gap: 20px; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); pointer-events: auto; }
-        .nav-item:hover .mega-dropdown { opacity: 1; visibility: visible; transform: translateY(0); }
+        /* 丝滑多列大面板下拉单：调整为自适应宽度并贴近上方 */
+        .mega-dropdown { position: absolute; top: 68px; left: 50%; transform: translateX(-50%) translateY(10px); width: max-content; min-width: 280px; background: rgba(13, 13, 20, 0.92); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.7); display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; opacity: 0; visibility: hidden; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); pointer-events: auto; }
+        .nav-item:hover .mega-dropdown { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
         
         /* 下拉项卡片式包装 */
-        .dropdown-col h4 { margin: 0 0 12px; font-size: 14px; color: #00a6f4; letter-spacing: 0.5px; text-transform: uppercase; }
-        .dropdown-link { display: flex; flex-direction: column; padding: 10px 14px; border-radius: 8px; text-decoration: none; transition: background 0.2s; }
+        .dropdown-col { min-width: max-content; }
+        .dropdown-col h4 { margin: 0 0 12px; font-size: 14px; color: #00a6f4; letter-spacing: 0.5px; text-transform: uppercase; white-space: nowrap; }
+        .dropdown-link { display: flex; flex-direction: column; padding: 10px 14px; border-radius: 8px; text-decoration: none; transition: background 0.2s; white-space: nowrap; }
         .dropdown-link:hover { background: rgba(255, 255, 255, 0.05); }
         .dropdown-link .title { font-size: 15px; font-weight: 600; color: #fff; }
         .dropdown-link .desc { font-size: 12px; color: #8896a7; margin-top: 4px; }
@@ -51,13 +52,13 @@
         /* 右侧交互区 */
         .header-right { display: flex; align-items: center; gap: 45px; height: 100%; margin-top: 15px; }
 
-        /* 右侧统计区：数字超级大、置顶 */
+        /* 右侧统计区：数字变大、取消粗体 */
         .nav-stats { text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 100px; }
-        .nav-stats .count { font-size: 48px; font-weight: 900; color: #fff; line-height: 1; letter-spacing: -1px; transition: color 0.3s; }
+        .nav-stats .count { font-size: 56px; font-weight: normal; color: #fff; line-height: 1; letter-spacing: -1px; transition: color 0.3s; }
         .nav-stats .label { font-size: 13px; color: #888; margin-top: 6px; display: block; transition: color 0.3s; white-space: nowrap; }
         
-        /* 渐变控制 */
-        .nav-stats:hover .count { color: #ff4d4d; }
+        /* 悬停颜色控制 */
+        .nav-stats:hover .count { color: #00a6f4; }
         .nav-stats:hover .label { color: #ffffff; }
 
         /* 多语言环境 🌐 样式 */
@@ -105,8 +106,8 @@
 
                     <div class="nav-item">
                         <span data-i18n="solution">解决方案</span>
-                        <div class="mega-dropdown" style="width: 320px;">
-                            <div class="dropdown-col" style="grid-column: span 2;">
+                        <div class="mega-dropdown">
+                            <div class="dropdown-col">
                                 <h4>产业方案</h4>
                                 <a href="#" class="dropdown-link">
                                     <span class="title" data-i18n="defi">DeFi 安全</span>
