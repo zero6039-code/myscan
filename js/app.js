@@ -46,13 +46,18 @@ function animateCounter(targetNumber) {
     const counterContainer = document.getElementById("stats-counter");
     if (!counterContainer) return;
 
+    // 清空容器
     counterContainer.innerHTML = "";
+
+    // 将数字转为字符串数组
     const digitStringArray = targetNumber.toString().split("");
 
+    // 1. 动态生成纵向数字列槽
     const slots = digitStringArray.map(() => {
         const slot = document.createElement("div");
         slot.className = "counter-digit-slot";
         
+        // 填入 0 到 9
         for (let i = 0; i <= 9; i++) {
             const numSpan = document.createElement("span");
             numSpan.innerText = i;
@@ -63,16 +68,15 @@ function animateCounter(targetNumber) {
         return slot;
     });
 
-    // 1. 强制重绘
+    // 2. 强制浏览器重绘 (Reflow)
     counterContainer.offsetHeight;
 
-    // 2. 彻底解决断层：把目标数字直接传给 CSS，让 CSS 用 100% / 10 (即 10%) 或 em 自动对齐
+    // 3. 执行向上滚动：100% 代表整个槽高（10个数字），每个数字完美占据 10%
     digitStringArray.forEach((digitChar, index) => {
         const targetDigit = parseInt(digitChar, 10);
         
         setTimeout(() => {
-            // 抛弃 JS 的 offsetHeight 计算，直接利用 CSS 变量赋值
-            // 每一个数字精准对应纵向 10% 的位移，由浏览器底层渲染，绝对不丢失像素
+            // 直接使用百分比位移，彻底剥离 JS 获取高度受到的 DOM 渲染干扰
             slots[index].style.transform = `translateY(-${targetDigit * 10}%)`;
         }, index * 50);
     });
