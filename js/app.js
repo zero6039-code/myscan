@@ -7,13 +7,11 @@ const i18n = {
         // 导航栏
         product: 'Products', audit: 'Security Audit', scan: 'Vulnerability Scan',
         solution: 'Solutions', defi: 'DeFi Security', track: 'On-chain Tracking',
-        company: 'Company', clients: 'Clients Served',
+        company: 'Company', disclaimer: 'Disclaimer', clients: 'Clients Served',
 
-        // 图5：关于公司面板
+        // 下拉面板
         about_title: 'About Company',
         about_desc: 'DewSecure has been active across major vulnerability bounty platforms for years...',
-
-        // 图6：免责声明面板
         disclaimer_title: 'Disclaimer',
         disclaimer_sub: 'DewSecure legal compliance and service nature liability limitation statements.',
         disc_1_title: '1. Service Nature', disc_1_desc: 'Test content...',
@@ -31,13 +29,11 @@ const i18n = {
         // 导航栏
         product: '产品', audit: '安全审计', scan: '漏洞扫描',
         solution: '解决方案', defi: 'DeFi 安全', track: '链上追踪',
-        company: '公司介绍', clients: '服务客户',
+        company: '公司介绍', disclaimer: '免责声明', clients: '服务客户',
 
-        // 图5：关于公司面板
+        // 下拉面板
         about_title: '关于公司',
         about_desc: 'DewSecure 多年来活跃于各大漏洞赏金平台...',
-
-        // 图6：免责声明面板
         disclaimer_title: '免责声明',
         disclaimer_sub: 'DewSecure 安全服务法律合规与服务性质责任限制说明。',
         disc_1_title: '1. 服务性质声明', disc_1_desc: '测试内容...',
@@ -55,13 +51,11 @@ const i18n = {
         // 导航栏
         product: 'Produk', audit: 'Audit Keselamatan', scan: 'Imbasan Kerentanan',
         solution: 'Penyelesaian', defi: 'Keselamatan DeFi', track: 'Penjejakan Rantaian',
-        company: 'Syarikat', clients: 'Pelanggan Dilayani',
+        company: 'Syarikat', disclaimer: 'Penafian', clients: 'Pelanggan Dilayani',
 
-        // 图5：关于公司面板
+        // 下拉面板
         about_title: 'Mengenai Syarikat',
         about_desc: 'DewSecure telah aktif di platform ganjaran kerentanan utama selama bertahun-tahun...',
-
-        // 图6：免责声明面板
         disclaimer_title: 'Penafian',
         disclaimer_sub: 'Kenyataan pematuhan undang-undang perkhidmatan keselamatan DewSecure dan had liabiliti perkhidmatan.',
         disc_1_title: '1. Sifat Perkhidmatan', disc_1_desc: 'Kandungan ujian...',
@@ -140,23 +134,4 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     
-    // 初始化多语言文本
     setLanguage('zh');
-
-    // 延迟渲染数字滚动
-    const counterContainer = document.getElementById("stats-counter");
-    if (counterContainer) {
-        const target = parseInt(counterContainer.getAttribute("data-target"), 10) || 69;
-        setTimeout(() => {
-            animateCounter(target);
-        }, 350); 
-    }
-    
-    window.addEventListener('resize', () => {
-        const counterContainer = document.getElementById("stats-counter");
-        if (counterContainer) {
-            const target = parseInt(counterContainer.getAttribute("data-target"), 10) || 69;
-            animateCounter(target);
-        }
-    });
-});
