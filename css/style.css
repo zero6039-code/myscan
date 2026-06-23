@@ -435,21 +435,30 @@ h1 img {
     
     /* 📱 移动端重新锁死 38px 物理高度，确保滚动对齐 */
     .counter-runner {
+        display: inline-flex !important;       /* 确保移动端维持弹性布局 */
+        justify-content: center !important;
+        align-items: center !important;
         height: 38px !important;
         font-size: 38px !important;
         min-width: 50px !important;
         line-height: 38px !important;
+        overflow: hidden !important;
     }
     
     .counter-digit-slot {
+        display: flex !important;              /* 🔥【核心修复】强制维持纵向队列 */
+        flex-direction: column !important;     /* 🔥【核心修复】确保 0-9 垂直平铺 */
         height: 38px !important;
         line-height: 38px !important;
     }
     
     .counter-digit-slot span {
+        display: block !important;             /* 确保是标准的块级，不被挤压 */
         height: 38px !important;
         line-height: 38px !important;
         margin: 0 !important;
+        padding: 0 2px !important;
+        box-sizing: border-box !important;     /* 严防任何 padding 撑开高度 */
     }
     
     .mega-dropdown {
