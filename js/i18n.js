@@ -1,13 +1,13 @@
+// 确保每次加载网页时，如果没有手动切换过，都强制默认使用 'en' (英文)
 document.addEventListener("DOMContentLoaded", () => {
-    const supportedLanguages = ["zh", "en", "ms"];
+    // 强制指定 'en' 作为初始语言
+    const defaultLang = 'en'; 
     
-    // 优先本地缓存 -> 浏览器语言 -> 默认中文
-    let currentLang = localStorage.getItem("preferred_lang") || 
-                      navigator.language.split("-")[0] || "zh";
+    // 如果您希望用户手动切了语言后刷新能保留，可以改为：const defaultLang = localStorage.getItem('lang') || 'en';
+    // 如果要绝对每次死死卡在英文，就用上面那行 const defaultLang = 'en';
     
-    if (!supportedLanguages.includes(currentLang)) {
-        currentLang = "zh";
-    }
+    setLanguage(defaultLang);
+});
 
     // 异步加载语言包并更新 DOM
     async function loadLanguage(lang) {
