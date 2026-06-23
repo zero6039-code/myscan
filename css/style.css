@@ -1,5 +1,5 @@
 /* ==========================================================================
-   1. 全局样式与炫酷暗黑科技网格复原 (Global Reset)
+   1. 基础全局样式与高级暗黑科技网格复原 (Global Reset & Framework)
    ========================================================================== */
 * {
     margin: 0;
@@ -8,14 +8,14 @@
 }
 
 body {
-    background-color: #060609;
+    background-color: #040406;
     color: #ffffff;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
 }
 
-/* 强制复原原本极具黑客风的 40px 矩阵暗网格背景线效果 */
+/* 🪐 100% 满血复原原本成功的 40px 矩阵网格暗夜背景纹理与氛围衬底 */
 body, .placeholder-message {
     background-image: 
         linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
@@ -29,17 +29,17 @@ body, .placeholder-message {
     max-width: 1440px;
     margin: 0 auto;
     padding: 0 40px;
-    height: 100%; /* 锁定让子集拥有 100% 高度对齐 */
+    height: 100%; /* 锁定让子级拥有 100% 高度以进行 Flex 居中对齐 */
 }
 
 /* ==========================================================================
-   2. 顶部导航栏与 Logo 右下精调 (Header Styles)
+   2. 顶部导航栏布局与 Logo 右下精调 (Header Layout)
    ========================================================================== */
 .header {
     width: 100%;
     height: 90px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    background-color: rgba(6, 6, 9, 0.85);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    background-color: rgba(4, 4, 6, 0.85);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     position: fixed;
@@ -59,12 +59,12 @@ body, .placeholder-message {
     display: block;
 }
 
-/* 💡 Logo 区域：往右下方平移微调 */
+/* 💡 满足调整 2：精确控制整个图标和 DewSecure 往右下方向移动一点 */
 .brand-logo-group {
     display: flex;
     align-items: center;
     gap: 12px;
-    transform: translate(15px, 8px); 
+    transform: translate(15px, 8px); /* 精准往右偏移 15px，往下偏移 8px */
     transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -79,11 +79,11 @@ body, .placeholder-message {
     font-size: 25px;
     font-weight: 700;
     letter-spacing: -0.5px;
-    font-family: 'Rajdhani', sans-serif; /* 引入更有科幻感的英文字体 */
+    font-family: 'Rajdhani', sans-serif;
 }
 
 /* ==========================================================================
-   3. 中央下拉面板展示逻辑核心修复 (Dropdown Controls)
+   3. 中央主菜单与悬浮显示触发逻辑 (Navigation Dropdowns)
    ========================================================================== */
 .nav-menu {
     display: flex;
@@ -104,19 +104,20 @@ body, .placeholder-message {
     color: #94a3b8;
     text-decoration: none;
     transition: color 0.2s ease;
+    cursor: pointer;
 }
 
 .nav-item:hover .nav-link-text {
     color: #ffffff;
 }
 
-/* 下拉菜单基础布局容器 */
+/* 🪐 100% 满血复原：原本成功的下拉面板绝对定位与隐藏显示机制 */
 .mega-dropdown {
     position: absolute;
-    top: 90px; /* 紧吸 Header 底边线 */
+    top: 90px; /* 契合 Header 底边线 */
     left: 50%;
     transform: translateX(-50%) translateY(12px);
-    background: #0d0e12;
+    background: #0b0c10;
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 16px;
     padding: 24px;
@@ -127,6 +128,7 @@ body, .placeholder-message {
     transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* 悬浮激活 */
 .nav-item:hover .mega-dropdown {
     opacity: 1;
     visibility: visible;
@@ -146,6 +148,7 @@ body, .placeholder-message {
     padding: 12px 18px;
     border-radius: 8px;
     text-decoration: none;
+    transition: background 0.2s ease;
 }
 
 .dropdown-link:hover {
@@ -157,7 +160,7 @@ body, .placeholder-message {
     font-size: 15px;
 }
 
-/* 修复公司介绍面板 */
+/* 公司介绍特定尺寸 */
 .company-box {
     width: 340px;
 }
@@ -175,9 +178,9 @@ body, .placeholder-message {
     line-height: 1.6;
 }
 
-/* 修复免责声明双栏控制 */
+/* 🪐 满血复原免责声明超大网格布局 (满足需求 3：全面覆盖文本显示) */
 .disclaimer-box {
-    width: 820px;
+    width: 840px;
     display: flex;
     gap: 40px;
 }
@@ -209,7 +212,7 @@ body, .placeholder-message {
 }
 
 /* ==========================================================================
-   4. 右侧控制区、自适应数字滚动槽
+   4. 右侧控制区、自适应数字滚动槽样式锁定
    ========================================================================== */
 .header-right {
     display: flex;
@@ -229,6 +232,7 @@ body, .placeholder-message {
     color: #64748b;
     cursor: pointer;
     transition: color 0.2s ease;
+    user-select: none;
 }
 
 .lang-option:hover, .lang-option.active {
@@ -251,7 +255,7 @@ body, .placeholder-message {
     margin-top: 4px;
 }
 
-/* 刚性锁死高度 */
+/* 数字滚动外壳槽锁定高度 */
 .counter-runner {
     display: inline-flex !important;
     overflow: hidden !important;
@@ -280,7 +284,7 @@ body, .placeholder-message {
 }
 
 /* ==========================================================================
-   5. 🚀 无粗体高级极客视觉 Hero 核心区 (满足需求 1)
+   5. 🚀 无粗体高级极客视觉 Hero 核心展现区 (满足需求 1)
    ========================================================================== */
 .placeholder-message {
     text-align: center;
@@ -296,35 +300,36 @@ body, .placeholder-message {
     animation: fadeInHero 1s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-/* 核心无粗体纤细科技标题 */
+/* ⚡️ 核心改动：标题更大、极细没有粗体、极具 Web3 前沿未来感 */
 .hero-title {
-    font-size: 68px;                        /* 进一步增大幅度 */
-    font-weight: 200;                        /* 彻底去掉粗体，极轻高档设计 */
-    letter-spacing: -1px;
-    line-height: 1.2;
+    font-size: 72px;                        /* 大幅扩充字号，拉满高级感 */
+    font-weight: 200;                        /* 彻底去掉粗体，选择高档细字重 */
+    letter-spacing: -1.5px;
+    line-height: 1.18;
     margin-bottom: 40px;
     font-family: 'Inter', -apple-system, sans-serif;
     
-    /* 银白暗黑渐变 */
-    background: linear-gradient(180deg, #ffffff 40%, rgba(255, 255, 255, 0.55) 100%);
+    /* 水晶质感由白到浅灰渐变 */
+    background: linear-gradient(180deg, #ffffff 30%, rgba(255, 255, 255, 0.5) 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
     text-shadow: 0 0 60px rgba(165, 180, 252, 0.05);
 }
 
+/* 🪐 100% 复原高阶质感玻璃容器 */
 .hero-desc {
     color: #94a3b8;
     font-size: 16px;
-    line-height: 1.82;
+    line-height: 1.85;
     margin: 0 auto;
     max-width: 840px;
     font-weight: 400;
-    background: rgba(255, 255, 255, 0.02);
+    background: rgba(255, 255, 255, 0.015);
     padding: 32px 48px;
     border-radius: 20px;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.05);
     box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
     text-align: justify;
@@ -336,13 +341,14 @@ body, .placeholder-message {
 }
 
 /* ==========================================================================
-   6. 📱 移动端自适应
+   6. 📱 移动端自适应回退控制
    ========================================================================== */
 @media screen and (max-width: 1024px) {
     .container { padding: 0 24px; }
     .header { height: auto; position: relative; }
     .header-container { flex-direction: column; gap: 16px; padding: 16px 0; }
-    .brand-logo-group { transform: translate(0, 0); }
+    
+    .brand-logo-group { transform: translate(0, 0); } /* 移动端回归原位 */
     .nav-menu { width: 100%; gap: 16px; justify-content: center; flex-wrap: wrap; }
     .nav-item { height: auto; }
     
