@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     
-    <title>DewSecure - 专业的智能合约与 Web 安全审计服务平台</title>
+    <title>DewSecure - 专业 Web 安全审计服务</title>
     <meta name="description" content="DewSecure 专注于提供高阶智能合约审计、DeFi 安全防御、自动化漏洞扫描及全方位链上追踪服务。已成功保障 69+ 区块链业务生态，助力打造无懈可击的代码安全网络。">
     <meta name="keywords" content="DewSecure, 安全审计, 漏洞扫描, DeFi安全, 智能合约审计, 链上追踪, Web安全, 区块链安全">
     <meta name="author" content="DewSecure Team">
@@ -27,37 +27,72 @@
         /* 头部总线控制布局 */
         .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; position: relative; z-index: 100; height: 160px; }
         
-        /* 左侧区：加大 gap 让右边的菜单更靠右 */
-        .header-left { display: flex; align-items: center; gap: 80px; flex: 1; }
+        /* 左侧区：固定宽度防止挤压中间 */
+        .header-left { display: flex; align-items: center; min-width: max-content; }
         h1 { font-size: 56px; margin: 0; display: flex; align-items: center; background: linear-gradient(120deg, #0070f3, #00a6f4); background-clip: text; -webkit-background-clip: text; color: transparent; white-space: nowrap; }
         h1 img { height: 160px; width: 160px; object-fit: contain; border-radius: 50%; margin-right: 16px; }
         
-        /* 中间菜单紧跟左侧移动，右移一个格子感 */
-        .nav-menu { display: flex; gap: 40px; margin-top: 15px; margin-left: auto; padding-right: 40px; }
+        /* 导航菜单：完全置于正中间 */
+        .nav-menu { display: flex; gap: 50px; margin-top: 15px; flex: 1; justify-content: center; }
         .nav-item { position: relative; cursor: pointer; padding: 25px 0; font-size: 16px; font-weight: 500; color: #cbd5e1; transition: color 0.2s; }
         .nav-item:hover { color: #fff; }
 
-        /* 丝滑多列大面板下拉单：调整为自适应宽度并贴近上方 */
-        .mega-dropdown { position: absolute; top: 68px; left: 50%; transform: translateX(-50%) translateY(10px); width: max-content; min-width: 280px; background: rgba(13, 13, 20, 0.92); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.7); display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; opacity: 0; visibility: hidden; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); pointer-events: auto; }
+        /* 丝滑双栏大面板下拉单：紧贴上方且全自适应宽度 */
+        .mega-dropdown { 
+            position: absolute; 
+            top: 68px; 
+            left: 50%; 
+            transform: translateX(-50%) translateY(10px); 
+            width: max-content; 
+            background: rgba(13, 13, 20, 0.94); 
+            backdrop-filter: blur(16px); 
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+            border-radius: 16px; 
+            padding: 28px; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8); 
+            display: flex; 
+            gap: 32px; 
+            opacity: 0; 
+            visibility: hidden; 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            pointer-events: auto; 
+        }
         .nav-item:hover .mega-dropdown { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
         
-        /* 下拉项卡片式包装 */
-        .dropdown-col { min-width: max-content; }
-        .dropdown-col h4 { margin: 0 0 12px; font-size: 14px; color: #00a6f4; letter-spacing: 0.5px; text-transform: uppercase; white-space: nowrap; }
-        .dropdown-link { display: flex; flex-direction: column; padding: 10px 14px; border-radius: 8px; text-decoration: none; transition: background 0.2s; white-space: nowrap; }
-        .dropdown-link:hover { background: rgba(255, 255, 255, 0.05); }
-        .dropdown-link .title { font-size: 15px; font-weight: 600; color: #fff; }
-        .dropdown-link .desc { font-size: 12px; color: #8896a7; margin-top: 4px; }
+        /* 下拉面板左侧通栏大介绍：完美贴合图1文字 */
+        .dropdown-intro { width: 240px; display: flex; flex-direction: column; justify-content: flex-start; border-right: 1px solid rgba(255, 255, 255, 0.06); padding-right: 24px; }
+        .dropdown-intro h3 { margin: 0 0 10px 0; font-size: 18px; color: #fff; font-weight: 600; }
+        .dropdown-intro p { margin: 0; font-size: 13px; color: #8896a7; line-height: 1.6; }
 
-        /* 右侧交互区 */
-        .header-right { display: flex; align-items: center; gap: 45px; height: 100%; margin-top: 15px; }
+        /* 下拉面板右侧：2x2 的小图卡片网格布局 */
+        .dropdown-grid { display: grid; grid-template-columns: repeat(2, minmax(220px, max-content)); gap: 16px; }
+        
+        /* 下拉小卡片样式包装与小图图标 */
+        .dropdown-link { display: flex; align-items: flex-start; gap: 14px; padding: 12px 16px; border-radius: 10px; text-decoration: none; transition: background 0.2s, transform 0.2s; }
+        .dropdown-link:hover { background: rgba(255, 255, 255, 0.05); transform: translateY(-1px); }
+        
+        /* 小图标样式容器 */
+        .dropdown-link .icon-box { 
+            display: flex; align-items: center; justify-content: center; 
+            width: 36px; height: 36px; border-radius: 8px; 
+            background: rgba(0, 166, 244, 0.1); color: #00a6f4; 
+            font-size: 16px; flex-shrink: 0; margin-top: 2px;
+        }
+        .dropdown-link:hover .icon-box { background: #00a6f4; color: #fff; }
+        
+        /* 卡片右侧文字 */
+        .dropdown-link .text-box { display: flex; flex-direction: column; }
+        .dropdown-link .title { font-size: 15px; font-weight: 600; color: #fff; white-space: nowrap; }
+        .dropdown-link .desc { font-size: 12px; color: #8896a7; margin-top: 4px; white-space: nowrap; }
 
-        /* 右侧统计区：数字变大、取消粗体 */
+        /* 右侧交互区固定：防止影响居中 */
+        .header-right { display: flex; align-items: center; gap: 45px; height: 100%; margin-top: 15px; min-width: max-content; }
+
+        /* 右侧统计区：大尺寸、普通粗细 */
         .nav-stats { text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 100px; }
         .nav-stats .count { font-size: 56px; font-weight: normal; color: #fff; line-height: 1; letter-spacing: -1px; transition: color 0.3s; }
         .nav-stats .label { font-size: 13px; color: #888; margin-top: 6px; display: block; transition: color 0.3s; white-space: nowrap; }
         
-        /* 悬停颜色控制 */
         .nav-stats:hover .count { color: #00a6f4; }
         .nav-stats:hover .label { color: #ffffff; }
 
@@ -82,50 +117,65 @@
         <header class="header">
             <div class="header-left">
                 <h1><img src="/DewSecure.png" alt="DewSecure 网络安全审计平台 Logo"> DewSecure</h1>
-                
-                <nav class="nav-menu">
-                    <div class="nav-item">
-                        <span data-i18n="product">产品</span>
-                        <div class="mega-dropdown">
-                            <div class="dropdown-col">
-                                <h4>核心技术</h4>
-                                <a href="#" class="dropdown-link">
-                                    <span class="title" data-i18n="audit">安全审计</span>
-                                    <span class="desc">针对智能合约与基础架构的高阶源码审计</span>
-                                </a>
-                            </div>
-                            <div class="dropdown-col">
-                                <h4>自动化防御</h4>
-                                <a href="#" class="dropdown-link">
-                                    <span class="title" data-i18n="scan">漏洞扫描</span>
-                                    <span class="desc">实时监测、发现系统潜藏的多维度威胁</span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="nav-item">
-                        <span data-i18n="solution">解决方案</span>
-                        <div class="mega-dropdown">
-                            <div class="dropdown-col">
-                                <h4>产业方案</h4>
-                                <a href="#" class="dropdown-link">
-                                    <span class="title" data-i18n="defi">DeFi 安全</span>
-                                    <span class="desc">为去中心化金融协议护航</span>
-                                </a>
-                                <a href="#" class="dropdown-link">
-                                    <span class="title" data-i18n="track">链上追踪</span>
-                                    <span class="desc">资产追踪与黑客攻击流向还原</span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="nav-item">
-                        <span data-i18n="company">公司介绍</span>
-                    </div>
-                </nav>
             </div>
+
+            <nav class="nav-menu">
+                <div class="nav-item">
+                    <span data-i18n="solution">解决方案</span>
+                    <div class="mega-dropdown">
+                        <div class="dropdown-intro">
+                            <h3>解决方案</h3>
+                            <p>为您 中小企业网站或个人网站提供漏洞与高阶源码安全审计服务。助力企业打造安全闭环和合规解决方案与风险管理。</p>
+                        </div>
+                        
+                        <div class="dropdown-grid">
+                            <a href="#" class="dropdown-link">
+                                <div class="icon-box">
+                                    <i class="fa-solid fa-code-solid fa-code"></i>
+                                </div>
+                                <div class="text-box">
+                                    <span class="title">代码审核</span>
+                                    <span class="desc">人工 + AI深度审计</span>
+                                </div>
+                            </a>
+
+                            <a href="#" class="dropdown-link">
+                                <div class="icon-box">
+                                    <i class="fa-solid fa-shield-halved"></i>
+                                </div>
+                                <div class="text-box">
+                                    <span class="title">渗透测试</span>
+                                    <span class="desc">模拟深度攻击</span>
+                                </div>
+                            </a>
+
+                            <a href="#" class="dropdown-link">
+                                <div class="icon-box">
+                                    <i class="fa-solid fa-calculator"></i>
+                                </div>
+                                <div class="text-box">
+                                    <span class="title">形式化验证</span>
+                                    <span class="desc">经数学验证的代码</span>
+                                </div>
+                            </a>
+
+                            <a href="#" class="dropdown-link">
+                                <div class="icon-box">
+                                    <i class="fa-solid fa-file-invoice"></i>
+                                </div>
+                                <div class="text-box">
+                                    <span class="title">审计报告</span>
+                                    <span class="desc">生成审计报告和修复建议</span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nav-item">
+                    <span data-i18n="company">公司介绍</span>
+                </div>
+            </nav>
 
             <div class="header-right">
                 <div class="nav-stats">
