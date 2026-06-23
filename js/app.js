@@ -22,22 +22,18 @@ const i18n = {
 let currentLang = 'zh';
 
 /**
- * 语言切换函数
- * @param {string} lang - 目标语言代码 ('zh', 'en', 'ms')
+ * 多语言切换
  */
 function setLanguage(lang) {
     currentLang = lang;
     
-    // 1. 更新语言选择器的高亮状态
     document.querySelectorAll('.lang-option').forEach(opt => {
         opt.classList.toggle('active', opt.dataset.lang === lang);
     });
     
-    // 2. 更新主看板占位提示语
     const p = document.querySelector('.placeholder-message p');
     if (p) p.textContent = i18n[lang].placeholder;
 
-    // 3. 全局动态翻译带有 data-i18n 属性的标签
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.dataset.i18n;
         if (i18n[lang][key]) {
@@ -47,25 +43,24 @@ function setLanguage(lang) {
 }
 
 /**
- * 核心：初始化并触发数字滚动动画
- * @param {number} targetNumber - 需要滚动到的目标数字（例如 69）
+ * 核心：动态像素对齐滚动算法（完美适配所有屏幕与自适应）
  */
 function animateCounter(targetNumber) {
     const counterContainer = document.getElementById("stats-counter");
     if (!counterContainer) return;
 
-    // 强制防刷保护：如果该节点的父级不小心带有 data-i18n 产生文本覆盖，清除并重新赋予结构
+    // 清空容器，防止多语言重叠污染
     counterContainer.innerHTML = "";
 
-    // 将目标数字转换为单字符数组 (例如 69 -> ["6", "9"])
+    // 将数字转为单字符数组
     const digitStringArray = targetNumber.toString().split("");
 
-    // 1. 动态生成纵向数字列槽 (0-9 的大转盘)
+    // 1. 动态生成纵向数字列槽
     const slots = digitStringArray.map(() => {
         const slot = document.createElement("div");
         slot.className = "counter-digit-slot";
         
-        // 依次填入 0 到 9 数字标签
+        // 填入 0 到 9 的独立 span 节点
         for (let i = 0; i <= 9; i++) {
             const numSpan = document.createElement("span");
             numSpan.innerText = i;
@@ -76,33 +71,38 @@ function animateCounter(targetNumber) {
         return slot;
     });
 
-    // 2. 强制浏览器重绘 (Reflow) 锁死 CSS 刚性高度
-    counterContainer.offsetHeight;
+    // 2. 【核心修复】强制重绘后，动态抓取当前屏幕下第一个数字 Span 的精准物理像素高度
+    counterContainer.offsetHeight; // 触发 reflow
+    
+    const firstSpan = slots[0]?.querySelector('span');
+    if (!firstSpan) return;
+    
+    // 💡 实时获取当前屏幕下的单字高度（PC端会拿到56，移动端会自动拿到38）
+    const singleDigitHeight = firstSpan.offsetHeight; 
 
-    // 3. 精准执行向上滚动位移（10% 代表一个数字的高度，完美规避像素碎裂断层）
+    // 3. 严格按照动态像素执行平移，彻底切断与 CSS 百分比继承的干扰
     digitStringArray.forEach((digitChar, index) => {
         const targetDigit = parseInt(digitChar, 10);
+        const finalPixelOffset = targetDigit * singleDigitHeight; // 精准计算像素偏移量
         
         setTimeout(() => {
-            slots[index].style.transform = `translateY(-${targetDigit * 10}%)`;
-        }, index * 60); // 逐位错开 60ms 触发，增强视觉滚动层次感
+            slots[index].style.transform = `translateY(-${finalPixelOffset}px)`;
+        }, index * 60);
     });
 }
 
 /**
- * 页面加载完毕的总线初始化生命周期
+ * 初始化总线
  */
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. 绑定多语言切换栏的点击事件
+    // 初始化多语言切换点击事件
     const options = document.querySelectorAll('.lang-option');
     options.forEach(opt => {
         opt.addEventListener('click', (e) => {
             e.stopPropagation();
-            
-            // 切换语言
             setLanguage(opt.dataset.lang);
             
-            // 💡 规避覆盖死穴：切换语言后，重新刷新一下滚动数字的状态，保持动画与数字不丢失
+            // 每次语言切换，重新计算并对齐数字位置
             const counterContainer = document.getElementById("stats-counter");
             if (counterContainer) {
                 const target = parseInt(counterContainer.getAttribute("data-target"), 10) || 69;
@@ -111,15 +111,24 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     
-    // 2. 默认优先加载中文环境文本
+    // 默认加载中文语言
     setLanguage('zh');
 
-    // 3. 略微延时，等所有多语言静态文本落盘、DOM 稳定后，再安全触发数字转盘动画
+    // 页面加载时自动触发滚动
     const counterContainer = document.getElementById("stats-counter");
     if (counterContainer) {
         const target = parseInt(counterContainer.getAttribute("data-target"), 10) || 69;
         setTimeout(() => {
             animateCounter(target);
-        }, 350); 
+        }, 350); // 留出 350ms 等 CSS 媒体查询和 DOM 完全稳定
     }
+    
+    // 💡 监听屏幕大小改变（比如手机横屏、浏览器缩放），自动重新计算对齐，防止拉伸断层
+    window.addEventListener('resize', () => {
+        const counterContainer = document.getElementById("stats-counter");
+        if (counterContainer) {
+            const target = parseInt(counterContainer.getAttribute("data-target"), 10) || 69;
+            animateCounter(target);
+        }
+    });
 });
