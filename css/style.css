@@ -1,4 +1,4 @@
-/* 在 style.css 末尾添加，让占位文本更突出 */
+/* --- 原有的布局样式 --- */
 .placeholder-message {
     display: flex;
     justify-content: center;
@@ -14,3 +14,40 @@
     backdrop-filter: blur(4px);
     border: 1px solid rgba(255,255,255,0.06);
 }
+
+/* --- 新增：导航栏交互样式 --- */
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 50px;
+    color: #fff;
+    position: relative;
+    z-index: 100;
+}
+
+.nav-menu { display: flex; gap: 40px; }
+.nav-item { position: relative; cursor: pointer; padding: 10px 0; font-weight: 500; transition: color 0.3s; }
+.nav-item:hover { color: #0070f3; }
+
+/* 顺滑下拉菜单 - CertiK 风格 */
+.dropdown {
+    position: absolute; top: 100%; left: 0;
+    background: #111; border: 1px solid #333;
+    border-radius: 8px; padding: 10px 0;
+    min-width: 150px; opacity: 0; visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.dropdown a { display: block; padding: 10px 20px; color: #ccc; text-decoration: none; }
+.dropdown a:hover { color: #fff; background: #222; }
+.nav-item:hover .dropdown { opacity: 1; visibility: visible; transform: translateY(0); }
+
+/* 右侧统计栏 - 交互强化 */
+.nav-stats { text-align: right; cursor: pointer; transition: 0.3s; padding-right: 20px; }
+.nav-stats .label { font-size: 12px; color: #888; display: block; transition: 0.3s; }
+.nav-stats .count { font-size: 28px; font-weight: 800; transition: 0.3s; }
+
+/* 停留时变为红色 */
+.nav-stats:hover .label, 
+.nav-stats:hover .count { color: #ff4d4d; }
