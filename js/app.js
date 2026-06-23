@@ -46,18 +46,13 @@ function animateCounter(targetNumber) {
     const counterContainer = document.getElementById("stats-counter");
     if (!counterContainer) return;
 
-    // 清空容器，准备根据位数重新生成结构
     counterContainer.innerHTML = "";
-
-    // 将数字转为字符串数组
     const digitStringArray = targetNumber.toString().split("");
 
-    // 1. 动态为每一位数字生成一个 0-9 的纵向数字列槽
     const slots = digitStringArray.map(() => {
         const slot = document.createElement("div");
         slot.className = "counter-digit-slot";
         
-        // 填入 0 到 9 供纵向滚动切换
         for (let i = 0; i <= 9; i++) {
             const numSpan = document.createElement("span");
             numSpan.innerText = i;
@@ -68,24 +63,20 @@ function animateCounter(targetNumber) {
         return slot;
     });
 
-    // 2. 强制浏览器重绘 (Reflow)，确保 0 已经渲染完毕
+    // 1. 强制重绘
     counterContainer.offsetHeight;
 
-    // 3. 开始执行向上滚动
-// 3. 开始执行向上滚动（改为使用固定高度位移，彻底解决 image_0b007c.png 中的断层问题）
+    // 2. 彻底解决断层：把目标数字直接传给 CSS，让 CSS 用 100% / 10 (即 10%) 或 em 自动对齐
     digitStringArray.forEach((digitChar, index) => {
         const targetDigit = parseInt(digitChar, 10);
         
-        // 关键修改：直接计算精准的像素或em位移（这里采用每行 56px 的绝对高度）
-        // 如果在移动端，它会自动读取当前元素的设计高度，这里直接用行高乘以数字最安全
         setTimeout(() => {
-            // 获取当前槽位单行的高度（动态适应 PC 端的 56px 和移动端的 38px）
-            const lineHeight = slots[index].offsetHeight / 10; 
-            slots[index].style.transform = `translateY(-${targetDigit * lineHeight}px)`;
+            // 抛弃 JS 的 offsetHeight 计算，直接利用 CSS 变量赋值
+            // 每一个数字精准对应纵向 10% 的位移，由浏览器底层渲染，绝对不丢失像素
+            slots[index].style.transform = `translateY(-${targetDigit * 10}%)`;
         }, index * 50);
     });
 }
-
 // 4. 页面加载完毕后自动运行（移到了外层，修复了原配置无法触发的 Bug）
 document.addEventListener('DOMContentLoaded', () => {
     // 初始化多语言切换点击事件
