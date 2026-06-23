@@ -249,10 +249,11 @@
             </nav>
 
             <div class="header-right">
-                <div class="nav-stats">
-                    <span class="count">69</span>
-                    <span class="label" data-i18n="stats_label">服务客户</span>
-                </div>
+                <div class="nav-stats" onclick="animateCounter(69)">
+                    <div class="counter-runner" id="stats-counter" data-target="69">
+                    </div>
+                <span class="label" data-i18n="stats_label">服务客户</span>
+            </div>
 
                 <div class="lang-switch">
                     <button id="lang-toggle" class="lang-toggle-btn" aria-label="Language Switcher">🌐</button>
