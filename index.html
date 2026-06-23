@@ -3,10 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>DewSecure - Web Security</title>
+    
+    <title>DewSecure - 专业的智能合约与 Web 安全审计服务平台</title>
+    <meta name="description" content="DewSecure 专注于提供高阶智能合约审计、DeFi 安全防御、自动化漏洞扫描及全方位链上追踪服务。已成功保障 69+ 区块链业务生态，助力打造无懈可击的代码安全网络。">
+    <meta name="keywords" content="DewSecure, 安全审计, 漏洞扫描, DeFi安全, 智能合约审计, 链上追踪, Web安全, 区块链安全">
+    <meta name="author" content="DewSecure Team">
+    <meta name="robots" content="index, follow">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="DewSecure - Web & Blockchain Security">
+    <meta property="og:description" content="提供自动化漏洞扫描与高阶源码安全审计服务。助力企业与去中心化协议打造安全闭环。">
+    <meta property="og:image" content="https://dewsecure.vercel.app/DewSecure.png">
+    <meta property="og:url" content="https://dewsecure.vercel.app/">
+
     <link rel="icon" type="image/png" href="/DewSecure.png" sizes="128x128">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0-beta3/css/all.css">
+    
     <style>
         body { background: #000; margin: 0; padding: 0; min-height: 100vh; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #fff; overflow-x: hidden; }
         .container { max-width: 100%; padding: 12px 40px 40px; background: transparent; position: relative; z-index: 1; box-sizing: border-box; }
@@ -24,7 +37,7 @@
         .nav-item { position: relative; cursor: pointer; padding: 15px 0; font-size: 16px; font-weight: 500; color: #cbd5e1; transition: color 0.2s; }
         .nav-item:hover { color: #fff; }
 
-        /* 丝滑多列大面板下拉单（完美兼容 CertiK 风格图3、图4、图5） */
+        /* 丝滑多列大面板下拉单 */
         .mega-dropdown { position: absolute; top: 110px; left: 0; width: 620px; background: rgba(13, 13, 20, 0.92); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.7); display: grid; grid-template-columns: 1fr 1fr; gap: 20px; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); pointer-events: auto; }
         .nav-item:hover .mega-dropdown { opacity: 1; visibility: visible; transform: translateY(0); }
         
@@ -35,7 +48,7 @@
         .dropdown-link .title { font-size: 15px; font-weight: 600; color: #fff; }
         .dropdown-link .desc { font-size: 12px; color: #8896a7; margin-top: 4px; }
 
-        /* 右侧交互区（红圈外边缘） */
+        /* 右侧交互区 */
         .header-right { display: flex; align-items: center; gap: 45px; height: 100%; margin-top: 15px; }
 
         /* 右侧统计区：数字超级大、置顶 */
@@ -43,11 +56,11 @@
         .nav-stats .count { font-size: 48px; font-weight: 900; color: #fff; line-height: 1; letter-spacing: -1px; transition: color 0.3s; }
         .nav-stats .label { font-size: 13px; color: #888; margin-top: 6px; display: block; transition: color 0.3s; white-space: nowrap; }
         
-        /* 渐变控制：触发时，数字红、文字纯白 */
+        /* 渐变控制 */
         .nav-stats:hover .count { color: #ff4d4d; }
         .nav-stats:hover .label { color: #ffffff; }
 
-        /* 多语言环境 🌐 样式升级 */
+        /* 多语言环境 🌐 样式 */
         .lang-switch { position: relative; display: inline-block; }
         .lang-toggle-btn { background: transparent; border: none; font-size: 40px; color: #cbd5e1; cursor: pointer; padding: 0; transition: transform 0.2s, color 0.2s; line-height: 1; }
         
@@ -65,11 +78,11 @@
 </head>
 <body>
     <div class="container">
-        <div class="header">
+        <header class="header">
             <div class="header-left">
-                <h1><img src="/DewSecure.png" alt="DewSecure"> DewSecure</h1>
+                <h1><img src="/DewSecure.png" alt="DewSecure 网络安全审计平台 Logo"> DewSecure</h1>
                 
-                <div class="nav-menu">
+                <nav class="nav-menu">
                     <div class="nav-item">
                         <span data-i18n="product">产品</span>
                         <div class="mega-dropdown">
@@ -110,7 +123,7 @@
                     <div class="nav-item">
                         <span data-i18n="company">公司介绍</span>
                     </div>
-                </div>
+                </nav>
             </div>
 
             <div class="header-right">
@@ -120,7 +133,7 @@
                 </div>
 
                 <div class="lang-switch">
-                    <button id="lang-toggle" class="lang-toggle-btn">🌐</button>
+                    <button id="lang-toggle" class="lang-toggle-btn" aria-label="Language Switcher">🌐</button>
                     <ul id="lang-dropdown" class="lang-dropdown">
                         <li data-lang="en" class="lang-option active">English</li>
                         <li data-lang="zh" class="lang-option">中文</li>
@@ -128,11 +141,11 @@
                     </ul>
                 </div>
             </div>
-        </div>
+        </header>
 
-        <div class="placeholder-message">
+        <main class="placeholder-message">
             <p>🚀 重构中，新功能即将上线...</p>
-        </div>
+        </main>
     </div>
 
     <script src="/js/bg-canvas.js"></script>
