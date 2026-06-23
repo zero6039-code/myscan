@@ -1,0 +1,42 @@
+{
+  "page_title": "DewSecure - Perkhidmatan Audit Keselamatan Web Profesional",
+  "meta_desc": "DewSecure menumpukan pada menyediakan audit kontrak pintar peringkat tinggi, pertahanan keselamatan DeFi, imbasan kerentanan automatik, dan penjejakan rantaian penuh.",
+  "nav_solution": "Solusi",
+  "nav_company": "Mengenai Kami",
+  "nav_disclaimer": "Penafian",
+  "stats_label": "Pelanggan Dilayan",
+  "placeholder_text": "🚀 Dalam pembinaan semula, fungsi baru akan datang...",
+  
+  "sol_intro_title": "Solusi",
+  "sol_intro_desc": "Menyediakan penyelesaian keselamatan, pematuhan, dan pengurusan risiko untuk laman web PKS atau peribadi anda.",
+  
+  "sol_item1_title": "Audit Kod",
+  "sol_item1_desc": "Manual + Pemeriksaan Mendalam AI",
+  "sol_item2_title": "Ujian Penembusan",
+  "sol_item2_desc": "Simulasi Serangan Mendalam",
+  "sol_item3_title": "Verifikasi Formal",
+  "sol_item3_desc": "Kod Disahkan Secara Matematik",
+  "sol_item4_title": "Laporan Audit",
+  "sol_item4_desc": "Laporan Audit & Cadangan Pembaikan",
+  "sol_item5_title": "Perkhidmatan Rundingan",
+  "sol_item5_desc": "Ketahui Lebih Lanjut",
+  
+  "comp_intro_title": "Mengenai Syarikat",
+  "comp_intro_desc": "DewSecure telah aktif dalam platform bug bounty utama selama bertahun-tahun, terlibat secara mendalam dalam ujian penembusan dan audit kod. Di kala AI mentakrifkan semula sempadan keselamatan, DewSecure sentiasa komited untuk mempertahankan keselamatan dunia digital.",
+  
+  "disc_intro_title": "Penafian",
+  "disc_intro_desc": "Kenyataan pematuhan undang-undang dan had liabiliti untuk perkhidmatan keselamatan DewSecure.",
+  
+  "disc_t1": "1. Sifat Perkhidmatan",
+  "disc_d1": "Ujian penembusan, audit kod, dan rundingan keselamatan yang disediakan oleh DewSecure bertujuan untuk membantu menemui risiko. Semua ujian dijalankan di bawah kebenaran bertulis.",
+  "disc_t2": "2. Had Teknikal",
+  "disc_d2": "Walaupun menggunakan kaedah profesional, disebabkan taktik serangan yang sentiasa berubah, kami tidak dapat menjamin sistem bebas daripada sebarang kerentanan pada masa hadapan.",
+  "disc_t3": "3. Liabiliti Pihak Ketiga",
+  "disc_d3": "Proses ujian mungkin melibatkan akses ke sistem pelanggan. DewSecure tidak bertanggungjawab atas sebarang kerugian disebabkan produk pihak ketiga atau kegagalan membaiki kerentanan tepat pada masanya.",
+  "disc_t4": "4. Kandungan Laman Web",
+  "disc_d4": "Maklumat di laman web ini adalah untuk rujukan am sahaja. DewSecure berhak mengubah suai kandungan pada bila-bila masa tanpa notis.",
+  "disc_t5": "5. Harta Intelek",
+  "disc_d5": "Laporan, alatan, dan metodologi yang dihasilkan semasa perkhidmatan adalah hak milik intelek DewSecure melainkan dipersetujui sebaliknya secara bertulis.",
+  "disc_t6": "6. Had Liabiliti",
+  "disc_d6": "Sejauh mana yang dibenarkan oleh undang-undang, DewSecure tidak bertanggungjawab atas sebarang ganti rugi tidak langsung, sampingan, atau khas akibat daripada penggunaan perkhidmatan ini."
+}
