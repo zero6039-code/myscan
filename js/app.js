@@ -38,17 +38,6 @@ function setLanguage(lang) {
     });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    const options = document.querySelectorAll('.lang-option');
-    options.forEach(opt => {
-        opt.addEventListener('click', (e) => {
-            e.stopPropagation();
-            setLanguage(opt.dataset.lang);
-        });
-    });
-    setLanguage('zh');
-});
-
 /**
  * 核心：初始化并触发数字滚动动画
  * @param {number} targetNumber - 需要滚动到的目标数字，例如 69 或 125
@@ -60,8 +49,7 @@ function animateCounter(targetNumber) {
     // 清空容器，准备根据位数重新生成结构
     counterContainer.innerHTML = "";
 
-    // 将数字转为字符串数组，例如：69 -> ["6", "9"] 
-    // 排列自然符合：左边十位、右边个位。如果到了3位数如 125 -> ["1", "2", "5"] 自动兼容
+    // 将数字转为字符串数组
     const digitStringArray = targetNumber.toString().split("");
 
     // 1. 动态为每一位数字生成一个 0-9 的纵向数字列槽
@@ -80,32 +68,40 @@ function animateCounter(targetNumber) {
         return slot;
     });
 
-    // 2. 强制浏览器重绘 (Reflow)，确保 0 已经渲染完毕，然后再开始向上滚动
+    // 2. 强制浏览器重绘 (Reflow)，确保 0 已经渲染完毕
     counterContainer.offsetHeight;
 
-    // 3. 开始执行向上滚动：根据当前位上的目标数字计算偏移百分比
+    // 3. 开始执行向上滚动
     digitStringArray.forEach((digitChar, index) => {
         const targetDigit = parseInt(digitChar, 10);
-        // 因为每个数字高度一致，目标数字是几，就往上偏移 (目标数字 * 10%)
-        // 例如目标是 9，向上平移 90% 就会刚好显示 9
         const translateYPercentage = targetDigit * 10; 
         
-        // 附加一点微小的随机延迟（50ms以内），让百位、十位、个位落点有微小的层次感
         setTimeout(() => {
             slots[index].style.transform = `translateY(-${translateYPercentage}%)`;
         }, index * 50);
     });
-
-
-// 4. 页面加载完毕后自动运行（默认从 data-target 获取绑定的 69）
-    document.addEventListener("DOMContentLoaded", () => {
-        const counterContainer = document.getElementById("stats-counter");
-        if (counterContainer) {
-            const target = parseInt(counterContainer.getAttribute("data-target"), 10) || 69;
-            // 延迟 300ms 启动，防止首屏加载卡顿影响动画流畅度
-            setTimeout(() => {
-                animateCounter(target);
-            }, 300);
-        }
-    });
 }
+
+// 4. 页面加载完毕后自动运行（移到了外层，修复了原配置无法触发的 Bug）
+document.addEventListener('DOMContentLoaded', () => {
+    // 初始化多语言切换点击事件
+    const options = document.querySelectorAll('.lang-option');
+    options.forEach(opt => {
+        opt.addEventListener('click', (e) => {
+            e.stopPropagation();
+            setLanguage(opt.dataset.lang);
+        });
+    });
+    
+    // 默认加载中文语言
+    setLanguage('zh');
+
+    // 自动初始化并触发滚动数字
+    const counterContainer = document.getElementById("stats-counter");
+    if (counterContainer) {
+        const target = parseInt(counterContainer.getAttribute("data-target"), 10) || 69;
+        setTimeout(() => {
+            animateCounter(target);
+        }, 300);
+    }
+});
