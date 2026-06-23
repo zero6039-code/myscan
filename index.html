@@ -8,70 +8,109 @@
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0-beta3/css/all.css">
     <style>
-        body { background: #000; margin: 0; padding: 0; min-height: 100vh; font-family: sans-serif; }
-        .container { max-width: 100%; padding: 12px 20px 40px; background: transparent; position: relative; z-index: 1; }
+        body { background: #000; margin: 0; padding: 0; min-height: 100vh; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #fff; overflow-x: hidden; }
+        .container { max-width: 100%; padding: 12px 40px 40px; background: transparent; position: relative; z-index: 1; box-sizing: border-box; }
         
-        /* 核心一等舱：原装 H1 巨大组合与现代菜单混排 */
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; flex-wrap: wrap; gap: 12px; position: relative; z-index: 100; }
+        /* 头部总线控制布局 */
+        .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; position: relative; z-index: 100; height: 160px; }
         
-        /* 严格保持原本大小 */
-        h1 { font-size: 56px; margin: 0; display: flex; align-items: center; background: linear-gradient(120deg, #0070f3, #00a6f4); background-clip: text; -webkit-background-clip: text; color: transparent; }
+        /* 左侧区：保持原本的巨大 H1 视觉重量 */
+        .header-left { display: flex; align-items: center; gap: 40px; }
+        h1 { font-size: 56px; margin: 0; display: flex; align-items: center; background: linear-gradient(120deg, #0070f3, #00a6f4); background-clip: text; -webkit-background-clip: text; color: transparent; white-space: nowrap; }
         h1 img { height: 160px; width: 160px; object-fit: contain; border-radius: 50%; margin-right: 16px; }
         
-        /* 中间菜单区 */
-        .nav-menu { display: flex; gap: 40px; margin-left: 20px; }
-        .nav-item { position: relative; cursor: pointer; padding: 10px 0; font-weight: 500; color: #fff; transition: color 0.3s; }
-        .nav-item:hover { color: #00a6f4; }
+        /* 中间菜单紧跟左侧移动，取消展开箭头 */
+        .nav-menu { display: flex; gap: 35px; margin-top: 15px; }
+        .nav-item { position: relative; cursor: pointer; padding: 15px 0; font-size: 16px; font-weight: 500; color: #cbd5e1; transition: color 0.2s; }
+        .nav-item:hover { color: #fff; }
 
-        /* CertiK 顺滑级联下拉菜单 */
-        .dropdown { position: absolute; top: 100%; left: 0; background: #111; border: 1px solid #333; border-radius: 8px; padding: 10px 0; min-width: 150px; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .dropdown a { display: block; padding: 10px 20px; color: #ccc; text-decoration: none; font-size: 14px; }
-        .dropdown a:hover { color: #fff; background: #222; }
-        .nav-item:hover .dropdown { opacity: 1; visibility: visible; transform: translateY(0); }
-
-        /* 右侧交互区控制 */
-        .header-right { display: flex; align-items: center; gap: 40px; }
-
-        /* 右侧统计区：数字在上，文字在下 */
-        .nav-stats { text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .nav-stats .count { font-size: 36px; font-weight: 800; color: #fff; line-height: 1.1; transition: color 0.3s; }
-        .nav-stats .label { font-size: 13px; color: #888; margin-top: 4px; display: block; transition: color 0.3s ease; }
+        /* 丝滑多列大面板下拉单（完美兼容 CertiK 风格图3、图4、图5） */
+        .mega-dropdown { position: absolute; top: 110px; left: 0; width: 620px; background: rgba(13, 13, 20, 0.92); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.7); display: grid; grid-template-columns: 1fr 1fr; gap: 20px; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); pointer-events: auto; }
+        .nav-item:hover .mega-dropdown { opacity: 1; visibility: visible; transform: translateY(0); }
         
-        /* 停留时的特殊渐变规范 */
+        /* 下拉项卡片式包装 */
+        .dropdown-col h4 { margin: 0 0 12px; font-size: 14px; color: #00a6f4; letter-spacing: 0.5px; text-transform: uppercase; }
+        .dropdown-link { display: flex; flex-direction: column; padding: 10px 14px; border-radius: 8px; text-decoration: none; transition: background 0.2s; }
+        .dropdown-link:hover { background: rgba(255, 255, 255, 0.05); }
+        .dropdown-link .title { font-size: 15px; font-weight: 600; color: #fff; }
+        .dropdown-link .desc { font-size: 12px; color: #8896a7; margin-top: 4px; }
+
+        /* 右侧交互区（红圈外边缘） */
+        .header-right { display: flex; align-items: center; gap: 45px; height: 100%; margin-top: 15px; }
+
+        /* 右侧统计区：数字超级大、置顶 */
+        .nav-stats { text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 100px; }
+        .nav-stats .count { font-size: 48px; font-weight: 900; color: #fff; line-height: 1; letter-spacing: -1px; transition: color 0.3s; }
+        .nav-stats .label { font-size: 13px; color: #888; margin-top: 6px; display: block; transition: color 0.3s; white-space: nowrap; }
+        
+        /* 渐变控制：触发时，数字红、文字纯白 */
         .nav-stats:hover .count { color: #ff4d4d; }
         .nav-stats:hover .label { color: #ffffff; }
 
-        /* 多语言环境按钮 */
+        /* 多语言环境 🌐 样式升级 */
         .lang-switch { position: relative; display: inline-block; }
-        .lang-toggle-btn { background: transparent; border: none; font-size: 40px; color: #cbd5e1; cursor: pointer; padding: 0; transition: transform 0.2s, color 0.2s; }
-        .lang-toggle-btn:hover { transform: scale(1.1); color: white; }
-        .lang-dropdown { position: absolute; top: calc(100% + 8px); right: 0; background: rgba(20,20,40,0.85); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; min-width: 140px; padding: 6px 0; list-style: none; margin: 0; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 101; }
-        .lang-dropdown li { padding: 6px 20px; margin: 1px 6px; font-size: 14px; color: #cbd5e1; cursor: pointer; border-radius: 6px; }
+        .lang-toggle-btn { background: transparent; border: none; font-size: 40px; color: #cbd5e1; cursor: pointer; padding: 0; transition: transform 0.2s, color 0.2s; line-height: 1; }
+        
+        /* 语言下拉菜单 */
+        .lang-dropdown { position: absolute; top: calc(100% + 12px); right: 0; background: rgba(20,20,40,0.9); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; min-width: 150px; padding: 8px 0; list-style: none; margin: 0; box-shadow: 0 10px 30px rgba(0,0,0,0.6); z-index: 200; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.25s ease; }
+        .lang-switch:hover .lang-dropdown { opacity: 1; visibility: visible; transform: translateY(0); }
+        .lang-dropdown li { padding: 10px 20px; margin: 2px 6px; font-size: 14px; color: #cbd5e1; cursor: pointer; border-radius: 6px; transition: all 0.2s; }
         .lang-dropdown li:hover { background: rgba(255,255,255,0.1); color: white; }
         .lang-dropdown li.active { background: #0070f3; color: white; font-weight: 600; }
 
+        .placeholder-message { text-align: center; }
+        .placeholder-message p { color: #94a3b8; font-size: 1.2rem; margin-top: 60px; background: rgba(255,255,255,0.03); padding: 20px 40px; border-radius: 12px; backdrop-filter: blur(2px); border: 1px solid rgba(255,255,255,0.05); display: inline-block; }
         #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; pointer-events: none; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1><img src="/DewSecure.png" alt="DewSecure"> DewSecure</h1>
-            
-            <div class="nav-menu">
-                <div class="nav-item" data-i18n="product">产品 <i class="fa fa-chevron-down"></i>
-                    <div class="dropdown">
-                        <a href="#" data-i18n="audit">安全审计</a>
-                        <a href="#" data-i18n="scan">漏洞扫描</a>
+            <div class="header-left">
+                <h1><img src="/DewSecure.png" alt="DewSecure"> DewSecure</h1>
+                
+                <div class="nav-menu">
+                    <div class="nav-item">
+                        <span data-i18n="product">产品</span>
+                        <div class="mega-dropdown">
+                            <div class="dropdown-col">
+                                <h4>核心技术</h4>
+                                <a href="#" class="dropdown-link">
+                                    <span class="title" data-i18n="audit">安全审计</span>
+                                    <span class="desc">针对智能合约与基础架构的高阶源码审计</span>
+                                </a>
+                            </div>
+                            <div class="dropdown-col">
+                                <h4>自动化防御</h4>
+                                <a href="#" class="dropdown-link">
+                                    <span class="title" data-i18n="scan">漏洞扫描</span>
+                                    <span class="desc">实时监测、发现系统潜藏的多维度威胁</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="nav-item">
+                        <span data-i18n="solution">解决方案</span>
+                        <div class="mega-dropdown" style="width: 320px;">
+                            <div class="dropdown-col" style="grid-column: span 2;">
+                                <h4>产业方案</h4>
+                                <a href="#" class="dropdown-link">
+                                    <span class="title" data-i18n="defi">DeFi 安全</span>
+                                    <span class="desc">为去中心化金融协议护航</span>
+                                </a>
+                                <a href="#" class="dropdown-link">
+                                    <span class="title" data-i18n="track">链上追踪</span>
+                                    <span class="desc">资产追踪与黑客攻击流向还原</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="nav-item">
+                        <span data-i18n="company">公司介绍</span>
                     </div>
                 </div>
-                <div class="nav-item" data-i18n="solution">解决方案 <i class="fa fa-chevron-down"></i>
-                    <div class="dropdown">
-                        <a href="#" data-i18n="defi">DeFi 安全</a>
-                        <a href="#" data-i18n="track">链上追踪</a>
-                    </div>
-                </div>
-                <div class="nav-item" data-i18n="company">公司介绍</div>
             </div>
 
             <div class="header-right">
@@ -82,7 +121,7 @@
 
                 <div class="lang-switch">
                     <button id="lang-toggle" class="lang-toggle-btn">🌐</button>
-                    <ul id="lang-dropdown" class="lang-dropdown" style="display: none;">
+                    <ul id="lang-dropdown" class="lang-dropdown">
                         <li data-lang="en" class="lang-option active">English</li>
                         <li data-lang="zh" class="lang-option">中文</li>
                         <li data-lang="ms" class="lang-option">Bahasa Melayu</li>
