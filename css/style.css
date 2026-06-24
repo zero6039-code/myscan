@@ -764,10 +764,10 @@ html[data-i18n-ready] [data-i18n],
 }
 
 /* ==========================================================================
-   🌌 二进制矩阵 4x10 居中且放大版（水平居中，底部靠拢）
+   🌌 二进制矩阵 4x10 居中放大版（绝对强制生效）
    ========================================================================== */
 
-/* 1. 核心容器：强制等宽字体与居中 */
+/* 1. 全局接管：强制等宽字体 + 居中 + 放大 */
 .binary-matrix-stream.aligned-right,
 .binary-matrix-stream.aligned-right * {
     font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace !important;
@@ -775,41 +775,48 @@ html[data-i18n-ready] [data-i18n],
 }
 
 .binary-matrix-stream.aligned-right {
-    position: relative;               /* 脱离绝对定位，改为相对定位便于居中 */
-    width: 100%;                      /* 占满父容器宽度 */
-    text-align: center;               /* 整体居中 */
-    margin-top: auto;                 /* 推至底部 */
-    margin-bottom: 20px;              /* 与底部保持间距 */
+    /* 移除绝对定位，改用相对定位并居中 */
+    position: relative !important;
+    width: 100% !important;
+    text-align: center !important;
+    margin-top: auto !important;
+    margin-bottom: 16px !important;
     box-sizing: border-box !important;
     z-index: 1 !important;
     user-select: none;
     
-    /* 保留遮罩效果 */
+    /* 遮罩保留 */
     -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 30%, rgba(0,0,0,1) 100%);
     mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 30%, rgba(0,0,0,1) 100%);
     
-    /* 字号放大 */
-    font-size: 18px !important;
-    line-height: 2.4 !important;      /* 行高相应增大，保证间距舒适 */
+    /* 🔥 字号放大到 20px，行高 2.6 */
+    font-size: 20px !important;
+    line-height: 2.6 !important;
 }
 
-/* 2. 每行数字居中 */
+/* 2. 每行数字强制居中 */
 .binary-matrix-stream.aligned-right .matrix-row,
 .binary-matrix-stream.aligned-right > div,
 .binary-matrix-stream.aligned-right > p {
     display: block !important;
-    text-align: center !important;    /* 改为居中 */
+    text-align: center !important;
     white-space: nowrap !important;
     width: 100% !important;
     font-size: inherit !important;
     line-height: inherit !important;
     color: rgba(255, 255, 255, 0.22) !important;
-    letter-spacing: 0.08em !important; /* 轻微调大字符间距，更清晰 */
+    letter-spacing: 0.1em !important; /* 增加字符间距 */
 }
 
-/* 3. 每行内部数字间距保留（利用 letter-spacing 或 gap） */
+/* 3. 每个数字之间的间距（左右留白） */
 .binary-matrix-stream.aligned-right .matrix-row span {
-    margin: 0 6px;                    /* 左右间距，保证四个数字不挤在一起 */
+    margin: 0 8px !important;        /* 左右各 8px 间距，防止挤在一起 */
+}
+
+/* 额外保险：移除任何可能干扰的 left/right 定位 */
+.binary-matrix-stream.aligned-right {
+    left: auto !important;
+    right: auto !important;
 }
 
 /* ---------------- 右侧：纯净表单域 (独立自适应滚动体 - 带来极佳留白感) ---------------- */
