@@ -602,17 +602,16 @@ html[data-i18n-ready] [data-i18n],
     mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 30%, rgba(0,0,0,1) 100%);
 }
 .modal-left-box .binary-matrix-stream.aligned-right .matrix-row {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    white-space: nowrap;
-    color: rgba(255, 255, 255, 0.25);
+    flex-wrap: nowrap !important;          /* 绝对不折行 */
+    display: flex !important;
+    justify-content: center !important;
+    gap: 10px !important;
+    overflow: hidden !important;          /* 万一超宽也裁剪，不撑爆父级 */
 }
 .modal-left-box .binary-matrix-stream.aligned-right .matrix-row span {
-    font-family: 'Courier New', monospace;
-    font-variant-numeric: tabular-nums;
-    display: inline-block;
-    letter-spacing: 0.12em;
+    flex-shrink: 0 !important;            /* 每个二进制单元格不压缩 */
+    white-space: nowrap !important;
+    display: inline-block !important;
 }
 
 /* ================= 右侧 - 优化布局，修复间距与对齐 ================= */
