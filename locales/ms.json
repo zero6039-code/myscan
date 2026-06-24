@@ -66,5 +66,10 @@
   "btn_submit": "Hantar Permintaan",
   
   "err_required": "Medan ini wajib diisi",
-  "err_email": "Sila masukkan alamat e-mel yang sah"
+  "err_email": "Sila masukkan alamat e-mel yang sah",
+
+  "alert_success": "Berjaya! Pasukan DewSecure akan menghubungi anda sebentar lagi.",
+  "alert_error_email": "Sila semak sama ada alamat e-mel betul.",
+  "alert_error_network": "Ralat rangkaian, sila cuba lagi kemudian."
+  
 }
