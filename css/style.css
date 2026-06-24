@@ -402,7 +402,7 @@ h1 img {
 
 /* 重新定义的 H8 主标题选择器 */
 h8.hero-title, .hero-title {
-    display: block;                   /* 👈 关键：强制让非标准的 h8 标签作为块级元素换行渲染 */
+    display: block;                    /* 👈 关键：强制让非标准的 h8 标签作为块级元素换行渲染 */
     font-size: 42px;                  /* 👈 依然保持你要求的大尺寸 (42px) */
     margin: 0 0 28px 0;
     line-height: 1.4;
@@ -679,7 +679,7 @@ html[data-i18n-ready] [data-i18n],
     height: 720px !important;         /* 👈 纵向同步拉高，告别缩在一起的局促感 */
     background: #ffffff;             /* 主体回正为白底 */
     border-radius: 16px;
-    display: flex;                   /* 使用坚固的横向弹性分栏 */
+    display: flex;                    /* 使用坚固的横向弹性分栏 */
     overflow: hidden;
     box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
     transform: scale(0.96) translateY(10px);
@@ -773,6 +773,14 @@ html[data-i18n-ready] [data-i18n],
     user-select: none;
     -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,1) 100%);
     mask-image: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,1) 100%);
+}
+
+/* ⚡ 新增安全对齐规则：强制矩阵每行按 flex 靠右展现 4 列间距 */
+.binary-matrix-stream.aligned-right .matrix-row {
+    display: flex !important;
+    justify-content: flex-end !important;
+    gap: 16px !important; /* 横向 4 列数字间距 */
+    white-space: nowrap !important;
 }
 
 /* ---------------- 右侧：纯净表单域 (独立自适应滚动体 - 带来极佳留白感) ---------------- */
