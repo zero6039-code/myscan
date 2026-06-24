@@ -952,3 +952,70 @@ html[data-i18n-ready] [data-i18n],
 html:not([data-i18n-ready="true"]) [data-i18n] {
     visibility: hidden !important;
 }
+
+
+/* ==========================================================================
+ * 🎯 DewSecure 询价弹窗大小扩容与布局稳固
+ * ========================================================================== */
+
+/* 1. 放大弹窗主体外壳 */
+#quote-modal .modal-content, 
+.quote-modal-box { /* 👈 请根据你 HTML 里的实际类名对齐（通常包裹左右两栏的那个大盒子） */
+    width: 95% !important;
+    max-width: 1180px !important;  /* 🚀 从原来的 800px 左右直接放大到 1180px，更显国际化大气 */
+    min-height: 700px !important;  /* 稍微拉高整体纵向空间 */
+    display: flex !important;      /* 强制维持左右双栏 Flex 布局 */
+    flex-direction: row !important;
+    border-radius: 12px !important;
+    overflow: hidden !important;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* 2. 重新分配合理的左右比例 */
+.modal-left-cyber, 
+#quote-modal .modal-left { /* 👈 左边黑色黑客帝国矩阵区域 */
+    flex: 0 0 32% !important;     /* 锁定左侧宽度占比 32% */
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    padding: 45px 35px !important; /* 增大内边距 */
+}
+
+.modal-right-form, 
+#quote-modal .modal-right { /* 👈 右边白色表单输入区域 */
+    flex: 1 !important;            /* 自动吃满右侧剩下的 68% 空间 */
+    padding: 50px 60px !important; /* 🌟 增大表单四周留白，让大弹窗看起来更舒展、不拥挤 */
+    background: #ffffff !important;
+}
+
+/* 3. 彻底根治输入框塌陷（图3、图4中输入框缩成一团的致命原因） */
+#quote-modal .form-group,
+#quote-modal .input-item {
+    width: 100% !important;
+    margin-bottom: 22px !important; /* 稍微拉开行与行之间的距离 */
+}
+
+/* 强制右侧所有输入控件、下拉框、文本域完美横向撑满 */
+#quote-modal input[type="text"],
+#quote-modal input[type="email"],
+#quote-modal select,
+#quote-modal textarea,
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important; /* 确保 padding 不会撑爆输入框 */
+    padding: 12px 16px !important;     /* 略微加高输入框内衬，提升点击质感 */
+    font-size: 15px !important;
+}
+
+/* 4. 调整底部提交按钮，让它在大弹窗下更显眼 */
+#quote-modal .btn-submit,
+#quote-modal button[type="submit"] {
+    width: auto !important;
+    min-width: 180px !important; /* 设定一个大气的最小宽度 */
+    padding: 14px 35px !important;
+    font-size: 16px !important;
+    float: right; /* 让咨询专家按钮帅气地靠右对齐 */
+}
