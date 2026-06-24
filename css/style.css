@@ -863,3 +863,58 @@ html[data-i18n-ready] [data-i18n],
 html:not([data-i18n-ready="true"]) [data-i18n] {
     visibility: hidden !important;
 }
+
+/* ==========================================================================
+   🎯 DewSecure 视觉微调最终校准总线 (最高优先级)
+   ========================================================================== */
+
+/* 1. 背景模糊度：微调清晰 */
+.cyber-modal-overlay {
+    background: rgba(4, 4, 6, 0.72) !important;
+    backdrop-filter: blur(4px) !important;
+    -webkit-backdrop-filter: blur(4px) !important;
+}
+
+/* 2. 左侧暗盒物理占比微调，确保给大字号留出完美的自适应空间 */
+.modal-left-box {
+    flex: 0 0 38% !important; 
+    padding: 40px 24px !important;
+}
+
+/* 3. Logo 图片自适应放大 */
+.modal-left-box .brand-header .brand-logo-img {
+    width: 46px !important;       /* 进一步放大图片尺寸 */
+    height: 46px !important;
+    object-fit: contain !important;
+}
+
+/* 4. "DewSecure" 品牌文本：激进放大 + 坚决不用粗体 */
+.modal-left-box .brand-header .brand-logo-text,
+.modal-left-box .brand-header [data-i18n="page_title"] {
+    font-size: 30px !important;   /* 字号直接拉大到 30px，使其极具辨识度 */
+    color: #ffffff !important;
+    font-weight: 300 !important;   /* 🌟 核心：坚决不用粗体，采用轻盈纤细线条 */
+    letter-spacing: 1.5px !important;
+    white-space: nowrap !important;
+}
+
+/* 5. “技术为器，诚信为道。”标语：极致放大 + 坚决不用粗体 */
+.modal-left-box .matrix-title,
+.modal-left-box [data-i18n="modal_matrix_slogan"] {
+    margin-top: 60px !important;
+    font-size: 36px !important;   /* 🌟 标语字号从 32px 激进提升至 36px，靠大字号撑起视觉，而非靠粗体 */
+    line-height: 1.4 !important;
+    letter-spacing: 2px !important;
+    color: #ffffff !important;
+    font-weight: 400 !important;   /* 🌟 核心：常规偏细字重，拒绝粗体 */
+}
+
+/* 标语内部的红色高亮区域校准 */
+.modal-left-box .matrix-title .highlight-red,
+.modal-left-box [data-i18n="modal_matrix_slogan"] .highlight-red {
+    color: #ff4a5a !important;
+    font-weight: 400 !important;   /* 拒绝粗体 */
+    display: block !important;
+    margin-top: 8px !important;
+    text-shadow: 0 0 20px rgba(255, 74, 90, 0.3) !important;
+}
