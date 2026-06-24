@@ -643,7 +643,6 @@ html[data-i18n-ready] [data-i18n],
     box-shadow: 0 0 15px rgba(255, 74, 90, 0.3);
 }
 
-
 /* ==========================================================================
    9. 🌌 DewSecure 高端 Web3 询价模态框样式 (Cyber Modal System)
    ========================================================================== */
@@ -655,12 +654,9 @@ html[data-i18n-ready] [data-i18n],
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(4, 4, 6, 0.7); /* 稍微降低暗度，增加通透感 */
-    
-    /* 🌟 需求1核心修改：将原先的 12px 降低到 4px，使背景变清晰 */
-    backdrop-filter: blur(4px) !important;
-    -webkit-backdrop-filter: blur(4px) !important;
-    
+    background: rgba(4, 4, 6, 0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -711,9 +707,9 @@ html[data-i18n-ready] [data-i18n],
 
 /* ---------------- 左侧：黑客暗盒与数字流 (强控 35% 分栏宽度) ---------------- */
 .modal-left-box {
-    flex: 0 0 38%;               /* 🌟 稍微扩宽左侧暗盒占比，为更大号的文字和 Logo 腾出自适应物理空间 */
+    flex: 0 0 35%;               /* 👈 坚固加锁：不收缩、不放大，锁死35%比例 */
     background: #050508;
-    padding: 36px 24px;          /* 微调内边距 */
+    padding: 40px 24px;
     display: flex;
     flex-direction: column;
     position: relative;
@@ -721,38 +717,28 @@ html[data-i18n-ready] [data-i18n],
     overflow: hidden;
 }
 
-/* 🌟 需求2核心修改：Logo和文本外层容器增大自适应，利用弹性盒模型使其不挤压 */
 .modal-left-box .brand-header {
     display: flex;
     align-items: center;
-    gap: 12px;                   /* 增大图片和文字间距 */
-    font-size: 24px !important;  /* 🌟 将 DewSecure 文本字号从 18px 放大到 24px */
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #ffffff;
+}
+.modal-left-box .brand-header img { width: 28px; height: 28px; }
+
+.modal-left-box .matrix-title {
+    margin-top: 50px;
+    font-size: 28px;             /* 适当微调，防止马语换行空间不足 */
     font-weight: 700;
     color: #ffffff;
-    width: 100%;
-}
-/* 🌟 需求2核心修改：将原本 28px 的图标尺寸放大到 34px，凸显品牌形象 */
-.modal-left-box .brand-header img { 
-    width: 34px !important; 
-    height: 34px !important; 
-    object-fit: contain;
-}
-
-/* 🌟 需求3核心修改：“技术为器，诚信为道。”主标题继续加大 */
-.modal-left-box .matrix-title {
-    margin-top: 45px;
-    font-size: 34px !important;  /* 🌟 从原先的 28px 激进放大到 34px，增强视觉震撼力 */
-    font-weight: 800;            /* 提升字重至极粗 */
-    color: #ffffff;
-    line-height: 1.35;           /* 微调紧凑行高 */
-    letter-spacing: 1px;         /* 赋予极客排版呼吸感 */
+    line-height: 1.4;
     z-index: 2;
 }
 .modal-left-box .highlight-red {
     color: #ff4a5a;
     display: block;
     text-shadow: 0 0 20px rgba(255, 74, 90, 0.4);
-    margin-top: 4px;             /* 增加两句标语间的层级间距 */
 }
 
 /* 让二进制跑动区域整体靠右对齐 */
@@ -770,66 +756,125 @@ html[data-i18n-ready] [data-i18n],
     user-select: none;
 }
 
-/* ==========================================================================
-   🎯 DewSecure 弹窗视觉深度自定义修补总线 (最高优先级)
-   ========================================================================== */
-
-/* 1. 背景模糊度微调：清晰度回正 */
-.cyber-modal-overlay {
-    background: rgba(4, 4, 6, 0.72) !important;
-    backdrop-filter: blur(4px) !important;
-    -webkit-backdrop-filter: blur(4px) !important;
+/* ---------------- 右侧：纯净表单域 (独立自适应滚动体) ---------------- */
+.modal-right-box {
+    flex: 0 0 65%;               /* 👈 坚固加锁：占据 65% 剩余空间 */
+    background: #ffffff;
+    height: 100%;
+    overflow-y: auto;            /* ⚡ 核心补丁：长文本或马语撑大时，右侧独立滚动，绝不溢出弹窗 */
+    padding: 40px 45px;
+    color: #1e293b;
 }
 
-/* 2. 左侧暗盒物理占比微调，确保大字号自适应不折行 */
-.modal-left-box {
-    flex: 0 0 38% !important; 
-    padding: 36px 24px !important;
+.modal-right-box h2 { font-size: 26px; font-weight: 700; color: #0f172a; margin: 0 0 6px 0; }
+.modal-right-box .modal-subtitle { font-size: 14px; color: #64748b; margin: 0 0 24px 0; }
+
+/* 表单组件控制 */
+.form-row { 
+    display: flex; 
+    gap: 20px; 
+    width: 100%;
+}
+.form-group { 
+    margin-bottom: 18px; 
+    flex: 1; 
+    display: flex; 
+    flex-direction: column; 
+    position: relative;
+    min-width: 0;                /* 防止 Flex 子项由于内嵌 Input 默认尺寸而拒绝收缩 */
+}
+.form-group label { font-size: 13px; font-weight: 600; color: #334155; margin-bottom: 6px; }
+.required-label::after { content: " *"; color: #ef4444; }
+
+.form-group input, .form-group select, .form-group textarea {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 14px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    color: #0f172a;
+    outline: none;
+    transition: all 0.2s ease;
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    border-color: #0f172a;
+    box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.08);
 }
 
-/* 3. Logo 盒子与品牌文本变大、去粗体、自适应 */
-.modal-left-box .brand-header {
-    display: flex !important;
-    align-items: center !important;
-    gap: 14px !important;         /* 增大图片和文字之间的间距 */
-    width: 100% !important;
+/* WhatsApp 联合输入框完美对齐补丁 */
+.custom-single-channel {
+    display: flex;
+    align-items: center;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    overflow: hidden;
+    height: 40px;                /* ⚡ 锁死高度，防止徽章百分比塌陷 */
+    background: #ffffff;
+}
+.custom-single-channel .whatsapp-badge {
+    background: #f1f5f9;
+    color: #128c7e; 
+    padding: 0 12px;
+    font-weight: 600;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 100%;                /* 饱满填充 */
+    border-right: 1px solid #e2e8f0;
+    white-space: nowrap;
+}
+.custom-single-channel input {
+    border: none !important;
+    outline: none !important;
+    flex: 1;
+    height: 100%;
+    padding: 0 14px;
+}
+.custom-single-channel:focus-within {
+    border-color: #0f172a;
+    box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.08);
 }
 
-/* 强制放大 Logo 图片 */
-.modal-left-box .brand-header .brand-logo-img {
-    width: 42px !important;       /* 从 28px 放大到 42px */
-    height: 42px !important;
-    object-fit: contain !important;
-}
+.form-footer-notice { font-size: 12px; color: #64748b; margin: 12px 0 0 0; }
 
-/* 强制放大 DewSecure 文本并彻底剥离粗体 */
-.modal-left-box .brand-header .brand-logo-text {
-    font-size: 26px !important;   /* 显眼的大品牌字号 */
-    color: #ffffff !important;
-    font-weight: 300 !important;   /* 🌟 核心：彻底避免使用粗体，保持冷峻轻盈的科技感 */
-    letter-spacing: 1px !important;
-    white-space: nowrap !important;
+/* ---------------- ❌ 表单拦截报错核心态 ---------------- */
+.form-group.has-error input,
+.form-group.has-error .custom-single-channel {
+    border-color: #ef4444 !important;
+    background-color: #fef2f2 !important;
 }
+.form-group.has-error .custom-single-channel input {
+    background-color: #fef2f2 !important;
+}
+.form-group.has-error label { color: #b91c1c; }
+.error-msg {
+    color: #ef4444;
+    font-size: 11px;
+    margin-top: 4px;
+    display: none;
+    font-weight: 500;
+}
+.form-group.has-error .error-msg { display: block; }
 
-/* 4. “技术为器，诚信为道” 标语继续放大、去粗体 */
-.modal-left-box .matrix-title {
-    margin-top: 55px !important;
-    font-size: 32px !important;   /* 🌟 标语激进放大到 32px */
-    line-height: 1.4 !important;
-    letter-spacing: 1.5px !important;
-    color: #ffffff !important;
-    
-    font-weight: 400 !important;   /* 🌟 核心：避免粗体，使用中细常规字重 */
+/* ---------------- 右下角黑块询价按钮 ---------------- */
+.form-submit-row { display: flex; justify-content: flex-end; margin-top: 16px; }
+.btn-submit-quote {
+    background: #0f172a;
+    color: #ffffff;
+    border: none;
+    padding: 12px 28px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s;
 }
-
-/* 标语内部红色强调部分同样不允许加粗 */
-.modal-left-box .matrix-title .highlight-red {
-    color: #ff4a5a !important;
-    font-weight: 400 !important;   /* 避免使用粗体 */
-    display: block !important;
-    margin-top: 6px !important;
-    text-shadow: 0 0 20px rgba(255, 74, 90, 0.3) !important;
-}
+.btn-submit-quote:hover { background: #1e293b; }
 
 /* ==========================================================================
    10. 📱 模态框专有移动端响应式断点
@@ -862,63 +907,4 @@ html[data-i18n-ready] [data-i18n],
 
 html:not([data-i18n-ready="true"]) [data-i18n] {
     visibility: hidden !important;
-}
-
-/* ==========================================================================
-   🎯 DewSecure 弹窗视觉最终校准总线 (单线穿透隔离版)
-   ========================================================================== */
-
-/* 1. 全局遮罩玻璃回正 */
-.cyber-modal-overlay {
-    background: rgba(4, 4, 6, 0.75) !important;
-    backdrop-filter: blur(4px) !important;
-    -webkit-backdrop-filter: blur(4px) !important;
-}
-
-/* 2. 左侧暗盒物理宽度加锁 */
-.modal-left-box {
-    flex: 0 0 40% !important;        /* 提升占比到 40% 给超大字号留足物理空间 */
-    padding: 40px 24px !important;
-    background: #050508 !important;
-}
-
-/* 3. 图片强制放大：使用 img 独占选择器避开 i18n 洗刷 */
-.modal-left-box .brand-header img.brand-logo-img {
-    width: 48px !important;           /* 物理尺寸由 34px 强力拉大到 48px */
-    height: 48px !important;
-    min-width: 48px !important;
-    min-height: 48px !important;
-    object-fit: contain !important;
-    display: inline-block !important;
-}
-
-/* 4. 彻底解决 DewSecure 文本变大与去粗体 */
-.modal-left-box .brand-header .brand-logo-text {
-    font-size: 30px !important;       /* 强行拉大到 30px */
-    color: #ffffff !important;
-    font-weight: 300 !important;      /* 🌟 核心：坚决拒绝粗体 */
-    font-family: -apple-system, BlinkMacSystemFont, sans-serif !important;
-    letter-spacing: 1px !important;
-    white-space: nowrap !important;
-    display: inline-block !important;
-}
-
-/* 5. 彻底解决标语“技术为器，诚信为道。”变大与去粗体 */
-.modal-left-box .matrix-title {
-    margin-top: 50px !important;
-    font-size: 34px !important;       /* 字号激进提升至 34px 撑起视觉 */
-    line-height: 1.4 !important;
-    letter-spacing: 1.5px !important;
-    color: #ffffff !important;
-    font-weight: 400 !important;      /* 🌟 核心：常规偏细字重，绝对拒绝加粗 */
-    display: block !important;
-}
-
-/* 标语内部红标校准：去掉可能继承的任何加粗 */
-.modal-left-box .matrix-title .highlight-red {
-    color: #ff4a5a !important;
-    font-weight: 400 !important;      /* 拒绝粗体 */
-    display: block !important;
-    margin-top: 8px !important;
-    text-shadow: 0 0 20px rgba(255, 74, 90, 0.4) !important;
 }
