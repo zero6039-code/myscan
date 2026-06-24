@@ -20,6 +20,13 @@ body {
     box-sizing: border-box;
 }
 
+/* ⚡ 核心安全补丁：锁死模态框内部所有组件的怪异盒模型，防止尺寸被撑爆 */
+.cyber-modal-overlay *,
+.cyber-modal-overlay *::before,
+.cyber-modal-overlay *::after {
+    box-sizing: border-box !important;
+}
+
 /* ==========================================================================
    2. 头部控制总线布局 (Header) - 调整 Logo 的整体相对位移
    ========================================================================== */
@@ -421,6 +428,7 @@ h8.hero-title, .hero-title {
     font-weight: 300 !important;      /* 极细线条配合大字级，是非常现代的高级 Web3 质感 */
     letter-spacing: 0.5px;
 }
+
 /* ==========================================================================
    6. 📱 移动端/自适应响应式媒体查询
    ========================================================================== */
@@ -584,18 +592,12 @@ h8.hero-title, .hero-title {
     }
 }
 
-
-/* ==========================================================================
-   7. 🌐 全局国际化防闪烁核心控制 (i18n Flash Protection)
-   ========================================================================== */
-
-/* 当页面刚加载，且全局语言还没写入完毕时，隐匿所有带翻译的节点 */
+/* 全局国际化防闪烁核心控制 (i18n Flash Protection) */
 [data-i18n] {
     opacity: 0;
     transition: opacity 0.15s ease-in-out;
 }
 
-/* 一旦 JS 初始化完毕并向 window 挂载了状态，或者元素被赋予了就绪类名，瞬间解除隐匿 */
 html[data-i18n-ready] [data-i18n],
 .i18n-ready [data-i18n] {
     opacity: 1;
@@ -636,7 +638,6 @@ html[data-i18n-ready] [data-i18n],
     transform: translateY(-2px); /* 悬浮物理阻尼 */
 }
 
-/* 按钮点击瞬间的压强反馈 */
 .btn-cyber-red:active {
     transform: translateY(0);
     box-shadow: 0 0 15px rgba(255, 74, 90, 0.3);
@@ -670,18 +671,17 @@ html[data-i18n-ready] [data-i18n],
     pointer-events: auto;
 }
 
-/* 弹窗主体架 */
+/* 弹窗主体架：深度整合修复 */
 .cyber-modal-wrapper {
     position: relative;
     width: 90%;
-    max-width: 960px;
-    background: rgba(13, 13, 18, 0.45);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    max-width: 880px;            /* 调整为最优黄金跨度 */
+    height: 620px;               /* 设定固定物理高度，开启内部双轴独立滚动 */
+    background: #ffffff;         /* 主体回正为白底 */
     border-radius: 16px;
-    display: flex;
+    display: flex;               /* 使用坚固的横向弹性分栏 */
     overflow: hidden;
-    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.8), 
-                inset 0 0 40px rgba(255, 74, 90, 0.03); /* 暗红内衬呼吸发光 */
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
     transform: scale(0.96) translateY(10px);
     transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
@@ -705,11 +705,11 @@ html[data-i18n-ready] [data-i18n],
 }
 .modal-close-btn:hover { color: #ff4a5a; }
 
-/* ---------------- 左侧：黑客暗盒与数字流 ---------------- */
+/* ---------------- 左侧：黑客暗盒与数字流 (强控 35% 分栏宽度) ---------------- */
 .modal-left-box {
-    width: 35%;
+    flex: 0 0 35%;               /* 👈 坚固加锁：不收缩、不放大，锁死35%比例 */
     background: #050508;
-    padding: 40px 30px;
+    padding: 40px 24px;
     display: flex;
     flex-direction: column;
     position: relative;
@@ -728,8 +728,8 @@ html[data-i18n-ready] [data-i18n],
 .modal-left-box .brand-header img { width: 28px; height: 28px; }
 
 .modal-left-box .matrix-title {
-    margin-top: 60px;
-    font-size: 32px;
+    margin-top: 50px;
+    font-size: 28px;             /* 适当微调，防止马语换行空间不足 */
     font-weight: 700;
     color: #ffffff;
     line-height: 1.4;
@@ -741,64 +741,48 @@ html[data-i18n-ready] [data-i18n],
     text-shadow: 0 0 20px rgba(255, 74, 90, 0.4);
 }
 
-/* 让二进制跑动区域整体靠右对齐，占满暗盒右侧空间 */
+/* 让二进制跑动区域整体靠右对齐 */
 .binary-matrix-stream.aligned-right {
     margin-top: auto;
     text-align: right;
     width: 100%;
-    padding-right: 15px; /* 保留微调空隙，视觉极佳 */
+    padding-right: 10px;
     font-family: 'Courier New', Courier, monospace;
     font-size: 13px;
     line-height: 2;
     letter-spacing: 1px;
-    
-    /* 需求 2：颜色稍微明显一点（提高明度与不透明度） */
     color: rgba(239, 68, 68, 0.45); 
     text-shadow: 0 0 4px rgba(239, 68, 68, 0.3);
     user-select: none;
-    transition: all 0.1s ease;
 }
 
-/* WhatsApp 固定角标样式 */
-.custom-single-channel {
-    display: flex;
-    align-items: center;
-    border: 1px solid #cbd5e1;
-    border-radius: 6px;
-    overflow: hidden;
-}
-.custom-single-channel .whatsapp-badge {
-    background: #f1f5f9;
-    color: #128c7e; /* 经典官方微信/WhatsApp绿 */
-    padding: 0 12px;
-    font-weight: 600;
-    font-size: 13px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    height: 100%;
-    border-right: 1px solid #e2e8f0;
-    white-space: nowrap;
-}
-.custom-single-channel input {
-    border: none !important;
-    outline: none !important;
-    flex: 1;
-}
-
-/* ---------------- 右侧：纯净表单域 ---------------- */
+/* ---------------- 右侧：纯净表单域 (独立自适应滚动体) ---------------- */
 .modal-right-box {
-    width: 65%;
-    background: #ffffff; /* 完美对齐 CertiK 白底 */
+    flex: 0 0 65%;               /* 👈 坚固加锁：占据 65% 剩余空间 */
+    background: #ffffff;
+    height: 100%;
+    overflow-y: auto;            /* ⚡ 核心补丁：长文本或马语撑大时，右侧独立滚动，绝不溢出弹窗 */
     padding: 40px 45px;
     color: #1e293b;
 }
-.modal-right-box h2 { font-size: 26px; font-weight: 700; color: #0f172a; margin-bottom: 6px; }
-.modal-right-box .modal-subtitle { font-size: 14px; color: #64748b; margin-bottom: 28px; }
+
+.modal-right-box h2 { font-size: 26px; font-weight: 700; color: #0f172a; margin: 0 0 6px 0; }
+.modal-right-box .modal-subtitle { font-size: 14px; color: #64748b; margin: 0 0 24px 0; }
 
 /* 表单组件控制 */
-.form-row { display: flex; gap: 20px; }
-.form-group { margin-bottom: 18px; flex: 1; display: flex; flex-direction: column; position: relative; }
+.form-row { 
+    display: flex; 
+    gap: 20px; 
+    width: 100%;
+}
+.form-group { 
+    margin-bottom: 18px; 
+    flex: 1; 
+    display: flex; 
+    flex-direction: column; 
+    position: relative;
+    min-width: 0;                /* 防止 Flex 子项由于内嵌 Input 默认尺寸而拒绝收缩 */
+}
 .form-group label { font-size: 13px; font-weight: 600; color: #334155; margin-bottom: 6px; }
 .required-label::after { content: " *"; color: #ef4444; }
 
@@ -818,18 +802,50 @@ html[data-i18n-ready] [data-i18n],
     box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.08);
 }
 
-/* 特殊联合输入框（下拉菜单与输入联通） */
-.contact-input-wrapper { display: flex; border: 1px solid #cbd5e1; border-radius: 6px; overflow: hidden; }
-.contact-input-wrapper select { width: 110px; border: none; border-right: 1px solid #cbd5e1; border-radius: 0; background: #f8fafc; padding-right: 4px; }
-.contact-input-wrapper input { border: none; border-radius: 0; }
-.contact-input-wrapper:focus-within { border-color: #0f172a; box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.08); }
+/* WhatsApp 联合输入框完美对齐补丁 */
+.custom-single-channel {
+    display: flex;
+    align-items: center;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    overflow: hidden;
+    height: 40px;                /* ⚡ 锁死高度，防止徽章百分比塌陷 */
+    background: #ffffff;
+}
+.custom-single-channel .whatsapp-badge {
+    background: #f1f5f9;
+    color: #128c7e; 
+    padding: 0 12px;
+    font-weight: 600;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 100%;                /* 饱满填充 */
+    border-right: 1px solid #e2e8f0;
+    white-space: nowrap;
+}
+.custom-single-channel input {
+    border: none !important;
+    outline: none !important;
+    flex: 1;
+    height: 100%;
+    padding: 0 14px;
+}
+.custom-single-channel:focus-within {
+    border-color: #0f172a;
+    box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.08);
+}
 
-.form-footer-notice { font-size: 12px; color: #64748b; margin-top: 12px; }
+.form-footer-notice { font-size: 12px; color: #64748b; margin: 12px 0 0 0; }
 
-/* ---------------- ❌ 表单拦截报错核心态（完美对齐图2） ---------------- */
+/* ---------------- ❌ 表单拦截报错核心态 ---------------- */
 .form-group.has-error input,
-.form-group.has-error .contact-input-wrapper {
+.form-group.has-error .custom-single-channel {
     border-color: #ef4444 !important;
+    background-color: #fef2f2 !important;
+}
+.form-group.has-error .custom-single-channel input {
     background-color: #fef2f2 !important;
 }
 .form-group.has-error label { color: #b91c1c; }
@@ -860,12 +876,31 @@ html[data-i18n-ready] [data-i18n],
 }
 .btn-submit-quote:hover { background: #1e293b; }
 
-/* 移动端自适应响应 */
+/* ==========================================================================
+   10. 📱 模态框专有移动端响应式断点
+   ========================================================================== */
 @media (max-width: 768px) {
-    .cyber-modal-wrapper { flex-direction: column; max-height: 90vh; overflow-y: auto; }
-    .modal-left-box { width: 100%; padding: 30px; }
+    .cyber-modal-wrapper { 
+        flex-direction: column; 
+        max-height: 92vh; 
+        height: auto;
+    }
+    .modal-left-box { 
+        flex: 0 0 auto;
+        width: 100%; 
+        padding: 30px 24px; 
+    }
     .modal-left-box .matrix-title { margin-top: 20px; font-size: 24px; }
-    .binary-matrix-stream { display: none; }
-    .modal-right-box { width: 100%; padding: 25px; }
-    .form-row { flex-direction: column; gap: 0; }
+    .binary-matrix-stream.aligned-right { display: none; }
+    
+    .modal-right-box { 
+        flex: 0 0 auto;
+        width: 100%; 
+        padding: 30px 24px; 
+        overflow-y: visible;
+    }
+    .form-row { 
+        flex-direction: column; 
+        gap: 0; 
+    }
 }
