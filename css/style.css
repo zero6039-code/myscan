@@ -786,9 +786,16 @@ html[data-i18n-ready] [data-i18n],
 .binary-matrix-stream .matrix-row {
     display: block !important;
     width: 100% !important;
-    height: 26px !important; /* 严格对齐 line-height */
-    overflow: hidden !important;   
-    white-space: nowrap !important;
+    height: 26px !important; 
+    
+    /* 🌟 核心修正：移除 hidden，改为 visible */
+    overflow: visible !important; 
+    
+    /* 🌟 性能补丁：告知浏览器这里会频繁变动 */
+    will-change: contents; 
+    
+    white-space: pre !important; /* 确保使用等宽字体时空格也被算作字符 */
+    font-family: 'Courier New', Courier, monospace !important;
     color: #ff4a5a !important;
     text-shadow: 0 0 4px rgba(255, 74, 90, 0.5) !important;
 }
