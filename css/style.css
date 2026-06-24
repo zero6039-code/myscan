@@ -1025,122 +1025,122 @@ html[data-i18n-ready] [data-i18n],
 }
 
 /* ==========================================================================
-   🎯 完美一屏模态框终极重构（无滚动，自适应高度）
+   🎯 终极一屏模态框（无滚动，全局紧凑）
    ========================================================================== */
 
-/* 1. 模态框遮罩 & 容器：高度自适应，但限制最小高度 */
+/* 1. 模态框容器：固定高度为视口85%，超出隐藏 */
 .cyber-modal-wrapper {
-    height: auto !important;            /* 取消固定高度，由内容撑开 */
-    min-height: 80vh !important;        /* 最小高度占视口80%，确保不会太小 */
-    max-height: 95vh !important;        /* 最大高度限制，防止极端情况溢出 */
-    width: 95% !important;
-    max-width: 1180px !important;
-    align-items: stretch !important;    /* 使左右子项等高 */
+    height: 85vh !important;           /* 固定高度，适应屏幕 */
+    max-height: 85vh !important;
+    min-height: 600px !important;      /* 保证最小高度 */
+    overflow: hidden !important;       /* 禁止整个框滚动 */
 }
 
-/* 2. 左侧区域：保持原有比例，内部 flex 列，底部留白 */
+/* 2. 左侧区域：保持比例，内容居中 */
 .modal-left-box {
     flex: 0 0 32% !important;
-    padding: 40px 24px 16px 24px !important;
+    padding: 30px 20px 10px 20px !important;
     display: flex !important;
     flex-direction: column !important;
-    justify-content: space-between !important; /* 上中下分布：标题、slogan、矩阵 */
-    overflow: hidden !important;        /* 防止内容溢出 */
+    justify-content: space-between !important;
+    overflow: hidden !important;
 }
-
-/* 左侧标题区和 slogan 可适当压缩间距 */
 .modal-left-box .brand-header {
-    margin-bottom: 20px !important;
+    margin-bottom: 10px !important;
+}
+.modal-left-box .brand-header img {
+    width: 40px !important;
+    height: 40px !important;
+}
+.modal-left-box .brand-header span {
+    font-size: 24px !important;
 }
 .modal-left-box .matrix-title {
-    margin-top: 20px !important;
-    font-size: 24px !important;
-    line-height: 1.3 !important;
+    margin-top: 10px !important;
+    font-size: 20px !important;
+    line-height: 1.2 !important;
 }
-.modal-left-box .matrix-title .highlight-red {
-    display: inline-block !important;   /* 让“诚信为道”与上行同行，而非独占一行 */
+.modal-left-box .binary-matrix-stream.aligned-right {
+    font-size: 11px !important;        /* 进一步缩小矩阵字号 */
+    line-height: 1.8 !important;
+    margin-bottom: 4px !important;
 }
 
-/* 3. 右侧区域：完全自适应，垂直居中，禁止滚动 */
+/* 3. 右侧区域：flex列，垂直居中，禁止滚动 */
 .modal-right-box {
-    flex: 1 !important;                 /* 自动填充剩余宽度 */
-    padding: 28px 40px 20px 40px !important;
+    flex: 1 !important;
+    padding: 16px 28px 12px 28px !important;
     display: flex !important;
     flex-direction: column !important;
     justify-content: center !important; /* 垂直居中 */
     overflow: hidden !important;
-    height: auto !important;
-    max-height: 100% !important;
+    height: 100% !important;
 }
 
-/* 右侧内部包裹（如果有 .modal-form-scroll-body） */
 .modal-right-box .modal-form-scroll-body,
 .modal-right-box form {
     flex: 1 !important;
     display: flex !important;
     flex-direction: column !important;
-    justify-content: center !important; /* 表单整体居中 */
+    justify-content: center !important;
     overflow: visible !important;
     width: 100% !important;
 }
 
-/* 4. 表单项紧凑布局（统一控制） */
+/* 4. 标题、副标题极致压缩 */
 .modal-right-box h2 {
-    font-size: 22px !important;
-    margin: 0 0 4px 0 !important;
-    line-height: 1.2 !important;
+    font-size: 18px !important;
+    margin: 0 0 2px 0 !important;
+    line-height: 1.1 !important;
 }
 .modal-right-box .modal-subtitle {
-    font-size: 13px !important;
-    margin: 0 0 16px 0 !important;
+    font-size: 12px !important;
+    margin: 0 0 8px 0 !important;
     color: #64748b;
 }
 
-/* 所有 .form-group 统一上下间距 */
+/* 5. 表单项极致紧凑 */
 .modal-right-box .form-group {
-    margin-bottom: 8px !important;
+    margin-bottom: 4px !important;
 }
 .modal-right-box .form-group label {
-    font-size: 12px !important;
-    margin-bottom: 3px !important;
+    font-size: 11px !important;
+    margin-bottom: 2px !important;
     font-weight: 600;
 }
-
-/* 输入框、选择框、自定义通道统一高度 */
 .modal-right-box .form-group input,
 .modal-right-box .form-group select,
 .modal-right-box .custom-single-channel,
 .modal-right-box .custom-single-channel input {
-    height: 34px !important;
-    line-height: 32px !important;
-    padding: 0 10px !important;
-    font-size: 13px !important;
-    border-radius: 4px !important;
+    height: 28px !important;
+    line-height: 26px !important;
+    padding: 0 8px !important;
+    font-size: 12px !important;
+    border-radius: 3px !important;
 }
 .modal-right-box .custom-single-channel {
-    height: 34px !important;
+    height: 28px !important;
 }
 .modal-right-box .whatsapp-badge {
     height: 100% !important;
-    line-height: 32px !important;
-    padding: 0 10px !important;
-    font-size: 12px !important;
+    line-height: 26px !important;
+    padding: 0 8px !important;
+    font-size: 11px !important;
 }
 
-/* textarea 压缩 */
 .modal-right-box .form-group textarea {
-    height: 48px !important;       /* 保留2行空间 */
-    min-height: 48px !important;
-    max-height: 48px !important;
-    padding: 4px 10px !important;
-    font-size: 13px !important;
+    height: 32px !important;
+    min-height: 32px !important;
+    max-height: 32px !important;
+    padding: 2px 8px !important;
+    font-size: 12px !important;
     resize: none !important;
 }
 
-/* 底部提示和按钮 */
+/* 6. 底部提示和按钮 */
 .modal-right-box .form-footer-notice {
-    margin: 4px 0 6px 0 !important;
-    font-size: 11px !important;
+    margin: 2px 0 4px 0 !important;
+    font-size: 10px !important;
     color: #64748b;
 }
 .modal-right-box .form-submit-row {
@@ -1149,43 +1149,45 @@ html[data-i18n-ready] [data-i18n],
     justify-content: flex-end !important;
 }
 .modal-right-box .btn-submit-quote {
-    height: 36px !important;
-    padding: 0 28px !important;
-    font-size: 13px !important;
+    height: 30px !important;
+    padding: 0 20px !important;
+    font-size: 12px !important;
 }
 
-/* 5. 双列布局（.form-grid-row）恢复并排 */
+/* 7. 双列布局（.form-grid-row）恢复并排，且左右间距收紧 */
 .modal-right-box .form-grid-row {
     display: flex !important;
-    gap: 16px !important;
+    gap: 10px !important;
     width: 100% !important;
 }
 .modal-right-box .form-grid-row .form-group {
     flex: 1 !important;
 }
 
-/* 6. 移动端适配（<768px）恢复滚动并调整布局 */
+/* 8. 移动端适配 */
 @media (max-width: 768px) {
     .cyber-modal-wrapper {
         flex-direction: column !important;
         height: auto !important;
         max-height: 96vh !important;
+        min-height: auto !important;
         width: 92% !important;
     }
     .modal-left-box {
         flex: 0 0 auto !important;
         width: 100% !important;
-        padding: 24px !important;
-        min-height: 180px !important;
+        padding: 16px !important;
+        min-height: 120px !important;
     }
     .modal-left-box .binary-matrix-stream.aligned-right {
-        display: none !important;   /* 移动端隐藏矩阵 */
+        display: none !important;
     }
     .modal-right-box {
         flex: 1 !important;
         width: 100% !important;
-        padding: 20px !important;
-        overflow-y: auto !important; /* 移动端允许滚动 */
+        padding: 16px !important;
+        overflow-y: auto !important;  /* 移动端允许滚动 */
+        justify-content: flex-start !important;
     }
     .modal-right-box .form-grid-row {
         flex-direction: column !important;
