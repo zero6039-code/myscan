@@ -764,45 +764,58 @@ html[data-i18n-ready] [data-i18n],
 }
 
 /* ==========================================================================
-   🌌 二进制矩阵 完美沉底高内聚样式（彻底解决因 flex 平分导致的动态拉伸问题）
+   🌌 二进制矩阵 4x10 终极像素级对齐补丁（完美封杀变宽字体与空格缝隙）
    ========================================================================== */
 
-/* 1. 强行使用绝对定位，死死钉在最底部 */
+/* 1. 遮罩层与定位基准 */
 .binary-matrix-stream.aligned-right {
     position: absolute !important;
-    bottom: 20px !important;            /* 稍微拉高一点点，防止贴死绝对底部边缘 */
-    right: 32px !important;             /* 与整体右边距精准对齐 */
+    bottom: 20px !important;            
+    right: 32px !important;             
     left: 32px !important;              
-    width: calc(100% - 64px) !important;/* 动态计算富余宽度 */
+    width: calc(100% - 64px) !important;
     margin-top: 0 !important;
     box-sizing: border-box !important;
     z-index: 1 !important;
     user-select: none;
     
-    /* 渐变遮罩保持 */
+    /* 核心安全补丁：强行将字号设为 0，彻底物理消除 span 标签之间可能存在的 HTML 空格/换行缝隙 */
+    font-size: 0 !important; 
+    
     -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 30%, rgba(0,0,0,1) 100%);
     mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 30%, rgba(0,0,0,1) 100%);
 }
 
-/* 2. 核心规整：拒绝两端对齐，强制所有行在右侧紧密聚拢 */
+/* 2. 行容器：采用无缝向右贴紧模式 */
 .binary-matrix-stream.aligned-right .matrix-row {
-    display: flex !important;
-    justify-content: flex-end !important; /* 确保整行无条件向右看齐 */
-    gap: 14px !important;                 /* 列与列之间的固定极客间距，绝不随屏幕拉伸 */
+    display: block !important;            /* 👈 放弃 flex，改用 block 配合 text-align */
+    text-align: right !important;         /* 👈 强制内部所有元素绝对向右死死对齐 */
     white-space: nowrap !important;
+    width: 100% !important;
 }
 
-/* 3. 核心补丁：暴力粉碎 span 的 flex 平分和百分比宽度 */
+/* 3. 核心 span 列：注入绝对等宽基因，斩断字符宽度差 */
 .binary-matrix-stream.aligned-right .matrix-row span {
-    flex: none !important;                /* 👈 极其关键：防止 span 伸展撑爆 */
-    width: auto !important;               /* 👈 极其关键：收回被强占的百分比空间，回归文本真实宽度 */
     display: inline-block !important;
+    flex: none !important;
+    width: auto !important;
     
-    font-family: 'Courier New', Courier, monospace !important;
-    font-size: 12px !important;           /* 极客精致小字号 */
-    line-height: 1.8 !important;          /* 完美的纵向行高控制 */
-    color: rgba(255, 255, 255, 0.22) !important; /* 暗色调量子背景余晖 */
-    text-align: right !important;
+    /* 👈 极其关键：必须全平台强制使用绝对代码等宽字体，保证 1 和 0 占用完全相同的物理像素宽度 */
+    font-family: SFMono-Regular, Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; 
+    
+    font-size: 12px !important;          /* 重新在这里拉回真实字号 */
+    line-height: 1.8 !important;          
+    color: rgba(255, 255, 255, 0.22) !important; 
+    
+    /* 👈 替代 gap：用精准的左边距创造列间距，由于 font-size:0 拦截了空格，这个间距在任何屏幕下都绝对固定 */
+    margin-left: 14px !important;        
+    margin-right: 0 !important;
+    padding: 0 !important;
+}
+
+/* 强制清除每行第一个数字的左边距，确保最右侧无差错对齐 */
+.binary-matrix-stream.aligned-right .matrix-row span:first-child {
+    margin-left: 0 !important;
 }
 
 /* ---------------- 右侧：纯净表单域 (独立自适应滚动体 - 带来极佳留白感) ---------------- */
