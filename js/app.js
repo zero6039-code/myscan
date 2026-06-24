@@ -48,60 +48,54 @@ function triggerStatsCounter() {
     }
 }
 
-// 2. 🌌 动态黑客帝国二进制矩阵滚动流（精准匹配 HTML 结构，实现真·单个数字随机突变）
+// 2. 🌌 动态黑客帝国二进制矩阵滚动流（精准匹配 HTML 结构，实现真·单个字符随机突变）
 function initBinaryStream() {
+    // 获取所有的行
     const rows = document.querySelectorAll('.binary-matrix-stream .matrix-row');
     if (rows.length === 0) return;
 
-    const binaryTemplates = [
-        "11010101 00110111 01100111", "01011001 00101001 00000111",
-        "10000011 11111100 01110001", "10100100 00111001 10001101",
-        "00110111 00010110 01100111", "11011111 10000110 00010110",
-        "00110111 01101101 00011000", "11101110 00110011 10100001",
-        "10111011 11110111 01101011", "01111101 10010101 00111001"
-    ];
-
-    // 存储所有真正可以用来突变的数字 span 节点
-    const digitSpans = [];
-
-    // 初始化：用 span 标签包裹每一个字符，锁死排版
-    rows.forEach((row, index) => {
-        const templateStr = binaryTemplates[index] || binaryTemplates[0];
-        row.innerHTML = ""; // 清空原有文本
-
-        Array.from(templateStr).forEach(char => {
-            const span = document.createElement('span');
-            if (char === ' ') {
-                // 使用不换行空格，确保三列间距绝对固定
-                span.innerHTML = '&nbsp;'; 
-            } else {
-                span.textContent = char;
-                span.className = 'matrix-digit'; // 方便以后加单独的渐变或高亮样式
-                digitSpans.push(span); // 只有数字才加入突变池
-            }
-            row.appendChild(span);
+    // 收集所有行下面原生的 span 节点（排除可能混入的空格或换行文本节点）
+    const allSpans = [];
+    rows.forEach(row => {
+        const spans = row.querySelectorAll('span');
+        spans.forEach(span => {
+            allSpans.push(span);
         });
     });
 
-    // 🌟 极高频的分布式按位精准突变引擎
+    if (allSpans.length === 0) return;
+
+    // 🌟 极高频的分布式位突变引擎
     setInterval(() => {
-        if (digitSpans.length === 0) return;
-        
-        // 每次高频周期随机挑选 2 到 3 个独立的数字节点进行翻转
+        // 每次高频周期（45ms）随机挑选 2 到 3 个独立的 span 分组进行位突变
         const mutationCount = Math.floor(Math.random() * 2) + 2; // 2 ~ 3
         
         for (let k = 0; k < mutationCount; k++) {
-            const randomSpan = digitSpans[Math.floor(Math.random() * digitSpans.length)];
+            // 随机选择一个 span（例如：<span>11100011</span>）
+            const targetSpan = allSpans[Math.floor(Math.random() * allSpans.length)];
+            if (!targetSpan) continue;
+
+            // 将该 span 的文本打碎成字符数组
+            const charArray = Array.from(targetSpan.textContent);
+            if (charArray.length === 0) continue;
+
+            // 在这个 span 内部随机挑选一个字符下标
+            const randomCharIdx = Math.floor(Math.random() * charArray.length);
             
-            // 精确单点翻转，不触发整行重绘，排版坚如磐石
-            if (randomSpan.textContent === '0') {
-                randomSpan.textContent = '1';
-            } else if (randomSpan.textContent === '1') {
-                randomSpan.textContent = '0';
+            // 精准按位翻转
+            if (charArray[randomCharIdx] === '0') {
+                charArray[randomCharIdx] = '1';
+            } else if (charArray[randomCharIdx] === '1') {
+                charArray[randomCharIdx] = '0';
             }
+
+            // 精准刷回当前 span，不破坏任何 HTML 结构，排版稳如磐石
+            targetSpan.textContent = charArray.join('');
         }
     }, 45); 
 }
+
+
 // 3. 🛡️ 询价弹窗核心控制逻辑
 function initQuoteModal() {
     const modalOverlay = document.getElementById("quote-modal");
