@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark" style="opacity: 0; transition: opacity 0.15s ease;" data-i18n-ready="false">
+<html lang="en" data-theme="dark" class="i18n-loading">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
@@ -22,9 +22,22 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0-beta3/css/all.css">
     
     <style>
-        /* 🛡️ 强制防闪烁控制线 */
+        /* 🛡️ 高容错防闪烁控制线 */
+        html {
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        /* 状态一：国际化初始化成功，立刻显示 */
         html[data-i18n-ready="true"] {
             opacity: 1 !important;
+        }
+        /* 状态二：兜底防御，如果1秒内JS挂了或者本地CORS拦截，通过动画强制拉回可见度，保证有画面 */
+        @keyframes forceShow {
+            to { opacity: 1; }
+        }
+        html:not([data-i18n-ready="true"]) {
+            animation: forceShow 0.1s forwards;
+            animation-delay: 1s; 
         }
     </style>
     <script src="/js/i18n.js"></script>
