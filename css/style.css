@@ -10,7 +10,6 @@ body {
     color: #fff;
     overflow-x: hidden;
 }
-
 .container {
     max-width: 100%;
     padding: 12px 40px 40px;
@@ -19,7 +18,6 @@ body {
     z-index: 1;
     box-sizing: border-box;
 }
-
 .cyber-modal-overlay *,
 .cyber-modal-overlay *::before,
 .cyber-modal-overlay *::after {
@@ -27,7 +25,7 @@ body {
 }
 
 /* ==========================================================================
-   2. 头部
+   2. 头部（保持不变）
    ========================================================================== */
 .header {
     display: flex;
@@ -67,7 +65,7 @@ h1 img {
 }
 
 /* ==========================================================================
-   3. 导航
+   3. 导航（保持不变）
    ========================================================================== */
 .nav-menu {
     display: flex;
@@ -87,7 +85,6 @@ h1 img {
     transition: color 0.2s;
 }
 .nav-item:hover { color: #fff; }
-
 .mega-dropdown {
     position: absolute;
     top: 68px;
@@ -112,7 +109,6 @@ h1 img {
     visibility: visible;
     transform: translateX(-50%) translateY(0);
 }
-
 .dropdown-intro {
     width: 260px;
     display: flex;
@@ -135,7 +131,6 @@ h1 img {
     line-height: 1.6;
     text-align: justify;
 }
-
 .dropdown-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(220px, max-content));
@@ -187,7 +182,6 @@ h1 img {
     margin-top: 4px;
     white-space: nowrap;
 }
-
 .disclaimer-grid {
     display: grid;
     grid-template-columns: repeat(2, 340px);
@@ -213,7 +207,7 @@ h1 img {
 }
 
 /* ==========================================================================
-   4. 右侧交互区
+   4. 右侧交互区（保持不变）
    ========================================================================== */
 .header-right {
     display: flex;
@@ -273,7 +267,6 @@ h1 img {
     margin: 0 !important;
     box-sizing: border-box !important;
 }
-
 .lang-switch {
     position: relative;
     display: inline-block;
@@ -332,7 +325,7 @@ h1 img {
 }
 
 /* ==========================================================================
-   5. 主 Banner
+   5. 主 Banner（保持不变）
    ========================================================================== */
 .placeholder-message {
     text-align: center;
@@ -433,7 +426,7 @@ h1 img {
 }
 
 /* ==========================================================================
-   7. 骨架屏
+   7. 骨架屏（保持不变）
    ========================================================================== */
 .skeleton-line {
     display: block;
@@ -474,7 +467,7 @@ html[data-i18n-ready] [data-i18n],
 }
 
 /* ==========================================================================
-   8. 按钮
+   8. 按钮（保持不变）
    ========================================================================== */
 .hero-action { margin-top: 36px; display: flex; justify-content: center; }
 .btn-cyber-red {
@@ -505,7 +498,7 @@ html[data-i18n-ready] [data-i18n],
 }
 
 /* ==========================================================================
-   9. 模态框 - 美观双列、无滚动（平衡版）
+   9. 模态框 - 完美版（右侧不滚动，仅文本框内部滚动）
    ========================================================================== */
 .cyber-modal-overlay {
     position: fixed;
@@ -601,8 +594,6 @@ html[data-i18n-ready] [data-i18n],
     display: block;
     text-shadow: 0 0 20px rgba(255, 74, 90, 0.4);
 }
-
-/* 二进制矩阵 */
 .modal-left-box .binary-matrix-stream.aligned-right {
     margin-top: auto;
     margin-bottom: 4px;
@@ -627,15 +618,15 @@ html[data-i18n-ready] [data-i18n],
     letter-spacing: 0.12em;
 }
 
-/* ================= 右侧 - 美观、双列、滚动 ================= */
+/* ================= 右侧 - 美观双列，禁止整体滚动 ================= */
 .modal-right-box {
     flex: 1;
     background: #ffffff;
     padding: 28px 40px 20px 40px;
     display: flex;
     flex-direction: column;
-    justify-content: center;     /* 保持垂直居中 */
-    overflow: hidden;           /* 禁止整体滚动 */
+    justify-content: center;      /* 垂直居中 */
+    overflow: hidden;            /* 禁止整个右侧滚动 */
     color: #1e293b;
 }
 .modal-right-box h2 {
@@ -654,7 +645,7 @@ html[data-i18n-ready] [data-i18n],
 .modal-right-box form {
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
+    justify-content: center;
     overflow: visible;
     width: 100%;
 }
@@ -718,17 +709,20 @@ html[data-i18n-ready] [data-i18n],
     padding: 0 12px;
     flex: 1;
 }
+
+/* ★★★ 核心修改：文本框固定 5 行，且内部滚动（默认 overflow:auto） ★★★ */
 .modal-right-box .form-group textarea {
-    height: 100px;                  /* 5行高度 */
+    height: 100px;              /* 约 5 行 */
     min-height: 100px;
     max-height: 100px;
     padding: 6px 12px;
     font-size: 14px;
-    resize: vertical;               /* 允许用户手动拉高 */
+    resize: vertical;           /* 允许用户手动拉伸（可选） */
     border: 1px solid #cbd5e1;
     border-radius: 4px;
     width: 100%;
     box-sizing: border-box;
+    /* overflow-y: auto; 默认即滚动，无需显式设置 */
 }
 
 .modal-right-box .form-footer-notice {
@@ -767,8 +761,6 @@ html[data-i18n-ready] [data-i18n],
 .modal-right-box .form-grid-row .form-group {
     flex: 1;
 }
-
-/* 单行 (form-row) 也保留弹性，但此项目用 grid-row 较多 */
 .modal-right-box .form-row {
     display: flex;
     gap: 16px;
@@ -818,7 +810,7 @@ html[data-i18n-ready] [data-i18n],
         flex: 1;
         width: 100%;
         padding: 16px 20px;
-        overflow-y: auto;
+        overflow-y: auto;        /* 移动端允许整体滚动，保证可用 */
         justify-content: flex-start;
     }
     .modal-right-box .form-grid-row,
