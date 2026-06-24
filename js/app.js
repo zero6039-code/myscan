@@ -71,45 +71,48 @@ function initBinaryStream() {
     if (rows.length === 0) return;
 
     // 预设十行各不相同的初始二进制底噪数据（每组8位，共3组，带空格）
-    const binaryTemplates = [
-        "11010101 00110111 01100111", "01011001 00101001 00000111",
-        "10000011 11111100 01110001", "10100100 00111001 10001101",
-        "00110111 00010110 01100111", "11011111 10000110 00010110",
-        "00110111 01101101 00011000", "11101110 00110011 10100001",
-        "10111011 11110111 01101011", "01111101 10010101 00111001"
+    const initialData = [
+        "11100011", "01100001", "01101100", "10101011",
+        "00001111", "01011100", "00011100", "01101010",
+        "10111001", "10100000", "00010111", "11100001",
+        "01110101", "01101011", "11110000", "00011011",
+        "11101011", "10110011", "00010111", "10101000",
+        "01011001", "00100111", "00010101", "01110011",
+        "01110110", "00100100", "01100100", "11000110",
+        "10001010", "10000100", "00100101", "01011101",
+        "00011010", "10101101", "10010001", "11100011",
+        "11010101", "10001010", "11001110", "00001111"
     ];
 
     // 初始化每一行的数据容器
     rows.forEach((row, index) => {
         const templateStr = binaryTemplates[index] || binaryTemplates[0];
-        // 将字符串打碎为字符数组，挂载到 DOM 对象的自定义属性上（防止污染全局变量）
-        row.matrixData = Array.from(templateStr);
-        row.textContent = templateStr;
+        row.innerHTML = '';    
+        const startIdx = rowIndex * 4;
+        for (let col = 0; col < 4; col++) {
+            const span = document.createElement('span');
+            span.textContent = initialData[startIdx + col];
+             row.appendChild(span);
+         }
     });
 
     // 🌟 核心修复 2：极其高效的分布式位突变引擎
     // 彻底废弃原本粗暴的 innerHTML 重写，采用极高频的按位翻转
     setInterval(() => {
         // 每次高频周期（45ms）随机挑选 2 到 3 个独立的数字进行位翻转
-        const mutationCount = Math.floor(Math.random() * 2) + 2; // 2 ~ 3
-        
-        for (let k = 0; k < mutationCount; k++) {
-            const randomRowIdx = Math.floor(Math.random() * rows.length);
-            const targetRow = rows[randomRowIdx];
-            if (!targetRow || !targetRow.matrixData) continue;
+        const allSpans = document.querySelectorAll('.binary-matrix-stream .matrix-row span');
+        if (allSpans.length === 0) return;
+
+        const mutationCount = Math.floor(Math.random() * 2) + 1; // 1~2 个突变
+        for (let i = 0; i < mutationCount; i++) {           
+            const randomSpan = allSpans[Math.floor(Math.random() * allSpans.length)];
+            const bits = randomSpan.textContent.split('');
+            const flipIdx = Math.floor(Math.random() * bits.length);
 
             const dataArr = targetRow.matrixData;
             const randomCharIdx = Math.floor(Math.random() * dataArr.length);
-            
-            // 🔒 只有在遇到真正的二进制数字时才进行突变，完美避开并保留空格排版
-            if (dataArr[randomCharIdx] === '0') {
-                dataArr[randomCharIdx] = '1';
-            } else if (dataArr[randomCharIdx] === '1') {
-                dataArr[randomCharIdx] = '0';
-            }
-
-            // 精准刷新当前这一行，其它九行完全静止不动，完美形成细微的硬件单点跳动感
-            targetRow.textContent = dataArr.join('');
+            bits[flipIdx] = bits[flipIdx] === '0' ? '1' : '0';
+            randomSpan.textContent = bits.join('');
         }
     }, 45); 
 }
