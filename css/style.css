@@ -600,3 +600,44 @@ html[data-i18n-ready] [data-i18n],
 .i18n-ready [data-i18n] {
     opacity: 1;
 }
+
+/* ==========================================================================
+   8. 🔴 赛博红科技感动作按钮 (Cyber Red Action Button)
+   ========================================================================== */
+.hero-action {
+    margin-top: 36px;
+    display: flex;
+    justify-content: center;
+}
+
+.btn-cyber-red {
+    display: inline-block;
+    padding: 12px 36px;
+    font-size: 15px;
+    font-weight: 500;
+    color: #ff4a5a; /* 霓虹红文本 */
+    text-decoration: none;
+    letter-spacing: 2px;
+    background: rgba(255, 74, 90, 0.04); /* 半透明暗红背景 */
+    border: 1px solid rgba(255, 74, 90, 0.35); /* 柔和红色边界 */
+    border-radius: 4px;
+    box-shadow: 0 0 15px rgba(255, 74, 90, 0.08); /* 初始微弱外发光 */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+}
+
+/* 鼠标悬停（Hover）触发红能矩阵爆燃 */
+.btn-cyber-red:hover {
+    color: #ffffff !important;
+    background: #ff4a5a; /* 填满高亮红 */
+    border-color: #ff4a5a;
+    box-shadow: 0 0 25px rgba(255, 74, 90, 0.5), 
+                0 0 50px rgba(255, 74, 90, 0.2); /* 赛博红色霓虹波纹 */
+    transform: translateY(-2px); /* 悬浮物理阻尼 */
+}
+
+/* 按钮点击瞬间的压强反馈 */
+.btn-cyber-red:active {
+    transform: translateY(0);
+    box-shadow: 0 0 15px rgba(255, 74, 90, 0.3);
+}
