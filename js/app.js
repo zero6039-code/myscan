@@ -162,37 +162,38 @@ function initQuoteModal() {
         });
     }
 
-    // 表单提交拦截校验
+    // 表单提交拦截校验 + 邮件发送
     if (quoteForm) {
-        quoteForm.addEventListener("submit", (e) => {
+        quoteForm.addEventListener("submit", async (e) => {
             e.preventDefault();
-            
+
             let passed = true;
             const erroredGroups = quoteForm.querySelectorAll(".form-group.has-error");
             erroredGroups.forEach(group => group.classList.remove("has-error"));
 
             const companyInput = document.getElementById("form-company");
             if (!companyInput || !companyInput.value.trim()) {
-                companyInput?.closest(".form-group").classList.add("has-error");
+                companyInput?.closest(".form-group")?.classList.add("has-error");
                 passed = false;
             }
 
             const emailInput = document.getElementById("form-email");
             const emailReg = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailInput || !emailInput.value.trim() || !emailReg.test(emailInput.value.trim())) {
-                emailInput?.closest(".form-group").classList.add("has-error");
+                emailInput?.closest(".form-group")?.classList.add("has-error");
                 passed = false;
             }
 
             const contactInput = document.getElementById("form-contact-val");
             if (!contactInput || !contactInput.value.trim()) {
-                contactInput?.closest(".form-group").classList.add("has-error");
+                contactInput?.closest(".form-group")?.classList.add("has-error");
                 passed = false;
             }
 
-            if (!passed) {
+            // 验证失败直接返回
+            if (!passed) return;
 
-            // ★★★ 新增：手动构建要发送的数据 (不用 name 属性) ★★★
+            // ===== 验证通过，构建数据并发送邮件 =====
             const payload = {
                 company: companyInput.value.trim(),
                 email: emailInput.value.trim(),
@@ -201,10 +202,10 @@ function initQuoteModal() {
                 role: document.getElementById("form-role")?.value || '',
                 service: document.getElementById("form-service")?.value || '',
                 message: document.getElementById("form-info")?.value || '',
-                _subject: "新的咨询报价请求"   // 邮件标题 (可选)
+                _subject: "新的咨询报价请求"
             };
 
-            const FORMSPREE_URL = 'https://formspree.io/f/xojojwrq';  // 替换成你的 Formspree ID
+            const FORMSPREE_URL = 'https://formspree.io/f/xojojwrq';  // 请确认是你的端点
 
             try {
                 const response = await fetch(FORMSPREE_URL, {
@@ -231,11 +232,6 @@ function initQuoteModal() {
                 console.error('发送错误:', error);
                 alert("网络错误，请稍后再试。");
             }
-                
-                    
-                
-                e.preventDefault();
-                return false;
-            }
         });
-
+    }
+}
