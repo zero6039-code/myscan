@@ -831,3 +831,15 @@ html[data-i18n-ready] [data-i18n],
     margin-top: -10px !important;
 }
 
+.modal-right-box .form-group {
+    margin-bottom: 18px !important;
+}
+.modal-right-box .form-submit-row {
+    display: flex !important;
+    justify-content: flex-end !important;
+    margin-top: auto !important;
+    padding-top: 10px !important;
+}
+.modal-right-box form {
+    margin-top: -10px !important;
+}
