@@ -764,41 +764,45 @@ html[data-i18n-ready] [data-i18n],
 }
 
 /* ==========================================================================
-   🌌 二进制矩阵 4x10 完美沉底高内聚样式（请用这段替换掉你代码里重复冲突的那段）
+   🌌 二进制矩阵 完美沉底高内聚样式（彻底解决因 flex 平分导致的动态拉伸问题）
    ========================================================================== */
 
-/* 1. 强行使用绝对定位，无视父级 padding，死死钉在最底部 */
+/* 1. 强行使用绝对定位，死死钉在最底部 */
 .binary-matrix-stream.aligned-right {
     position: absolute !important;
-    bottom: 16px !important;            /* 距离左侧框最底部的物理距离，16px 极为贴合 */
-    right: 32px !important;             /* 与整体右边距对齐 */
-    left: 32px !important;              /* 设定左边界 */
+    bottom: 20px !important;            /* 稍微拉高一点点，防止贴死绝对底部边缘 */
+    right: 32px !important;             /* 与整体右边距精准对齐 */
+    left: 32px !important;              
     width: calc(100% - 64px) !important;/* 动态计算富余宽度 */
     margin-top: 0 !important;
-    text-align: right !important;
     box-sizing: border-box !important;
     z-index: 1 !important;
     user-select: none;
     
     /* 渐变遮罩保持 */
-    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,1) 100%);
-    mask-image: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,1) 100%);
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 30%, rgba(0,0,0,1) 100%);
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 30%, rgba(0,0,0,1) 100%);
 }
 
-/* 2. 压缩间距，确保 4 列横向完美容纳，靠右排列 */
+/* 2. 核心规整：拒绝两端对齐，强制所有行在右侧紧密聚拢 */
 .binary-matrix-stream.aligned-right .matrix-row {
     display: flex !important;
-    justify-content: flex-end !important;
-    gap: 12px !important;               /* 横向 4 列数字间距统一为 12px，严防撑爆截断 */
+    justify-content: flex-end !important; /* 确保整行无条件向右看齐 */
+    gap: 14px !important;                 /* 列与列之间的固定极客间距，绝不随屏幕拉伸 */
     white-space: nowrap !important;
 }
 
-/* 3. 统一字号与行高 */
+/* 3. 核心补丁：暴力粉碎 span 的 flex 平分和百分比宽度 */
 .binary-matrix-stream.aligned-right .matrix-row span {
+    flex: none !important;                /* 👈 极其关键：防止 span 伸展撑爆 */
+    width: auto !important;               /* 👈 极其关键：收回被强占的百分比空间，回归文本真实宽度 */
+    display: inline-block !important;
+    
     font-family: 'Courier New', Courier, monospace !important;
-    font-size: 12px !important;         /* 字号微调至 12px，更具极客精致感 */
-    line-height: 1.8 !important;        /* 控制 10 行的总高度，紧凑下沉 */
-    color: rgba(255, 255, 255, 0.25) !important; /* 降低背景数字基础亮度 */
+    font-size: 12px !important;           /* 极客精致小字号 */
+    line-height: 1.8 !important;          /* 完美的纵向行高控制 */
+    color: rgba(255, 255, 255, 0.22) !important; /* 暗色调量子背景余晖 */
+    text-align: right !important;
 }
 
 /* ---------------- 右侧：纯净表单域 (独立自适应滚动体 - 带来极佳留白感) ---------------- */
