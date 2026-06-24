@@ -48,42 +48,13 @@ function triggerStatsCounter() {
     }
 }
 
-// 2. 🌌 动态黑客帝国二进制矩阵滚动流（含自动结构修复）
+// 2. 🌌 动态黑客帝国二进制矩阵滚动流（仅位突变，不修改结构）
 function initBinaryStream() {
     // 获取所有的行
     const rows = document.querySelectorAll('.binary-matrix-stream .matrix-row');
     if (rows.length === 0) return;
 
-    // ========== 新增：自动修复结构（解决“乱码”问题） ==========
-    rows.forEach(row => {
-        // 只处理当 row 内只有一个 span 且内容超过 7 个字符的情况
-        const spans = row.querySelectorAll('span');
-        if (spans.length === 1) {
-            const text = spans[0].textContent.replace(/\s/g, '');
-            // 检查是否是一长串二进制数字（长度 > 7）
-            if (text.length > 7 && /^[01]+$/.test(text)) {
-                // 按 7 位一组分割
-                const fragments = [];
-                for (let i = 0; i < text.length; i += 7) {
-                    const chunk = text.substr(i, 7);
-                    if (chunk.length === 7) { // 只取完整的 7 位
-                        fragments.push(chunk);
-                    }
-                }
-                // 如果拆出的组数 ≥ 4，则重建 row（取前 4 组）
-                if (fragments.length >= 4) {
-                    row.innerHTML = ''; // 清空
-                    fragments.slice(0, 4).forEach(bits => {
-                        const span = document.createElement('span');
-                        span.textContent = bits;
-                        row.appendChild(span);
-                    });
-                }
-            }
-        }
-    });
-
-    // 重新收集所有 span（现在每行应该有 4 个了）
+    // 收集所有 span
     const allSpans = [];
     rows.forEach(row => {
         const spans = row.querySelectorAll('span');
@@ -94,20 +65,23 @@ function initBinaryStream() {
 
     if (allSpans.length === 0) return;
 
-    // 🌟 极高频的分布式位突变引擎（每 45ms 随机翻转 2~3 个字符）
+    // 🌟 极高频的分布式位突变引擎
     setInterval(() => {
+        // 每次高频周期（45ms）随机挑选 2 到 3 个独立的 span 分组进行位突变
         const mutationCount = Math.floor(Math.random() * 2) + 2; // 2 ~ 3
         
         for (let k = 0; k < mutationCount; k++) {
             const targetSpan = allSpans[Math.floor(Math.random() * allSpans.length)];
             if (!targetSpan) continue;
 
+            // 将该 span 的文本打碎成字符数组
             const charArray = Array.from(targetSpan.textContent);
             if (charArray.length === 0) continue;
 
+            // 在这个 span 内部随机挑选一个字符下标
             const randomCharIdx = Math.floor(Math.random() * charArray.length);
             
-            // 按位翻转
+            // 精准按位翻转
             charArray[randomCharIdx] = charArray[randomCharIdx] === '0' ? '1' : '0';
             targetSpan.textContent = charArray.join('');
         }
@@ -207,6 +181,6 @@ function initQuoteModal() {
 document.addEventListener('DOMContentLoaded', () => {
     setTimeout(triggerStatsCounter, 350); 
     initQuoteModal();
-    initBinaryStream(); // 激活二进制矩阵动态流（含结构修复）
+    initBinaryStream(); // 激活全新单点位跳动效果
     window.addEventListener('resize', triggerStatsCounter);
 });
