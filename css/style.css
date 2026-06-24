@@ -763,7 +763,7 @@ html[data-i18n-ready] [data-i18n],
 }
 
 /* ==========================================================================
-   🌌 二进制矩阵：保留跳动动画 + 物理补全 + 上浅下深完美渐变
+   🌌 二进制矩阵：物理补全 + 上浅下深完美遮罩 + 极客高频闪烁跳动动画
    ========================================================================== */
 .binary-matrix-stream.aligned-right {
     margin-top: auto;
@@ -775,32 +775,48 @@ html[data-i18n-ready] [data-i18n],
     line-height: 2;
     letter-spacing: 1px;
     user-select: none;
+    position: relative;
     
-    /* ⚡ 核心 1：利用 CSS 遮罩实现完美的【从上到下由浅入深】渐变 */
-    /* 上面透明度低（很浅），下面透明度高（完整显示） */
-    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.4) 30%, rgba(0,0,0,1) 100%);
-    mask-image: linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.4) 30%, rgba(0,0,0,1) 100%);
+    /* ⚡ 核心 1：上浅下深遮罩渐变（上面只有 0.15 的微弱隐现，下面 1.0 完美全亮显示） */
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.45) 40%, rgba(0,0,0,1) 100%);
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.45) 40%, rgba(0,0,0,1) 100%);
 }
 
-/* ⚡ 核心 2：纯 CSS 物理补全！ */
-/* 不管 HTML 里偶数行有没有漏空，我们直接强行通过 CSS 伪元素在左侧塞入两组跳动的数字，让它看起来永远是满的 */
-.binary-matrix-stream::before {
-    content: "10101010 10011101 \A 01011001 00101001 \A 10101011 01000001 \A 11101110 00110011 \A 01111101 10010101 \A";
-    white-space: pre;
-    position: absolute;
-    left: 24px;   /* 靠左对齐 */
-    color: rgba(239, 68, 68, 0.45);
-    text-shadow: 0 0 4px rgba(239, 68, 68, 0.3);
-    opacity: 0.8;
-    pointer-events: none;
+/* 基础文字颜色设定与微弱霓虹发光 */
+.binary-matrix-stream .matrix-row {
+    display: block;
+    width: 100%;
+    white-space: nowrap;
+    color: rgba(255, 74, 90, 0.9) !important;
+    text-shadow: 0 0 4px rgba(255, 74, 90, 0.4) !important;
+    
+    /* ⚡ 核心 2：绑定原生矩阵高频跳动闪烁动画 */
+    animation: matrixGlitch 3s infinite steps(1);
 }
 
-/* 基础文字颜色与微弱霓虹发光（作为全局保底） */
-.binary-matrix-stream, 
-.binary-matrix-stream div, 
-.binary-matrix-stream span {
-    color: rgba(239, 68, 68, 0.9) !important;
-    text-shadow: 0 0 4px rgba(239, 68, 68, 0.4) !important;
+/* ⚡ 核心 3：为每行注入不同的动画延迟（Delay），制造出数字异步跳动的黑客流错觉 */
+.binary-matrix-stream .row-1  { animation-delay: 0.1s; animation-duration: 2.5s; }
+.binary-matrix-stream .row-2  { animation-delay: 0.4s; animation-duration: 3.1s; }
+.binary-matrix-stream .row-3  { animation-delay: 0.2s; animation-duration: 2.8s; }
+.binary-matrix-stream .row-4  { animation-delay: 0.7s; animation-duration: 3.4s; }
+.binary-matrix-stream .row-5  { animation-delay: 0.3s; animation-duration: 2.6s; }
+.binary-matrix-stream .row-6  { animation-delay: 0.9s; animation-duration: 3.2s; }
+.binary-matrix-stream .row-7  { animation-delay: 0.5s; animation-duration: 2.9s; }
+.binary-matrix-stream .row-8  { animation-delay: 1.1s; animation-duration: 3.5s; }
+.binary-matrix-stream .row-9  { animation-delay: 0.6s; animation-duration: 2.7s; }
+.binary-matrix-stream .row-10 { animation-delay: 0.8s; animation-duration: 3.0s; }
+
+/* ⚡ 核心 4：黑客密码流高频闪烁跳动帧 */
+@keyframes matrixGlitch {
+    0%, 100% { opacity: 1; filter: hue-rotate(0deg); }
+    10%  { opacity: 0.85; }
+    11%  { opacity: 1; }
+    30%  { opacity: 0.9; text-shadow: 0 0 8px rgba(255, 74, 90, 0.6); }
+    32%  { opacity: 1; text-shadow: 0 0 4px rgba(255, 74, 90, 0.4); }
+    65%  { opacity: 0.75; }
+    66%  { opacity: 1; }
+    82%  { opacity: 0.88; }
+    84%  { opacity: 1; }
 }
 /* ---------------- 右侧：纯净表单域 (独立自适应滚动体) ---------------- */
 .modal-right-box {
