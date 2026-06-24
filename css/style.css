@@ -778,6 +778,38 @@ html[data-i18n-ready] [data-i18n],
     mask-image: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,1) 100%);
 }
 
+/* ==========================================================================
+   强制重写：4x10 赛博矩阵完美沉底补丁
+   ========================================================================== */
+
+/* 1. 强行使用绝对定位，无视父级 padding，死死钉在最底部 */
+.binary-matrix-stream.aligned-right {
+    position: absolute !important;
+    bottom: 16px !important;       /* 距离左侧框最底部的物理距离，16px 极为贴合 */
+    right: 32px !important;        /* 与整体右边距对齐 */
+    left: 32px !important;         /* 设定左边界 */
+    width: calc(100% - 64px) !important; /* 动态计算富余宽度 */
+    margin-top: 0 !important;
+    text-align: right !important;
+    box-sizing: border-box !important;
+    z-index: 1 !important;
+}
+
+/* 2. 压缩间距与字号，确保 4 列横向完美容纳，绝不溢出或被裁切 */
+.binary-matrix-stream.aligned-right .matrix-row {
+    display: flex !important;
+    justify-content: flex-end !important;
+    gap: 10px !important;          /* 间距由 16px 压缩至 10px，为第 4 列腾出空间 */
+    white-space: nowrap !important;
+}
+
+.binary-matrix-stream.aligned-right .matrix-row span {
+    font-family: 'Courier New', Courier, monospace !important;
+    font-size: 12px !important;    /* 字号微调至 12px，更显黑客帝国的精致感 */
+    line-height: 1.8 !important;   /* 控制 10 行的总高度，紧凑而不拥挤 */
+    color: rgba(255, 255, 255, 0.25) !important; /* 降低背景数字亮度，凸显上方红字 */
+}
+
 /* ⚡ 新增安全对齐规则：强制矩阵每行按 flex 靠右展现 4 列间距 */
 .binary-matrix-stream.aligned-right .matrix-row {
     display: flex !important;
