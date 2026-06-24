@@ -169,16 +169,13 @@
                     <img src="/DewSecure.png" alt="Logo">
                     <span>DewSecure</span>
                 </div>
-                <div class="matrix-title">
-                    提升您的<span class="highlight-red">Web3</span>之旅
+                
+                <div class="matrix-title" data-i18n="modal_matrix_slogan">
+                    技术是我们的能力，<span class="highlight-red">诚信</span>才是我们的动力。
                 </div>
-                <div class="binary-matrix-stream">
-                    <div>01000100 01000101 01010111 01010011</div>
-                    <div>01000101 00100000 01010111 01000101</div>
-                    <div>01000101 01000011 01010101 01010010</div>
-                    <div>01001010 01100001 01110110 01100001</div>
-                    <div>01110100 01110010 01101111 01101110</div>
-                </div>
+                
+                <div class="binary-matrix-stream aligned-right" id="binary-stream">
+                    </div>
             </div>
 
             <div class="modal-right-box">
@@ -198,20 +195,18 @@
                             <input type="email" id="form-email" placeholder="输入您的工作电子邮件">
                             <div class="error-msg" id="err-email" data-i18n="err_email">需要提供有效的电子邮件地址</div>
                         </div>
+                        
                         <div class="form-group">
                             <label class="required-label" data-i18n="form_lbl_contact">联系方式</label>
-                            <div class="contact-input-wrapper">
-                                <select id="form-contact-type">
-                                    <option value="Telegram">Telegram</option>
-                                    <option value="WhatsApp">WhatsApp</option>
-                                    <option value="WeChat">WeChat</option>
-                                </select>
-                                <input type="text" id="form-contact-val" placeholder="输入用户名或ID">
+                            <div class="contact-input-wrapper custom-single-channel">
+                                <span class="whatsapp-badge"><i class="fa-brands fa-whatsapp"></i> WhatsApp</span>
+                                    <input type="text" id="form-contact-val" placeholder="输入用户名或ID">
+                                </div>
+                                <div class="error-msg" id="err-contact" data-i18n="err_required">此字段为必填项</div>
                             </div>
-                            <div class="error-msg" id="err-contact" data-i18n="err_required">此字段为必填项</div>
                         </div>
-                    </div>
-
+                    </div>    
+            
                     <div class="form-row">
                         <div class="form-group">
                             <label data-i18n="form_lbl_name">全名</label>
@@ -234,7 +229,7 @@
 
                     <div class="form-group">
                         <label data-i18n="form_lbl_info">其他信息</label>
-                        <textarea id="form-info" rows="3" placeholder="请详细介绍您的项目。"></textarea>
+                        <textarea id="form-info" rows="3" maxlength="500" placeholder="请详细介绍您的项目（500字以内）。"></textarea>
                     </div>
 
                     <p class="form-footer-notice" data-i18n="form_notice">DewSecure 安全专家将审核您的请求，并尽快与您联系。</p>
