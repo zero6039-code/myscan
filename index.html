@@ -19,6 +19,7 @@
     <link rel="icon" type="image/png" href="/DewSecure.png" sizes="128x128">
     
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0-beta3/css/all.css">
 
     <style>
         body {
@@ -26,8 +27,6 @@
             transition: opacity 0.5s ease-in;
         }
     </style>
-</head>
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0-beta3/css/all.css">
 </head>
 <body>
     <div class="container">
@@ -261,6 +260,13 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- 多语言提示隐藏文本（由 i18n.js 动态更新） -->
+    <div hidden>
+        <span id="alert-success" data-i18n="alert_success">提交成功！DewSecure 团队将尽快与您取得联系。</span>
+        <span id="alert-email-error" data-i18n="alert_error_email">请检查邮箱地址是否正确。</span>
+        <span id="alert-network-error" data-i18n="alert_error_network">网络错误，请稍后再试。</span>
     </div>
 
     <script src="/js/bg-canvas.js"></script>
