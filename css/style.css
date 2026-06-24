@@ -816,63 +816,6 @@ html[data-i18n-ready] [data-i18n],
 
 
 /* ==========================================================================
-   🚀 终极高度收缩对齐补丁（追加到 CSS 文件最末尾，完美一屏消除滚动条）
-   ========================================================================== */
-
-/* 1. 强制锁死外层视窗高度与裁剪机制 */
-.cyber-modal-wrapper .modal-right-box {
-    height: 100% !important;
-    max-height: 100% !important;
-    overflow: hidden !important;
-    overflow-y: hidden !important;
-    box-sizing: border-box !important;
-    
-    /* 大幅缩减四周空气感，为表单体留出充裕高度 */
-    padding: 16px 30px !important; 
-}
-
-/* 2. 核心修复：强制中间夹层继承弹性容器高度，并拦截其向下溢出 */
-.modal-right-box .modal-form-scroll-body {
-    flex: 1 !important;
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: center !important;
-    min-height: 0 !important;       /* 👈 极其关键：防止 Flex 子项高度被撑爆的底层逻辑 */
-    height: 100% !important;
-    overflow: hidden !important;     /* 封锁任何隐藏的多余占位 */
-}
-
-/* 3. 让 form 容器同样自适应，并紧凑包拢内部的 form-group */
-.modal-right-box form {
-    flex: 1 !important;
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: center !important;
-    height: auto !important;
-    margin: 0 !important;
-}
-
-/* 4. 极致压制最后一部分间距差，杜绝像素级溢出 */
-.modal-right-box h2 {
-    margin-bottom: 2px !important;
-}
-
-.modal-right-box .modal-subtitle {
-    margin-bottom: 8px !important; /* 缩小顶部标题间距 */
-}
-
-.modal-right-box .form-group {
-    margin-bottom: 3px !important;  /* 微调间距，杜绝累加高度溢出 */
-}
-
-/* 5. 限制留言大输入框的基础厚度，保持紧凑感 */
-.modal-right-box .form-group textarea {
-    height: 32px !important;
-    min-height: 32px !important;
-    max-height: 32px !important;
-}
-
-/* ==========================================================================
    🎯 完美复原图2比例补丁：锁死右侧视窗，内部自然高弹居中 🎯
    ========================================================================== */
 
