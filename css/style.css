@@ -644,7 +644,7 @@ html[data-i18n-ready] [data-i18n],
 }
 
 /* ==========================================================================
-   9. 🌌 DewSecure 高端 Web3 询价模态框样式 (Cyber Modal System)
+   9. 🌌 DewSecure 高端 Web3 询价模态框样式 (Cyber Modal System) - 完美扩容版
    ========================================================================== */
 
 /* 遮罩层：高强模糊毛玻璃 */
@@ -671,15 +671,15 @@ html[data-i18n-ready] [data-i18n],
     pointer-events: auto;
 }
 
-/* 弹窗主体架：深度整合修复 */
+/* 🚀 核心扩容：弹窗主体架重组（从 880px 暴力放大到 1180px 国际化大气跨度） */
 .cyber-modal-wrapper {
     position: relative;
-    width: 90%;
-    max-width: 880px;            /* 调整为最优黄金跨度 */
-    height: 620px;               /* 设定固定物理高度，开启内部双轴独立滚动 */
-    background: #ffffff;         /* 主体回正为白底 */
+    width: 95% !important;
+    max-width: 1180px !important;    /* 👈 横向深度拉宽 */
+    height: 720px !important;         /* 👈 纵向同步拉高，告别缩在一起的局促感 */
+    background: #ffffff;             /* 主体回正为白底 */
     border-radius: 16px;
-    display: flex;               /* 使用坚固的横向弹性分栏 */
+    display: flex;                   /* 使用坚固的横向弹性分栏 */
     overflow: hidden;
     box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
     transform: scale(0.96) translateY(10px);
@@ -693,8 +693,8 @@ html[data-i18n-ready] [data-i18n],
 /* 关闭按钮 */
 .modal-close-btn {
     position: absolute;
-    top: 16px;
-    right: 20px;
+    top: 20px;                       /* 调整间距配合大弹窗 */
+    right: 24px;
     background: none;
     border: none;
     color: #94a3b8;
@@ -705,11 +705,11 @@ html[data-i18n-ready] [data-i18n],
 }
 .modal-close-btn:hover { color: #ff4a5a; }
 
-/* ---------------- 左侧：黑客暗盒与数字流 (强控 35% 分栏宽度) ---------------- */
+/* ---------------- 左侧：黑客暗盒与数字流 (优化大弹窗下的占比) ---------------- */
 .modal-left-box {
-    flex: 0 0 35%;               /* 👈 坚固加锁：不收缩、不放大，锁死35%比例 */
+    flex: 0 0 32% !important;        /* 👈 重新黄金配比，左侧占 32% */
     background: #050508;
-    padding: 40px 24px;
+    padding: 50px 32px !important;   /* 🚀 加大四周内衬留白，大气舒展 */
     display: flex;
     flex-direction: column;
     position: relative;
@@ -717,40 +717,38 @@ html[data-i18n-ready] [data-i18n],
     overflow: hidden;
 }
 
-/* ==========================================================================
-   🔄 优化：强力放大弹窗内部左上角 DewSecure 标题和 Logo 图片（移除裁剪，全尺寸展开）
-   ========================================================================== */
+/* DewSecure 标题和 Logo 图片展开 */
 .cyber-modal-overlay .modal-left-box .brand-header,
 .modal-left-box .brand-header {
     display: flex !important;
     align-items: center !important;
-    gap: 16px !important;                 /* 拉开图标与文字之间的距离 */
+    gap: 16px !important;
     width: 100% !important;
-    max-width: none !important;           /* ⚡ 彻底解除原先的 180px 宽度限制 */
-    overflow: visible !important;         /* 允许完全显示 */
+    max-width: none !important;
+    overflow: visible !important;
 }
 
 .cyber-modal-overlay .modal-left-box .brand-header img,
 .modal-left-box .brand-header img { 
-    width: 54px !important;               /* 👈 图标从 38px 暴力放大到 54px，与大标题完美匹配 */
-    height: 54px !important;              /* 👈 保持 54px 等高正方形 */
+    width: 54px !important;           /* 暴力放大到 54px */
+    height: 54px !important;
     object-fit: contain !important;
-    flex-shrink: 0 !important;            /* ⚡ 核心安全锁：绝不允许被分栏压缩变形 */
+    flex-shrink: 0 !important;
 }
 
 .cyber-modal-overlay .modal-left-box .brand-header span,
 .modal-left-box .brand-header span {
-    font-size: 32px !important;           /* 👈 文字从 24px 大幅放大到 32px，展现 Web3 极客质感 */
-    font-weight: 800 !important;          /* 👈 进一步加粗到重磅黑体，防止在暗色背景下显得单薄 */
+    font-size: 32px !important;       /* 文字大幅放大到 32px */
+    font-weight: 800 !important;
     color: #ffffff !important;
-    white-space: nowrap !important;       /* 绝对不换行 */
-    max-width: none !important;           /* ⚡ 彻底移除原先的 130px 限制 */
+    white-space: nowrap !important;
+    max-width: none !important;
     display: inline-block !important;
 }
 
 .modal-left-box .matrix-title {
     margin-top: 50px;
-    font-size: 28px;             /* 适当微调，防止马语换行空间不足 */
+    font-size: 28px;
     font-weight: 700;
     color: #ffffff;
     line-height: 1.4;
@@ -762,78 +760,69 @@ html[data-i18n-ready] [data-i18n],
     text-shadow: 0 0 20px rgba(255, 74, 90, 0.4);
 }
 
-/* ==========================================================================
-   🌌 二进制矩阵：极致格式化加锁 + 纯CSS杂乱高频闪烁跳动（彻底解决重影/抖动）
-   ========================================================================== */
+/* 二进制矩阵容器 */
 .binary-matrix-stream.aligned-right {
     margin-top: auto;
     text-align: right;
     width: 100%;
     padding-right: 10px;
-    
-    /* 🔒 强制等宽，防止 0 和 1 切换时因为字宽不一致导致左右排版抖动 */
     font-family: 'Courier New', Courier, monospace !important;
     font-size: 13px !important;
     line-height: 2 !important;
     letter-spacing: 1px !important;
     user-select: none;
-    
-    /* 🎨 赛博朋克渐变遮罩 */
     -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,1) 100%);
     mask-image: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,1) 100%);
 }
 
-.binary-matrix-stream .matrix-row {
-    display: block !important;
-    width: 100% !important;
-    height: 26px !important; 
-    
-    /* 🌟 核心修正：移除 hidden，改为 visible */
-    overflow: visible !important; 
-    
-    /* 🌟 性能补丁：告知浏览器这里会频繁变动 */
-    will-change: contents; 
-    
-    white-space: pre !important; /* 确保使用等宽字体时空格也被算作字符 */
-    font-family: 'Courier New', Courier, monospace !important;
-    color: #ff4a5a !important;
-    text-shadow: 0 0 4px rgba(255, 74, 90, 0.5) !important;
-}
-
-/* ---------------- 右侧：纯净表单域 (独立自适应滚动体) ---------------- */
+/* ---------------- 右侧：纯净表单域 (独立自适应滚动体 - 带来极佳留白感) ---------------- */
 .modal-right-box {
-    flex: 0 0 65%;               /* 👈 坚固加锁：占据 65% 剩余空间 */
+    flex: 0 0 68% !important;        /* 👈 右侧占 68% 空间 */
     background: #ffffff;
     height: 100%;
-    overflow-y: auto;            /* ⚡ 核心补丁：长文本或马语撑大时，右侧独立滚动，绝不溢出弹窗 */
-    padding: 40px 45px;
+    overflow-y: auto;                /* 核心补丁：长表单时右侧独立滚动 */
+    padding: 55px 70px !important;   /* 🚀 显著加大四周Padding，让大表单拥有高级呼吸感 */
     color: #1e293b;
 }
 
-.modal-right-box h2 { font-size: 26px; font-weight: 700; color: #0f172a; margin: 0 0 6px 0; }
-.modal-right-box .modal-subtitle { font-size: 14px; color: #64748b; margin: 0 0 24px 0; }
+.modal-right-box h2 { 
+    font-size: 30px !important;       /* 标题随之放大 */
+    font-weight: 700; 
+    color: #0f172a; 
+    margin: 0 0 8px 0; 
+}
+.modal-right-box .modal-subtitle { 
+    font-size: 15px !important; 
+    color: #64748b; 
+    margin: 0 0 32px 0; 
+}
 
 /* 表单组件控制 */
 .form-row { 
     display: flex; 
-    gap: 20px; 
+    gap: 24px;                       /* 适当放宽横向间距 */
     width: 100%;
 }
 .form-group { 
-    margin-bottom: 18px; 
+    margin-bottom: 22px !important;  /* 纵向拉开行距，降低拥挤感 */
     flex: 1; 
     display: flex; 
     flex-direction: column; 
     position: relative;
-    min-width: 0;                /* 防止 Flex 子项由于内嵌 Input 默认尺寸而拒绝收缩 */
+    min-width: 0;
 }
-.form-group label { font-size: 13px; font-weight: 600; color: #334155; margin-bottom: 6px; }
+.form-group label { font-size: 14px; font-weight: 600; color: #334155; margin-bottom: 8px; }
 .required-label::after { content: " *"; color: #ef4444; }
 
-.form-group input, .form-group select, .form-group textarea {
-    width: 100%;
-    padding: 10px 14px;
-    font-size: 14px;
+/* 🚀 输入框精细化放大 */
+.form-group input, 
+.form-group select, 
+.form-group textarea {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 13px 16px !important;   /* 👈 撑开输入框上下内衬，点击交互更显高级 */
+    font-size: 15px !important;      /* 👈 字体微调大，看得很清晰 */
     background: #ffffff;
     border: 1px solid #cbd5e1;
     border-radius: 6px;
@@ -846,26 +835,28 @@ html[data-i18n-ready] [data-i18n],
     box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.08);
 }
 
-/* WhatsApp 联合输入框完美对齐补丁 */
+/* WhatsApp 联合输入框大尺寸适配补丁 */
 .custom-single-channel {
     display: flex;
     align-items: center;
     border: 1px solid #cbd5e1;
     border-radius: 6px;
     overflow: hidden;
-    height: 40px;                /* ⚡ 锁死高度，防止徽章百分比塌陷 */
+    height: 48px !important;         /* 👈 同步加高，保持一致性 */
     background: #ffffff;
+    width: 100% !important;
+    box-sizing: border-box !important;
 }
 .custom-single-channel .whatsapp-badge {
     background: #f1f5f9;
     color: #128c7e; 
-    padding: 0 12px;
+    padding: 0 16px;
     font-weight: 600;
-    font-size: 13px;
+    font-size: 14px;
     display: flex;
     align-items: center;
     gap: 6px;
-    height: 100%;                /* 饱满填充 */
+    height: 100%;
     border-right: 1px solid #e2e8f0;
     white-space: nowrap;
 }
@@ -874,7 +865,7 @@ html[data-i18n-ready] [data-i18n],
     outline: none !important;
     flex: 1;
     height: 100%;
-    padding: 0 14px;
+    padding: 0 16px !important;
 }
 .custom-single-channel:focus-within {
     border-color: #0f172a;
@@ -883,7 +874,7 @@ html[data-i18n-ready] [data-i18n],
 
 .form-footer-notice { font-size: 12px; color: #64748b; margin: 12px 0 0 0; }
 
-/* ---------------- ❌ 表单拦截报错核心态 ---------------- */
+/* ❌ 表单拦截报错核心态 */
 .form-group.has-error input,
 .form-group.has-error .custom-single-channel {
     border-color: #ef4444 !important;
@@ -902,14 +893,14 @@ html[data-i18n-ready] [data-i18n],
 }
 .form-group.has-error .error-msg { display: block; }
 
-/* ---------------- 右下角黑块询价按钮 ---------------- */
-.form-submit-row { display: flex; justify-content: flex-end; margin-top: 16px; }
+/* ---------------- 右下角大尺寸黑块询价按钮 ---------------- */
+.form-submit-row { display: flex; justify-content: flex-end; margin-top: 24px; }
 .btn-submit-quote {
     background: #0f172a;
     color: #ffffff;
     border: none;
-    padding: 12px 28px;
-    font-size: 14px;
+    padding: 14px 40px !important;   /* 🚀 显著加宽、加高提交按钮 */
+    font-size: 16px !important;      /* 提升字号 */
     font-weight: 600;
     border-radius: 6px;
     cursor: pointer;
@@ -920,102 +911,33 @@ html[data-i18n-ready] [data-i18n],
 }
 .btn-submit-quote:hover { background: #1e293b; }
 
+
 /* ==========================================================================
-   10. 📱 模态框专有移动端响应式断点
+   10. 📱 模态框专有移动端响应式断点 (保持稳定收缩)
    ========================================================================== */
 @media (max-width: 768px) {
     .cyber-modal-wrapper { 
-        flex-direction: column; 
-        max-height: 92vh; 
-        height: auto;
+        flex-direction: column !important; 
+        max-height: 92vh !important; 
+        height: auto !important;
+        width: 90% !important;
     }
     .modal-left-box { 
-        flex: 0 0 auto;
-        width: 100%; 
-        padding: 30px 24px; 
+        flex: 0 0 auto !important;
+        width: 100% !important; 
+        padding: 30px 24px !important; 
     }
     .modal-left-box .matrix-title { margin-top: 20px; font-size: 24px; }
-    .binary-matrix-stream.aligned-right { display: none; }
+    .binary-matrix-stream.aligned-right { display: none !important; }
     
     .modal-right-box { 
-        flex: 0 0 auto;
-        width: 100%; 
-        padding: 30px 24px; 
-        overflow-y: visible;
+        flex: 0 0 auto !important;
+        width: 100% !important; 
+        padding: 30px 24px !important; 
+        overflow-y: visible !important;
     }
     .form-row { 
-        flex-direction: column; 
-        gap: 0; 
+        flex-direction: column !important; 
+        gap: 0 !important; 
     }
-}
-
-html:not([data-i18n-ready="true"]) [data-i18n] {
-    visibility: hidden !important;
-}
-
-
-/* ==========================================================================
- * 🎯 DewSecure 询价弹窗大小扩容与布局稳固
- * ========================================================================== */
-
-/* 1. 放大弹窗主体外壳 */
-#quote-modal .modal-content, 
-.quote-modal-box { /* 👈 请根据你 HTML 里的实际类名对齐（通常包裹左右两栏的那个大盒子） */
-    width: 95% !important;
-    max-width: 1180px !important;  /* 🚀 从原来的 800px 左右直接放大到 1180px，更显国际化大气 */
-    min-height: 700px !important;  /* 稍微拉高整体纵向空间 */
-    display: flex !important;      /* 强制维持左右双栏 Flex 布局 */
-    flex-direction: row !important;
-    border-radius: 12px !important;
-    overflow: hidden !important;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5) !important;
-}
-
-/* 2. 重新分配合理的左右比例 */
-.modal-left-cyber, 
-#quote-modal .modal-left { /* 👈 左边黑色黑客帝国矩阵区域 */
-    flex: 0 0 32% !important;     /* 锁定左侧宽度占比 32% */
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: space-between !important;
-    padding: 45px 35px !important; /* 增大内边距 */
-}
-
-.modal-right-form, 
-#quote-modal .modal-right { /* 👈 右边白色表单输入区域 */
-    flex: 1 !important;            /* 自动吃满右侧剩下的 68% 空间 */
-    padding: 50px 60px !important; /* 🌟 增大表单四周留白，让大弹窗看起来更舒展、不拥挤 */
-    background: #ffffff !important;
-}
-
-/* 3. 彻底根治输入框塌陷（图3、图4中输入框缩成一团的致命原因） */
-#quote-modal .form-group,
-#quote-modal .input-item {
-    width: 100% !important;
-    margin-bottom: 22px !important; /* 稍微拉开行与行之间的距离 */
-}
-
-/* 强制右侧所有输入控件、下拉框、文本域完美横向撑满 */
-#quote-modal input[type="text"],
-#quote-modal input[type="email"],
-#quote-modal select,
-#quote-modal textarea,
-.form-group input,
-.form-group select,
-.form-group textarea {
-    width: 100% !important;
-    max-width: 100% !important;
-    box-sizing: border-box !important; /* 确保 padding 不会撑爆输入框 */
-    padding: 12px 16px !important;     /* 略微加高输入框内衬，提升点击质感 */
-    font-size: 15px !important;
-}
-
-/* 4. 调整底部提交按钮，让它在大弹窗下更显眼 */
-#quote-modal .btn-submit,
-#quote-modal button[type="submit"] {
-    width: auto !important;
-    min-width: 180px !important; /* 设定一个大气的最小宽度 */
-    padding: 14px 35px !important;
-    font-size: 16px !important;
-    float: right; /* 让咨询专家按钮帅气地靠右对齐 */
 }
