@@ -827,3 +827,20 @@ html[data-i18n-ready] [data-i18n],
         gap: 0;
     }
 }
+
+/* ============================================================
+   🔧 微调：其他信息文本框改为5行，并允许右侧滚动
+   ============================================================ */
+
+/* 1. 让右侧区域可滚动（内容超出时） */
+.modal-right-box {
+    overflow-y: auto !important;
+}
+
+/* 2. 调整 textarea 高度为 5 行（约100px） */
+.modal-right-box .form-group textarea {
+    height: 100px !important;
+    min-height: 100px !important;
+    max-height: 100px !important;
+    resize: vertical !important;   /* 允许用户手动拉高（可选） */
+}
