@@ -20,7 +20,6 @@ body {
     box-sizing: border-box;
 }
 
-/* ⚡ 核心安全补丁：锁死模态框内部所有组件的怪异盒模型，防止尺寸被撑爆 */
 .cyber-modal-overlay *,
 .cyber-modal-overlay *::before,
 .cyber-modal-overlay *::after {
@@ -28,7 +27,7 @@ body {
 }
 
 /* ==========================================================================
-   2. 头部控制总线布局 (Header) - 调整 Logo 的整体相对位移
+   2. 头部
    ========================================================================== */
 .header {
     display: flex;
@@ -39,16 +38,12 @@ body {
     z-index: 100;
     height: 160px;
 }
-
-/* 左侧 Logo 区：整体向右移动 24px，向下移动 12px */
 .header-left {
     display: flex;
     align-items: center;
     min-width: max-content;
-    transform: translate(24px, 12px); /* 核心位移矩阵：(X轴向右, Y轴向下) */
+    transform: translate(24px, 12px);
 }
-
-/* 超大 Logo 文字：去除加粗，注入极客科技感线条 */
 h1 {
     font-size: 56px;
     margin: 0;
@@ -59,13 +54,10 @@ h1 {
     -webkit-background-clip: text;
     color: transparent;
     white-space: nowrap;
-    
-    /* ⚡ 科技感字体魔改核心 */
-    font-weight: 300 !important;      /* 彻底剥离粗体，使用极细线条凸显冷峻科技感 */
-    letter-spacing: 3px;              /* 增大字间距，模拟数字仪表盘与屏幕矩阵排版 */
-    text-shadow: 0 0 20px rgba(0, 166, 244, 0.2); /* 增加微弱的量子霓虹余晖 */
+    font-weight: 300 !important;
+    letter-spacing: 3px;
+    text-shadow: 0 0 20px rgba(0, 166, 244, 0.2);
 }
-
 h1 img {
     height: 160px;
     width: 160px;
@@ -75,7 +67,7 @@ h1 img {
 }
 
 /* ==========================================================================
-   3. 导航菜单与高级二级面板 (Mega Dropdown)
+   3. 导航
    ========================================================================== */
 .nav-menu {
     display: flex;
@@ -85,7 +77,6 @@ h1 img {
     justify-content: center;
     margin-left: -50px;
 }
-
 .nav-item {
     position: relative;
     cursor: pointer;
@@ -95,12 +86,8 @@ h1 img {
     color: #cbd5e1;
     transition: color 0.2s;
 }
+.nav-item:hover { color: #fff; }
 
-.nav-item:hover {
-    color: #fff;
-}
-
-/* 面板下拉单外层 */
 .mega-dropdown {
     position: absolute;
     top: 68px;
@@ -120,14 +107,12 @@ h1 img {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     pointer-events: auto;
 }
-
 .nav-item:hover .mega-dropdown {
     opacity: 1;
     visibility: visible;
     transform: translateX(-50%) translateY(0);
 }
 
-/* 面板左侧前言介绍 */
 .dropdown-intro {
     width: 260px;
     display: flex;
@@ -136,7 +121,6 @@ h1 img {
     border-right: 1px solid rgba(255, 255, 255, 0.06);
     padding-right: 24px;
 }
-
 .dropdown-intro h3 {
     margin: 0 0 12px 0;
     font-size: 22px;
@@ -144,7 +128,6 @@ h1 img {
     font-weight: 600;
     letter-spacing: 0.5px;
 }
-
 .dropdown-intro p {
     margin: 0;
     font-size: 13px;
@@ -153,14 +136,11 @@ h1 img {
     text-align: justify;
 }
 
-/* 面板右侧网格布局 */
 .dropdown-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(220px, max-content));
     gap: 16px;
 }
-
-/* 导航链接功能卡片 */
 .dropdown-link {
     display: flex;
     align-items: flex-start;
@@ -170,12 +150,10 @@ h1 img {
     text-decoration: none;
     transition: background 0.2s, transform 0.2s;
 }
-
 .dropdown-link:hover {
     background: rgba(255, 255, 255, 0.05);
     transform: translateY(-1px);
 }
-
 .dropdown-link .icon-box {
     display: flex;
     align-items: center;
@@ -189,24 +167,20 @@ h1 img {
     flex-shrink: 0;
     margin-top: 2px;
 }
-
 .dropdown-link:hover .icon-box {
     background: #00a6f4;
     color: #fff;
 }
-
 .dropdown-link .text-box {
     display: flex;
     flex-direction: column;
 }
-
 .dropdown-link .title {
     font-size: 15px;
     font-weight: 600;
     color: #fff;
     white-space: nowrap;
 }
-
 .dropdown-link .desc {
     font-size: 12px;
     color: #8896a7;
@@ -214,26 +188,22 @@ h1 img {
     white-space: nowrap;
 }
 
-/* 免责声明专属宽面板网格 */
 .disclaimer-grid {
     display: grid;
     grid-template-columns: repeat(2, 340px);
     gap: 20px 24px;
 }
-
 .disclaimer-item {
     display: flex;
     flex-direction: column;
     gap: 4px;
 }
-
 .disclaimer-item h4 {
     margin: 0;
     font-size: 14px;
     color: #00a6f4;
     font-weight: 600;
 }
-
 .disclaimer-item p {
     margin: 0;
     font-size: 12px;
@@ -243,7 +213,7 @@ h1 img {
 }
 
 /* ==========================================================================
-   4. 右侧全局交互区 (Stats & Lang)
+   4. 右侧交互区
    ========================================================================== */
 .header-right {
     display: flex;
@@ -253,8 +223,6 @@ h1 img {
     margin-top: 15px;
     min-width: max-content;
 }
-
-/* 4.1 数字滚动模块【🔥 强力加锁完美防断层版】 */
 .nav-stats {
     text-align: center;
     cursor: pointer;
@@ -264,11 +232,7 @@ h1 img {
     justify-content: center;
     min-width: 100px;
 }
-
-.nav-stats:hover .label {
-    color: #ffffff;
-}
-
+.nav-stats:hover .label { color: #ffffff; }
 .nav-stats .label {
     font-size: 13px;
     color: #888;
@@ -277,27 +241,20 @@ h1 img {
     transition: color 0.3s;
     white-space: nowrap;
 }
-
-/* 计数器可视视窗 */
 .counter-runner {
     display: inline-flex !important;
     justify-content: center !important;
     align-items: center !important;
-    height: 56px !important;               /* 严格控制容器高度 */
-    line-height: 56px !important;          /* 强制行高垂直居中 */
-    overflow: hidden !important;           /* 核心：裁切可视区以外的所有数字 */
+    height: 56px !important;
+    line-height: 56px !important;
+    overflow: hidden !important;
     font-size: 56px !important;
     font-weight: normal !important;
     color: #fff !important;
     min-width: 70px !important;
     transition: color 0.3s;
 }
-
-.nav-stats:hover .counter-runner {
-    color: #00a6f4;
-}
-
-/* 独立列槽 */
+.nav-stats:hover .counter-runner { color: #00a6f4; }
 .counter-digit-slot {
     height: 56px !important;
     line-height: 56px !important;
@@ -306,25 +263,21 @@ h1 img {
     flex-direction: column !important;
     transition: transform 2.5s cubic-bezier(0.1, 1, 0.1, 1) !important;
 }
-
-/* 槽位内部的单个具体数字 */
 .counter-digit-slot span {
     display: block !important;
-    height: 56px !important;               /* 每一个数字必须精准等于父级高度 */
-    line-height: 56px !important;          /* 杜绝因为外部继承产生行高塌陷 */
+    height: 56px !important;
+    line-height: 56px !important;
     text-align: center !important;
-    white-space: nowrap !important;        
+    white-space: nowrap !important;
     padding: 0 2px !important;
-    margin: 0 !important;                  /* 严防任何外边距挤压 */
+    margin: 0 !important;
     box-sizing: border-box !important;
 }
 
-/* 4.2 多语言环境 🌐 模块 */
 .lang-switch {
     position: relative;
     display: inline-block;
 }
-
 .lang-toggle-btn {
     background: transparent;
     border: none;
@@ -335,7 +288,6 @@ h1 img {
     transition: transform 0.2s, color 0.2s;
     line-height: 1;
 }
-
 .lang-dropdown {
     position: absolute;
     top: calc(100% + 12px);
@@ -355,13 +307,11 @@ h1 img {
     transform: translateY(10px);
     transition: all 0.25s ease;
 }
-
 .lang-switch:hover .lang-dropdown {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
 }
-
 .lang-dropdown li {
     padding: 10px 20px;
     margin: 2px 6px;
@@ -371,12 +321,10 @@ h1 img {
     border-radius: 6px;
     transition: all 0.2s;
 }
-
 .lang-dropdown li:hover {
     background: rgba(255, 255, 255, 0.1);
     color: white;
 }
-
 .lang-dropdown li.active {
     background: #0070f3;
     color: white;
@@ -384,7 +332,7 @@ h1 img {
 }
 
 /* ==========================================================================
-   5. 主体内容展位样式 (H8 极致科技感大 Banner)
+   5. 主 Banner
    ========================================================================== */
 .placeholder-message {
     text-align: center;
@@ -394,49 +342,37 @@ h1 img {
     min-height: 450px;
     padding: 0 20px;
 }
-
 .hero-content {
     max-width: 1000px;
     animation: fadeInHero 1s cubic-bezier(0.4, 0, 0.2, 1) both;
 }
-
-/* 重新定义的 H8 主标题选择器 */
-h8.hero-title, .hero-title {
-    display: block;                    /* 👈 关键：强制让非标准的 h8 标签作为块级元素换行渲染 */
-    font-size: 42px;                  /* 👈 依然保持你要求的大尺寸 (42px) */
+.hero-title {
+    display: block;
+    font-size: 42px;
     margin: 0 0 28px 0;
     line-height: 1.4;
     background: linear-gradient(135deg, #ffffff 40%, #a5b4fc 100%);
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
-    
-    /* ⚡ 极致科技感去粗体魔改 */
-    font-weight: 400 !important;      /* 彻底剥离粗体，使用中轻字重 */
-    letter-spacing: 2px;              /* 拉开字间距，营造黑客矩阵的冷峻感 */
+    font-weight: 400 !important;
+    letter-spacing: 2px;
 }
-
-/* 重新定义的描述文本段落 */
 .hero-desc {
-    font-size: 18px;                  /* 保持放大的 18px */
+    font-size: 18px;
     line-height: 1.8;
     color: #cbd5e1;
     max-width: 850px;
     margin: 0 auto;
-    
-    /* ⚡ 科技感字体匹配 */
-    font-weight: 300 !important;      /* 极细线条配合大字级，是非常现代的高级 Web3 质感 */
+    font-weight: 300 !important;
     letter-spacing: 0.5px;
 }
 
 /* ==========================================================================
-   6. 📱 移动端/自适应响应式媒体查询
+   6. 响应式（1024px 以下）
    ========================================================================== */
 @media screen and (max-width: 1024px) {
-    .container {
-        padding: 16px 20px;
-    }
-    
+    .container { padding: 16px 20px; }
     .header {
         height: auto;
         flex-direction: column;
@@ -445,50 +381,25 @@ h8.hero-title, .hero-title {
         align-items: center;
         text-align: center;
     }
-    
-    h1 {
-        font-size: 32px;
-        justify-content: center;
-    }
-    
-    h1 img {
-        height: 70px;
-        width: 70px;
-        margin-right: 8px;
-    }
-    
-    .nav-menu {
-        margin-left: 0;
-        width: 100%;
-        gap: 24px;
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-    
-    .nav-item {
-        padding: 10px 0;
-        font-size: 15px;
-    }
-    
-    /* 📱 移动端重新锁死 38px 物理高度，确保滚动对齐 */
+    h1 { font-size: 32px; justify-content: center; }
+    h1 img { height: 70px; width: 70px; margin-right: 8px; }
+    .nav-menu { margin-left: 0; width: 100%; gap: 24px; justify-content: center; flex-wrap: wrap; }
+    .nav-item { padding: 10px 0; font-size: 15px; }
     .counter-runner {
         height: 38px !important;
         font-size: 38px !important;
         min-width: 50px !important;
         line-height: 38px !important;
     }
-    
     .counter-digit-slot {
         height: 38px !important;
         line-height: 38px !important;
     }
-    
     .counter-digit-slot span {
         height: 38px !important;
         line-height: 38px !important;
         margin: 0 !important;
     }
-    
     .mega-dropdown {
         position: fixed;
         top: auto;
@@ -504,11 +415,7 @@ h8.hero-title, .hero-title {
         gap: 20px;
         padding: 20px;
     }
-    
-    .nav-item:hover .mega-dropdown {
-        transform: none;
-    }
-    
+    .nav-item:hover .mega-dropdown { transform: none; }
     .dropdown-intro {
         width: 100%;
         border-right: none;
@@ -516,40 +423,17 @@ h8.hero-title, .hero-title {
         border-bottom: 1px solid rgba(255, 255, 255, 0.06);
         padding-bottom: 12px;
     }
-    
-    .dropdown-grid {
-        grid-template-columns: 1fr;
-        gap: 10px;
-    }
-    
-    .dropdown-link {
-        padding: 10px;
-    }
-    
+    .dropdown-grid { grid-template-columns: 1fr; gap: 10px; }
+    .dropdown-link { padding: 10px; }
     .dropdown-link .title,
-    .dropdown-link .desc {
-        white-space: normal;
-    }
-    
-    .disclaimer-grid {
-        grid-template-columns: 1fr;
-        gap: 16px;
-    }
-    
-    .header-right {
-        width: 100%;
-        justify-content: center;
-        gap: 30px;
-        margin-top: 10px;
-    }
-    
-    .lang-toggle-btn {
-        font-size: 30px;
-    }
+    .dropdown-link .desc { white-space: normal; }
+    .disclaimer-grid { grid-template-columns: 1fr; gap: 16px; }
+    .header-right { width: 100%; justify-content: center; gap: 30px; margin-top: 10px; }
+    .lang-toggle-btn { font-size: 30px; }
 }
 
 /* ==========================================================================
-   7. 🌌 量子黑客骨架屏加载流 (Quantum Skeleton Loader)
+   7. 骨架屏
    ========================================================================== */
 .skeleton-line {
     display: block;
@@ -561,7 +445,6 @@ h8.hero-title, .hero-title {
     animation: hackPulse 1.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
     margin: 0 auto;
 }
-
 .skeleton-title {
     max-width: 580px;
     height: 42px;
@@ -569,85 +452,61 @@ h8.hero-title, .hero-title {
     background: linear-gradient(90deg, #07070c 25%, #111a2e 50%, #07070c 75%);
     background-size: 200% 100%;
 }
-
 @keyframes hackPulse {
     0% { background-position: 200% 0; }
     100% { background-position: -200% 0; }
 }
-
-/* 核心防闪烁：只有当内部包含真实的翻译文字（而不是骨架屏 span 标签）时，才触发文字解码淡入 */
-.hero-title:not(:empty):not(:has(span)), 
+.hero-title:not(:empty):not(:has(span)),
 .hero-desc:not(:empty):not(:has(span)) {
     animation: textDecodeFade 0.4s cubic-bezier(0.4, 0, 0.2, 1) both;
 }
-
 @keyframes textDecodeFade {
-    from {
-        opacity: 0;
-        transform: translateY(6px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
 }
-
-/* 全局国际化防闪烁核心控制 (i18n Flash Protection) */
 [data-i18n] {
     opacity: 0;
     transition: opacity 0.15s ease-in-out;
 }
-
 html[data-i18n-ready] [data-i18n],
 .i18n-ready [data-i18n] {
     opacity: 1;
 }
 
 /* ==========================================================================
-   8. 🔴 赛博红科技感动作按钮 (Cyber Red Action Button)
+   8. 按钮
    ========================================================================== */
-.hero-action {
-    margin-top: 36px;
-    display: flex;
-    justify-content: center;
-}
-
+.hero-action { margin-top: 36px; display: flex; justify-content: center; }
 .btn-cyber-red {
     display: inline-block;
     padding: 12px 36px;
     font-size: 15px;
     font-weight: 500;
-    color: #ff4a5a; /* 霓虹红文本 */
+    color: #ff4a5a;
     text-decoration: none;
     letter-spacing: 2px;
-    background: rgba(255, 74, 90, 0.04); /* 半透明暗红背景 */
-    border: 1px solid rgba(255, 74, 90, 0.35); /* 柔和红色边界 */
+    background: rgba(255, 74, 90, 0.04);
+    border: 1px solid rgba(255, 74, 90, 0.35);
     border-radius: 4px;
-    box-shadow: 0 0 15px rgba(255, 74, 90, 0.08); /* 初始微弱外发光 */
+    box-shadow: 0 0 15px rgba(255, 74, 90, 0.08);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
 }
-
-/* 鼠标悬停（Hover）触发红能矩阵爆燃 */
 .btn-cyber-red:hover {
     color: #ffffff !important;
-    background: #ff4a5a; /* 填满高亮红 */
+    background: #ff4a5a;
     border-color: #ff4a5a;
-    box-shadow: 0 0 25px rgba(255, 74, 90, 0.5), 
-                0 0 50px rgba(255, 74, 90, 0.2); /* 赛博红色霓虹波纹 */
-    transform: translateY(-2px); /* 悬浮物理阻尼 */
+    box-shadow: 0 0 25px rgba(255, 74, 90, 0.5), 0 0 50px rgba(255, 74, 90, 0.2);
+    transform: translateY(-2px);
 }
-
 .btn-cyber-red:active {
     transform: translateY(0);
     box-shadow: 0 0 15px rgba(255, 74, 90, 0.3);
 }
 
 /* ==========================================================================
-   9. 🌌 DewSecure 高端 Web3 询价模态框样式 (Cyber Modal System) - 完美扩容版
+   9. 模态框 - 无滚动一屏版
    ========================================================================== */
-
-/* 遮罩层：高强模糊毛玻璃 */
 .cyber-modal-overlay {
     position: fixed;
     top: 0;
@@ -665,35 +524,34 @@ html[data-i18n-ready] [data-i18n],
     pointer-events: none;
     transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
 .cyber-modal-overlay.is-open {
     opacity: 1;
     pointer-events: auto;
 }
 
-/* 🚀 核心扩容：弹窗主体架重组（从 880px 暴力放大到 1180px 国际化大气跨度） */
 .cyber-modal-wrapper {
     position: relative;
-    width: 95% !important;
-    max-width: 1180px !important;    /* 👈 横向深度拉宽 */
-    height: 720px !important;         /* 👈 纵向同步拉高，告别缩在一起的局促感 */
-    background: #ffffff;             /* 主体回正为白底 */
+    width: 95%;
+    max-width: 1180px;
+    /* 关键：固定高度为视口高度 85%，且不超过 95vh */
+    height: 85vh;
+    max-height: 95vh;
+    min-height: 500px;
+    background: #ffffff;
     border-radius: 16px;
-    display: flex;                    /* 使用坚固的横向弹性分栏 */
+    display: flex;
     overflow: hidden;
     box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
     transform: scale(0.96) translateY(10px);
     transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
-
 .cyber-modal-overlay.is-open .cyber-modal-wrapper {
     transform: scale(1) translateY(0);
 }
 
-/* 关闭按钮 */
 .modal-close-btn {
     position: absolute;
-    top: 20px;                       /* 调整间距配合大弹窗 */
+    top: 20px;
     right: 24px;
     background: none;
     border: none;
@@ -705,54 +563,39 @@ html[data-i18n-ready] [data-i18n],
 }
 .modal-close-btn:hover { color: #ff4a5a; }
 
-/* ---------------- 左侧：黑客暗盒与数字流 (优化大弹窗下的占比) ---------------- */
+/* 左侧 */
 .modal-left-box {
-    flex: 0 0 32% !important;
+    flex: 0 0 32%;
     background: #050508;
-    padding: 50px 32px 12px 32px !important; 
+    padding: 30px 20px 12px 20px;
     display: flex;
     flex-direction: column;
-    position: relative;
+    justify-content: space-between;
     border-right: 1px solid rgba(255, 255, 255, 0.04);
     overflow: hidden;
 }
-
-/* DewSecure 标题和 Logo 图片展开 */
-.cyber-modal-overlay .modal-left-box .brand-header,
 .modal-left-box .brand-header {
-    display: flex !important;
-    align-items: center !important;
-    gap: 16px !important;
-    width: 100% !important;
-    max-width: none !important;
-    overflow: visible !important;
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
-
-.cyber-modal-overlay .modal-left-box .brand-header img,
-.modal-left-box .brand-header img { 
-    width: 54px !important;
-    height: 54px !important;
-    object-fit: contain !important;
-    flex-shrink: 0 !important;
+.modal-left-box .brand-header img {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
 }
-
-.cyber-modal-overlay .modal-left-box .brand-header span,
 .modal-left-box .brand-header span {
-    font-size: 32px !important;
-    font-weight: 800 !important;
-    color: #ffffff !important;
-    white-space: nowrap !important;
-    max-width: none !important;
-    display: inline-block !important;
+    font-size: 26px;
+    font-weight: 800;
+    color: #ffffff;
+    white-space: nowrap;
 }
-
 .modal-left-box .matrix-title {
-    margin-top: 50px;
-    font-size: 28px;
+    margin-top: 16px;
+    font-size: 22px;
     font-weight: 700;
     color: #ffffff;
-    line-height: 1.4;
-    z-index: 2;
+    line-height: 1.2;
 }
 .modal-left-box .highlight-red {
     color: #ff4a5a;
@@ -760,437 +603,213 @@ html[data-i18n-ready] [data-i18n],
     text-shadow: 0 0 20px rgba(255, 74, 90, 0.4);
 }
 
-/* ============================================================================
-   🌌 二进制矩阵 4列居中（唯一、强制、防溢出、防数字黏连终极补丁）
-   ============================================================================ */
-
-/* 容器：使用flex列，推至底部，内容居中，不裁剪溢出 */
+/* 二进制矩阵 - 彻底防溢出、居中、紧凑 */
 .modal-left-box .binary-matrix-stream.aligned-right {
-    position: relative !important;
-    width: 100% !important;
-    margin-top: auto !important;          /* 推到底部 */
-    margin-bottom: 12px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;       /* 水平居中所有行 */
-    font-size: 13px !important;           /* 适当微调基础字号 */
-    line-height: 2.2 !important;
-    overflow: visible !important;         /* 关键：禁止裁剪 */
-    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 30%, rgba(0,0,0,1) 100%) !important;
-    mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 30%, rgba(0,0,0,1) 100%) !important;
+    margin-top: auto;
+    margin-bottom: 4px;
+    font-size: 12px;
+    line-height: 1.9;
+    text-align: center;
+    overflow: visible;
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 30%, rgba(0,0,0,1) 100%);
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 30%, rgba(0,0,0,1) 100%);
 }
-
-/* 每行：flex居中，无换行 */
 .modal-left-box .binary-matrix-stream.aligned-right .matrix-row {
-    display: flex !important;
-    justify-content: center !important;
-    flex-wrap: nowrap !important;
-    
-    /* 👈 数据块（span）与数据块之间的间距，可根据视觉效果微调 */
-    gap: 16px !important;                 
-    
-    white-space: nowrap !important;
-    width: 100% !important;
-    font-size: inherit !important;
-    line-height: inherit !important;
-    color: rgba(255, 255, 255, 0.25) !important;
-    margin: 0 !important;
-    padding: 0 !important;
-}
-
-/* 每个数字块：全面释放宽度，注入极客字间距 */
-.modal-left-box .binary-matrix-stream.aligned-right .matrix-row span {
-    font-family: 'Courier New', monospace !important;
-    font-variant-numeric: tabular-nums !important;
-    display: inline-block !important;
-    
-    /* ⚡ 核心修复 1：将固定窄宽度释放，让等宽数据块自然伸展，彻底告别黏连重叠 */
-    width: auto !important;               
-    text-align: center !important;
-    
-    /* ⚡ 核心修复 2：利用字间距精准控制 8 位数字内部每个 0 和 1 之间的呼吸感 */
-    letter-spacing: 0.18em !important;    
-    
-    /* 消除可能导致右侧轻微偏斜的末尾字间距多余占位 */
-    margin-right: -0.18em !important;     
-    margin-left: 0 !important;
-    padding: 0 !important;
-}
-
-/* ---------------- 右侧：纯净表单域 (独立自适应滚动体) ---------------- */
-.modal-right-box {
-    flex: 0 0 68% !important;
-    background: #ffffff;
-    height: 100%;
-    overflow-y: auto;
-    padding: 55px 70px !important;
-    color: #1e293b;
-}
-
-.modal-right-box h2 { 
-    font-size: 30px !important;
-    font-weight: 700;
-    color: #0f172a;
-    margin: 0 0 8px 0;
-}
-.modal-right-box .modal-subtitle { 
-    font-size: 15px !important;
-    color: #64748b;
-    margin: 0 0 32px 0;
-}
-
-/* 表单组件控制 */
-.form-row { 
     display: flex;
-    gap: 24px;
-    width: 100%;
+    justify-content: center;
+    gap: 10px;
+    white-space: nowrap;
+    color: rgba(255, 255, 255, 0.25);
 }
-.form-group { 
-    margin-bottom: 22px !important;
+.modal-left-box .binary-matrix-stream.aligned-right .matrix-row span {
+    font-family: 'Courier New', monospace;
+    font-variant-numeric: tabular-nums;
+    display: inline-block;
+    letter-spacing: 0.12em;
+}
+
+/* 右侧 - 使用 flex 垂直居中，无滚动 */
+.modal-right-box {
     flex: 1;
+    background: #ffffff;
+    padding: 20px 30px 16px 30px;
     display: flex;
     flex-direction: column;
-    position: relative;
-    min-width: 0;
+    justify-content: center;
+    overflow: hidden;
+    color: #1e293b;
 }
-.form-group label { font-size: 14px; font-weight: 600; color: #334155; margin-bottom: 8px; }
+.modal-right-box h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 2px 0;
+    line-height: 1.1;
+}
+.modal-right-box .modal-subtitle {
+    font-size: 12px;
+    color: #64748b;
+    margin: 0 0 10px 0;
+}
+.modal-right-box .modal-form-scroll-body,
+.modal-right-box form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: visible;
+}
+.modal-right-box .form-group {
+    margin-bottom: 4px;
+}
+.modal-right-box .form-group label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 2px;
+}
 .required-label::after { content: " *"; color: #ef4444; }
 
-.form-group input, 
-.form-group select, 
-.form-group textarea {
-    width: 100% !important;
-    max-width: 100% !important;
-    box-sizing: border-box !important;
-    padding: 13px 16px !important;
-    font-size: 15px !important;
-    background: #ffffff;
+.modal-right-box .form-group input,
+.modal-right-box .form-group select,
+.modal-right-box .custom-single-channel,
+.modal-right-box .custom-single-channel input {
+    height: 28px;
+    line-height: 26px;
+    padding: 0 8px;
+    font-size: 12px;
     border: 1px solid #cbd5e1;
-    border-radius: 6px;
-    color: #0f172a;
+    border-radius: 4px;
+    background: #ffffff;
+    width: 100%;
+    box-sizing: border-box;
     outline: none;
-    transition: all 0.2s ease;
+    transition: border-color 0.2s;
 }
-.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+.modal-right-box .form-group input:focus,
+.modal-right-box .form-group select:focus,
+.modal-right-box .custom-single-channel:focus-within {
     border-color: #0f172a;
-    box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.08);
+    box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.08);
 }
-
-.custom-single-channel {
+.modal-right-box .custom-single-channel {
     display: flex;
     align-items: center;
-    border: 1px solid #cbd5e1;
-    border-radius: 6px;
-    overflow: hidden;
-    height: 48px !important;
+    padding: 0;
+    height: 28px;
     background: #ffffff;
-    width: 100% !important;
-    box-sizing: border-box !important;
 }
-.custom-single-channel .whatsapp-badge {
+.modal-right-box .whatsapp-badge {
     background: #f1f5f9;
     color: #128c7e;
-    padding: 0 16px;
+    padding: 0 8px;
+    font-size: 11px;
     font-weight: 600;
-    font-size: 14px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    border-right: 1px solid #e2e8f0;
+}
+.modal-right-box .custom-single-channel input {
+    border: none !important;
+    height: 100%;
+    padding: 0 8px;
+    flex: 1;
+}
+.modal-right-box .form-group textarea {
+    height: 36px;
+    min-height: 36px;
+    max-height: 36px;
+    padding: 4px 8px;
+    font-size: 12px;
+    resize: none;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.modal-right-box .form-footer-notice {
+    margin: 2px 0 4px 0;
+    font-size: 10px;
+    color: #64748b;
+}
+.modal-right-box .form-submit-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 0;
+}
+.modal-right-box .btn-submit-quote {
+    background: #0f172a;
+    color: #ffffff;
+    border: none;
+    padding: 0 20px;
+    height: 30px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
     display: flex;
     align-items: center;
     gap: 6px;
-    height: 100%;
-    border-right: 1px solid #e2e8f0;
-    white-space: nowrap;
 }
-.custom-single-channel input {
-    border: none !important;
-    outline: none !important;
+.modal-right-box .btn-submit-quote:hover { background: #1e293b; }
+
+/* 双列并排 */
+.modal-right-box .form-grid-row {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+}
+.modal-right-box .form-grid-row .form-group {
     flex: 1;
-    height: 100%;
-    padding: 0 16px !important;
-}
-.custom-single-channel:focus-within {
-    border-color: #0f172a;
-    box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.08);
 }
 
-.form-footer-notice { font-size: 12px; color: #64748b; margin: 12px 0 0 0; }
-
+/* 表单错误 */
 .form-group.has-error input,
 .form-group.has-error .custom-single-channel {
     border-color: #ef4444 !important;
     background-color: #fef2f2 !important;
 }
-.form-group.has-error .custom-single-channel input {
-    background-color: #fef2f2 !important;
-}
 .form-group.has-error label { color: #b91c1c; }
 .error-msg {
     color: #ef4444;
-    font-size: 11px;
-    margin-top: 4px;
+    font-size: 10px;
+    margin-top: 2px;
     display: none;
-    font-weight: 500;
 }
 .form-group.has-error .error-msg { display: block; }
 
-.form-submit-row { display: flex; justify-content: flex-end; margin-top: 24px; }
-.btn-submit-quote {
-    background: #0f172a;
-    color: #ffffff;
-    border: none;
-    padding: 14px 40px !important;
-    font-size: 16px !important;
-    font-weight: 600;
-    border-radius: 6px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: background 0.2s;
-}
-.btn-submit-quote:hover { background: #1e293b; }
-
 /* ==========================================================================
-   10. 📱 模态框专有移动端响应式断点
+   10. 移动端 (< 768px)
    ========================================================================== */
-@media (max-width: 768px) {
-    .cyber-modal-wrapper { 
-        flex-direction: column !important; 
-        max-height: 92vh !important; 
-        height: auto !important;
-        width: 90% !important;
-    }
-    .modal-left-box { 
-        flex: 0 0 auto !important;
-        width: 100% !important; 
-        padding: 30px 24px !important; 
-    }
-    .modal-left-box .matrix-title { margin-top: 20px; font-size: 24px; }
-    .binary-matrix-stream.aligned-right { display: none !important; }
-    .modal-right-box { 
-        flex: 0 0 auto !important;
-        width: 100% !important; 
-        padding: 30px 24px !important; 
-        overflow-y: visible !important;
-    }
-    .form-row { 
-        flex-direction: column !important; 
-        gap: 0 !important; 
-    }
-}
-
-
-/* ==========================================================================
-   🎯 针对当前 HTML 的专项对齐与解脱补丁（追加到 CSS 末尾，已清除层级冲突）
-   ========================================================================== */
-
-/* 1. 强力修复表单网格并排（将 HTML 中的 form-grid-row 与旧的 form-row 绑定） */
-.form-grid-row {
-    display: flex !important;
-    gap: 16px !important; /* 缩减双列并排时的左右间距 */
-    width: 100% !important;
-}
-
-/* 2. 彻底释放中间夹层，杜绝表单无法滚动的死锁问题 */
-.modal-form-scroll-body {
-    width: 100% !important;
-    height: auto !important;
-    overflow: visible !important;
-    display: block !important;
-}
-
-/* 4. 二进制防黏连加强锁：确保每个 span 数据块完美呼吸，等宽排列 */
-.binary-matrix-stream.aligned-right .matrix-row {
-    display: flex !important;
-    justify-content: center !important;
-    gap: 16px !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-}
-
-.binary-matrix-stream.aligned-right .matrix-row span {
-    font-family: 'Courier New', monospace !important;
-    font-variant-numeric: tabular-nums !important;
-    display: inline-block !important;
-    width: auto !important; 
-    letter-spacing: 0.18em !important; 
-    margin-right: -0.18em !important;
-}
-
-/* 5. 修复移动端下 `.form-grid-row` 的自适应退化 */
-@media (max-width: 768px) {
-    .form-grid-row {
-        flex-direction: column !important;
-        gap: 0 !important;
-    }
-}
-
-/* ==========================================================================
-   🎯 终极一屏模态框（无滚动，全局紧凑）
-   ========================================================================== */
-
-/* 1. 模态框容器：固定高度为视口85%，超出隐藏 */
-.cyber-modal-wrapper {
-    height: 85vh !important;           /* 固定高度，适应屏幕 */
-    max-height: 85vh !important;
-    min-height: 600px !important;      /* 保证最小高度 */
-    overflow: hidden !important;       /* 禁止整个框滚动 */
-}
-
-/* 2. 左侧区域：保持比例，内容居中 */
-.modal-left-box {
-    flex: 0 0 32% !important;
-    padding: 30px 20px 10px 20px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: space-between !important;
-    overflow: hidden !important;
-}
-.modal-left-box .brand-header {
-    margin-bottom: 10px !important;
-}
-.modal-left-box .brand-header img {
-    width: 40px !important;
-    height: 40px !important;
-}
-.modal-left-box .brand-header span {
-    font-size: 24px !important;
-}
-.modal-left-box .matrix-title {
-    margin-top: 10px !important;
-    font-size: 20px !important;
-    line-height: 1.2 !important;
-}
-.modal-left-box .binary-matrix-stream.aligned-right {
-    font-size: 11px !important;        /* 进一步缩小矩阵字号 */
-    line-height: 1.8 !important;
-    margin-bottom: 4px !important;
-}
-
-/* 3. 右侧区域：flex列，垂直居中，禁止滚动 */
-.modal-right-box {
-    flex: 1 !important;
-    padding: 16px 28px 12px 28px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: center !important; /* 垂直居中 */
-    overflow: hidden !important;
-    height: 100% !important;
-}
-
-.modal-right-box .modal-form-scroll-body,
-.modal-right-box form {
-    flex: 1 !important;
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: center !important;
-    overflow: visible !important;
-    width: 100% !important;
-}
-
-/* 4. 标题、副标题极致压缩 */
-.modal-right-box h2 {
-    font-size: 18px !important;
-    margin: 0 0 2px 0 !important;
-    line-height: 1.1 !important;
-}
-.modal-right-box .modal-subtitle {
-    font-size: 12px !important;
-    margin: 0 0 8px 0 !important;
-    color: #64748b;
-}
-
-/* 5. 表单项极致紧凑 */
-.modal-right-box .form-group {
-    margin-bottom: 4px !important;
-}
-.modal-right-box .form-group label {
-    font-size: 11px !important;
-    margin-bottom: 2px !important;
-    font-weight: 600;
-}
-.modal-right-box .form-group input,
-.modal-right-box .form-group select,
-.modal-right-box .custom-single-channel,
-.modal-right-box .custom-single-channel input {
-    height: 28px !important;
-    line-height: 26px !important;
-    padding: 0 8px !important;
-    font-size: 12px !important;
-    border-radius: 3px !important;
-}
-.modal-right-box .custom-single-channel {
-    height: 28px !important;
-}
-.modal-right-box .whatsapp-badge {
-    height: 100% !important;
-    line-height: 26px !important;
-    padding: 0 8px !important;
-    font-size: 11px !important;
-}
-
-.modal-right-box .form-group textarea {
-    height: 32px !important;
-    min-height: 32px !important;
-    max-height: 32px !important;
-    padding: 2px 8px !important;
-    font-size: 12px !important;
-    resize: none !important;
-}
-
-/* 6. 底部提示和按钮 */
-.modal-right-box .form-footer-notice {
-    margin: 2px 0 4px 0 !important;
-    font-size: 10px !important;
-    color: #64748b;
-}
-.modal-right-box .form-submit-row {
-    margin-top: 0 !important;
-    display: flex !important;
-    justify-content: flex-end !important;
-}
-.modal-right-box .btn-submit-quote {
-    height: 30px !important;
-    padding: 0 20px !important;
-    font-size: 12px !important;
-}
-
-/* 7. 双列布局（.form-grid-row）恢复并排，且左右间距收紧 */
-.modal-right-box .form-grid-row {
-    display: flex !important;
-    gap: 10px !important;
-    width: 100% !important;
-}
-.modal-right-box .form-grid-row .form-group {
-    flex: 1 !important;
-}
-
-/* 8. 移动端适配 */
 @media (max-width: 768px) {
     .cyber-modal-wrapper {
-        flex-direction: column !important;
-        height: auto !important;
-        max-height: 96vh !important;
-        min-height: auto !important;
-        width: 92% !important;
+        flex-direction: column;
+        height: auto;
+        max-height: 96vh;
+        min-height: auto;
+        width: 92%;
     }
     .modal-left-box {
-        flex: 0 0 auto !important;
-        width: 100% !important;
-        padding: 16px !important;
-        min-height: 120px !important;
+        flex: 0 0 auto;
+        width: 100%;
+        padding: 16px 20px;
+        min-height: 120px;
+        justify-content: flex-start;
     }
     .modal-left-box .binary-matrix-stream.aligned-right {
-        display: none !important;
+        display: none;
     }
     .modal-right-box {
-        flex: 1 !important;
-        width: 100% !important;
-        padding: 16px !important;
-        overflow-y: auto !important;  /* 移动端允许滚动 */
-        justify-content: flex-start !important;
+        flex: 1;
+        width: 100%;
+        padding: 16px 20px;
+        overflow-y: auto;
+        justify-content: flex-start;
     }
     .modal-right-box .form-grid-row {
-        flex-direction: column !important;
-        gap: 0 !important;
+        flex-direction: column;
+        gap: 0;
     }
 }
