@@ -865,62 +865,60 @@ html:not([data-i18n-ready="true"]) [data-i18n] {
 }
 
 /* ==========================================================================
-   🎯 DewSecure 视觉最终完美修正总线（避开粗体 + 强制放大）
+   🎯 DewSecure 弹窗视觉最终校准总线 (单线穿透隔离版)
    ========================================================================== */
 
-/* 1. 背景模糊度：微调清晰 */
+/* 1. 全局遮罩玻璃回正 */
 .cyber-modal-overlay {
-    background: rgba(4, 4, 6, 0.72) !important;
+    background: rgba(4, 4, 6, 0.75) !important;
     backdrop-filter: blur(4px) !important;
     -webkit-backdrop-filter: blur(4px) !important;
 }
 
-/* 2. 左侧暗盒物理占比微调，确保给大字号留出完美的自适应空间 */
+/* 2. 左侧暗盒物理宽度加锁 */
 .modal-left-box {
-    flex: 0 0 38% !important; 
+    flex: 0 0 40% !important;        /* 提升占比到 40% 给超大字号留足物理空间 */
     padding: 40px 24px !important;
+    background: #050508 !important;
 }
 
-/* 3. Logo 图片精准放大 */
-.modal-left-box .brand-header img,
-.modal-left-box .brand-header .brand-logo-img {
-    width: 48px !important;       /* 强力放大图片物理尺寸 */
+/* 3. 图片强制放大：使用 img 独占选择器避开 i18n 洗刷 */
+.modal-left-box .brand-header img.brand-logo-img {
+    width: 48px !important;           /* 物理尺寸由 34px 强力拉大到 48px */
     height: 48px !important;
     min-width: 48px !important;
+    min-height: 48px !important;
     object-fit: contain !important;
     display: inline-block !important;
 }
 
-/* 4. "DewSecure" 品牌文本：全面拦截多语言，激进放大 + 坚决不用粗体 */
-.modal-left-box .brand-header,
-.modal-left-box .brand-header *,
-.modal-left-box [data-i18n="page_title"] {
-    font-size: 32px !important;   /* 字号拉大到 32px */
+/* 4. 彻底解决 DewSecure 文本变大与去粗体 */
+.modal-left-box .brand-header .brand-logo-text {
+    font-size: 30px !important;       /* 强行拉大到 30px */
     color: #ffffff !important;
-    font-weight: 300 !important;  /* 🌟 核心：坚决不用粗体，采用轻盈纤细线条 */
+    font-weight: 300 !important;      /* 🌟 核心：坚决拒绝粗体 */
     font-family: -apple-system, BlinkMacSystemFont, sans-serif !important;
     letter-spacing: 1px !important;
     white-space: nowrap !important;
+    display: inline-block !important;
 }
 
-/* 5. “技术为器，诚信为道。”标语：全面拦截多语言，极致放大 + 坚决不用粗体 */
-.modal-left-box .matrix-title,
-.modal-left-box [data-i18n="modal_matrix_slogan"],
-.modal-left-box [data-i18n="modal_matrix_slogan"] * {
-    margin-top: 55px !important;
-    font-size: 36px !important;   /* 🌟 标语字号激进提升至 36px，靠大字号撑起视觉 */
+/* 5. 彻底解决标语“技术为器，诚信为道。”变大与去粗体 */
+.modal-left-box .matrix-title {
+    margin-top: 50px !important;
+    font-size: 34px !important;       /* 字号激进提升至 34px 撑起视觉 */
     line-height: 1.4 !important;
-    letter-spacing: 2px !important;
+    letter-spacing: 1.5px !important;
     color: #ffffff !important;
-    font-weight: 400 !important;  /* 🌟 核心：常规偏细字重，绝对拒绝粗体 */
+    font-weight: 400 !important;      /* 🌟 核心：常规偏细字重，绝对拒绝加粗 */
+    display: block !important;
 }
 
-/* 标语内部的红色高亮区域“诚信为道”校准（同样不允许加粗） */
-.modal-left-box .matrix-title .highlight-red,
-.modal-left-box [data-i18n="modal_matrix_slogan"] .highlight-red {
+/* 标语内部红标校准：去掉可能继承的任何加粗 */
+.modal-left-box .matrix-title .highlight-red {
     color: #ff4a5a !important;
-    font-weight: 400 !important;  /* 拒绝粗体 */
+    font-weight: 400 !important;      /* 拒绝粗体 */
     display: block !important;
     margin-top: 8px !important;
-    text-shadow: 0 0 20px rgba(255, 74, 90, 0.3) !important;
+    text-shadow: 0 0 20px rgba(255, 74, 90, 0.4) !important;
 }
