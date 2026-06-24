@@ -103,6 +103,16 @@ function initQuoteModal() {
         if (e.target === modalOverlay) closeModal();
     });
 
+    // 🌟 核心修复：在这里统一绑定全局 ESC 键盘监听，并调用内部封装好的 closeModal()
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' || e.key === 'Esc') {
+            // 检查弹窗当前是否带有 "is-open" 类（即处于打开状态）
+            if (modalOverlay.classList.contains('is-open')) {
+                closeModal();
+            }
+        }
+    });
+
     // 🔒 限制其他信息 500 字上限并阻断（对应需求 5）
     if (textareaInfo) {
         textareaInfo.addEventListener("input", () => {
@@ -155,17 +165,5 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(triggerStatsCounter, 350); 
     initQuoteModal();
     initBinaryStream(); // 注入动态数字跑动
-    
-    // 🌟 在这里注入 ESC 键监听
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            const modal = document.getElementById("quote-modal");
-            if (modal && modal.classList.contains('active')) {
-                modal.classList.remove('active');
-                document.body.style.overflow = '';
-            }
-        }
-    });
-
     window.addEventListener('resize', triggerStatsCounter);
 });
