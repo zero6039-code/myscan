@@ -707,9 +707,12 @@ html[data-i18n-ready] [data-i18n],
 
 /* ---------------- 左侧：黑客暗盒与数字流 (优化大弹窗下的占比) ---------------- */
 .modal-left-box {
-    flex: 0 0 32% !important;        /* 👈 重新黄金配比，左侧占 32% */
+    flex: 0 0 32% !important;
     background: #050508;
-    padding: 50px 32px !important;   /* 🚀 加大四周内衬留白，大气舒展 */
+    
+    /* ⚡ 核心修改：分别控制上下左右 (上50px, 右32px, 下12px, 左32px) */
+    padding: 50px 32px 12px 32px !important; 
+    
     display: flex;
     flex-direction: column;
     position: relative;
