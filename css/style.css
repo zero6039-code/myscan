@@ -254,7 +254,7 @@ h1 img {
     min-width: max-content;
 }
 
-/* 4.1 数字滚动模块【🔥 强力加锁完美防断层版】 */
+/* 4.1 数字滚动模块 */
 .nav-stats {
     text-align: center;
     cursor: pointer;
@@ -283,9 +283,9 @@ h1 img {
     display: inline-flex !important;
     justify-content: center !important;
     align-items: center !important;
-    height: 56px !important;               /* 严格控制容器高度 */
-    line-height: 56px !important;          /* 强制行高垂直居中 */
-    overflow: hidden !important;           /* 核心：裁切可视区以外的所有数字 */
+    height: 56px !important;
+    line-height: 56px !important;
+    overflow: hidden !important;
     font-size: 56px !important;
     font-weight: normal !important;
     color: #fff !important;
@@ -310,12 +310,12 @@ h1 img {
 /* 槽位内部的单个具体数字 */
 .counter-digit-slot span {
     display: block !important;
-    height: 56px !important;               /* 每一个数字必须精准等于父级高度 */
-    line-height: 56px !important;          /* 杜绝因为外部继承产生行高塌陷 */
+    height: 56px !important;
+    line-height: 56px !important;
     text-align: center !important;
-    white-space: nowrap !important;        
+    white-space: nowrap !important;
     padding: 0 2px !important;
-    margin: 0 !important;                  /* 严防任何外边距挤压 */
+    margin: 0 !important;
     box-sizing: border-box !important;
 }
 
@@ -400,32 +400,26 @@ h1 img {
     animation: fadeInHero 1s cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 
-/* 重新定义的 H8 主标题选择器 */
 h8.hero-title, .hero-title {
-    display: block;                   /* 👈 关键：强制让非标准的 h8 标签作为块级元素换行渲染 */
-    font-size: 42px;                  /* 👈 依然保持你要求的大尺寸 (42px) */
+    display: block;
+    font-size: 42px;
     margin: 0 0 28px 0;
     line-height: 1.4;
     background: linear-gradient(135deg, #ffffff 40%, #a5b4fc 100%);
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
-    
-    /* ⚡ 极致科技感去粗体魔改 */
-    font-weight: 400 !important;      /* 彻底剥离粗体，使用中轻字重 */
-    letter-spacing: 2px;              /* 拉开字间距，营造黑客矩阵的冷峻感 */
+    font-weight: 400 !important;
+    letter-spacing: 2px;
 }
 
-/* 重新定义的描述文本段落 */
 .hero-desc {
-    font-size: 18px;                  /* 保持放大的 18px */
+    font-size: 18px;
     line-height: 1.8;
     color: #cbd5e1;
     max-width: 850px;
     margin: 0 auto;
-    
-    /* ⚡ 科技感字体匹配 */
-    font-weight: 300 !important;      /* 极细线条配合大字级，是非常现代的高级 Web3 质感 */
+    font-weight: 300 !important;
     letter-spacing: 0.5px;
 }
 
@@ -470,7 +464,6 @@ h8.hero-title, .hero-title {
         font-size: 15px;
     }
     
-    /* 📱 移动端重新锁死 38px 物理高度，确保滚动对齐 */
     .counter-runner {
         height: 38px !important;
         font-size: 38px !important;
@@ -575,7 +568,6 @@ h8.hero-title, .hero-title {
     100% { background-position: -200% 0; }
 }
 
-/* 核心防闪烁：只有当内部包含真实的翻译文字（而不是骨架屏 span 标签）时，才触发文字解码淡入 */
 .hero-title:not(:empty):not(:has(span)), 
 .hero-desc:not(:empty):not(:has(span)) {
     animation: textDecodeFade 0.4s cubic-bezier(0.4, 0, 0.2, 1) both;
@@ -592,7 +584,6 @@ h8.hero-title, .hero-title {
     }
 }
 
-/* 全局国际化防闪烁核心控制 (i18n Flash Protection) */
 [data-i18n] {
     opacity: 0;
     transition: opacity 0.15s ease-in-out;
@@ -617,25 +608,24 @@ html[data-i18n-ready] [data-i18n],
     padding: 12px 36px;
     font-size: 15px;
     font-weight: 500;
-    color: #ff4a5a; /* 霓虹红文本 */
+    color: #ff4a5a;
     text-decoration: none;
     letter-spacing: 2px;
-    background: rgba(255, 74, 90, 0.04); /* 半透明暗红背景 */
-    border: 1px solid rgba(255, 74, 90, 0.35); /* 柔和红色边界 */
+    background: rgba(255, 74, 90, 0.04);
+    border: 1px solid rgba(255, 74, 90, 0.35);
     border-radius: 4px;
-    box-shadow: 0 0 15px rgba(255, 74, 90, 0.08); /* 初始微弱外发光 */
+    box-shadow: 0 0 15px rgba(255, 74, 90, 0.08);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
 }
 
-/* 鼠标悬停（Hover）触发红能矩阵爆燃 */
 .btn-cyber-red:hover {
     color: #ffffff !important;
-    background: #ff4a5a; /* 填满高亮红 */
+    background: #ff4a5a;
     border-color: #ff4a5a;
     box-shadow: 0 0 25px rgba(255, 74, 90, 0.5), 
-                0 0 50px rgba(255, 74, 90, 0.2); /* 赛博红色霓虹波纹 */
-    transform: translateY(-2px); /* 悬浮物理阻尼 */
+                0 0 50px rgba(255, 74, 90, 0.2);
+    transform: translateY(-2px);
 }
 
 .btn-cyber-red:active {
@@ -647,16 +637,16 @@ html[data-i18n-ready] [data-i18n],
    9. 🌌 DewSecure 高端 Web3 询价模态框样式 (Cyber Modal System)
    ========================================================================== */
 
-/* 遮罩层：高强模糊毛玻璃 */
+/* ⚡【针对需求2微调】遮罩层：降低高强度模糊，使后面的内容再清晰一点 */
 .cyber-modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(4, 4, 6, 0.75);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: rgba(4, 4, 6, 0.55);        /* 降低黑色遮罩不透明度，从0.75降到0.55 */
+    backdrop-filter: blur(4px);             /* 降低高强毛玻璃模糊，从12px降到4px，使其更清晰 */
+    -webkit-backdrop-filter: blur(4px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -671,15 +661,15 @@ html[data-i18n-ready] [data-i18n],
     pointer-events: auto;
 }
 
-/* 弹窗主体架：深度整合修复 */
+/* 弹窗主体架 */
 .cyber-modal-wrapper {
     position: relative;
     width: 90%;
-    max-width: 880px;            /* 调整为最优黄金跨度 */
-    height: 620px;               /* 设定固定物理高度，开启内部双轴独立滚动 */
-    background: #ffffff;         /* 主体回正为白底 */
+    max-width: 880px;
+    height: 620px;
+    background: #ffffff;
     border-radius: 16px;
-    display: flex;               /* 使用坚固的横向弹性分栏 */
+    display: flex;
     overflow: hidden;
     box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
     transform: scale(0.96) translateY(10px);
@@ -707,7 +697,7 @@ html[data-i18n-ready] [data-i18n],
 
 /* ---------------- 左侧：黑客暗盒与数字流 (强控 35% 分栏宽度) ---------------- */
 .modal-left-box {
-    flex: 0 0 35%;               /* 👈 坚固加锁：不收缩、不放大，锁死35%比例 */
+    flex: 0 0 35%;
     background: #050508;
     padding: 40px 24px;
     display: flex;
@@ -717,23 +707,35 @@ html[data-i18n-ready] [data-i18n],
     overflow: hidden;
 }
 
+/* ⚡【针对需求3调整】Logo与标题自适应黑框，填满左右两边 */
 .modal-left-box .brand-header {
     display: flex;
     align-items: center;
-    gap: 10px;
-    font-size: 18px;
-    font-weight: 600;
-    color: #ffffff;
+    justify-content: space-between;         /* 强制两端对齐，撑满黑框左到右距离 */
+    width: 100%;                            /* 锁死满宽 */
+    box-sizing: border-box;
+    padding: 0 2px;
 }
-.modal-left-box .brand-header img { width: 28px; height: 28px; }
-
-.modal-left-box .matrix-title {
-    margin-top: 50px;
-    font-size: 28px;             /* 适当微调，防止马语换行空间不足 */
+.modal-left-box .brand-header img { 
+    width: 32px;                            /* 适当调大图标物理像素 */
+    height: 32px; 
+}
+.modal-left-box .brand-header span {
+    font-size: 24px;                        /* 大幅调大标题 DewSecure 的视觉字号 */
     font-weight: 700;
     color: #ffffff;
-    line-height: 1.4;
+    letter-spacing: 0.5px;
+}
+
+/* ⚡【针对需求3调整】“技术为器，诚信为道”主标题更大一点 */
+.modal-left-box .matrix-title {
+    margin-top: 50px;
+    font-size: 34px;                        /* 核心放大：从 28px 巨化到 34px */
+    font-weight: 800;                       /* 加强字重 */
+    color: #ffffff;
+    line-height: 1.35;
     z-index: 2;
+    letter-spacing: 1px;
 }
 .modal-left-box .highlight-red {
     color: #ff4a5a;
@@ -741,27 +743,39 @@ html[data-i18n-ready] [data-i18n],
     text-shadow: 0 0 20px rgba(255, 74, 90, 0.4);
 }
 
-/* 让二进制跑动区域整体靠右对齐 */
+/* ⚡【针对需求4重构】二进制 101110 科技感流动区矩阵 */
 .binary-matrix-stream.aligned-right {
     margin-top: auto;
-    text-align: right;
     width: 100%;
-    padding-right: 10px;
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important; /* ⚡ 铁律锁死：横向绝对完美 3 列 */
+    gap: 8px 12px;                          /* 网格紧凑间距 */
+    box-sizing: border-box;
     font-family: 'Courier New', Courier, monospace;
-    font-size: 13px;
-    line-height: 2;
-    letter-spacing: 1px;
-    color: rgba(239, 68, 68, 0.45); 
+    font-size: 14px;
+    font-weight: 600;
+    color: rgba(239, 68, 68, 0.65);         /* 基础极客红 */
     text-shadow: 0 0 4px rgba(239, 68, 68, 0.3);
     user-select: none;
+    text-align: center;                     /* 内部数字居中对齐 */
+
+    /* 🔥 引入量子渐变遮罩蒙版：实现最上面几行完美渐变模糊 + 透明度淡出效果 */
+    -webkit-mask-image: linear-gradient(to top, black 65%, rgba(0, 0, 0, 0.25) 85%, transparent 100%);
+    mask-image: linear-gradient(to top, black 65%, rgba(0, 0, 0, 0.25) 85%, transparent 100%);
+}
+
+/* 给处于上方排名的二进制子节点注入额外的模糊与半透明效果，增强层次美感 */
+.binary-matrix-stream.aligned-right span:nth-child(-n+6) {
+    opacity: 0.35;
+    filter: blur(0.5px);
 }
 
 /* ---------------- 右侧：纯净表单域 (独立自适应滚动体) ---------------- */
 .modal-right-box {
-    flex: 0 0 65%;               /* 👈 坚固加锁：占据 65% 剩余空间 */
+    flex: 0 0 65%;
     background: #ffffff;
     height: 100%;
-    overflow-y: auto;            /* ⚡ 核心补丁：长文本或马语撑大时，右侧独立滚动，绝不溢出弹窗 */
+    overflow-y: auto;
     padding: 40px 45px;
     color: #1e293b;
 }
@@ -781,7 +795,7 @@ html[data-i18n-ready] [data-i18n],
     display: flex; 
     flex-direction: column; 
     position: relative;
-    min-width: 0;                /* 防止 Flex 子项由于内嵌 Input 默认尺寸而拒绝收缩 */
+    min-width: 0;
 }
 .form-group label { font-size: 13px; font-weight: 600; color: #334155; margin-bottom: 6px; }
 .required-label::after { content: " *"; color: #ef4444; }
@@ -809,7 +823,7 @@ html[data-i18n-ready] [data-i18n],
     border: 1px solid #cbd5e1;
     border-radius: 6px;
     overflow: hidden;
-    height: 40px;                /* ⚡ 锁死高度，防止徽章百分比塌陷 */
+    height: 40px;
     background: #ffffff;
 }
 .custom-single-channel .whatsapp-badge {
@@ -821,7 +835,7 @@ html[data-i18n-ready] [data-i18n],
     display: flex;
     align-items: center;
     gap: 6px;
-    height: 100%;                /* 饱满填充 */
+    height: 100%;
     border-right: 1px solid #e2e8f0;
     white-space: nowrap;
 }
