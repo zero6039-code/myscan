@@ -1,6 +1,8 @@
 /**
- * ==========================================================================\n * 🚀 DewSecure 核心业务交互脚本 (性能优化与架构修复版)
- * ==========================================================================\n */
+ * ==========================================================================
+ * 🚀 DewSecure 核心业务交互脚本 (数字滚动 + 询价弹窗多功能定制)
+ * ==========================================================================
+ */
 
 // 1. 🔢 统一管理数字滚动的核心逻辑
 function animateCounter(targetNumber) {
@@ -22,83 +24,97 @@ function animateCounter(targetNumber) {
         return slot;
     });
 
-    // 触发重绘以确保 DOM 节点生成
-    counterContainer.offsetHeight; 
+    counterContainer.offsetHeight; // 触发重绘
+    
+    const firstSpan = slots[0]?.querySelector('span');
+    if (!firstSpan) return;
+    const singleDigitHeight = firstSpan.offsetHeight; 
 
-    // 🛡️ 架构优化：多阶段安全提取精准高度，完美应对字体未加载或动态缩放
-    const measureAndAnimate = () => {
-        const firstSpan = slots[0]?.querySelector('span');
-        if (!firstSpan) return;
-        const singleDigitHeight = firstSpan.offsetHeight;
-        if (singleDigitHeight === 0) return; // 如果尚未布局完成，等待下一轮机制触发
-
-        digitStringArray.forEach((digitChar, index) => {
-            const targetDigit = parseInt(digitChar, 10);
-            const finalPixelOffset = targetDigit * singleDigitHeight;
-            
-            setTimeout(() => {
-                if (slots[index]) {
-                    slots[index].style.transform = `translateY(-${finalPixelOffset}px)`;
-                }
-            }, index * 60);
-        });
-    };
-
-    measureAndAnimate();
-
-    // 监听容器大小改变（比如由于视口缩放或字体加载完毕导致的高度坍塌），自适应重新对齐
-    if (window.ResizeObserver && !counterContainer.hasObserver) {
-        const ro = new ResizeObserver(() => {
-            measureAndAnimate();
-        });
-        ro.observe(counterContainer);
-        counterContainer.hasObserver = true;
-    }
+    digitStringArray.forEach((digitChar, index) => {
+        const targetDigit = parseInt(digitChar, 10);
+        const finalPixelOffset = targetDigit * singleDigitHeight;
+        
+        setTimeout(() => {
+            slots[index].style.transform = `translateY(-${finalPixelOffset}px)`;
+        }, index * 60);
+    });
 }
 
 function triggerStatsCounter() {
     const counterContainer = document.getElementById("stats-counter");
-    if (!counterContainer) return;
-    // 固定的业务展现目标数字
-    animateCounter(69);
+    if (counterContainer) {
+        const target = parseInt(counterContainer.getAttribute("data-target"), 10) || 69;
+        animateCounter(target);
+    }
 }
 
-// 2. 🔏 弹窗控制总线与防滚动穿透
+// 2. 🌌 动态黑客帝国二进制矩阵滚动流（对应需求 1 & 2）
+function initBinaryStream() {
+    const streamContainer = document.getElementById("binary-stream");
+    if (!streamContainer) return;
+
+    // 定时随机刷新二进制数组，制造“号码不停地跑”的动态黑客效果
+    setInterval(() => {
+        const rows = 5;
+        let htmlContent = "";
+        for (let i = 0; i < rows; i++) {
+            let rowText = "";
+            for (let j = 0; j < 4; j++) {
+                // 随机生成 8 位二进制字节
+                const byte = Array.from({length: 8}, () => Math.round(Math.random())).join("");
+                rowText += byte + " ";
+            }
+            htmlContent += `<div>${rowText.trim()}</div>`;
+        }
+        streamContainer.innerHTML = htmlContent;
+    }, 120); // 每 120ms 剧烈闪烁跑动一次
+}
+
+// 3. 🛡️ 询价弹窗核心控制逻辑
 function initQuoteModal() {
-    const openBtn = document.getElementById("nav-btn-quote") || document.querySelector(".btn-hero-quote");
-    const openBtnHero = document.querySelector(".hero-right-box .btn-submit-quote") || document.querySelector("[data-i18n='hero_btn_quote'] Folks")?.closest('button');
-    const modalOverlay = document.getElementById("quote-modal-overlay");
+    const modalOverlay = document.getElementById("quote-modal");
     const closeBtn = document.getElementById("modal-close-btn");
-    const quoteForm = document.getElementById("cyber-quote-form");
+    const quoteForm = document.getElementById("quote-form");
+    const textareaInfo = document.getElementById("form-info");
 
     if (!modalOverlay) return;
 
-    const openModal = () => {
-        modalOverlay.classList.add("active");
-        // 🔒 防止移动端滚动穿透，死锁底层 body 手势
-        document.body.style.overflow = "hidden";
-    };
-
-    const closeModal = () => {
-        modalOverlay.classList.remove("active");
-        document.body.style.overflow = "";
-    };
-
-    // 弹性绑定多个可能触发弹窗的按钮
-    if (openBtn) openBtn.addEventListener("click", openModal);
-    document.querySelectorAll(".btn-hero-quote, [data-open-modal]").forEach(btn => {
-        btn.addEventListener("click", openModal);
+    // 点击事件代理唤起弹窗
+    document.addEventListener("click", (e) => {
+        const triggerBtn = e.target.closest(".btn-cyber-red") || e.target.closest('[data-i18n="hero_btn_quote"]');
+        if (triggerBtn && !triggerBtn.closest("#quote-form")) { 
+            e.preventDefault();
+            modalOverlay.classList.add("is-open");
+        }
     });
 
+    // 关闭弹窗并重置
+    function closeModal() {
+        modalOverlay.classList.remove("is-open");
+        if (quoteForm) {
+            const erroredGroups = quoteForm.querySelectorAll(".form-group.has-error");
+            erroredGroups.forEach(group => group.classList.remove("has-error"));
+            quoteForm.reset();
+        }
+    }
+
     if (closeBtn) closeBtn.addEventListener("click", closeModal);
-    
     modalOverlay.addEventListener("click", (e) => {
         if (e.target === modalOverlay) closeModal();
     });
 
-    // 表单健壮性校验
+    // 🔒 限制其他信息 500 字上限并阻断（对应需求 5）
+    if (textareaInfo) {
+        textareaInfo.addEventListener("input", () => {
+            if (textareaInfo.value.length > 500) {
+                textareaInfo.value = textareaInfo.value.substring(0, 500); // 强行截断
+            }
+        });
+    }
+
+    // 表单提交拦截校验
     if (quoteForm) {
-        quoteForm.addEventListener("submit", function(e) {
+        quoteForm.addEventListener("submit", (e) => {
             let passed = true;
             const erroredGroups = quoteForm.querySelectorAll(".form-group.has-error");
             erroredGroups.forEach(group => group.classList.remove("has-error"));
@@ -134,54 +150,10 @@ function initQuoteModal() {
     }
 }
 
-// 3. 💾 高性能二进制密码流特效 (优化 DOM 频繁回流)
-function initBinaryStream() {
-    const streamContainer = document.getElementById("binary-stream");
-    if (!streamContainer) return;
-
-    const rowCount = 5;
-    const byteCountPerRow = 4;
-    
-    // 初始化时仅生成一次 DOM 结构，后续只更新文本内容，杜绝 innerHTML 性能缺陷
-    streamContainer.innerHTML = "";
-    const textNodes = [];
-
-    for (let i = 0; i < rowCount; i++) {
-        const row = document.createElement("div");
-        row.style.lineHeight = "1.4";
-        for (let j = 0; j < byteCountPerRow; j++) {
-            const span = document.createElement("span");
-            span.style.marginRight = "12px";
-            const textNode = document.createTextNode("");
-            span.appendChild(textNode);
-            row.appendChild(span);
-            textNodes.push(textNode);
-        }
-        streamContainer.appendChild(row);
-    }
-
-    const getRandomByte = () => {
-        return Math.floor(Math.random() * 256).toString(16).toUpperCase().padStart(2, '0');
-    };
-
-    // 高频定时器只修改纯文本节点，不引发布局树重构（Reflow）
-    setInterval(() => {
-        textNodes.forEach(node => {
-            node.nodeValue = getRandomByte();
-        });
-    }, 140);
-}
-
-// 4. 🏁 统一生命周期多重防线
+// 4. 🏁 统一生命周期监听
 document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(triggerStatsCounter, 350); 
     initQuoteModal();
-    initBinaryStream();
-    triggerStatsCounter();
+    initBinaryStream(); // 注入动态数字跑动
+    window.addEventListener('resize', triggerStatsCounter);
 });
-
-window.addEventListener('load', () => {
-    // 终极防线：当网络资源及 WebFont 彻底全加载完后，强制修正一次数字高度
-    triggerStatsCounter();
-});
-
-window.addEventListener('resize', triggerStatsCounter);
