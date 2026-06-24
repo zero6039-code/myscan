@@ -1,6 +1,6 @@
 /**
  * ==========================================================================
- * 🚀 DewSecure 核心业务交互脚本 (数字滚动 + 询价弹窗拦截控制)
+ * 🚀 DewSecure 核心业务交互脚本 (数字滚动 + 询价弹窗多功能定制)
  * ==========================================================================
  */
 
@@ -24,7 +24,7 @@ function animateCounter(targetNumber) {
         return slot;
     });
 
-    counterContainer.offsetHeight; // 触发重绘 (Reflow)
+    counterContainer.offsetHeight; // 触发重绘
     
     const firstSpan = slots[0]?.querySelector('span');
     if (!firstSpan) return;
@@ -40,7 +40,6 @@ function animateCounter(targetNumber) {
     });
 }
 
-// 2. 🔢 统一触发数字刷新的入口
 function triggerStatsCounter() {
     const counterContainer = document.getElementById("stats-counter");
     if (counterContainer) {
@@ -49,24 +48,47 @@ function triggerStatsCounter() {
     }
 }
 
-// 3. 🌌 统一封装询价弹窗控制与报错校验逻辑
+// 2. 🌌 动态黑客帝国二进制矩阵滚动流（对应需求 1 & 2）
+function initBinaryStream() {
+    const streamContainer = document.getElementById("binary-stream");
+    if (!streamContainer) return;
+
+    // 定时随机刷新二进制数组，制造“号码不停地跑”的动态黑客效果
+    setInterval(() => {
+        const rows = 5;
+        let htmlContent = "";
+        for (let i = 0; i < rows; i++) {
+            let rowText = "";
+            for (let j = 0; j < 4; j++) {
+                // 随机生成 8 位二进制字节
+                const byte = Array.from({length: 8}, () => Math.round(Math.random())).join("");
+                rowText += byte + " ";
+            }
+            htmlContent += `<div>${rowText.trim()}</div>`;
+        }
+        streamContainer.innerHTML = htmlContent;
+    }, 120); // 每 120ms 剧烈闪烁跑动一次
+}
+
+// 3. 🛡️ 询价弹窗核心控制逻辑
 function initQuoteModal() {
     const modalOverlay = document.getElementById("quote-modal");
     const closeBtn = document.getElementById("modal-close-btn");
     const quoteForm = document.getElementById("quote-form");
+    const textareaInfo = document.getElementById("form-info");
 
     if (!modalOverlay) return;
 
-    // 🔄 针对你的代码修改 A：完美兼容 HTML 的类名点击，不绑定死板的 ID
+    // 点击事件代理唤起弹窗
     document.addEventListener("click", (e) => {
         const triggerBtn = e.target.closest(".btn-cyber-red") || e.target.closest('[data-i18n="hero_btn_quote"]');
         if (triggerBtn && !triggerBtn.closest("#quote-form")) { 
-            e.preventDefault(); // 阻止 <a> 标签的默认 # 锚点跳转
+            e.preventDefault();
             modalOverlay.classList.add("is-open");
         }
     });
 
-    // 关闭弹窗并重置表单与报错态
+    // 关闭弹窗并重置
     function closeModal() {
         modalOverlay.classList.remove("is-open");
         if (quoteForm) {
@@ -77,29 +99,32 @@ function initQuoteModal() {
     }
 
     if (closeBtn) closeBtn.addEventListener("click", closeModal);
-    
-    // 点击背景空白区域关闭
     modalOverlay.addEventListener("click", (e) => {
         if (e.target === modalOverlay) closeModal();
     });
 
-    // ❌ 核心：右下角提交校验拦截 (红框 + 粉红底 + 文字变红)
+    // 🔒 限制其他信息 500 字上限并阻断（对应需求 5）
+    if (textareaInfo) {
+        textareaInfo.addEventListener("input", () => {
+            if (textareaInfo.value.length > 500) {
+                textareaInfo.value = textareaInfo.value.substring(0, 500); // 强行截断
+            }
+        });
+    }
+
+    // 表单提交拦截校验
     if (quoteForm) {
         quoteForm.addEventListener("submit", (e) => {
             let passed = true;
-
-            // 提交前先清空上一轮的报错状态
             const erroredGroups = quoteForm.querySelectorAll(".form-group.has-error");
             erroredGroups.forEach(group => group.classList.remove("has-error"));
 
-            // 校验 A: 项目/公司
             const companyInput = document.getElementById("form-company");
             if (!companyInput || !companyInput.value.trim()) {
                 companyInput?.closest(".form-group").classList.add("has-error");
                 passed = false;
             }
 
-            // 校验 B: 电子邮件
             const emailInput = document.getElementById("form-email");
             const emailReg = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailInput || !emailInput.value.trim() || !emailReg.test(emailInput.value.trim())) {
@@ -107,21 +132,17 @@ function initQuoteModal() {
                 passed = false;
             }
 
-            // 校验 C: 联系方式 (Telegram/WhatsApp/WeChat 用户名)
             const contactInput = document.getElementById("form-contact-val");
             if (!contactInput || !contactInput.value.trim()) {
                 contactInput?.closest(".form-group").classList.add("has-error");
                 passed = false;
             }
 
-            // 如果有任何必填项未通过，强行斩断提交链
             if (!passed) {
                 e.preventDefault();
-                console.warn("[DewSecure] 表单必填项未通过合规性审查，已拦截提交。");
                 return false;
             }
 
-            // 🔄 针对你的代码修改 B：这里可以根据你后续需求替换为 fetch/axios 异步提交
             e.preventDefault();
             alert("提交成功！DewSecure 团队将尽快与您取得联系。");
             closeModal();
@@ -129,14 +150,10 @@ function initQuoteModal() {
     }
 }
 
-// 4. 🏁 统一 DOM 生命周期监听
+// 4. 🏁 统一生命周期监听
 document.addEventListener('DOMContentLoaded', () => {
-    // 执行原有的数字滚动延迟初始化
     setTimeout(triggerStatsCounter, 350); 
-    
-    // 初始化询价弹窗事件管理
     initQuoteModal();
-    
-    // 响应式视口改变时重新计算高度并滚动
+    initBinaryStream(); // 注入动态数字跑动
     window.addEventListener('resize', triggerStatsCounter);
 });
