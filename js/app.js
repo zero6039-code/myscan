@@ -1,4 +1,4 @@
-// DewSecure 最终版 (FormData 邮件稳定发送 + 多语言提示)
+// DewSecure 最终稳定版（4列二进制跳动 + FormData 邮件 + 多语言）
 document.addEventListener('DOMContentLoaded', () => {
     document.body.style.opacity = '1';
     triggerStatsCounter();
@@ -43,30 +43,48 @@ function triggerStatsCounter() {
     }
 }
 
-/* ========== 二进制矩阵 ========== */
+/* ========== 二进制矩阵（4列跳动，保留<span>结构） ========== */
 function initBinaryStream() {
     const rows = document.querySelectorAll('.binary-matrix-stream .matrix-row');
     if (!rows.length) return;
-    const data = [
-        "11010101 00110111 01100111","01011001 00101001 00000111",
-        "10000011 11111100 01110001","10100100 00111001 10001101",
-        "00110111 00010110 01100111","11011111 10000110 00010110",
-        "00110111 01101101 00011000","11101110 00110011 10100001",
-        "10111011 11110111 01101011","01111101 10010101 00111001"
+
+    // 初始 4 列数据（每行 4 个 8-bit 二进制串）
+    const initialData = [
+        "11100011", "01100001", "01101100", "10101011",
+        "00001111", "01011100", "00011100", "01101010",
+        "10111001", "10100000", "00010111", "11100001",
+        "01110101", "01101011", "11110000", "00011011",
+        "11101011", "10110011", "00010111", "10101000",
+        "01011001", "00100111", "00010101", "01110011",
+        "01110110", "00100100", "01100100", "11000110",
+        "10001010", "10000100", "00100101", "01011101",
+        "00011010", "10101101", "10010001", "11100011",
+        "11010101", "10001010", "11001110", "00001111"
     ];
-    rows.forEach((row, i) => {
-        row.matrixData = Array.from(data[i] || data[0]);
-        row.textContent = data[i] || data[0];
+
+    // 初始化：每行清空后重建 4 个 <span>
+    rows.forEach((row, index) => {
+        row.innerHTML = '';
+        const startIdx = index * 4;
+        for (let col = 0; col < 4; col++) {
+            const span = document.createElement('span');
+            span.textContent = initialData[startIdx + col];
+            row.appendChild(span);
+        }
     });
+
+    // 定时器：随机翻转 1~2 个 <span> 中的某一位
     setInterval(() => {
-        for (let k = 0; k < 2; k++) {
-            const row = rows[Math.floor(Math.random() * rows.length)];
-            if (!row || !row.matrixData) continue;
-            const arr = row.matrixData;
-            const idx = Math.floor(Math.random() * arr.length);
-            if (arr[idx] === '0') arr[idx] = '1';
-            else if (arr[idx] === '1') arr[idx] = '0';
-            row.textContent = arr.join('');
+        const allSpans = document.querySelectorAll('.binary-matrix-stream .matrix-row span');
+        if (allSpans.length === 0) return;
+
+        const mutationCount = Math.floor(Math.random() * 2) + 1; // 1 或 2 次突变
+        for (let i = 0; i < mutationCount; i++) {
+            const randomSpan = allSpans[Math.floor(Math.random() * allSpans.length)];
+            const bits = randomSpan.textContent.split('');
+            const flipIdx = Math.floor(Math.random() * bits.length);
+            bits[flipIdx] = bits[flipIdx] === '0' ? '1' : '0';
+            randomSpan.textContent = bits.join('');
         }
     }, 45);
 }
@@ -127,7 +145,7 @@ function initQuoteModal() {
 
         if (!ok) return;
 
-        // 构建 FormData (与测试成功的方式完全一致)
+        // 构建 FormData
         const formData = new FormData();
         formData.append('email', email.value.trim());
         formData.append('company', company.value.trim());
@@ -138,8 +156,8 @@ function initQuoteModal() {
         formData.append('message', document.getElementById("form-info")?.value || '');
         formData.append('_subject', '新的咨询报价请求');
 
-        // 多语言提示
-        const msgSuccess = document.getElementById('alert-success')?.textContent || '提交成功！';
+        // 多语言提示（从隐藏元素读取，若元素不存在则使用默认中文）
+        const msgSuccess = document.getElementById('alert-success')?.textContent || '提交成功！DewSecure 团队将尽快与您取得联系。';
         const msgEmailError = document.getElementById('alert-email-error')?.textContent || '请检查邮箱地址是否正确。';
         const msgNetworkError = document.getElementById('alert-network-error')?.textContent || '网络错误，请稍后再试。';
 
