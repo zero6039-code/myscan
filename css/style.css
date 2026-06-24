@@ -1033,3 +1033,79 @@ html[data-i18n-ready] [data-i18n],
         gap: 0 !important;
     }
 }
+
+/* ==========================================================================
+   ⚡ 紧凑型弹窗优化：消除滚动条，一屏完美呈现
+   ========================================================================== */
+
+/* 1. 缩减右侧表单容器的内边距，释放大量纵向空间 */
+.modal-right-box {
+    padding: 30px 40px !important; /* 从原本的 55px 70px 大幅缩减 */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* 让内容在纵向完美居中分布 */
+    overflow-y: hidden !important; /* 隐藏纵向滚动条 */
+}
+
+/* 2. 控制顶部标题和副标题的间距 */
+.modal-right-box h2 {
+    font-size: 24px !important; /* 适当微调标题大小 */
+    margin-bottom: 4px !important;
+}
+.modal-subtitle {
+    margin-bottom: 20px !important; /* 缩减主标题与表单之间的间隙 */
+}
+
+/* 3. 全面收紧表单项之间的纵向间距（Form Group） */
+.form-group {
+    margin-bottom: 12px !important; /* 从原本的 20px+ 降至 12px */
+}
+
+.form-group label {
+    margin-bottom: 4px !important; /* 缩减标签与输入框的距离 */
+    font-size: 13px !important;
+}
+
+/* 4. 微调输入框、下拉框和前缀的纵向高度 */
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group select,
+.contact-input-wrapper input {
+    height: 38px !important; /* 高度从 42px+ 降至 38px，更显精致 */
+    padding: 0 12px !important;
+}
+
+/* 5. 专门针对 WhatsApp 徽章和多列行（Grid Row）的紧凑微调 */
+.whatsapp-badge {
+    height: 38px !important;
+    line-height: 38px !important;
+    padding: 0 12px !important;
+}
+
+.form-grid-row {
+    gap: 16px !important; /* 缩减双列并排时的左右间距 */
+}
+
+/* 6. 大幅缩减富文本域（文本大框）的高度 */
+.form-group textarea {
+    padding: 8px 12px !important;
+    min-height: 60px !important; /* 从原先可能的 100px+ 缩减，保证能看清 2-3 行字即可 */
+    resize: none !important;
+}
+
+/* 7. 收紧底部提示语和提交按钮区域 */
+.form-footer-notice {
+    margin-top: 8px !important;
+    margin-bottom: 12px !important;
+    font-size: 12px !important;
+}
+
+.form-submit-row {
+    margin-top: 0 !important;
+}
+
+.btn-submit-quote, 
+.btn-submit-quote button {
+    height: 42px !important; /* 保证按钮不会太大 */
+    padding: 0 24px !important;
+}
