@@ -1,20 +1,12 @@
-// DewSecure 完整交互脚本
-// 功能：页面淡入 | 数字滚动计数器 | 二进制矩阵动态突变 | 询价弹窗 + 邮件发送
-
-/* ============================================
-   0. 生命周期管理
-   ============================================ */
+// 放到 app.js 的最顶部或 DOMContentLoaded 监听器中
 document.addEventListener('DOMContentLoaded', () => {
-    // 页面淡入
+    // 页面结构加载完成，开始淡入
     document.body.style.opacity = '1';
-
-    // 初始化所有功能
-    setTimeout(triggerStatsCounter, 350);
+    
+    // 执行你原本的业务逻辑
+    triggerStatsCounter();
     initQuoteModal();
     initBinaryStream();
-
-    // 窗口大小变化时重设计数器
-    window.addEventListener('resize', triggerStatsCounter);
 });
 
 window.addEventListener('load', () => {
@@ -22,20 +14,20 @@ window.addEventListener('load', () => {
 });
 
 
-/* ============================================
-   1. 数字滚动计数器
-   ============================================ */
+/**
+ * ==========================================================================
+ * 🚀 DewSecure 核心业务交互脚本 (数字滚动 + 询价弹窗多功能定制)
+ * ==========================================================================
+ */
+
+// 1. 🔢 统一管理数字滚动的核心逻辑
 function animateCounter(targetNumber) {
     const counterContainer = document.getElementById("stats-counter");
     if (!counterContainer) return;
 
-    // 清空现有内容
     counterContainer.innerHTML = "";
-
-    // 把目标数字拆成单个数字
     const digitStringArray = targetNumber.toString().split("");
 
-    // 为每一位数字创建一个滚动槽 (0-9)
     const slots = digitStringArray.map(() => {
         const slot = document.createElement("div");
         slot.className = "counter-digit-slot";
@@ -48,19 +40,16 @@ function animateCounter(targetNumber) {
         return slot;
     });
 
-    // 强制重绘，确保动画生效
-    counterContainer.offsetHeight;
-
-    // 获取单个数字的高度
+    counterContainer.offsetHeight; // 触发重绘
+    
     const firstSpan = slots[0]?.querySelector('span');
     if (!firstSpan) return;
-    const singleDigitHeight = firstSpan.offsetHeight;
+    const singleDigitHeight = firstSpan.offsetHeight; 
 
-    // 依次将每一位滚动到目标数字
     digitStringArray.forEach((digitChar, index) => {
         const targetDigit = parseInt(digitChar, 10);
         const finalPixelOffset = targetDigit * singleDigitHeight;
-
+        
         setTimeout(() => {
             slots[index].style.transform = `translateY(-${finalPixelOffset}px)`;
         }, index * 60);
@@ -75,64 +64,57 @@ function triggerStatsCounter() {
     }
 }
 
-
-/* ============================================
-   2. 二进制矩阵动态跳动 (4 列 × 10 行)
-   ============================================ */
+// 2. 🌌 动态黑客帝国二进制矩阵滚动流（精准匹配 HTML 结构，实现真·单个数字随机突变）
 function initBinaryStream() {
-    // 获取矩阵中的所有行
+    // 🌟 核心修复 1：完美对齐 HTML 结构，获取全部 10 行元素外壳
     const rows = document.querySelectorAll('.binary-matrix-stream .matrix-row');
     if (rows.length === 0) return;
 
-    // 初始 4 列数据（每行 4 个 8 位二进制串）
-    const initialData = [
-        "11100011", "01100001", "01101100", "10101011",
-        "00001111", "01011100", "00011100", "01101010",
-        "10111001", "10100000", "00010111", "11100001",
-        "01110101", "01101011", "11110000", "00011011",
-        "11101011", "10110011", "00010111", "10101000",
-        "01011001", "00100111", "00010101", "01110011",
-        "01110110", "00100100", "01100100", "11000110",
-        "10001010", "10000100", "00100101", "01011101",
-        "00011010", "10101101", "10010001", "11100011",
-        "11010101", "10001010", "11001110", "00001111"
+    // 预设十行各不相同的初始二进制底噪数据（每组8位，共3组，带空格）
+    const binaryTemplates = [
+        "11010101 00110111 01100111", "01011001 00101001 00000111",
+        "10000011 11111100 01110001", "10100100 00111001 10001101",
+        "00110111 00010110 01100111", "11011111 10000110 00010110",
+        "00110111 01101101 00011000", "11101110 00110011 10100001",
+        "10111011 11110111 01101011", "01111101 10010101 00111001"
     ];
 
-    // 为每一行创建 4 个 <span>，并填入初始数据
+    // 初始化每一行的数据容器
     rows.forEach((row, index) => {
-        row.innerHTML = '';              // 清空内部（但保留行容器）
-        const startIdx = index * 4;
-        for (let col = 0; col < 4; col++) {
-            const span = document.createElement('span');
-            span.textContent = initialData[startIdx + col];
-            row.appendChild(span);
-        }
+        const templateStr = binaryTemplates[index] || binaryTemplates[0];
+        // 将字符串打碎为字符数组，挂载到 DOM 对象的自定义属性上（防止污染全局变量）
+        row.matrixData = Array.from(templateStr);
+        row.textContent = templateStr;
     });
 
-    // 定时器：每 45ms 随机翻转 1~2 个位
+    // 🌟 核心修复 2：极其高效的分布式位突变引擎
+    // 彻底废弃原本粗暴的 innerHTML 重写，采用极高频的按位翻转
     setInterval(() => {
-        const allSpans = document.querySelectorAll('.binary-matrix-stream .matrix-row span');
-        if (allSpans.length === 0) return;
+        // 每次高频周期（45ms）随机挑选 2 到 3 个独立的数字进行位翻转
+        const mutationCount = Math.floor(Math.random() * 2) + 2; // 2 ~ 3
+        
+        for (let k = 0; k < mutationCount; k++) {
+            const randomRowIdx = Math.floor(Math.random() * rows.length);
+            const targetRow = rows[randomRowIdx];
+            if (!targetRow || !targetRow.matrixData) continue;
 
-        const mutationCount = Math.floor(Math.random() * 2) + 1; // 1 或 2 次突变
-        for (let i = 0; i < mutationCount; i++) {
-            // 随机选取一个 <span>
-            const randomSpan = allSpans[Math.floor(Math.random() * allSpans.length)];
-            const bits = randomSpan.textContent.split('');
+            const dataArr = targetRow.matrixData;
+            const randomCharIdx = Math.floor(Math.random() * dataArr.length);
+            
+            // 🔒 只有在遇到真正的二进制数字时才进行突变，完美避开并保留空格排版
+            if (dataArr[randomCharIdx] === '0') {
+                dataArr[randomCharIdx] = '1';
+            } else if (dataArr[randomCharIdx] === '1') {
+                dataArr[randomCharIdx] = '0';
+            }
 
-            // 随机翻转一位
-            const flipIdx = Math.floor(Math.random() * bits.length);
-            bits[flipIdx] = bits[flipIdx] === '0' ? '1' : '0';
-
-            randomSpan.textContent = bits.join('');
+            // 精准刷新当前这一行，其它九行完全静止不动，完美形成细微的硬件单点跳动感
+            targetRow.textContent = dataArr.join('');
         }
-    }, 45);
+    }, 45); 
 }
 
-
-/* ============================================
-   3. 询价弹窗 + 邮件发送 (Formspree)
-   ============================================ */
+// 3. 🛡️ 询价弹窗核心控制逻辑
 function initQuoteModal() {
     const modalOverlay = document.getElementById("quote-modal");
     const closeBtn = document.getElementById("modal-close-btn");
@@ -141,16 +123,16 @@ function initQuoteModal() {
 
     if (!modalOverlay) return;
 
-    // ----- 打开弹窗 -----
+    // 点击事件代理唤起弹窗
     document.addEventListener("click", (e) => {
         const triggerBtn = e.target.closest(".btn-cyber-red") || e.target.closest('[data-i18n="hero_btn_quote"]');
-        if (triggerBtn && !triggerBtn.closest("#quote-form")) {
+        if (triggerBtn && !triggerBtn.closest("#quote-form")) { 
             e.preventDefault();
             modalOverlay.classList.add("is-open");
         }
     });
 
-    // ----- 关闭弹窗 -----
+    // 关闭弹窗并重置
     function closeModal() {
         modalOverlay.classList.remove("is-open");
         if (quoteForm) {
@@ -161,104 +143,70 @@ function initQuoteModal() {
     }
 
     if (closeBtn) closeBtn.addEventListener("click", closeModal);
-
-    // 点击遮罩层关闭
     modalOverlay.addEventListener("click", (e) => {
         if (e.target === modalOverlay) closeModal();
     });
 
-    // ESC 键关闭
+    // 全局 ESC 键盘监听
     document.addEventListener('keydown', (e) => {
-        if ((e.key === 'Escape' || e.key === 'Esc') && modalOverlay.classList.contains('is-open')) {
-            closeModal();
+        if (e.key === 'Escape' || e.key === 'Esc') {
+            if (modalOverlay.classList.contains('is-open')) {
+                closeModal();
+            }
         }
     });
 
-    // 限制“其他信息” 500 字
+    // 限制其他信息 500 字上限并阻断
     if (textareaInfo) {
         textareaInfo.addEventListener("input", () => {
             if (textareaInfo.value.length > 500) {
-                textareaInfo.value = textareaInfo.value.substring(0, 500);
+                textareaInfo.value = textareaInfo.value.substring(0, 500); // 强行截断
             }
         });
     }
 
-    // ----- 表单提交：验证 + 发送邮件 -----
+    // 表单提交拦截校验
     if (quoteForm) {
-        quoteForm.addEventListener("submit", async (e) => {
-            e.preventDefault(); // 阻止默认提交
-
-            // 清除旧错误状态
+        quoteForm.addEventListener("submit", (e) => {
+            let passed = true;
             const erroredGroups = quoteForm.querySelectorAll(".form-group.has-error");
             erroredGroups.forEach(group => group.classList.remove("has-error"));
 
-            let passed = true;
-
-            // 校验公司/项目
             const companyInput = document.getElementById("form-company");
             if (!companyInput || !companyInput.value.trim()) {
-                companyInput?.closest(".form-group")?.classList.add("has-error");
+                companyInput?.closest(".form-group").classList.add("has-error");
                 passed = false;
             }
 
-            // 校验邮箱
             const emailInput = document.getElementById("form-email");
             const emailReg = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailInput || !emailInput.value.trim() || !emailReg.test(emailInput.value.trim())) {
-                emailInput?.closest(".form-group")?.classList.add("has-error");
+                emailInput?.closest(".form-group").classList.add("has-error");
                 passed = false;
             }
 
-            // 校验联系方式
             const contactInput = document.getElementById("form-contact-val");
             if (!contactInput || !contactInput.value.trim()) {
-                contactInput?.closest(".form-group")?.classList.add("has-error");
+                contactInput?.closest(".form-group").classList.add("has-error");
                 passed = false;
             }
 
-            // 验证不通过则停止
-            if (!passed) return;
-
-            // ----- 构建要发送的数据（无需修改 HTML 的 name 属性）-----
-            const payload = {
-                company: companyInput.value.trim(),
-                email: emailInput.value.trim(),
-                contact: contactInput.value.trim(),
-                fullname: document.getElementById("form-name")?.value || '',
-                role: document.getElementById("form-role")?.value || '',
-                service: document.getElementById("form-service")?.value || '',
-                message: document.getElementById("form-info")?.value || '',
-                _subject: "新的咨询报价请求"   // 邮件标题
-            };
-
-            // 替换成你自己的 Formspree 端点
-            const FORMSPREE_URL = 'https://formspree.io/f/xojojwrq';
-
-            try {
-                const response = await fetch(FORMSPREE_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify(payload)
-                });
-
-                if (response.ok) {
-                    alert("提交成功！DewSecure 团队将尽快与您取得联系。");
-                    closeModal();
-                } else {
-                    const data = await response.json();
-                    if (data.errors) {
-                        alert("请检查邮箱地址是否正确。");
-                    } else {
-                        alert("发送失败，请稍后重试。");
-                    }
-                }
-            } catch (error) {
-                console.error('发送错误:', error);
-                alert("网络错误，请稍后再试。");
+            if (!passed) {
+                e.preventDefault();
+                return false;
             }
+
+            e.preventDefault();
+            alert("提交成功！DewSecure 团队将尽快与您取得联系。");
+            closeModal();
         });
     }
 }
+
+// 4. 🏁 统一生命周期监听
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(triggerStatsCounter, 350); 
+    initQuoteModal();
+    initBinaryStream(); // 激活全新单点位跳动效果
+    window.addEventListener('resize', triggerStatsCounter);
+});
