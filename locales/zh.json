@@ -43,5 +43,9 @@
   "hero_title": "专注 Web3 的网页渗透与代码审计",
   "hero_desc": "DewSecure 是由精英专家团队打造的顶级 Web3 安全平台，集成了深度渗透测试、高级源代码审计和全面的安全架构。将您的审计工作委托给我们，确保您的项目和网络生态系统在强大可靠的环境中持续蓬勃发展。",
   "hero_btn_quote": "咨询报价"
+
+  "modal_matrix_slogan": "技术是我们的能力，<span class=\"highlight-red\">诚信</span>才是我们的动力。",
+  "modal_title": "立刻保护您的项目",
+  "modal_subtitle": "借助专业的 Web3 安全提供商来增强您的项目。"
   
 }
