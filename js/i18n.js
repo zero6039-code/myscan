@@ -1,18 +1,18 @@
 window.currentLang = 'en';
 window.fallbackTranslations = null; 
 
-// 预先静默加载英文基础包作为全局降级方案
+// 1. 将初始化改为返回 Promise，以便后续同步控制
 async function initFallback() {
     try {
         const response = await fetch('/locales/en.json');
         if (response.ok) {
             window.fallbackTranslations = await response.json();
+            console.log("[i18n] 英文基础包（降级方案）预加载成功");
         }
     } catch(e) {
         console.error("[i18n] 基础包初始化失败", e);
     }
 }
-initFallback();
 
 async function loadLanguage(lang) {
     try {
@@ -40,9 +40,28 @@ async function loadLanguage(lang) {
                 targetText = window.fallbackTranslations[key];
             }
 
-            if (targetText) {
-                element.innerHTML = targetText;
+            if (targetText !== undefined && targetText !== null) {
+                // 优化：检查是否包含 HTML 标签，没有则用 textContent 防范 XSS
+                if (/<[a-z="']/i.test(targetText)) {
+                    element.innerHTML = targetText;
+                } else {
+                    element.textContent = targetText;
+                }
             }
+        });
+
+        // 【新增优化】支持属性翻译，例如 data-i18n-placeholder="input_placeholder_key"
+        const attrElements = document.querySelectorAll("[data-i18n-placeholder], [data-i18n-title]");
+        attrElements.forEach(element => {
+            ['placeholder', 'title'].forEach(attr => {
+                const key = element.getAttribute(`data-i18n-${attr}`);
+                if (key) {
+                    let targetAttrText = translations[key] || (window.fallbackTranslations && window.fallbackTranslations[key]);
+                    if (targetAttrText) {
+                        element.setAttribute(attr, targetAttrText);
+                    }
+                }
+            });
         });
 
         // 3. 状态持久化
@@ -54,7 +73,7 @@ async function loadLanguage(lang) {
             triggerStatsCounter();
         }
         
-        // 【关键防御步骤】全部渲染完成后，通知 CSS 解锁显示，杜绝任何中文外露
+        // 全部渲染完成后，通知 CSS 解锁显示，杜绝任何中文外露
         document.documentElement.setAttribute("data-i18n-ready", "true");
         console.log(`[i18n] 语言已成功切换至: ${lang}`);
 
@@ -76,11 +95,19 @@ function updateDropdownUI(activeLang) {
     });
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    // 强制每次刷新或首次进入时默认显示 'en' (英文)
-    const defaultLang = 'en'; 
+// 监听生命周期
+document.addEventListener("DOMContentLoaded", async () => {
+    // 关键修复：先等待英文兜底基础包加载完毕，再执行后续逻辑
+    await initFallback();
+
+    // 优化：优先从本地缓存读取用户上次偏好的语言，如果没有再默认 'en'
+    // 如果你业务要求【必须每次硬性死守英文】，则保持 const defaultLang = 'en'; 即可
+    const defaultLang = localStorage.getItem("preferred_lang") || 'en'; 
+    
+    // 执行加载
     loadLanguage(defaultLang);
 
+    // 绑定下拉菜单事件
     const langOptions = document.querySelectorAll(".lang-option");
     langOptions.forEach(option => {
         option.addEventListener("click", (e) => {
