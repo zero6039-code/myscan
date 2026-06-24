@@ -764,55 +764,52 @@ html[data-i18n-ready] [data-i18n],
 }
 
 /* ==========================================================================
-   🌌 二进制矩阵 4x10 绝对等宽对齐补丁（无视标签结构，强制像素级对齐）
+   🌌 二进制矩阵 4x10 居中且放大版（水平居中，底部靠拢）
    ========================================================================== */
 
-/* 1. 核心容器：强行接管内部所有层级的字体 */
+/* 1. 核心容器：强制等宽字体与居中 */
 .binary-matrix-stream.aligned-right,
 .binary-matrix-stream.aligned-right * {
-    /* 👈 强制全平台采用绝对等宽字体，彻底解决 1 和 0 宽窄不一的问题 */
     font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace !important;
-    
-    /* 👈 启用浏览器的高级现代特性：强制所有数字使用等宽表格对齐模式 */
     font-variant-numeric: tabular-nums !important;
 }
 
-/* 2. 定位与遮罩基准 */
 .binary-matrix-stream.aligned-right {
-    position: absolute !important;
-    bottom: 20px !important;            
-    right: 32px !important;             
-    left: 32px !important;              
-    width: calc(100% - 64px) !important;
-    margin-top: 0 !important;
+    position: relative;               /* 脱离绝对定位，改为相对定位便于居中 */
+    width: 100%;                      /* 占满父容器宽度 */
+    text-align: center;               /* 整体居中 */
+    margin-top: auto;                 /* 推至底部 */
+    margin-bottom: 20px;              /* 与底部保持间距 */
     box-sizing: border-box !important;
     z-index: 1 !important;
     user-select: none;
     
-    /* 强行向右对齐 */
-    text-align: right !important;
-    
+    /* 保留遮罩效果 */
     -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 30%, rgba(0,0,0,1) 100%);
     mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 30%, rgba(0,0,0,1) 100%);
+    
+    /* 字号放大 */
+    font-size: 18px !important;
+    line-height: 2.4 !important;      /* 行高相应增大，保证间距舒适 */
 }
 
-/* 3. 针对行元素的全面拦截（不论您的行是 div, p 还是别的） */
+/* 2. 每行数字居中 */
 .binary-matrix-stream.aligned-right .matrix-row,
 .binary-matrix-stream.aligned-right > div,
 .binary-matrix-stream.aligned-right > p {
     display: block !important;
-    text-align: right !important; /* 👈 确保整行文本在右侧锚死 */
+    text-align: center !important;    /* 改为居中 */
     white-space: nowrap !important;
     width: 100% !important;
-    font-size: 12px !important;          
-    line-height: 1.8 !important;          
+    font-size: inherit !important;
+    line-height: inherit !important;
     color: rgba(255, 255, 255, 0.22) !important;
-    letter-spacing: 0.05em !important; /* 统一字间距 */
+    letter-spacing: 0.08em !important; /* 轻微调大字符间距，更清晰 */
 }
 
-/* 强制清除每行第一个数字的左边距，确保最右侧无差错对齐 */
-.binary-matrix-stream.aligned-right .matrix-row span:first-child {
-    margin-left: 0 !important;
+/* 3. 每行内部数字间距保留（利用 letter-spacing 或 gap） */
+.binary-matrix-stream.aligned-right .matrix-row span {
+    margin: 0 6px;                    /* 左右间距，保证四个数字不挤在一起 */
 }
 
 /* ---------------- 右侧：纯净表单域 (独立自适应滚动体 - 带来极佳留白感) ---------------- */
