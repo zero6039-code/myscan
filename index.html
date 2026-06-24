@@ -34,7 +34,7 @@
                     <div class="mega-dropdown">
                         <div class="dropdown-intro">
                             <h3 data-i18n="sol_intro_title">解决方案</h3>
-                            <p data-i18n="sol_intro_desc">为您 中小企业网站或个人网站提供安全和合规解决方案与风险管理。</p>
+                            <p data-i18n="sol_intro_desc">为您 中小企业网站或个人网站提供安全和合规解决方案与风险 management。</p>
                         </div>
                         
                         <div class="dropdown-grid">
@@ -162,84 +162,84 @@
 
     <div id="quote-modal" class="cyber-modal-overlay">
         <div class="cyber-modal-wrapper">
-            <button class="modal-close-btn" id="modal-close-btn">&times;</button>
+            <button class="modal-close-btn" id="modal-close-btn" aria-label="Close Modal">&times;</button>
             
             <div class="modal-left-box">
                 <div class="brand-header">
-                    <img src="/DewSecure.png" alt="Logo">
-                    <span>DewSecure</span>
+                    <img src="/DewSecure.png" alt="DewSecure Logo" class="brand-logo-img">
+                    <span class="brand-logo-text">DewSecure</span>
                 </div>
                 
                 <div class="matrix-title" data-i18n="modal_matrix_slogan">
                     技术是我们的能力，<span class="highlight-red">诚信</span>才是我们的动力。
                 </div>
                 
-                <div class="binary-matrix-stream aligned-right" id="binary-stream">
-                    </div>
+                <div class="binary-matrix-stream aligned-right" id="binary-stream"></div>
             </div>
 
             <div class="modal-right-box">
-                <h2 data-i18n="modal_title">立刻保护您的项目</h2>
-                <p class="modal-subtitle" data-i18n="modal_subtitle">借助专业的 Web3 安全提供商来增强您的项目。</p>
-                
-                <form id="quote-form" novalidate>
-                    <div class="form-group">
-                        <label class="required-label" data-i18n="form_lbl_company">项目/公司</label>
-                        <input type="text" id="form-company" placeholder="项目或公司名称">
-                        <div class="error-msg" id="err-company" data-i18n="err_required">此字段为必填项</div>
-                    </div>
-
-                    <div class="form-row">
+                <div class="modal-form-scroll-body">
+                    <h2 data-i18n="modal_title">立刻保护您的项目</h2>
+                    <p class="modal-subtitle" data-i18n="modal_subtitle">借助专业的 Web3 安全提供商来增强您的项目。</p>
+                    
+                    <form id="quote-form" novalidate>
                         <div class="form-group">
-                            <label class="required-label" data-i18n="form_lbl_email">电子邮件</label>
-                            <input type="email" id="form-email" placeholder="输入您的工作电子邮件">
-                            <div class="error-msg" id="err-email" data-i18n="err_email">需要提供有效的电子邮件地址</div>
+                            <label class="required-label" data-i18n="form_lbl_company">项目/公司</label>
+                            <input type="text" id="form-company" placeholder="项目或公司名称">
+                            <div class="error-msg" id="err-company" data-i18n="err_required">此字段为必填项</div>
                         </div>
-                        
-                        <div class="form-group">
-                            <label class="required-label" data-i18n="form_lbl_contact">联系方式</label>
-                            <div class="contact-input-wrapper custom-single-channel">
-                                <span class="whatsapp-badge"><i class="fa-brands fa-whatsapp"></i> WhatsApp</span>
+
+                        <div class="form-grid-row">
+                            <div class="form-group">
+                                <label class="required-label" data-i18n="form_lbl_email">电子邮件</label>
+                                <input type="email" id="form-email" placeholder="输入您的工作电子邮件">
+                                <div class="error-msg" id="err-email" data-i18n="err_email">需要提供有效的电子邮件地址</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="required-label" data-i18n="form_lbl_contact">联系方式</label>
+                                <div class="contact-input-wrapper custom-single-channel">
+                                    <span class="whatsapp-badge"><i class="fa-brands fa-whatsapp"></i> WhatsApp</span>
                                     <input type="text" id="form-contact-val" placeholder="输入用户名或ID">
                                 </div>
                                 <div class="error-msg" id="err-contact" data-i18n="err_required">此字段为必填项</div>
                             </div>
+                        </div>    
+                
+                        <div class="form-grid-row">
+                            <div class="form-group">
+                                <label data-i18n="form_lbl_name">全名</label>
+                                <input type="text" id="form-name" placeholder="输入您的全名">
+                            </div>
+                            <div class="form-group">
+                                <label data-i18n="form_lbl_role">职位名称</label>
+                                <input type="text" id="form-role" placeholder="输入您的职位名称">
+                            </div>
                         </div>
-                    </div>    
-            
-                    <div class="form-row">
+
                         <div class="form-group">
-                            <label data-i18n="form_lbl_name">全名</label>
-                            <input type="text" id="form-name" placeholder="输入您的全名">
+                            <label data-i18n="form_lbl_service">服务意向</label>
+                            <select id="form-service">
+                                <option value="" data-i18n="form_opt_default">选择一项服务</option>
+                                <option value="audit" data-i18n="sol_item1_title">代码审核</option>
+                                <option value="pentest" data-i18n="sol_item2_title">渗透测试</option>
+                            </select>
                         </div>
+
                         <div class="form-group">
-                            <label data-i18n="form_lbl_role">职位名称</label>
-                            <input type="text" id="form-role" placeholder="输入您的职位名称">
+                            <label data-i18n="form_lbl_info">其他信息</label>
+                            <textarea id="form-info" rows="3" maxlength="500" placeholder="请详细介绍您的项目（500字以内）。"></textarea>
                         </div>
-                    </div>
 
-                    <div class="form-group">
-                        <label data-i18n="form_lbl_service">服务意向</label>
-                        <select id="form-service">
-                            <option value="" data-i18n="form_opt_default">选择一项服务</option>
-                            <option value="audit" data-i18n="sol_item1_title">代码审核</option>
-                            <option value="pentest" data-i18n="sol_item2_title">渗透测试</option>
-                        </select>
-                    </div>
+                        <p class="form-footer-notice" data-i18n="form_notice">DewSecure 安全专家将审核您的请求，并尽快与您联系。</p>
 
-                    <div class="form-group">
-                        <label data-i18n="form_lbl_info">其他信息</label>
-                        <textarea id="form-info" rows="3" maxlength="500" placeholder="请详细介绍您的项目（500字以内）。"></textarea>
-                    </div>
-
-                    <p class="form-footer-notice" data-i18n="form_notice">DewSecure 安全专家将审核您的请求，并尽快与您联系。</p>
-
-                    <div class="form-submit-row">
-                        <button type="submit" class="btn-submit-quote">
-                            <span data-i18n="hero_btn_quote">咨询报价</span> <i class="fa-solid fa-arrow-right"></i>
-                        </button>
-                    </div>
-                </form>
+                        <div class="form-submit-row">
+                            <button type="submit" class="btn-submit-quote">
+                                <span data-i18n="hero_btn_quote">咨询报价</span> <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
