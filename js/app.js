@@ -155,5 +155,17 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(triggerStatsCounter, 350); 
     initQuoteModal();
     initBinaryStream(); // 注入动态数字跑动
+    
+    // 🌟 在这里注入 ESC 键监听
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            const modal = document.getElementById("quote-modal");
+            if (modal && modal.classList.contains('active')) {
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        }
+    });
+
     window.addEventListener('resize', triggerStatsCounter);
 });
