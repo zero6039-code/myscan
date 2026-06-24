@@ -50,11 +50,9 @@ function triggerStatsCounter() {
 
 // 2. 🌌 动态黑客帝国二进制矩阵滚动流（精准匹配 HTML 结构，实现真·单个数字随机突变）
 function initBinaryStream() {
-    // 🌟 核心修复 1：完美对齐 HTML 结构，获取全部 10 行元素外壳
     const rows = document.querySelectorAll('.binary-matrix-stream .matrix-row');
     if (rows.length === 0) return;
 
-    // 预设十行各不相同的初始二进制底噪数据（每组8位，共3组，带空格）
     const binaryTemplates = [
         "11010101 00110111 01100111", "01011001 00101001 00000111",
         "10000011 11111100 01110001", "10100100 00111001 10001101",
@@ -63,41 +61,47 @@ function initBinaryStream() {
         "10111011 11110111 01101011", "01111101 10010101 00111001"
     ];
 
-    // 初始化每一行的数据容器
+    // 存储所有真正可以用来突变的数字 span 节点
+    const digitSpans = [];
+
+    // 初始化：用 span 标签包裹每一个字符，锁死排版
     rows.forEach((row, index) => {
         const templateStr = binaryTemplates[index] || binaryTemplates[0];
-        // 将字符串打碎为字符数组，挂载到 DOM 对象的自定义属性上（防止污染全局变量）
-        row.matrixData = Array.from(templateStr);
-        row.textContent = templateStr;
+        row.innerHTML = ""; // 清空原有文本
+
+        Array.from(templateStr).forEach(char => {
+            const span = document.createElement('span');
+            if (char === ' ') {
+                // 使用不换行空格，确保三列间距绝对固定
+                span.innerHTML = '&nbsp;'; 
+            } else {
+                span.textContent = char;
+                span.className = 'matrix-digit'; // 方便以后加单独的渐变或高亮样式
+                digitSpans.push(span); // 只有数字才加入突变池
+            }
+            row.appendChild(span);
+        });
     });
 
-    // 🌟 核心修复 2：极其高效的分布式位突变引擎
-    // 彻底废弃原本粗暴的 innerHTML 重写，采用极高频的按位翻转
+    // 🌟 极高频的分布式按位精准突变引擎
     setInterval(() => {
-        // 每次高频周期（45ms）随机挑选 2 到 3 个独立的数字进行位翻转
+        if (digitSpans.length === 0) return;
+        
+        // 每次高频周期随机挑选 2 到 3 个独立的数字节点进行翻转
         const mutationCount = Math.floor(Math.random() * 2) + 2; // 2 ~ 3
         
         for (let k = 0; k < mutationCount; k++) {
-            const randomRowIdx = Math.floor(Math.random() * rows.length);
-            const targetRow = rows[randomRowIdx];
-            if (!targetRow || !targetRow.matrixData) continue;
-
-            const dataArr = targetRow.matrixData;
-            const randomCharIdx = Math.floor(Math.random() * dataArr.length);
+            const randomSpan = digitSpans[Math.floor(Math.random() * digitSpans.length)];
             
-            // 🔒 只有在遇到真正的二进制数字时才进行突变，完美避开并保留空格排版
-            if (dataArr[randomCharIdx] === '0') {
-                dataArr[randomCharIdx] = '1';
-            } else if (dataArr[randomCharIdx] === '1') {
-                dataArr[randomCharIdx] = '0';
+            // 精确单点翻转，不触发整行重绘，排版坚如磐石
+            if (randomSpan.textContent === '0') {
+                randomSpan.textContent = '1';
+            } else if (randomSpan.textContent === '1') {
+                randomSpan.textContent = '0';
             }
-
-            // 精准刷新当前这一行，其它九行完全静止不动，完美形成细微的硬件单点跳动感
-            targetRow.textContent = dataArr.join('');
         }
     }, 45); 
 }
-
 // 3. 🛡️ 询价弹窗核心控制逻辑
 function initQuoteModal() {
     const modalOverlay = document.getElementById("quote-modal");
