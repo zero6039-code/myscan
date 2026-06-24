@@ -709,10 +709,7 @@ html[data-i18n-ready] [data-i18n],
 .modal-left-box {
     flex: 0 0 32% !important;
     background: #050508;
-    
-    /* ⚡ 核心修改：分别控制上下左右 (上50px, 右32px, 下12px, 左32px) */
     padding: 50px 32px 12px 32px !important; 
-    
     display: flex;
     flex-direction: column;
     position: relative;
@@ -733,7 +730,7 @@ html[data-i18n-ready] [data-i18n],
 
 .cyber-modal-overlay .modal-left-box .brand-header img,
 .modal-left-box .brand-header img { 
-    width: 54px !important;           /* 暴力放大到 54px */
+    width: 54px !important;
     height: 54px !important;
     object-fit: contain !important;
     flex-shrink: 0 !important;
@@ -741,7 +738,7 @@ html[data-i18n-ready] [data-i18n],
 
 .cyber-modal-overlay .modal-left-box .brand-header span,
 .modal-left-box .brand-header span {
-    font-size: 32px !important;       /* 文字大幅放大到 32px */
+    font-size: 32px !important;
     font-weight: 800 !important;
     color: #ffffff !important;
     white-space: nowrap !important;
@@ -763,126 +760,100 @@ html[data-i18n-ready] [data-i18n],
     text-shadow: 0 0 20px rgba(255, 74, 90, 0.4);
 }
 
-/* ==========================================================================
-   🌌 二进制矩阵 4x10 居中放大版（绝对强制生效）
-   ========================================================================== */
+/* ============================================================
+   🌌 二进制矩阵 4列居中（唯一、强制、防溢出）
+   说明：此样式为最终版本，已删除所有历史冗余规则
+   ============================================================ */
 
-/* 1. 全局接管：强制等宽字体 + 居中 + 放大 */
-.binary-matrix-stream.aligned-right,
-.binary-matrix-stream.aligned-right * {
-    font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace !important;
-    font-variant-numeric: tabular-nums !important;
-}
-
-.binary-matrix-stream.aligned-right {
-    /* 移除绝对定位，改用相对定位并居中 */
+/* 容器：使用flex列，推至底部，内容居中，不裁剪溢出 */
+.modal-left-box .binary-matrix-stream.aligned-right {
     position: relative !important;
     width: 100% !important;
-    text-align: center !important;
-    margin-top: auto !important;
-    margin-bottom: 16px !important;
-    box-sizing: border-box !important;
-    z-index: 1 !important;
-    user-select: none;
-    
-    /* 遮罩保留 */
-    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 30%, rgba(0,0,0,1) 100%);
-    mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 30%, rgba(0,0,0,1) 100%);
-    
-    /* 🔥 字号放大到 20px，行高 2.6 */
-    font-size: 20px !important;
-    line-height: 2.6 !important;
+    margin-top: auto !important;          /* 推到底部 */
+    margin-bottom: 12px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;       /* 水平居中所有行 */
+    font-size: 14px !important;           /* 适中字号，适应窄屏 */
+    line-height: 2.2 !important;
+    overflow: visible !important;         /* 关键：禁止裁剪 */
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 30%, rgba(0,0,0,1) 100%) !important;
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 30%, rgba(0,0,0,1) 100%) !important;
 }
 
-/* 2. 每行数字强制居中 */
-.binary-matrix-stream.aligned-right .matrix-row,
-.binary-matrix-stream.aligned-right > div,
-.binary-matrix-stream.aligned-right > p {
-    display: block !important;
-    text-align: center !important;
+/* 每行：flex居中，无换行，小间距 */
+.modal-left-box .binary-matrix-stream.aligned-right .matrix-row {
+    display: flex !important;
+    justify-content: center !important;
+    flex-wrap: nowrap !important;
+    gap: 4px !important;                 /* 足够分隔但不过宽 */
     white-space: nowrap !important;
     width: 100% !important;
     font-size: inherit !important;
     line-height: inherit !important;
-    color: rgba(255, 255, 255, 0.22) !important;
-    letter-spacing: 0.1em !important; /* 增加字符间距 */
-}
-
-/* 确保每行使用 flex 布局，并且 span 之间有间距 */
-.modal-left-box .binary-matrix-stream.aligned-right .matrix-row {
-    display: flex !important;
-    justify-content: center !important;
-    gap: 8px !important;   /* 增加间距，可调整 */
-    white-space: nowrap !important;
-    width: 100% !important;
-    font-size: 16px !important;   /* 或您喜欢的字号 */
-    line-height: 2.4 !important;
     color: rgba(255, 255, 255, 0.25) !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
-/* 每个 span 独立且等宽 */
+/* 每个数字块：等宽字体，固定宽度，居中对齐 */
 .modal-left-box .binary-matrix-stream.aligned-right .matrix-row span {
     font-family: 'Courier New', monospace !important;
     font-variant-numeric: tabular-nums !important;
     display: inline-block !important;
-    min-width: 3.2em !important;  /* 保证每个数字块占用固定宽度 */
+    width: 2.8em !important;             /* 精准控制每块宽度，避免溢出 */
     text-align: center !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
-/* 额外保险：移除任何可能干扰的 left/right 定位 */
-.binary-matrix-stream.aligned-right {
-    left: auto !important;
-    right: auto !important;
-}
-
-/* ---------------- 右侧：纯净表单域 (独立自适应滚动体 - 带来极佳留白感) ---------------- */
+/* ---------------- 右侧：纯净表单域 (独立自适应滚动体) ---------------- */
 .modal-right-box {
-    flex: 0 0 68% !important;        /* 👈 右侧占 68% 空间 */
+    flex: 0 0 68% !important;
     background: #ffffff;
     height: 100%;
-    overflow-y: auto;                /* 核心补丁：长表单时右侧独立滚动 */
-    padding: 55px 70px !important;   /* 🚀 显著加大四周Padding，让大表单拥有高级呼吸感 */
+    overflow-y: auto;
+    padding: 55px 70px !important;
     color: #1e293b;
 }
 
 .modal-right-box h2 { 
-    font-size: 30px !important;       /* 标题随之放大 */
-    font-weight: 700; 
-    color: #0f172a; 
-    margin: 0 0 8px 0; 
+    font-size: 30px !important;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 8px 0;
 }
 .modal-right-box .modal-subtitle { 
-    font-size: 15px !important; 
-    color: #64748b; 
-    margin: 0 0 32px 0; 
+    font-size: 15px !important;
+    color: #64748b;
+    margin: 0 0 32px 0;
 }
 
 /* 表单组件控制 */
 .form-row { 
-    display: flex; 
-    gap: 24px;                       /* 适当放宽横向间距 */
+    display: flex;
+    gap: 24px;
     width: 100%;
 }
 .form-group { 
-    margin-bottom: 22px !important;  /* 纵向拉开行距，降低拥挤感 */
-    flex: 1; 
-    display: flex; 
-    flex-direction: column; 
+    margin-bottom: 22px !important;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
     position: relative;
     min-width: 0;
 }
 .form-group label { font-size: 14px; font-weight: 600; color: #334155; margin-bottom: 8px; }
 .required-label::after { content: " *"; color: #ef4444; }
 
-/* 🚀 输入框精细化放大 */
 .form-group input, 
 .form-group select, 
 .form-group textarea {
     width: 100% !important;
     max-width: 100% !important;
     box-sizing: border-box !important;
-    padding: 13px 16px !important;   /* 👈 撑开输入框上下内衬，点击交互更显高级 */
-    font-size: 15px !important;      /* 👈 字体微调大，看得很清晰 */
+    padding: 13px 16px !important;
+    font-size: 15px !important;
     background: #ffffff;
     border: 1px solid #cbd5e1;
     border-radius: 6px;
@@ -895,21 +866,20 @@ html[data-i18n-ready] [data-i18n],
     box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.08);
 }
 
-/* WhatsApp 联合输入框大尺寸适配补丁 */
 .custom-single-channel {
     display: flex;
     align-items: center;
     border: 1px solid #cbd5e1;
     border-radius: 6px;
     overflow: hidden;
-    height: 48px !important;         /* 👈 同步加高，保持一致性 */
+    height: 48px !important;
     background: #ffffff;
     width: 100% !important;
     box-sizing: border-box !important;
 }
 .custom-single-channel .whatsapp-badge {
     background: #f1f5f9;
-    color: #128c7e; 
+    color: #128c7e;
     padding: 0 16px;
     font-weight: 600;
     font-size: 14px;
@@ -934,7 +904,6 @@ html[data-i18n-ready] [data-i18n],
 
 .form-footer-notice { font-size: 12px; color: #64748b; margin: 12px 0 0 0; }
 
-/* ❌ 表单拦截报错核心态 */
 .form-group.has-error input,
 .form-group.has-error .custom-single-channel {
     border-color: #ef4444 !important;
@@ -953,14 +922,13 @@ html[data-i18n-ready] [data-i18n],
 }
 .form-group.has-error .error-msg { display: block; }
 
-/* ---------------- 右下角大尺寸黑块询价按钮 ---------------- */
 .form-submit-row { display: flex; justify-content: flex-end; margin-top: 24px; }
 .btn-submit-quote {
     background: #0f172a;
     color: #ffffff;
     border: none;
-    padding: 14px 40px !important;   /* 🚀 显著加宽、加高提交按钮 */
-    font-size: 16px !important;      /* 提升字号 */
+    padding: 14px 40px !important;
+    font-size: 16px !important;
     font-weight: 600;
     border-radius: 6px;
     cursor: pointer;
@@ -971,9 +939,8 @@ html[data-i18n-ready] [data-i18n],
 }
 .btn-submit-quote:hover { background: #1e293b; }
 
-
 /* ==========================================================================
-   10. 📱 模态框专有移动端响应式断点 (保持稳定收缩)
+   10. 📱 模态框专有移动端响应式断点
    ========================================================================== */
 @media (max-width: 768px) {
     .cyber-modal-wrapper { 
@@ -989,7 +956,6 @@ html[data-i18n-ready] [data-i18n],
     }
     .modal-left-box .matrix-title { margin-top: 20px; font-size: 24px; }
     .binary-matrix-stream.aligned-right { display: none !important; }
-    
     .modal-right-box { 
         flex: 0 0 auto !important;
         width: 100% !important; 
@@ -1000,110 +966,4 @@ html[data-i18n-ready] [data-i18n],
         flex-direction: column !important; 
         gap: 0 !important; 
     }
-}
-
-
-
-/* ============================================================
-   🚀 二进制矩阵终极修复：flex居中 + 自适应字号
-   ============================================================ */
-
-/* 1. 容器重置：移除所有定位，使用 flex 列 */
-.modal-left-box .binary-matrix-stream.aligned-right {
-    position: relative !important;
-    top: auto !important;
-    right: auto !important;
-    bottom: auto !important;
-    left: auto !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: auto 0 12px 0 !important;
-    margin-top: auto !important;
-    margin-bottom: 12px !important;
-    text-align: center !important;
-    font-size: clamp(14px, 1.4vw, 20px) !important;  /* 动态字号 */
-    line-height: 2.6 !important;
-    transform: none !important;
-    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 30%, rgba(0,0,0,1) 100%) !important;
-    mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 30%, rgba(0,0,0,1) 100%) !important;
-    overflow: hidden !important; /* 防止溢出影响布局 */
-}
-
-/* 2. 每行使用 flex 居中 */
-.modal-left-box .binary-matrix-stream.aligned-right .matrix-row {
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    flex-wrap: nowrap !important;
-    gap: 6px !important;          /* 数字间距 */
-    white-space: nowrap !important;
-    width: 100% !important;
-    font-size: inherit !important;
-    line-height: inherit !important;
-    color: rgba(255, 255, 255, 0.25) !important;
-    margin: 0 !important;
-    padding: 0 !important;
-}
-
-/* 3. 每个数字独立样式（确保等宽） */
-.modal-left-box .binary-matrix-stream.aligned-right .matrix-row span {
-    font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, monospace !important;
-    font-variant-numeric: tabular-nums !important;
-    display: inline-block !important;
-    min-width: 3.5em !important;  /* 保证等宽，7位数字约占3.5个中文字符宽度 */
-    text-align: center !important;
-    margin: 0 !important;
-    padding: 0 !important;
-}
-
-/* 4. 额外保险：父容器 flex 列布局 */
-.modal-left-box {
-    display: flex !important;
-    flex-direction: column !important;
-}
-
-/* ============================================================
-   🌌 二进制矩阵 4列居中（唯一、强制、防溢出）
-   ============================================================ */
-
-/* 容器：使用flex列，推至底部，内容居中，不裁剪溢出 */
-.modal-left-box .binary-matrix-stream.aligned-right {
-    position: relative !important;
-    width: 100% !important;
-    margin-top: auto !important;          /* 推到底部 */
-    margin-bottom: 12px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;       /* 水平居中所有行 */
-    font-size: 14px !important;           /* 关键：缩小字号以适应窄屏 */
-    line-height: 2.2 !important;
-    overflow: visible !important;         /* 不裁剪溢出（虽然我们通过控制宽度防止溢出） */
-    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 30%, rgba(0,0,0,1) 100%) !important;
-    mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 30%, rgba(0,0,0,1) 100%) !important;
-}
-
-/* 每行：flex居中，无换行，固定间距 */
-.modal-left-box .binary-matrix-stream.aligned-right .matrix-row {
-    display: flex !important;
-    justify-content: center !important;
-    flex-wrap: nowrap !important;
-    gap: 4px !important;                 /* 小间距，节省宽度 */
-    white-space: nowrap !important;
-    width: 100% !important;
-    font-size: inherit !important;
-    line-height: inherit !important;
-    color: rgba(255, 255, 255, 0.25) !important;
-    margin: 0 !important;
-    padding: 0 !important;
-}
-
-/* 每个数字：等宽字体，固定宽度（避免宽度变化） */
-.modal-left-box .binary-matrix-stream.aligned-right .matrix-row span {
-    font-family: 'Courier New', monospace !important;
-    font-variant-numeric: tabular-nums !important;
-    display: inline-block !important;
-    width: 2.8em !important;             /* 固定宽度，使7位数字占2.8个字符宽度 */
-    text-align: center !important;
-    margin: 0 !important;
-    padding: 0 !important;
 }
