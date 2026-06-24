@@ -764,10 +764,20 @@ html[data-i18n-ready] [data-i18n],
 }
 
 /* ==========================================================================
-   🌌 二进制矩阵 4x10 终极像素级对齐补丁（完美封杀变宽字体与空格缝隙）
+   🌌 二进制矩阵 4x10 绝对等宽对齐补丁（无视标签结构，强制像素级对齐）
    ========================================================================== */
 
-/* 1. 遮罩层与定位基准 */
+/* 1. 核心容器：强行接管内部所有层级的字体 */
+.binary-matrix-stream.aligned-right,
+.binary-matrix-stream.aligned-right * {
+    /* 👈 强制全平台采用绝对等宽字体，彻底解决 1 和 0 宽窄不一的问题 */
+    font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace !important;
+    
+    /* 👈 启用浏览器的高级现代特性：强制所有数字使用等宽表格对齐模式 */
+    font-variant-numeric: tabular-nums !important;
+}
+
+/* 2. 定位与遮罩基准 */
 .binary-matrix-stream.aligned-right {
     position: absolute !important;
     bottom: 20px !important;            
@@ -779,38 +789,25 @@ html[data-i18n-ready] [data-i18n],
     z-index: 1 !important;
     user-select: none;
     
-    /* 核心安全补丁：强行将字号设为 0，彻底物理消除 span 标签之间可能存在的 HTML 空格/换行缝隙 */
-    font-size: 0 !important; 
+    /* 强行向右对齐 */
+    text-align: right !important;
     
     -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 30%, rgba(0,0,0,1) 100%);
     mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 30%, rgba(0,0,0,1) 100%);
 }
 
-/* 2. 行容器：采用无缝向右贴紧模式 */
-.binary-matrix-stream.aligned-right .matrix-row {
-    display: block !important;            /* 👈 放弃 flex，改用 block 配合 text-align */
-    text-align: right !important;         /* 👈 强制内部所有元素绝对向右死死对齐 */
+/* 3. 针对行元素的全面拦截（不论您的行是 div, p 还是别的） */
+.binary-matrix-stream.aligned-right .matrix-row,
+.binary-matrix-stream.aligned-right > div,
+.binary-matrix-stream.aligned-right > p {
+    display: block !important;
+    text-align: right !important; /* 👈 确保整行文本在右侧锚死 */
     white-space: nowrap !important;
     width: 100% !important;
-}
-
-/* 3. 核心 span 列：注入绝对等宽基因，斩断字符宽度差 */
-.binary-matrix-stream.aligned-right .matrix-row span {
-    display: inline-block !important;
-    flex: none !important;
-    width: auto !important;
-    
-    /* 👈 极其关键：必须全平台强制使用绝对代码等宽字体，保证 1 和 0 占用完全相同的物理像素宽度 */
-    font-family: SFMono-Regular, Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; 
-    
-    font-size: 12px !important;          /* 重新在这里拉回真实字号 */
+    font-size: 12px !important;          
     line-height: 1.8 !important;          
-    color: rgba(255, 255, 255, 0.22) !important; 
-    
-    /* 👈 替代 gap：用精准的左边距创造列间距，由于 font-size:0 拦截了空格，这个间距在任何屏幕下都绝对固定 */
-    margin-left: 14px !important;        
-    margin-right: 0 !important;
-    padding: 0 !important;
+    color: rgba(255, 255, 255, 0.22) !important;
+    letter-spacing: 0.05em !important; /* 统一字间距 */
 }
 
 /* 强制清除每行第一个数字的左边距，确保最右侧无差错对齐 */
