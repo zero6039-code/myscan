@@ -509,16 +509,20 @@ html[data-i18n-ready] [data-i18n],
     background: rgba(4, 4, 6, 0.75);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    display: flex;
+    display: flex; /* 默认隐藏改为由 JS 控制 */
     align-items: center;
     justify-content: center;
     z-index: 10000;
     opacity: 0;
+    visibility: hidden; /* ★ 增加这一行，防止闪烁 */
     pointer-events: none;
-    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.4s;
 }
+
+/* 激活时显示 */
 .cyber-modal-overlay.is-open {
     opacity: 1;
+    visibility: visible; /* ★ 增加这一行 */
     pointer-events: auto;
 }
 
