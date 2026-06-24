@@ -49,22 +49,22 @@ function triggerStatsCounter() {
     }
 }
 
-// 3. 🌌 统一封装询价弹窗控制与图2报错校验逻辑
+// 3. 🌌 统一封装询价弹窗控制与报错校验逻辑
 function initQuoteModal() {
     const modalOverlay = document.getElementById("quote-modal");
-    const openBtn = document.getElementById("open-quote-btn");
     const closeBtn = document.getElementById("modal-close-btn");
     const quoteForm = document.getElementById("quote-form");
 
     if (!modalOverlay) return;
 
-    // 打开弹窗
-    if (openBtn) {
-        openBtn.addEventListener("click", (e) => {
-            e.preventDefault();
+    // 🔄 针对你的代码修改 A：完美兼容 HTML 的类名点击，不绑定死板的 ID
+    document.addEventListener("click", (e) => {
+        const triggerBtn = e.target.closest(".btn-cyber-red") || e.target.closest('[data-i18n="hero_btn_quote"]');
+        if (triggerBtn && !triggerBtn.closest("#quote-form")) { 
+            e.preventDefault(); // 阻止 <a> 标签的默认 # 锚点跳转
             modalOverlay.classList.add("is-open");
-        });
-    }
+        }
+    });
 
     // 关闭弹窗并重置表单与报错态
     function closeModal() {
@@ -83,7 +83,7 @@ function initQuoteModal() {
         if (e.target === modalOverlay) closeModal();
     });
 
-    // ❌ 核心：右下角提交校验拦截 (完全对齐图2：红框 + 粉红底 + 文字变红)
+    // ❌ 核心：右下角提交校验拦截 (红框 + 粉红底 + 文字变红)
     if (quoteForm) {
         quoteForm.addEventListener("submit", (e) => {
             let passed = true;
@@ -121,7 +121,7 @@ function initQuoteModal() {
                 return false;
             }
 
-            // 全部校验通过后的逻辑
+            // 🔄 针对你的代码修改 B：这里可以根据你后续需求替换为 fetch/axios 异步提交
             e.preventDefault();
             alert("提交成功！DewSecure 团队将尽快与您取得联系。");
             closeModal();
