@@ -980,13 +980,13 @@ html[data-i18n-ready] [data-i18n],
 
 
 /* ==========================================================================
-   🎯 针对当前 HTML 的专项对齐与解脱补丁（追加到 CSS 末尾）
+   🎯 针对当前 HTML 的专项对齐与解脱补丁（追加到 CSS 末尾，已清除层级冲突）
    ========================================================================== */
 
 /* 1. 强力修复表单网格并排（将 HTML 中的 form-grid-row 与旧的 form-row 绑定） */
 .form-grid-row {
     display: flex !important;
-    gap: 24px !important;
+    gap: 16px !important; /* 缩减双列并排时的左右间距 */
     width: 100% !important;
 }
 
@@ -996,16 +996,6 @@ html[data-i18n-ready] [data-i18n],
     height: auto !important;
     overflow: visible !important;
     display: block !important;
-}
-
-/* 3. 确保右侧纯白底表单区域能够完美独立滚动，不被截断 */
-.modal-right-box {
-    flex: 0 0 68% !important;
-    background: #ffffff !important;
-    height: 100% !important;
-    box-sizing: border-box !important;
-    overflow-y: auto !important; /* 开启现代独立空气滚动条 */
-    padding: 55px 70px !important;
 }
 
 /* 4. 二进制防黏连加强锁：确保每个 span 数据块完美呼吸，等宽排列 */
@@ -1021,8 +1011,8 @@ html[data-i18n-ready] [data-i18n],
     font-family: 'Courier New', monospace !important;
     font-variant-numeric: tabular-nums !important;
     display: inline-block !important;
-    width: auto !important; /* 剥离可能导致重叠的固定像素宽度 */
-    letter-spacing: 0.18em !important; /* 控制 0 和 1 之间的极客感 */
+    width: auto !important; 
+    letter-spacing: 0.18em !important; 
     margin-right: -0.18em !important;
 }
 
@@ -1035,77 +1025,83 @@ html[data-i18n-ready] [data-i18n],
 }
 
 /* ==========================================================================
-   ⚡ 紧凑型弹窗优化：消除滚动条，一屏完美呈现
+   ⚡ 强效紧凑型弹窗权重加固：彻底消除右侧滚动条，完美一屏呈现
    ========================================================================== */
 
-/* 1. 缩减右侧表单容器的内边距，释放大量纵向空间 */
-.modal-right-box {
-    padding: 30px 40px !important; /* 从原本的 55px 70px 大幅缩减 */
-    display: flex;
-    flex-direction: column;
-    justify-content: center; /* 让内容在纵向完美居中分布 */
-    overflow-y: hidden !important; /* 隐藏纵向滚动条 */
+/* 通过多重选择器提高权重，彻底干掉旧补丁的 55px 70px 和 overflow-y: auto */
+.cyber-modal-wrapper .modal-right-box {
+    padding: 24px 40px !important;      /* 大幅收紧内边距 */
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important; /* 纵向完美居中分布 */
+    overflow: hidden !important;        /* 锁死：绝不允许出现任何滚动条 */
+    overflow-y: hidden !important;      /* 严禁纵向滚动 */
 }
 
 /* 2. 控制顶部标题和副标题的间距 */
-.modal-right-box h2 {
-    font-size: 24px !important; /* 适当微调标题大小 */
-    margin-bottom: 4px !important;
+.cyber-modal-wrapper .modal-right-box h2 {
+    font-size: 24px !important;         /* 微调主标题 */
+    margin-bottom: 2px !important;
 }
-.modal-subtitle {
-    margin-bottom: 20px !important; /* 缩减主标题与表单之间的间隙 */
-}
-
-/* 3. 全面收紧表单项之间的纵向间距（Form Group） */
-.form-group {
-    margin-bottom: 12px !important; /* 从原本的 20px+ 降至 12px */
+.cyber-modal-wrapper .modal-subtitle {
+    margin-bottom: 16px !important;     /* 缩小标题与下方表单的间隙 */
 }
 
-.form-group label {
-    margin-bottom: 4px !important; /* 缩减标签与输入框的距离 */
+/* 3. 全面收紧所有表单项（Form Group）的纵向间距 */
+.cyber-modal-wrapper .form-group {
+    margin-bottom: 10px !important;     /* 压缩纵向间隙 */
+}
+
+.cyber-modal-wrapper .form-group label {
+    margin-bottom: 4px !important;      /* 标签与输入框挨得更近 */
     font-size: 13px !important;
 }
 
-/* 4. 微调输入框、下拉框和前缀的纵向高度 */
-.form-group input[type="text"],
-.form-group input[type="email"],
-.form-group select,
-.contact-input-wrapper input {
-    height: 38px !important; /* 高度从 42px+ 降至 38px，更显精致 */
+/* 4. 无差别拉低所有输入组件的高度（包括各种变体 input） */
+.cyber-modal-wrapper .form-group input,
+.cyber-modal-wrapper .form-group select,
+.cyber-modal-wrapper .custom-single-channel,
+.cyber-modal-wrapper .custom-single-channel input,
+.cyber-modal-wrapper .contact-input-wrapper input {
+    height: 36px !important;            /* 统一降到 36px 的精致高度 */
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    font-size: 14px !important;
+}
+
+/* 5. 专门针对包含 WhatsApp 的徽章行、自定义输入框高度纠偏 */
+.cyber-modal-wrapper .custom-single-channel {
+    height: 36px !important;
+}
+.cyber-modal-wrapper .whatsapp-badge {
+    height: 100% !important;
+    line-height: 34px !important;
     padding: 0 12px !important;
+    font-size: 13px !important;
 }
 
-/* 5. 专门针对 WhatsApp 徽章和多列行（Grid Row）的紧凑微调 */
-.whatsapp-badge {
-    height: 38px !important;
-    line-height: 38px !important;
-    padding: 0 12px !important;
-}
-
-.form-grid-row {
-    gap: 16px !important; /* 缩减双列并排时的左右间距 */
-}
-
-/* 6. 大幅缩减富文本域（文本大框）的高度 */
-.form-group textarea {
-    padding: 8px 12px !important;
-    min-height: 60px !important; /* 从原先可能的 100px+ 缩减，保证能看清 2-3 行字即可 */
+/* 6. 极致缩减富文本域（留言大文本框）的高度 */
+.cyber-modal-wrapper .form-group textarea {
+    padding: 6px 12px !important;
+    height: 55px !important;            /* 固定高度，正好留出2行文字的空间 */
+    min-height: 55px !important;
     resize: none !important;
 }
 
 /* 7. 收紧底部提示语和提交按钮区域 */
-.form-footer-notice {
-    margin-top: 8px !important;
-    margin-bottom: 12px !important;
-    font-size: 12px !important;
+.cyber-modal-wrapper .form-footer-notice {
+    margin-top: 4px !important;
+    margin-bottom: 8px !important;
+    font-size: 11px !important;
+    line-height: 1.3 !important;
 }
 
-.form-submit-row {
+.cyber-modal-wrapper .form-submit-row {
     margin-top: 0 !important;
 }
 
-.btn-submit-quote, 
-.btn-submit-quote button {
-    height: 42px !important; /* 保证按钮不会太大 */
-    padding: 0 24px !important;
+.cyber-modal-wrapper .btn-submit-quote {
+    height: 38px !important;            /* 缩减按钮高度 */
+    padding: 0 30px !important;         /* 缩减按钮宽度 */
+    font-size: 14px !important;
 }
