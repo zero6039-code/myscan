@@ -1,3 +1,17 @@
+// 放到 app.js 的最顶部或 DOMContentLoaded 监听器中
+document.addEventListener('DOMContentLoaded', () => {
+    // 页面结构加载完成，开始淡入
+    document.body.style.opacity = '1';
+    
+    // 执行你原本的业务逻辑
+    triggerStatsCounter();
+    initQuoteModal();
+    initBinaryStream();
+});
+
+
+
+
 /**
  * ==========================================================================
  * 🚀 DewSecure 核心业务交互脚本 (数字滚动 + 询价弹窗多功能定制)
