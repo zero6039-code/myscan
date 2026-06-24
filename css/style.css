@@ -618,49 +618,44 @@ html[data-i18n-ready] [data-i18n],
     letter-spacing: 0.12em;
 }
 
-/* ================= 右侧 - 美观双列，禁止整体滚动 ================= */
+/* ================= 右侧 - 优化布局，修复间距与对齐 ================= */
 .modal-right-box {
     flex: 1;
     background: #ffffff;
-    padding: 28px 40px 20px 40px;
+    padding: 24px 40px 24px 40px; /* 稍微调整内外边距 */
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start; /* 改为 flex-start 让内容从顶部开始，不再强制居中 */
     overflow: hidden;
     color: #1e293b;
 }
-.modal-right-box h2 {
-    font-size: 22px;
-    font-weight: 700;
-    color: #0f172a;
-    margin: 0 0 4px 0;
-    line-height: 1.2;
-}
-.modal-right-box .modal-subtitle {
-    font-size: 14px;
-    color: #64748b;
-    margin: 0 0 16px 0;
-}
-.modal-right-box .modal-form-scroll-body,
+
+/* 通过增加顶部 margin-top 将表单整体向上推 */
 .modal-right-box form {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    overflow: visible;
-    width: 100%;
+    margin-top: -10px; 
 }
 
-/* ★★★ 表单项间距增大 ★★★ */
+/* 增大表单项间距 */
 .modal-right-box .form-group {
-    margin-bottom: 16px !important;   /* 原 12px，改为 16px，增加上下间距 */
+    margin-bottom: 18px !important; /* 统一加大间距 */
 }
+
+/* 按钮容器：强制右下角对齐 */
+.modal-right-box .form-submit-row {
+    display: flex;
+    justify-content: flex-end;   /* 水平靠右 */
+    margin-top: auto !important; /* 强制推到底部 */
+    padding-top: 10px;
+}
+
+/* 修正 label 的一些间距 */
 .modal-right-box .form-group label {
+    display: block;
     font-size: 13px;
     font-weight: 600;
     color: #334155;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
 }
-.required-label::after { content: " *"; color: #ef4444; }
 
 /* 输入框、选择框、自定义通道 */
 .modal-right-box .form-group input,
