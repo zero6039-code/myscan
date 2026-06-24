@@ -48,26 +48,54 @@ function triggerStatsCounter() {
     }
 }
 
-// 2. 🌌 动态黑客帝国二进制矩阵滚动流（对应需求 1 & 2）
+// 2. 🌌 动态黑客帝国二进制矩阵滚动流（精准匹配 HTML 结构，实现真·单个数字随机突变）
 function initBinaryStream() {
-    const streamContainer = document.getElementById("binary-stream");
-    if (!streamContainer) return;
+    // 🌟 核心修复 1：完美对齐 HTML 结构，获取全部 10 行元素外壳
+    const rows = document.querySelectorAll('.binary-matrix-stream .matrix-row');
+    if (rows.length === 0) return;
 
-    // 定时随机刷新二进制数组，制造“号码不停地跑”的动态黑客效果
+    // 预设十行各不相同的初始二进制底噪数据（每组8位，共3组，带空格）
+    const binaryTemplates = [
+        "11010101 00110111 01100111", "01011001 00101001 00000111",
+        "10000011 11111100 01110001", "10100100 00111001 10001101",
+        "00110111 00010110 01100111", "11011111 10000110 00010110",
+        "00110111 01101101 00011000", "11101110 00110011 10100001",
+        "10111011 11110111 01101011", "01111101 10010101 00111001"
+    ];
+
+    // 初始化每一行的数据容器
+    rows.forEach((row, index) => {
+        const templateStr = binaryTemplates[index] || binaryTemplates[0];
+        // 将字符串打碎为字符数组，挂载到 DOM 对象的自定义属性上（防止污染全局变量）
+        row.matrixData = Array.from(templateStr);
+        row.textContent = templateStr;
+    });
+
+    // 🌟 核心修复 2：极其高效的分布式位突变引擎
+    // 彻底废弃原本粗暴的 innerHTML 重写，采用极高频的按位翻转
     setInterval(() => {
-        const rows = 5;
-        let htmlContent = "";
-        for (let i = 0; i < rows; i++) {
-            let rowText = "";
-            for (let j = 0; j < 4; j++) {
-                // 随机生成 8 位二进制字节
-                const byte = Array.from({length: 8}, () => Math.round(Math.random())).join("");
-                rowText += byte + " ";
+        // 每次高频周期（45ms）随机挑选 2 到 3 个独立的数字进行位翻转
+        const mutationCount = Math.floor(Math.random() * 2) + 2; // 2 ~ 3
+        
+        for (let k = 0; k < mutationCount; k++) {
+            const randomRowIdx = Math.floor(Math.random() * rows.length);
+            const targetRow = rows[randomRowIdx];
+            if (!targetRow || !targetRow.matrixData) continue;
+
+            const dataArr = targetRow.matrixData;
+            const randomCharIdx = Math.floor(Math.random() * dataArr.length);
+            
+            // 🔒 只有在遇到真正的二进制数字时才进行突变，完美避开并保留空格排版
+            if (dataArr[randomCharIdx] === '0') {
+                dataArr[randomCharIdx] = '1';
+            } else if (dataArr[randomCharIdx] === '1') {
+                dataArr[randomCharIdx] = '0';
             }
-            htmlContent += `<div>${rowText.trim()}</div>`;
+
+            // 精准刷新当前这一行，其它九行完全静止不动，完美形成细微的硬件单点跳动感
+            targetRow.textContent = dataArr.join('');
         }
-        streamContainer.innerHTML = htmlContent;
-    }, 120); // 每 120ms 剧烈闪烁跑动一次
+    }, 45); 
 }
 
 // 3. 🛡️ 询价弹窗核心控制逻辑
@@ -103,17 +131,16 @@ function initQuoteModal() {
         if (e.target === modalOverlay) closeModal();
     });
 
-    // 🌟 核心修复：在这里统一绑定全局 ESC 键盘监听，并调用内部封装好的 closeModal()
+    // 全局 ESC 键盘监听
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' || e.key === 'Esc') {
-            // 检查弹窗当前是否带有 "is-open" 类（即处于打开状态）
             if (modalOverlay.classList.contains('is-open')) {
                 closeModal();
             }
         }
     });
 
-    // 🔒 限制其他信息 500 字上限并阻断（对应需求 5）
+    // 限制其他信息 500 字上限并阻断
     if (textareaInfo) {
         textareaInfo.addEventListener("input", () => {
             if (textareaInfo.value.length > 500) {
@@ -164,6 +191,6 @@ function initQuoteModal() {
 document.addEventListener('DOMContentLoaded', () => {
     setTimeout(triggerStatsCounter, 350); 
     initQuoteModal();
-    initBinaryStream(); // 注入动态数字跑动
+    initBinaryStream(); // 激活全新单点位跳动效果
     window.addEventListener('resize', triggerStatsCounter);
 });
