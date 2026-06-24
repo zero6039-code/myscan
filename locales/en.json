@@ -66,5 +66,10 @@
   "btn_submit": "Submit Request",
   
   "err_required": "This field is required",
-  "err_email": "Please enter a valid email address"
+  "err_email": "Please enter a valid email address",
+
+  "alert_success": "Submission successful! The DewSecure team will contact you shortly.",
+  "alert_error_email": "Please check if the email address is correct.",
+  "alert_error_network": "Network error, please try again later."
+  
 }
