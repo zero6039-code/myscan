@@ -42,10 +42,31 @@
 
   "hero_title": "专注 Web3 的网页渗透与代码审计",
   "hero_desc": "DewSecure 是由精英专家团队打造的顶级 Web3 安全平台，集成了深度渗透测试、高级源代码审计和全面的安全架构。将您的审计工作委托给我们，确保您的项目和网络生态系统在强大可靠的环境中持续蓬勃发展。",
-  "hero_btn_quote": "咨询报价"
+  
+  "hero_btn_quote": "咨询专家",
 
   "modal_matrix_slogan": "技术是我们的能力，<span class=\"highlight-red\">诚信</span>才是我们的动力。",
   "modal_title": "立刻保护您的项目",
-  "modal_subtitle": "借助专业的 Web3 安全提供商来增强您的项目。"
+  "modal_subtitle": "借助专业的 Web3 安全提供商来增强您的项目。",
   
+  "label_project": "项目名称",
+  "placeholder_project": "请输入您的项目或代币名称",
+  "label_type": "项目类型",
+  "opt_select": "请选择类型...",
+  "opt_smart": "智能合约审计",
+  "opt_blockchain": "公链 / 区块链网络",
+  "opt_web3": "Web3 应用 / DApp",
+  "opt_other": "其他安全业务",
+  "label_contact": "主要联系方式 (Telegram / Email / Core)",
+  "placeholder_contact": "请输入您的主要联系账号",
+  "label_whatsapp": "WhatsApp (选填)",
+  "placeholder_whatsapp": "请输入电话号码",
+  "label_desc": "需求详情 / 备注",
+  "placeholder_desc": "请简要描述您的安全审计需求或特定时间要求...",
+  "modal_notice": "提交即代表您同意 DewSecure 处理您的信息。我们严格遵守隐私保护协议，绝不向任何第三方泄露您的技术细节。",
+  "btn_submit": "提交申请",
+  
+  "err_project": "项目名称不能为空",
+  "err_type": "请选择项目类型",
+  "err_contact": "联系方式不能为空"
 }
