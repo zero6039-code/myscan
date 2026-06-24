@@ -43,5 +43,23 @@
   "hero_title": "Perkhidmatan Ujian Penembusan Web & Audit Kod Web3",
   "hero_desc": "DewSecure ialah platform keselamatan Web3 yang dibina oleh pasukan pakar berpengalaman luas, menyatukan ujian penembusan mendalam, audit kod sumber peringkat tinggi, dan penyelesaian keselamatan menyeluruh. Serahkan audit anda kepada kami untuk memastikan projek atau ekosistem web anda sentiasa berkembang pesat dalam persekitaran yang selamat dan mampan.",
   "hero_btn_quote": "Minta Sebut Harga"
+
+  "modal_matrix_slogan": "Teknologi adalah keupayaan kami, <span class=\"highlight-red\">integriti</span> adalah dorongan kami.",
+  "modal_title": "Lindungi Projek Anda Serta-merta",
+  "modal_subtitle": "Tingkatkan keselamatan projek anda dengan penyedia keselamatan Web3 profesional.",
+  "form_lbl_company": "Projek/Syarikat",
+  "form_lbl_email": "E-mel",
+  "form_lbl_contact": "Maklumat Hubungan",
+  "form_lbl_name": "Nama Penuh",
+  "form_lbl_role": "Jawatan",
+  "form_lbl_service": "Niat Perkhidmatan",
+  "form_opt_default": "Pilih satu perkhidmatan",
+  "sol_item1_title": "Audit Kod",
+  "sol_item2_title": "Ujian Penembusan",
+  "form_lbl_info": "Maklumat Lain",
+  "form_notice": "Pakar keselamatan DewSecure akan menyemak permintaan anda dan menghubungi anda secepat mungkin.",
+  "hero_btn_quote": "Minta Sebut Harga",
+  "err_required": "Medan ini wajib diisi",
+  "err_email": "Sila masukkan alamat e-mel yang sah"
   
 }
