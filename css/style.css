@@ -904,3 +904,7 @@ html[data-i18n-ready] [data-i18n],
         gap: 0; 
     }
 }
+
+html:not([data-i18n-ready="true"]) [data-i18n] {
+    visibility: hidden !important;
+}
