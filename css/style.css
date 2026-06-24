@@ -643,9 +643,6 @@ html[data-i18n-ready] [data-i18n],
     box-shadow: 0 0 15px rgba(255, 74, 90, 0.3);
 }
 
-/* ==========================================================================
-   9. 🌌 DewSecure 高端 Web3 询价模态框样式 (Cyber Modal System)
-   ========================================================================== */
 
 /* ==========================================================================
    9. 🌌 DewSecure 高端 Web3 询价模态框样式 (Cyber Modal System)
@@ -771,6 +768,67 @@ html[data-i18n-ready] [data-i18n],
     color: rgba(239, 68, 68, 0.45); 
     text-shadow: 0 0 4px rgba(239, 68, 68, 0.3);
     user-select: none;
+}
+
+/* ==========================================================================
+   🎯 DewSecure 弹窗视觉深度自定义修补总线 (最高优先级)
+   ========================================================================== */
+
+/* 1. 背景模糊度微调：清晰度回正 */
+.cyber-modal-overlay {
+    background: rgba(4, 4, 6, 0.72) !important;
+    backdrop-filter: blur(4px) !important;
+    -webkit-backdrop-filter: blur(4px) !important;
+}
+
+/* 2. 左侧暗盒物理占比微调，确保大字号自适应不折行 */
+.modal-left-box {
+    flex: 0 0 38% !important; 
+    padding: 36px 24px !important;
+}
+
+/* 3. Logo 盒子与品牌文本变大、去粗体、自适应 */
+.modal-left-box .brand-header {
+    display: flex !important;
+    align-items: center !important;
+    gap: 14px !important;         /* 增大图片和文字之间的间距 */
+    width: 100% !important;
+}
+
+/* 强制放大 Logo 图片 */
+.modal-left-box .brand-header .brand-logo-img {
+    width: 42px !important;       /* 从 28px 放大到 42px */
+    height: 42px !important;
+    object-fit: contain !important;
+}
+
+/* 强制放大 DewSecure 文本并彻底剥离粗体 */
+.modal-left-box .brand-header .brand-logo-text {
+    font-size: 26px !important;   /* 显眼的大品牌字号 */
+    color: #ffffff !important;
+    font-weight: 300 !important;   /* 🌟 核心：彻底避免使用粗体，保持冷峻轻盈的科技感 */
+    letter-spacing: 1px !important;
+    white-space: nowrap !important;
+}
+
+/* 4. “技术为器，诚信为道” 标语继续放大、去粗体 */
+.modal-left-box .matrix-title {
+    margin-top: 55px !important;
+    font-size: 32px !important;   /* 🌟 标语激进放大到 32px */
+    line-height: 1.4 !important;
+    letter-spacing: 1.5px !important;
+    color: #ffffff !important;
+    
+    font-weight: 400 !important;   /* 🌟 核心：避免粗体，使用中细常规字重 */
+}
+
+/* 标语内部红色强调部分同样不允许加粗 */
+.modal-left-box .matrix-title .highlight-red {
+    color: #ff4a5a !important;
+    font-weight: 400 !important;   /* 避免使用粗体 */
+    display: block !important;
+    margin-top: 6px !important;
+    text-shadow: 0 0 20px rgba(255, 74, 90, 0.3) !important;
 }
 
 /* ==========================================================================
