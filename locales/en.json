@@ -53,7 +53,7 @@
   "form_lbl_email": "Email",
   "form_plh_email": "Enter your work email",
   "form_lbl_contact": "Contact Info",
-  "form_plh_contact": "Enter username or ID",
+  "form_plh_contact": "Example: 123456789",
   "form_lbl_name": "Full Name",
   "form_plh_name": "Enter your full name",
   "form_lbl_role": "Job Title",
