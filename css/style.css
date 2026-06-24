@@ -717,15 +717,21 @@ html[data-i18n-ready] [data-i18n],
     overflow: hidden;
 }
 
+/* 🔄 优化：调大弹窗内部左上角 DewSecure 标题和 Logo 图片 */
 .modal-left-box .brand-header {
     display: flex;
     align-items: center;
-    gap: 10px;
-    font-size: 18px;
-    font-weight: 600;
+    gap: 12px;                   /* 稍微拉开间距 */
+    font-size: 24px;             /* 👈 从 18px 调大到 24px，文字更醒目 */
+    font-weight: 700;            /* 稍微加粗，增加厚实感 */
     color: #ffffff;
+    white-space: nowrap;
 }
-.modal-left-box .brand-header img { width: 28px; height: 28px; }
+.modal-left-box .brand-header img { 
+    width: 38px;                 /* 👈 从 28px 调大到 38px */
+    height: 38px;                /* 👈 从 28px 调大到 38px */
+    object-fit: contain;
+}
 
 .modal-left-box .matrix-title {
     margin-top: 50px;
