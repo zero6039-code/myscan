@@ -652,7 +652,7 @@ html[data-i18n-ready] [data-i18n],
 
 /* ★★★ 表单项间距增大 ★★★ */
 .modal-right-box .form-group {
-    margin-bottom: 16px;   /* 原 12px，改为 16px，增加上下间距 */
+    margin-bottom: 16px !important;   /* 原 12px，改为 16px，增加上下间距 */
 }
 .modal-right-box .form-group label {
     font-size: 13px;
@@ -732,7 +732,7 @@ html[data-i18n-ready] [data-i18n],
 .modal-right-box .form-submit-row {
     display: flex;
     justify-content: flex-end;
-    margin-top: 8px;      /* 原 0，改为 8px 让按钮下移 */
+    margin-top: 8px !important;      /* 原 0，改为 8px 让按钮下移 */
     padding-right: 0;     /* 确保完全靠右 */
 }
 .modal-right-box .btn-submit-quote {
