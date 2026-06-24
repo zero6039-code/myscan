@@ -652,7 +652,7 @@ html[data-i18n-ready] [data-i18n],
 
 /* 表单项 - 适中间距 */
 .modal-right-box .form-group {
-    margin-bottom: 12px;
+    margin-bottom: 16px;
 }
 .modal-right-box .form-group label {
     font-size: 13px;
@@ -733,7 +733,8 @@ html[data-i18n-ready] [data-i18n],
 .modal-right-box .form-submit-row {
     display: flex;
     justify-content: flex-end;
-    margin-top: 0;
+    margin-top: 8;
+    padding-right: 0;      /* 确保完全靠右 */
 }
 .modal-right-box .btn-submit-quote {
     background: #0f172a;
