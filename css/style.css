@@ -561,7 +561,7 @@ html[data-i18n-ready] [data-i18n],
     flex-direction: column;
     justify-content: space-between;
     border-right: 1px solid rgba(255, 255, 255, 0.04);
-    overflow: hidden;
+    overflow: visible;          /* 允许内容溢出 */
 }
 .modal-left-box .brand-header {
     display: flex;
@@ -594,7 +594,7 @@ html[data-i18n-ready] [data-i18n],
 .modal-left-box .binary-matrix-stream.aligned-right {
     margin-top: auto;
     margin-bottom: 4px;
-    font-size: 11px;               /* 从 12px 降到 11px */
+    font-size: 12px;               /* 从 12px 降到 11px */
     line-height: 1.9;
     text-align: center;
     overflow: visible;
@@ -605,8 +605,8 @@ html[data-i18n-ready] [data-i18n],
     display: flex !important;
     justify-content: center !important;
     flex-wrap: nowrap !important;
-    gap: 6px !important;
-    overflow: hidden !important;
+    gap: 8px !important;
+    overflow: visible !important;
 
 }
 .modal-left-box .binary-matrix-stream.aligned-right .matrix-row span {
