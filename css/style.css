@@ -808,9 +808,25 @@ html[data-i18n-ready] [data-i18n],
     letter-spacing: 0.1em !important; /* 增加字符间距 */
 }
 
-/* 3. 每个数字之间的间距（左右留白） */
-.binary-matrix-stream.aligned-right .matrix-row span {
-    margin: 0 8px !important;        /* 左右各 8px 间距，防止挤在一起 */
+/* 确保每行使用 flex 布局，并且 span 之间有间距 */
+.modal-left-box .binary-matrix-stream.aligned-right .matrix-row {
+    display: flex !important;
+    justify-content: center !important;
+    gap: 8px !important;   /* 增加间距，可调整 */
+    white-space: nowrap !important;
+    width: 100% !important;
+    font-size: 16px !important;   /* 或您喜欢的字号 */
+    line-height: 2.4 !important;
+    color: rgba(255, 255, 255, 0.25) !important;
+}
+
+/* 每个 span 独立且等宽 */
+.modal-left-box .binary-matrix-stream.aligned-right .matrix-row span {
+    font-family: 'Courier New', monospace !important;
+    font-variant-numeric: tabular-nums !important;
+    display: inline-block !important;
+    min-width: 3.2em !important;  /* 保证每个数字块占用固定宽度 */
+    text-align: center !important;
 }
 
 /* 额外保险：移除任何可能干扰的 left/right 定位 */
