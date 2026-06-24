@@ -625,8 +625,8 @@ html[data-i18n-ready] [data-i18n],
     padding: 28px 40px 20px 40px;
     display: flex;
     flex-direction: column;
-    justify-content: center;      /* 垂直居中 */
-    overflow: hidden;            /* 禁止整个右侧滚动 */
+    justify-content: center;
+    overflow: hidden;
     color: #1e293b;
 }
 .modal-right-box h2 {
@@ -650,9 +650,9 @@ html[data-i18n-ready] [data-i18n],
     width: 100%;
 }
 
-/* 表单项 - 适中间距 */
+/* ★★★ 表单项间距增大 ★★★ */
 .modal-right-box .form-group {
-    margin-bottom: 16px;
+    margin-bottom: 16px;   /* 原 12px，改为 16px，增加上下间距 */
 }
 .modal-right-box .form-group label {
     font-size: 13px;
@@ -709,20 +709,17 @@ html[data-i18n-ready] [data-i18n],
     padding: 0 12px;
     flex: 1;
 }
-
-/* ★★★ 核心修改：文本框固定 5 行，且内部滚动（默认 overflow:auto） ★★★ */
 .modal-right-box .form-group textarea {
-    height: 100px;              /* 约 5 行 */
+    height: 100px;
     min-height: 100px;
     max-height: 100px;
     padding: 6px 12px;
     font-size: 14px;
-    resize: vertical;           /* 允许用户手动拉伸（可选） */
+    resize: vertical;
     border: 1px solid #cbd5e1;
     border-radius: 4px;
     width: 100%;
     box-sizing: border-box;
-    /* overflow-y: auto; 默认即滚动，无需显式设置 */
 }
 
 .modal-right-box .form-footer-notice {
@@ -730,11 +727,13 @@ html[data-i18n-ready] [data-i18n],
     font-size: 12px;
     color: #64748b;
 }
+
+/* ★★★ 按钮向右下角靠拢 ★★★ */
 .modal-right-box .form-submit-row {
     display: flex;
     justify-content: flex-end;
-    margin-top: 8;
-    padding-right: 0;      /* 确保完全靠右 */
+    margin-top: 8px;      /* 原 0，改为 8px 让按钮下移 */
+    padding-right: 0;     /* 确保完全靠右 */
 }
 .modal-right-box .btn-submit-quote {
     background: #0f172a;
@@ -811,7 +810,7 @@ html[data-i18n-ready] [data-i18n],
         flex: 1;
         width: 100%;
         padding: 16px 20px;
-        overflow-y: auto;        /* 移动端允许整体滚动，保证可用 */
+        overflow-y: auto;
         justify-content: flex-start;
     }
     .modal-right-box .form-grid-row,
