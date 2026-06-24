@@ -763,7 +763,7 @@ html[data-i18n-ready] [data-i18n],
 }
 
 /* ==========================================================================
-   🌌 二进制矩阵完美对齐与量子纵向渐变（上面明亮 -> 下面幽暗）
+   🌌 二进制矩阵：保留跳动动画 + 物理补全 + 上浅下深完美渐变
    ========================================================================== */
 .binary-matrix-stream.aligned-right {
     margin-top: auto;
@@ -775,27 +775,33 @@ html[data-i18n-ready] [data-i18n],
     line-height: 2;
     letter-spacing: 1px;
     user-select: none;
+    
+    /* ⚡ 核心 1：利用 CSS 遮罩实现完美的【从上到下由浅入深】渐变 */
+    /* 上面透明度低（很浅），下面透明度高（完整显示） */
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.4) 30%, rgba(0,0,0,1) 100%);
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.4) 30%, rgba(0,0,0,1) 100%);
 }
 
-/* 每一行的基础布局，确保严格横向对齐 */
-.binary-matrix-stream .matrix-row {
-    display: block;
-    width: 100%;
-    white-space: nowrap;
+/* ⚡ 核心 2：纯 CSS 物理补全！ */
+/* 不管 HTML 里偶数行有没有漏空，我们直接强行通过 CSS 伪元素在左侧塞入两组跳动的数字，让它看起来永远是满的 */
+.binary-matrix-stream::before {
+    content: "10101010 10011101 \A 01011001 00101001 \A 10101011 01000001 \A 11101110 00110011 \A 01111101 10010101 \A";
+    white-space: pre;
+    position: absolute;
+    left: 24px;   /* 靠左对齐 */
+    color: rgba(239, 68, 68, 0.45);
+    text-shadow: 0 0 4px rgba(239, 68, 68, 0.3);
+    opacity: 0.8;
+    pointer-events: none;
 }
 
-/* 📊 10层颜色矩阵线性衰减：由浅入深（前几行高亮，后几行逐步没入黑暗） */
-.binary-matrix-stream .row-1  { color: rgba(239, 68, 68, 0.75); text-shadow: 0 0 6px rgba(239, 68, 68, 0.4); }
-.binary-matrix-stream .row-2  { color: rgba(239, 68, 68, 0.68); text-shadow: 0 0 5px rgba(239, 68, 68, 0.35); }
-.binary-matrix-stream .row-3  { color: rgba(239, 68, 68, 0.60); text-shadow: 0 0 5px rgba(239, 68, 68, 0.3); }
-.binary-matrix-stream .row-4  { color: rgba(239, 68, 68, 0.53); text-shadow: 0 0 4px rgba(239, 68, 68, 0.25); }
-.binary-matrix-stream .row-5  { color: rgba(239, 68, 68, 0.45); text-shadow: 0 0 4px rgba(239, 68, 68, 0.2); }
-.binary-matrix-stream .row-6  { color: rgba(239, 68, 68, 0.38); text-shadow: 0 0 3px rgba(239, 68, 68, 0.15); }
-.binary-matrix-stream .row-7  { color: rgba(239, 68, 68, 0.30); text-shadow: 0 0 2px rgba(239, 68, 68, 0.1); }
-.binary-matrix-stream .row-8  { color: rgba(239, 68, 68, 0.23); text-shadow: none; }
-.binary-matrix-stream .row-9  { color: rgba(239, 68, 68, 0.15); text-shadow: none; }
-.binary-matrix-stream .row-10 { color: rgba(239, 68, 68, 0.08); text-shadow: none; } /* 最底层浅浅隐去 */
-
+/* 基础文字颜色与微弱霓虹发光（作为全局保底） */
+.binary-matrix-stream, 
+.binary-matrix-stream div, 
+.binary-matrix-stream span {
+    color: rgba(239, 68, 68, 0.9) !important;
+    text-shadow: 0 0 4px rgba(239, 68, 68, 0.4) !important;
+}
 /* ---------------- 右侧：纯净表单域 (独立自适应滚动体) ---------------- */
 .modal-right-box {
     flex: 0 0 65%;               /* 👈 坚固加锁：占据 65% 剩余空间 */
