@@ -627,15 +627,15 @@ html[data-i18n-ready] [data-i18n],
     letter-spacing: 0.12em;
 }
 
-/* ================= 右侧 - 美观、双列、舒适 ================= */
+/* ================= 右侧 - 美观、双列、滚动 ================= */
 .modal-right-box {
     flex: 1;
     background: #ffffff;
     padding: 28px 40px 20px 40px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    overflow: hidden;
+    justify-content: flex-start;      /* 改为从顶部开始，便于滚动 */
+    overflow-y: auto;                /* 允许垂直滚动 */
     color: #1e293b;
 }
 .modal-right-box h2 {
@@ -654,7 +654,7 @@ html[data-i18n-ready] [data-i18n],
 .modal-right-box form {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     overflow: visible;
     width: 100%;
 }
@@ -719,12 +719,12 @@ html[data-i18n-ready] [data-i18n],
     flex: 1;
 }
 .modal-right-box .form-group textarea {
-    height: 56px;
-    min-height: 56px;
-    max-height: 56px;
+    height: 100px;                  /* 5行高度 */
+    min-height: 100px;
+    max-height: 100px;
     padding: 6px 12px;
     font-size: 14px;
-    resize: none;
+    resize: vertical;               /* 允许用户手动拉高 */
     border: 1px solid #cbd5e1;
     border-radius: 4px;
     width: 100%;
@@ -826,21 +826,4 @@ html[data-i18n-ready] [data-i18n],
         flex-direction: column;
         gap: 0;
     }
-}
-
-/* ============================================================
-   🔧 微调：其他信息文本框改为5行，并允许右侧滚动
-   ============================================================ */
-
-/* 1. 让右侧区域可滚动（内容超出时） */
-.modal-right-box {
-    overflow-y: auto !important;
-}
-
-/* 2. 调整 textarea 高度为 5 行（约100px） */
-.modal-right-box .form-group textarea {
-    height: 100px !important;
-    min-height: 100px !important;
-    max-height: 100px !important;
-    resize: vertical !important;   /* 允许用户手动拉高（可选） */
 }
