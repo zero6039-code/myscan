@@ -34,7 +34,7 @@
                     <div class="mega-dropdown">
                         <div class="dropdown-intro">
                             <h3 data-i18n="sol_intro_title">解决方案</h3>
-                            <p data-i18n="sol_intro_desc">为您 中小企业网站或个人网站提供安全和合规解决方案与风险 management。</p>
+                            <p data-i18n="sol_intro_desc">为您 中小企业网站或个人网站提供安全和合规解决方案与风险管理。</p>
                         </div>
                         
                         <div class="dropdown-grid">
@@ -85,4 +85,172 @@
                     <span data-i18n="nav_company">关于公司</span>
                     <div class="mega-dropdown">
                         <div class="dropdown-intro" style="width: 100%; max-width: 500px; border-right: none; padding-right: 0;">
-                            <h3 data-i18
+                            <h3 data-i18n="comp_intro_title">关于公司</h3>
+                            <p style="font-size: 14px; color: #cbd5e1; line-height: 1.8; margin-top: 8px;" data-i18n="comp_intro_desc">
+                                DewSecure 多年来活跃于各大漏洞赏金平台...
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nav-item">
+                    <span data-i18n="nav_disclaimer">免责声明</span>
+                    <div class="mega-dropdown">
+                        <div class="dropdown-intro" style="width: 100%; max-width: 200px;">
+                            <h3 data-i18n="disc_intro_title">免责声明</h3>
+                            <p data-i18n="disc_intro_desc">DewSecure 安全服务法律合规与服务性质责任限制说明。</p>
+                        </div>
+                        
+                        <div class="disclaimer-grid">
+                            <div class="disclaimer-item">
+                                <h4 data-i18n="disc_t1">1. 服务性质声明</h4>
+                                <p data-i18n="disc_d1">测试内容...</p>
+                            </div>
+                            <div class="disclaimer-item">
+                                <h4 data-i18n="disc_t2">2. 技术局限性</h4>
+                                <p data-i18n="disc_d2">局限说明...</p>
+                            </div>
+                            <div class="disclaimer-item">
+                                <h4 data-i18n="disc_t3">3. 第三方责任</h4>
+                                <p data-i18n="disc_d3">责任说明...</p>
+                            </div>
+                            <div class="disclaimer-item">
+                                <h4 data-i18n="disc_t4">4. 网站内容</h4>
+                                <p data-i18n="disc_d4">网站声明...</p>
+                            </div>
+                            <div class="disclaimer-item">
+                                <h4 data-i18n="disc_t5">5. 知识产权</h4>
+                                <p data-i18n="disc_d5">产权所有...</p>
+                            </div>
+                            <div class="disclaimer-item">
+                                <h4 data-i18n="disc_t6">6. 责任限制</h4>
+                                <p data-i18n="disc_d6">最大法律允许限制...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="header-right">
+                <div class="nav-stats">
+                    <div class="counter-runner" id="stats-counter" data-target="69"></div>
+                    <span class="label" data-i18n="stats_label">服务客户</span>
+                </div>
+
+                <div class="lang-switch">
+                    <button id="lang-toggle" class="lang-toggle-btn" aria-label="Language Switcher">🌐</button>
+                    <ul id="lang-dropdown" class="lang-dropdown">
+                        <li data-lang="en" class="lang-option">English</li>
+                        <li data-lang="zh" class="lang-option">中文</li>
+                        <li data-lang="ms" class="lang-option">Bahasa Melayu</li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+
+        <main class="placeholder-message">
+             <div class="hero-content">
+                 <div class="hero-title" data-i18n="hero_title">专注 Web3 的网页渗透与代码审计</div>
+                 <p class="hero-desc" data-i18n="hero_desc">DewSecure 是由实战经验深厚的团队构建的 Web3 安全平台...</p>
+                 
+                 <div class="hero-action">
+                     <a href="#contact" class="btn-cyber-red" data-i18n="hero_btn_quote">咨询报价</a>
+                 </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="quote-modal" class="cyber-modal-overlay">
+        <div class="cyber-modal-wrapper">
+            <button class="modal-close-btn" id="modal-close-btn">&times;</button>
+            
+            <div class="modal-left-box">
+                <div class="brand-header">
+                    <img src="/DewSecure.png" alt="Logo">
+                    <span>DewSecure</span>
+                </div>
+                <div class="matrix-title">
+                    提升您的<span class="highlight-red">Web3</span>之旅
+                </div>
+                <div class="binary-matrix-stream">
+                    <div>01000100 01000101 01010111 01010011</div>
+                    <div>01000101 00100000 01010111 01000101</div>
+                    <div>01000101 01000011 01010101 01010010</div>
+                    <div>01001010 01100001 01110110 01100001</div>
+                    <div>01110100 01110010 01101111 01101110</div>
+                </div>
+            </div>
+
+            <div class="modal-right-box">
+                <h2 data-i18n="modal_title">立刻保护您的项目</h2>
+                <p class="modal-subtitle" data-i18n="modal_subtitle">借助专业的 Web3 安全提供商来增强您的项目。</p>
+                
+                <form id="quote-form" novalidate>
+                    <div class="form-group">
+                        <label class="required-label" data-i18n="form_lbl_company">项目/公司</label>
+                        <input type="text" id="form-company" placeholder="项目或公司名称">
+                        <div class="error-msg" id="err-company" data-i18n="err_required">此字段为必填项</div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="required-label" data-i18n="form_lbl_email">电子邮件</label>
+                            <input type="email" id="form-email" placeholder="输入您的工作电子邮件">
+                            <div class="error-msg" id="err-email" data-i18n="err_email">需要提供有效的电子邮件地址</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="required-label" data-i18n="form_lbl_contact">联系方式</label>
+                            <div class="contact-input-wrapper">
+                                <select id="form-contact-type">
+                                    <option value="Telegram">Telegram</option>
+                                    <option value="WhatsApp">WhatsApp</option>
+                                    <option value="WeChat">WeChat</option>
+                                </select>
+                                <input type="text" id="form-contact-val" placeholder="输入用户名或ID">
+                            </div>
+                            <div class="error-msg" id="err-contact" data-i18n="err_required">此字段为必填项</div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label data-i18n="form_lbl_name">全名</label>
+                            <input type="text" id="form-name" placeholder="输入您的全名">
+                        </div>
+                        <div class="form-group">
+                            <label data-i18n="form_lbl_role">职位名称</label>
+                            <input type="text" id="form-role" placeholder="输入您的职位名称">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label data-i18n="form_lbl_service">服务意向</label>
+                        <select id="form-service">
+                            <option value="" data-i18n="form_opt_default">选择一项服务</option>
+                            <option value="audit" data-i18n="sol_item1_title">代码审核</option>
+                            <option value="pentest" data-i18n="sol_item2_title">渗透测试</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label data-i18n="form_lbl_info">其他信息</label>
+                        <textarea id="form-info" rows="3" placeholder="请详细介绍您的项目。"></textarea>
+                    </div>
+
+                    <p class="form-footer-notice" data-i18n="form_notice">DewSecure 安全专家将审核您的请求，并尽快与您联系。</p>
+
+                    <div class="form-submit-row">
+                        <button type="submit" class="btn-submit-quote">
+                            <span data-i18n="hero_btn_quote">咨询报价</span> <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/bg-canvas.js"></script>
+    <script src="/js/app.js"></script>
+    <script src="/js/i18n.js"></script>
+</body>
+</html>
