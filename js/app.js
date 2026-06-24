@@ -165,6 +165,8 @@ function initQuoteModal() {
     // 表单提交拦截校验
     if (quoteForm) {
         quoteForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            
             let passed = true;
             const erroredGroups = quoteForm.querySelectorAll(".form-group.has-error");
             erroredGroups.forEach(group => group.classList.remove("has-error"));
@@ -189,17 +191,51 @@ function initQuoteModal() {
             }
 
             if (!passed) {
+
+            // ★★★ 新增：手动构建要发送的数据 (不用 name 属性) ★★★
+            const payload = {
+                company: companyInput.value.trim(),
+                email: emailInput.value.trim(),
+                contact: contactInput.value.trim(),
+                fullname: document.getElementById("form-name")?.value || '',
+                role: document.getElementById("form-role")?.value || '',
+                service: document.getElementById("form-service")?.value || '',
+                message: document.getElementById("form-info")?.value || '',
+                _subject: "新的咨询报价请求"   // 邮件标题 (可选)
+            };
+
+            const FORMSPREE_URL = 'https://formspree.io/f/xojojwrq';  // 替换成你的 Formspree ID
+
+            try {
+                const response = await fetch(FORMSPREE_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    alert("提交成功！DewSecure 团队将尽快与您取得联系。");
+                    closeModal();
+                } else {
+                    const data = await response.json();
+                    if (data.errors) {
+                        alert("请检查邮箱地址是否正确。");
+                    } else {
+                        alert("发送失败，请稍后重试。");
+                    }
+                }
+            } catch (error) {
+                console.error('发送错误:', error);
+                alert("网络错误，请稍后再试。");
+            }
+                
+                    
+                
                 e.preventDefault();
                 return false;
             }
-
-            e.preventDefault();
-            alert("提交成功！DewSecure 团队将尽快与您取得联系。");
-            closeModal();
         });
-    }
-}
 
-// 4. 🏁 统一生命周期监听（注意：这里原本还有一个 DOMContentLoaded，已删除，避免重复绑定）
-// 顶部的 DOMContentLoaded 已经包含了所有初始化，下面这行保留但注释掉，确保不冲突
-// document.addEventListener('DOMContentLoaded', ...);   // 已移除，统一到顶部
