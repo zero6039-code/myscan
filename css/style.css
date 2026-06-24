@@ -1105,3 +1105,117 @@ html[data-i18n-ready] [data-i18n],
     padding: 0 30px !important;         /* 缩减按钮宽度 */
     font-size: 14px !important;
 }
+
+/* ==========================================================================
+   🚨 终极暴风吸入补丁：无视任何隐藏干扰，强制一屏锁死 🚨
+   ========================================================================== */
+
+/* 1. 强力清空右侧容器所有可能的纵向撑开，强制转为内部 Flex 排版 */
+html body .cyber-modal-overlay .cyber-modal-wrapper .modal-right-box {
+    height: 100% !important;
+    max-height: 100% !important;
+    box-sizing: border-box !important;
+    padding: 20px 35px 15px 35px !important; /* 深度压榨上下内边距 */
+    overflow: hidden !important;
+    overflow-y: hidden !important; /* 彻底封死滚动条 */
+    
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important; /* 让顶部标题、表单体、底部按钮完美均分垂直空间 */
+}
+
+/* 2. 强力压缩整个表单标签的包裹体，将其转为自适应收缩流 */
+.cyber-modal-wrapper .modal-right-box form,
+.cyber-modal-wrapper .modal-right-box .modal-form-scroll-body {
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    overflow: hidden !important; /* 严禁表单中段自行向外溢出 */
+    height: auto !important;
+}
+
+/* 3. 极速调小所有间距，为大文本框腾出物理空间 */
+.cyber-modal-wrapper .modal-right-box h2 {
+    font-size: 22px !important;
+    margin: 0 0 2px 0 !important;
+    line-height: 1.2 !important;
+}
+.cyber-modal-wrapper .modal-subtitle {
+    font-size: 13px !important;
+    margin: 0 0 12px 0 !important;
+    line-height: 1.2 !important;
+}
+
+/* 4. 将所有 Form Row / Grid Row 间距压榨到极限 */
+.cyber-modal-wrapper .form-row,
+.cyber-modal-wrapper .form-grid-row {
+    margin-bottom: 0 !important;
+    gap: 12px !important; /* 左右并排间距收紧 */
+}
+
+.cyber-modal-wrapper .form-group {
+    margin-bottom: 8px !important; /* 纵向间距从 22px 暴跌到 8px */
+}
+
+.cyber-modal-wrapper .form-group label {
+    margin-bottom: 3px !important;
+    font-size: 12px !important;
+    line-height: 1.1 !important;
+}
+
+/* 5. 暴力斩断所有输入框、选择框的厚度 */
+.cyber-modal-wrapper .form-group input,
+.cyber-modal-wrapper .form-group select,
+.cyber-modal-wrapper .custom-single-channel,
+.cyber-modal-wrapper .custom-single-channel input,
+.cyber-modal-wrapper .contact-input-wrapper input {
+    height: 32px !important; /* 从 48px/38px 暴力降至 32px 的极致紧凑度 */
+    line-height: 30px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+    font-size: 13px !important;
+}
+
+/* 6. 单独校准带有国家前缀或 WhatsApp 徽章的特殊输入框 */
+.cyber-modal-wrapper .custom-single-channel {
+    height: 32px !important;
+}
+.cyber-modal-wrapper .whatsapp-badge {
+    height: 100% !important;
+    line-height: 30px !important;
+    padding: 0 10px !important;
+    font-size: 12px !important;
+}
+
+/* 7. 彻底斩断最吃高度的 Textarea（文本留言大框） */
+.cyber-modal-wrapper .form-group textarea {
+    height: 42px !important;     /* 极度压缩，只保留容纳 1~2 行字的高度 */
+    min-height: 42px !important;
+    max-height: 42px !important;
+    padding: 4px 10px !important;
+    font-size: 13px !important;
+    resize: none !important;
+}
+
+/* 8. 收紧页脚提示与提交按钮 */
+.cyber-modal-wrapper .form-footer-notice {
+    margin-top: 2px !important;
+    margin-bottom: 6px !important;
+    font-size: 11px !important;
+    line-height: 1.2 !important;
+}
+
+.cyber-modal-wrapper .form-submit-row {
+    margin-top: 0 !important;
+    display: flex !important;
+    justify-content: flex-end !important;
+}
+
+.cyber-modal-wrapper .btn-submit-quote {
+    height: 34px !important; /* 缩减按钮高度 */
+    padding: 0 24px !important;
+    font-size: 13px !important;
+}
