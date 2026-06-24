@@ -1025,197 +1025,170 @@ html[data-i18n-ready] [data-i18n],
 }
 
 /* ==========================================================================
-   ⚡ 强效紧凑型弹窗权重加固：彻底消除右侧滚动条，完美一屏呈现
+   🎯 完美一屏模态框终极重构（无滚动，自适应高度）
    ========================================================================== */
 
-/* 通过多重选择器提高权重，彻底干掉旧补丁的 55px 70px 和 overflow-y: auto */
-.cyber-modal-wrapper .modal-right-box {
-    padding: 24px 40px !important;      /* 大幅收紧内边距 */
+/* 1. 模态框遮罩 & 容器：高度自适应，但限制最小高度 */
+.cyber-modal-wrapper {
+    height: auto !important;            /* 取消固定高度，由内容撑开 */
+    min-height: 80vh !important;        /* 最小高度占视口80%，确保不会太小 */
+    max-height: 95vh !important;        /* 最大高度限制，防止极端情况溢出 */
+    width: 95% !important;
+    max-width: 1180px !important;
+    align-items: stretch !important;    /* 使左右子项等高 */
+}
+
+/* 2. 左侧区域：保持原有比例，内部 flex 列，底部留白 */
+.modal-left-box {
+    flex: 0 0 32% !important;
+    padding: 40px 24px 16px 24px !important;
     display: flex !important;
     flex-direction: column !important;
-    justify-content: center !important; /* 纵向完美居中分布 */
-    overflow: hidden !important;        /* 锁死：绝不允许出现任何滚动条 */
-    overflow-y: hidden !important;      /* 严禁纵向滚动 */
+    justify-content: space-between !important; /* 上中下分布：标题、slogan、矩阵 */
+    overflow: hidden !important;        /* 防止内容溢出 */
 }
 
-/* 2. 控制顶部标题和副标题的间距 */
-.cyber-modal-wrapper .modal-right-box h2 {
-    font-size: 24px !important;         /* 微调主标题 */
-    margin-bottom: 2px !important;
+/* 左侧标题区和 slogan 可适当压缩间距 */
+.modal-left-box .brand-header {
+    margin-bottom: 20px !important;
 }
-.cyber-modal-wrapper .modal-subtitle {
-    margin-bottom: 16px !important;     /* 缩小标题与下方表单的间隙 */
-}
-
-/* 3. 全面收紧所有表单项（Form Group）的纵向间距 */
-.cyber-modal-wrapper .form-group {
-    margin-bottom: 10px !important;     /* 压缩纵向间隙 */
-}
-
-.cyber-modal-wrapper .form-group label {
-    margin-bottom: 4px !important;      /* 标签与输入框挨得更近 */
-    font-size: 13px !important;
-}
-
-/* 4. 无差别拉低所有输入组件的高度（包括各种变体 input） */
-.cyber-modal-wrapper .form-group input,
-.cyber-modal-wrapper .form-group select,
-.cyber-modal-wrapper .custom-single-channel,
-.cyber-modal-wrapper .custom-single-channel input,
-.cyber-modal-wrapper .contact-input-wrapper input {
-    height: 36px !important;            /* 统一降到 36px 的精致高度 */
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-    font-size: 14px !important;
-}
-
-/* 5. 专门针对包含 WhatsApp 的徽章行、自定义输入框高度纠偏 */
-.cyber-modal-wrapper .custom-single-channel {
-    height: 36px !important;
-}
-.cyber-modal-wrapper .whatsapp-badge {
-    height: 100% !important;
-    line-height: 34px !important;
-    padding: 0 12px !important;
-    font-size: 13px !important;
-}
-
-/* 6. 极致缩减富文本域（留言大文本框）的高度 */
-.cyber-modal-wrapper .form-group textarea {
-    padding: 6px 12px !important;
-    height: 55px !important;            /* 固定高度，正好留出2行文字的空间 */
-    min-height: 55px !important;
-    resize: none !important;
-}
-
-/* 7. 收紧底部提示语和提交按钮区域 */
-.cyber-modal-wrapper .form-footer-notice {
-    margin-top: 4px !important;
-    margin-bottom: 8px !important;
-    font-size: 11px !important;
+.modal-left-box .matrix-title {
+    margin-top: 20px !important;
+    font-size: 24px !important;
     line-height: 1.3 !important;
 }
-
-.cyber-modal-wrapper .form-submit-row {
-    margin-top: 0 !important;
+.modal-left-box .matrix-title .highlight-red {
+    display: inline-block !important;   /* 让“诚信为道”与上行同行，而非独占一行 */
 }
 
-.cyber-modal-wrapper .btn-submit-quote {
-    height: 38px !important;            /* 缩减按钮高度 */
-    padding: 0 30px !important;         /* 缩减按钮宽度 */
-    font-size: 14px !important;
-}
-
-/* ==========================================================================
-   🚨 终极暴风吸入补丁：无视任何隐藏干扰，强制一屏锁死 🚨
-   ========================================================================== */
-
-/* 1. 强力清空右侧容器所有可能的纵向撑开，强制转为内部 Flex 排版 */
-html body .cyber-modal-overlay .cyber-modal-wrapper .modal-right-box {
-    height: 100% !important;
-    max-height: 100% !important;
-    box-sizing: border-box !important;
-    padding: 20px 35px 15px 35px !important; /* 深度压榨上下内边距 */
-    overflow: hidden !important;
-    overflow-y: hidden !important; /* 彻底封死滚动条 */
-    
+/* 3. 右侧区域：完全自适应，垂直居中，禁止滚动 */
+.modal-right-box {
+    flex: 1 !important;                 /* 自动填充剩余宽度 */
+    padding: 28px 40px 20px 40px !important;
     display: flex !important;
     flex-direction: column !important;
-    justify-content: space-between !important; /* 让顶部标题、表单体、底部按钮完美均分垂直空间 */
+    justify-content: center !important; /* 垂直居中 */
+    overflow: hidden !important;
+    height: auto !important;
+    max-height: 100% !important;
 }
 
-/* 2. 强力压缩整个表单标签的包裹体，将其转为自适应收缩流 */
-.cyber-modal-wrapper .modal-right-box form,
-.cyber-modal-wrapper .modal-right-box .modal-form-scroll-body {
+/* 右侧内部包裹（如果有 .modal-form-scroll-body） */
+.modal-right-box .modal-form-scroll-body,
+.modal-right-box form {
     flex: 1 !important;
     display: flex !important;
     flex-direction: column !important;
-    justify-content: flex-start !important;
-    overflow: hidden !important; /* 严禁表单中段自行向外溢出 */
-    height: auto !important;
+    justify-content: center !important; /* 表单整体居中 */
+    overflow: visible !important;
+    width: 100% !important;
 }
 
-/* 3. 极速调小所有间距，为大文本框腾出物理空间 */
-.cyber-modal-wrapper .modal-right-box h2 {
+/* 4. 表单项紧凑布局（统一控制） */
+.modal-right-box h2 {
     font-size: 22px !important;
-    margin: 0 0 2px 0 !important;
+    margin: 0 0 4px 0 !important;
     line-height: 1.2 !important;
 }
-.cyber-modal-wrapper .modal-subtitle {
+.modal-right-box .modal-subtitle {
     font-size: 13px !important;
-    margin: 0 0 12px 0 !important;
-    line-height: 1.2 !important;
+    margin: 0 0 16px 0 !important;
+    color: #64748b;
 }
 
-/* 4. 将所有 Form Row / Grid Row 间距压榨到极限 */
-.cyber-modal-wrapper .form-row,
-.cyber-modal-wrapper .form-grid-row {
-    margin-bottom: 0 !important;
-    gap: 12px !important; /* 左右并排间距收紧 */
+/* 所有 .form-group 统一上下间距 */
+.modal-right-box .form-group {
+    margin-bottom: 8px !important;
 }
-
-.cyber-modal-wrapper .form-group {
-    margin-bottom: 8px !important; /* 纵向间距从 22px 暴跌到 8px */
-}
-
-.cyber-modal-wrapper .form-group label {
-    margin-bottom: 3px !important;
+.modal-right-box .form-group label {
     font-size: 12px !important;
-    line-height: 1.1 !important;
+    margin-bottom: 3px !important;
+    font-weight: 600;
 }
 
-/* 5. 暴力斩断所有输入框、选择框的厚度 */
-.cyber-modal-wrapper .form-group input,
-.cyber-modal-wrapper .form-group select,
-.cyber-modal-wrapper .custom-single-channel,
-.cyber-modal-wrapper .custom-single-channel input,
-.cyber-modal-wrapper .contact-input-wrapper input {
-    height: 32px !important; /* 从 48px/38px 暴力降至 32px 的极致紧凑度 */
-    line-height: 30px !important;
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-    padding-left: 10px !important;
-    padding-right: 10px !important;
+/* 输入框、选择框、自定义通道统一高度 */
+.modal-right-box .form-group input,
+.modal-right-box .form-group select,
+.modal-right-box .custom-single-channel,
+.modal-right-box .custom-single-channel input {
+    height: 34px !important;
+    line-height: 32px !important;
+    padding: 0 10px !important;
     font-size: 13px !important;
+    border-radius: 4px !important;
 }
-
-/* 6. 单独校准带有国家前缀或 WhatsApp 徽章的特殊输入框 */
-.cyber-modal-wrapper .custom-single-channel {
-    height: 32px !important;
+.modal-right-box .custom-single-channel {
+    height: 34px !important;
 }
-.cyber-modal-wrapper .whatsapp-badge {
+.modal-right-box .whatsapp-badge {
     height: 100% !important;
-    line-height: 30px !important;
+    line-height: 32px !important;
     padding: 0 10px !important;
     font-size: 12px !important;
 }
 
-/* 7. 彻底斩断最吃高度的 Textarea（文本留言大框） */
-.cyber-modal-wrapper .form-group textarea {
-    height: 42px !important;     /* 极度压缩，只保留容纳 1~2 行字的高度 */
-    min-height: 42px !important;
-    max-height: 42px !important;
+/* textarea 压缩 */
+.modal-right-box .form-group textarea {
+    height: 48px !important;       /* 保留2行空间 */
+    min-height: 48px !important;
+    max-height: 48px !important;
     padding: 4px 10px !important;
     font-size: 13px !important;
     resize: none !important;
 }
 
-/* 8. 收紧页脚提示与提交按钮 */
-.cyber-modal-wrapper .form-footer-notice {
-    margin-top: 2px !important;
-    margin-bottom: 6px !important;
+/* 底部提示和按钮 */
+.modal-right-box .form-footer-notice {
+    margin: 4px 0 6px 0 !important;
     font-size: 11px !important;
-    line-height: 1.2 !important;
+    color: #64748b;
 }
-
-.cyber-modal-wrapper .form-submit-row {
+.modal-right-box .form-submit-row {
     margin-top: 0 !important;
     display: flex !important;
     justify-content: flex-end !important;
 }
-
-.cyber-modal-wrapper .btn-submit-quote {
-    height: 34px !important; /* 缩减按钮高度 */
-    padding: 0 24px !important;
+.modal-right-box .btn-submit-quote {
+    height: 36px !important;
+    padding: 0 28px !important;
     font-size: 13px !important;
+}
+
+/* 5. 双列布局（.form-grid-row）恢复并排 */
+.modal-right-box .form-grid-row {
+    display: flex !important;
+    gap: 16px !important;
+    width: 100% !important;
+}
+.modal-right-box .form-grid-row .form-group {
+    flex: 1 !important;
+}
+
+/* 6. 移动端适配（<768px）恢复滚动并调整布局 */
+@media (max-width: 768px) {
+    .cyber-modal-wrapper {
+        flex-direction: column !important;
+        height: auto !important;
+        max-height: 96vh !important;
+        width: 92% !important;
+    }
+    .modal-left-box {
+        flex: 0 0 auto !important;
+        width: 100% !important;
+        padding: 24px !important;
+        min-height: 180px !important;
+    }
+    .modal-left-box .binary-matrix-stream.aligned-right {
+        display: none !important;   /* 移动端隐藏矩阵 */
+    }
+    .modal-right-box {
+        flex: 1 !important;
+        width: 100% !important;
+        padding: 20px !important;
+        overflow-y: auto !important; /* 移动端允许滚动 */
+    }
+    .modal-right-box .form-grid-row {
+        flex-direction: column !important;
+        gap: 0 !important;
+    }
 }
