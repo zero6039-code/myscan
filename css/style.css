@@ -500,6 +500,7 @@ html[data-i18n-ready] [data-i18n],
 /* ==========================================================================
    9. 模态框 - 完美版（右侧不滚动，仅文本框内部滚动）
    ========================================================================== */
+/* 1. 初始隐藏：使用 visibility: hidden 避免布局坍塌 */
 .cyber-modal-overlay {
     position: fixed;
     top: 0;
@@ -508,21 +509,19 @@ html[data-i18n-ready] [data-i18n],
     height: 100%;
     background: rgba(4, 4, 6, 0.75);
     backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    display: flex; /* 默认隐藏改为由 JS 控制 */
-    align-items: center;
-    justify-content: center;
     z-index: 10000;
+    
+    /* 关键属性 */
     opacity: 0;
-    visibility: hidden; /* ★ 增加这一行，防止闪烁 */
+    visibility: hidden; 
     pointer-events: none;
     transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.4s;
 }
 
-/* 激活时显示 */
+/* 2. 状态类：仅当添加该类时才显示 */
 .cyber-modal-overlay.is-open {
     opacity: 1;
-    visibility: visible; /* ★ 增加这一行 */
+    visibility: visible;
     pointer-events: auto;
 }
 
