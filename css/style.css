@@ -762,7 +762,9 @@ html[data-i18n-ready] [data-i18n],
     text-shadow: 0 0 20px rgba(255, 74, 90, 0.4);
 }
 
-/* 让二进制跑动区域整体靠右对齐 */
+/* ==========================================================================
+   🌌 二进制矩阵完美对齐与量子纵向渐变（上面明亮 -> 下面幽暗）
+   ========================================================================== */
 .binary-matrix-stream.aligned-right {
     margin-top: auto;
     text-align: right;
@@ -772,10 +774,27 @@ html[data-i18n-ready] [data-i18n],
     font-size: 13px;
     line-height: 2;
     letter-spacing: 1px;
-    color: rgba(239, 68, 68, 0.45); 
-    text-shadow: 0 0 4px rgba(239, 68, 68, 0.3);
     user-select: none;
 }
+
+/* 每一行的基础布局，确保严格横向对齐 */
+.binary-matrix-stream .matrix-row {
+    display: block;
+    width: 100%;
+    white-space: nowrap;
+}
+
+/* 📊 10层颜色矩阵线性衰减：由浅入深（前几行高亮，后几行逐步没入黑暗） */
+.binary-matrix-stream .row-1  { color: rgba(239, 68, 68, 0.75); text-shadow: 0 0 6px rgba(239, 68, 68, 0.4); }
+.binary-matrix-stream .row-2  { color: rgba(239, 68, 68, 0.68); text-shadow: 0 0 5px rgba(239, 68, 68, 0.35); }
+.binary-matrix-stream .row-3  { color: rgba(239, 68, 68, 0.60); text-shadow: 0 0 5px rgba(239, 68, 68, 0.3); }
+.binary-matrix-stream .row-4  { color: rgba(239, 68, 68, 0.53); text-shadow: 0 0 4px rgba(239, 68, 68, 0.25); }
+.binary-matrix-stream .row-5  { color: rgba(239, 68, 68, 0.45); text-shadow: 0 0 4px rgba(239, 68, 68, 0.2); }
+.binary-matrix-stream .row-6  { color: rgba(239, 68, 68, 0.38); text-shadow: 0 0 3px rgba(239, 68, 68, 0.15); }
+.binary-matrix-stream .row-7  { color: rgba(239, 68, 68, 0.30); text-shadow: 0 0 2px rgba(239, 68, 68, 0.1); }
+.binary-matrix-stream .row-8  { color: rgba(239, 68, 68, 0.23); text-shadow: none; }
+.binary-matrix-stream .row-9  { color: rgba(239, 68, 68, 0.15); text-shadow: none; }
+.binary-matrix-stream .row-10 { color: rgba(239, 68, 68, 0.08); text-shadow: none; } /* 最底层浅浅隐去 */
 
 /* ---------------- 右侧：纯净表单域 (独立自适应滚动体) ---------------- */
 .modal-right-box {
