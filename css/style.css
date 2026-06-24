@@ -827,3 +827,51 @@ html[data-i18n-ready] [data-i18n],
         gap: 0;
     }
 }
+
+/* ==========================================================================
+   🎯 1:1 像素级复刻图2补丁（追加到 CSS 文件最末尾）
+   ========================================================================== */
+
+/* 1. 锁死右侧主白盒的高度及裁剪模式，强制蒸发滚动条 */
+.cyber-modal-wrapper .modal-right-box {
+    height: 100% !important;
+    max-height: 100% !important;
+    overflow: hidden !important;
+    overflow-y: hidden !important;
+    box-sizing: border-box !important;
+    padding: 32px 40px 24px 40px !important; /* 精准微调上下空气感留白 */
+}
+
+/* 2. 核心漏洞修复：强行让夹层占满 100% 纵向高度，让内部居中机制真正生效 */
+.modal-right-box .modal-form-scroll-body {
+    height: 100% !important;
+    min-height: 0 !important;      /* 极其关键：防止 Flex 子项高度溢出的安全底座 */
+    flex: 1 !important;             /* 让夹层完全伸展，接管并平分弹窗高度 */
+    overflow: hidden !important;    /* 阻断任何隐藏的多余占位 */
+}
+
+/* 3. 让 form 同样高度占满，使底部的咨询按钮绝不可能发生位移错漏 */
+.modal-right-box form {
+    height: 100% !important;
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important; /* 👈 关键：让输入框和按钮在 100% 高度内绝对垂直完美居中 */
+}
+
+/* 4. 微调 Textarea 高度，防止它在长表单中挤压其他组件 */
+.modal-right-box .form-group textarea {
+    height: 52px !important;       /* 比普通输入框饱满，又绝不至于撑破整体高度 */
+    min-height: 52px !important;
+    max-height: 52px !important;
+}
+
+/* 5. 确保页脚提示语与按钮之间间隙紧凑、舒适 */
+.modal-right-box .form-footer-notice {
+    margin: 4px 0 8px 0 !important;
+    line-height: 1.3 !important;
+}
+
+.modal-right-box .form-submit-row {
+    margin-top: 2px !important;
+}
