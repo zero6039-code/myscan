@@ -15,6 +15,7 @@ async function initFallback() {
 
 async function loadLanguage(lang) {
     try {
+        // 关键安全锁：在开始加载新语言包前，移除就绪标记，触发 CSS 隐藏机制，防止中文或旧语言文本闪现
         document.documentElement.removeAttribute("data-i18n-ready");
         console.log(`[i18n] 正在请求语言包: /locales/${lang}.json`);
         
@@ -48,7 +49,7 @@ async function loadLanguage(lang) {
             }
         });
 
-        // 3. 【关键新增】全面遍历并动态更新带有属性翻译的标签 (如 placeholder)
+        // 3. 全面遍历并动态更新带有属性翻译的标签 (如 placeholder)
         const attrElements = document.querySelectorAll("[data-i18n-placeholder]");
         attrElements.forEach(element => {
             const key = element.getAttribute("data-i18n-placeholder");
@@ -67,11 +68,13 @@ async function loadLanguage(lang) {
             triggerStatsCounter();
         }
         
+        // 核心释放锁：翻译完全注入 DOM 完成，通知 CSS 显示文本
         document.documentElement.setAttribute("data-i18n-ready", "true");
         console.log(`[i18n] 语言已成功切换至: ${lang}`);
 
     } catch (error) {
         console.error("国际化架构加载失败:", error);
+        // 即使失败也要释放锁，防止页面因异常导致永久隐藏白屏
         document.documentElement.setAttribute("data-i18n-ready", "true");
     }
 }
@@ -87,11 +90,24 @@ function updateDropdownUI(activeLang) {
     });
 }
 
+// 统一生命周期控制
 document.addEventListener("DOMContentLoaded", async () => {
+    // 1. 优先加载英文兜底基础包
     await initFallback();
-    const defaultLang = localStorage.getItem("preferred_lang") || 'en'; 
-    loadLanguage(defaultLang);
+    
+    // 2. 优化语言选择逻辑
+    let defaultLang = localStorage.getItem("preferred_lang");
+    
+    // 如果本地缓存没有记录过语言，或者缓存异常，则强制默认设置为英文 'en'
+    if (!defaultLang) {
+        defaultLang = 'en';
+        localStorage.setItem("preferred_lang", 'en');
+    }
+    
+    // 3. 执行加载首选语言
+    await loadLanguage(defaultLang);
 
+    // 4. 绑定切换语言下拉菜单点击事件
     const langOptions = document.querySelectorAll(".lang-option");
     langOptions.forEach(option => {
         option.addEventListener("click", (e) => {
