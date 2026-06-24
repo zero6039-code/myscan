@@ -977,3 +977,59 @@ html[data-i18n-ready] [data-i18n],
         gap: 0 !important; 
     }
 }
+
+
+/* ==========================================================================
+   🎯 针对当前 HTML 的专项对齐与解脱补丁（追加到 CSS 末尾）
+   ========================================================================== */
+
+/* 1. 强力修复表单网格并排（将 HTML 中的 form-grid-row 与旧的 form-row 绑定） */
+.form-grid-row {
+    display: flex !important;
+    gap: 24px !important;
+    width: 100% !important;
+}
+
+/* 2. 彻底释放中间夹层，杜绝表单无法滚动的死锁问题 */
+.modal-form-scroll-body {
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+    display: block !important;
+}
+
+/* 3. 确保右侧纯白底表单区域能够完美独立滚动，不被截断 */
+.modal-right-box {
+    flex: 0 0 68% !important;
+    background: #ffffff !important;
+    height: 100% !important;
+    box-sizing: border-box !important;
+    overflow-y: auto !important; /* 开启现代独立空气滚动条 */
+    padding: 55px 70px !important;
+}
+
+/* 4. 二进制防黏连加强锁：确保每个 span 数据块完美呼吸，等宽排列 */
+.binary-matrix-stream.aligned-right .matrix-row {
+    display: flex !important;
+    justify-content: center !important;
+    gap: 16px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+.binary-matrix-stream.aligned-right .matrix-row span {
+    font-family: 'Courier New', monospace !important;
+    font-variant-numeric: tabular-nums !important;
+    display: inline-block !important;
+    width: auto !important; /* 剥离可能导致重叠的固定像素宽度 */
+    letter-spacing: 0.18em !important; /* 控制 0 和 1 之间的极客感 */
+    margin-right: -0.18em !important;
+}
+
+/* 5. 修复移动端下 `.form-grid-row` 的自适应退化 */
+@media (max-width: 768px) {
+    .form-grid-row {
+        flex-direction: column !important;
+        gap: 0 !important;
+    }
+}
