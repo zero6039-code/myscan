@@ -1031,3 +1031,61 @@ html[data-i18n-ready] [data-i18n],
     display: flex !important;
     flex-direction: column !important;
 }
+
+/* ============================================================
+   🚀 二进制矩阵终极修复：flex居中 + 自适应字号
+   ============================================================ */
+
+/* 1. 容器重置：移除所有定位，使用 flex 列 */
+.modal-left-box .binary-matrix-stream.aligned-right {
+    position: relative !important;
+    top: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: auto 0 12px 0 !important;
+    margin-top: auto !important;
+    margin-bottom: 12px !important;
+    text-align: center !important;
+    font-size: clamp(14px, 1.4vw, 20px) !important;  /* 动态字号 */
+    line-height: 2.6 !important;
+    transform: none !important;
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 30%, rgba(0,0,0,1) 100%) !important;
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 30%, rgba(0,0,0,1) 100%) !important;
+    overflow: hidden !important; /* 防止溢出影响布局 */
+}
+
+/* 2. 每行使用 flex 居中 */
+.modal-left-box .binary-matrix-stream.aligned-right .matrix-row {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+    gap: 6px !important;          /* 数字间距 */
+    white-space: nowrap !important;
+    width: 100% !important;
+    font-size: inherit !important;
+    line-height: inherit !important;
+    color: rgba(255, 255, 255, 0.25) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* 3. 每个数字独立样式（确保等宽） */
+.modal-left-box .binary-matrix-stream.aligned-right .matrix-row span {
+    font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, monospace !important;
+    font-variant-numeric: tabular-nums !important;
+    display: inline-block !important;
+    min-width: 3.5em !important;  /* 保证等宽，7位数字约占3.5个中文字符宽度 */
+    text-align: center !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* 4. 额外保险：父容器 flex 列布局 */
+.modal-left-box {
+    display: flex !important;
+    flex-direction: column !important;
+}
