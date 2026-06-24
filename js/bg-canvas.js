@@ -5,22 +5,32 @@
     document.body.prepend(canvas);
 
     const ctx = canvas.getContext('2d');
-    ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = 'high';
     ctx.lineCap = 'round';
 
     let w, h;
+    let dpr = window.devicePixelRatio || 1;
 
     function resize() {
-        w = canvas.width = window.innerWidth;
-        h = canvas.height = window.innerHeight;
+        dpr = window.devicePixelRatio || 1;
+        w = window.innerWidth;
+        h = window.innerHeight;
+        
+        // 核心修复：画布像素大小放大 DPR 倍，解决高清屏模糊问题
+        canvas.width = w * dpr;
+        canvas.height = h * dpr;
+        canvas.style.width = w + 'px';
+        canvas.style.height = h + 'px';
+        
+        ctx.scale(dpr, dpr);
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
     }
-    window.addEventListener('resize', resize);
+    
     resize();
 
     const STEP = 110;
-    const DURATION = 3000;          // 3秒走完全程
-    const OFFSET = 200;             // 屏幕外偏移量
+    const DURATION = 3000;          
+    const OFFSET = 200;             
 
     function drawGrid() {
         ctx.strokeStyle = 'rgba(100, 200, 255, 0.08)';
@@ -39,7 +49,6 @@
         }
     }
 
-    // 获取所有网格线位置
     function getGridIndices(maxVal) {
         const count = Math.floor(maxVal / STEP) + 1;
         return Array.from({ length: count }, (_, i) => i * STEP);
@@ -58,35 +67,27 @@
             this.startY = 0;
             this.endX = 0;
             this.endY = 0;
-            this.direction = 0; // 0:左→右, 1:右→左, 2:上→下, 3:下→上
+            this.direction = 0; 
         }
 
         start(direction, gridPos) {
             this.direction = direction;
             switch (direction) {
-                case 0: // 左→右
-                    this.startX = -OFFSET;
-                    this.startY = gridPos;
-                    this.endX = w + OFFSET;
-                    this.endY = gridPos;
+                case 0: 
+                    this.startX = -OFFSET; this.startY = gridPos;
+                    this.endX = w + OFFSET; this.endY = gridPos;
                     break;
-                case 1: // 右→左
-                    this.startX = w + OFFSET;
-                    this.startY = gridPos;
-                    this.endX = -OFFSET;
-                    this.endY = gridPos;
+                case 1: 
+                    this.startX = w + OFFSET; this.startY = gridPos;
+                    this.endX = -OFFSET; this.endY = gridPos;
                     break;
-                case 2: // 上→下
-                    this.startX = gridPos;
-                    this.startY = -OFFSET;
-                    this.endX = gridPos;
-                    this.endY = h + OFFSET;
+                case 2: 
+                    this.startX = gridPos; this.startY = -OFFSET;
+                    this.endX = gridPos; this.endY = h + OFFSET;
                     break;
-                case 3: // 下→上
-                    this.startX = gridPos;
-                    this.startY = h + OFFSET;
-                    this.endX = gridPos;
-                    this.endY = -OFFSET;
+                case 3: 
+                    this.startX = gridPos; this.startY = h + OFFSET;
+                    this.endX = gridPos; this.endY = -OFFSET;
                     break;
             }
             this.x = this.startX;
@@ -98,9 +99,7 @@
 
         update() {
             if (!this.active) return false;
-
             const elapsed = (performance.now() - this.startTime) / this.duration;
-            // 关键修复：不设上限，让线条持续运动直到尾部完全离开
             const progress = elapsed;
 
             this.x = this.startX + (this.endX - this.startX) * progress;
@@ -115,7 +114,6 @@
                 this.tail.shift();
             }
 
-            // 尾部完全离开屏幕且进度足够才结束
             if (progress >= 1.0 && this.tail.length > 0) {
                 const tailEnd = this.tail[0];
                 const margin = 50;
@@ -154,7 +152,6 @@
     const lineB = new FlowLine();
     const lineC = new FlowLine();
 
-    // 获取当前所有活跃的线条
     function getActiveLines() {
         const active = [];
         if (lineA.active) active.push(lineA);
@@ -163,11 +160,10 @@
         return active;
     }
 
-    // 选择不与活跃线条冲突的路径
     function choosePathForNewLine() {
         const activeLines = getActiveLines();
-        const forbiddenHoriz = new Set(); // 禁止的水平轨道 (y)
-        const forbiddenVert = new Set();  // 禁止的垂直轨道 (x)
+        const forbiddenHoriz = new Set(); 
+        const forbiddenVert = new Set();  
 
         for (const line of activeLines) {
             if (line.direction === 0 || line.direction === 1) {
@@ -183,7 +179,6 @@
         const canHorizontal = horizIndices.length > 0;
         const canVertical = vertIndices.length > 0;
 
-        // 极端情况（所有网格线都被占用）则随机选一条
         if (!canHorizontal && !canVertical) {
             const dir = Math.floor(Math.random() * 4);
             if (dir <= 1) {
@@ -209,21 +204,6 @@
         }
     }
 
-    // 为指定线条安排自动循环
-    function scheduleLineLoop(line) {
-        const restart = () => {
-            // 只在完全停止时重启
-            if (!line.active && line.tail.length === 0) {
-                const { dir, pos } = choosePathForNewLine();
-                line.start(dir, pos);
-            }
-        };
-        // 使用 MutationObserver 或者直接在动画循环中检查更方便
-        // 这里采用动画循环中统一处理，避免定时器累积
-        line._pendingRestart = false; // 标记，防止重复重启
-    }
-
-    // 动画循环
     function animate() {
         ctx.clearRect(0, 0, w, h);
         drawGrid();
@@ -236,11 +216,9 @@
         lineB.draw(ctx);
         lineC.draw(ctx);
 
-        // 每条线结束后自动重启（避让轨道）
         [lineA, lineB, lineC].forEach(line => {
             if (!line.active && line.tail.length === 0 && !line._restartScheduled) {
                 line._restartScheduled = true;
-                // 微延迟确保旧线条完全清除，避免闪烁
                 setTimeout(() => {
                     line._restartScheduled = false;
                     if (!line.active) {
@@ -254,24 +232,19 @@
         requestAnimationFrame(animate);
     }
 
-    // 初始延时启动
-    const timers = [];
+    let timers = [];
     function startAllWithDelay() {
-        // 清除旧定时器
         timers.forEach(clearTimeout);
-        timers.length = 0;
+        timers = [];
 
-        // A线立即启动
         const { dir: dirA, pos: posA } = choosePathForNewLine();
         lineA.start(dirA, posA);
 
-        // B线 1.5秒后启动
         timers.push(setTimeout(() => {
             const { dir, pos } = choosePathForNewLine();
             lineB.start(dir, pos);
         }, 1500));
 
-        // C线 2.5秒后启动
         timers.push(setTimeout(() => {
             const { dir, pos } = choosePathForNewLine();
             lineC.start(dir, pos);
@@ -281,21 +254,17 @@
     startAllWithDelay();
     animate();
 
-    // 窗口缩放时重置所有状态
+    // 引入防抖处理 resize，避免高频清空和重开导致的极端冲突
+    let resizeTimeout;
     window.addEventListener('resize', () => {
-        // 停止所有线条
-        lineA.active = false;
-        lineB.active = false;
-        lineC.active = false;
-        lineA.tail = [];
-        lineB.tail = [];
-        lineC.tail = [];
-        // 清除重启标记
-        lineA._restartScheduled = false;
-        lineB._restartScheduled = false;
-        lineC._restartScheduled = false;
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            lineA.active = false; lineB.active = false; lineC.active = false;
+            lineA.tail = []; lineB.tail = []; lineC.tail = [];
+            lineA._restartScheduled = false; lineB._restartScheduled = false; lineC._restartScheduled = false;
 
-        // 重新按延时启动
-        startAllWithDelay();
+            resize();
+            startAllWithDelay();
+        }, 150);
     });
 })();
