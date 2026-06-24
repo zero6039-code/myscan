@@ -717,20 +717,35 @@ html[data-i18n-ready] [data-i18n],
     overflow: hidden;
 }
 
-/* 🔄 优化：调大弹窗内部左上角 DewSecure 标题和 Logo 图片 */
+/* ==========================================================================
+   🔄 优化：强力放大弹窗内部左上角 DewSecure 标题和 Logo 图片（移除裁剪，全尺寸展开）
+   ========================================================================== */
+.cyber-modal-overlay .modal-left-box .brand-header,
 .modal-left-box .brand-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;                   /* 稍微拉开间距 */
-    font-size: 24px;             /* 👈 从 18px 调大到 24px，文字更醒目 */
-    font-weight: 700;            /* 稍微加粗，增加厚实感 */
-    color: #ffffff;
-    white-space: nowrap;
+    display: flex !important;
+    align-items: center !important;
+    gap: 16px !important;                 /* 拉开图标与文字之间的距离 */
+    width: 100% !important;
+    max-width: none !important;           /* ⚡ 彻底解除原先的 180px 宽度限制 */
+    overflow: visible !important;         /* 允许完全显示 */
 }
+
+.cyber-modal-overlay .modal-left-box .brand-header img,
 .modal-left-box .brand-header img { 
-    width: 38px;                 /* 👈 从 28px 调大到 38px */
-    height: 38px;                /* 👈 从 28px 调大到 38px */
-    object-fit: contain;
+    width: 54px !important;               /* 👈 图标从 38px 暴力放大到 54px，与大标题完美匹配 */
+    height: 54px !important;              /* 👈 保持 54px 等高正方形 */
+    object-fit: contain !important;
+    flex-shrink: 0 !important;            /* ⚡ 核心安全锁：绝不允许被分栏压缩变形 */
+}
+
+.cyber-modal-overlay .modal-left-box .brand-header span,
+.modal-left-box .brand-header span {
+    font-size: 32px !important;           /* 👈 文字从 24px 大幅放大到 32px，展现 Web3 极客质感 */
+    font-weight: 800 !important;          /* 👈 进一步加粗到重磅黑体，防止在暗色背景下显得单薄 */
+    color: #ffffff !important;
+    white-space: nowrap !important;       /* 绝对不换行 */
+    max-width: none !important;           /* ⚡ 彻底移除原先的 130px 限制 */
+    display: inline-block !important;
 }
 
 .modal-left-box .matrix-title {
