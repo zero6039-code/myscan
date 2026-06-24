@@ -3,6 +3,11 @@ window.fallbackTranslations = null;
 
 async function initFallback() {
     try {
+        // 如果是在本地 file:/// 协议下运行，fetch 必定失败，直接跳过避免抛出阻塞后续逻辑的未捕获异常
+        if (window.location.protocol === 'file:') {
+            console.warn("[i18n] 本地文件协议(file:///)下无法动态加载JSON，已启用降级兼容模式");
+            return;
+        }
         const response = await fetch('/locales/en.json');
         if (response.ok) {
             window.fallbackTranslations = await response.json();
@@ -15,20 +20,28 @@ async function initFallback() {
 
 async function loadLanguage(lang) {
     try {
-        // 标记开始加载，防止 FOUT 闪烁
-        document.documentElement.removeAttribute("data-i18n-ready");
+        // 1. 只有在非本地文件协议下，才移除 ready 标记，走防闪烁流程
+        if (window.location.protocol !== 'file:') {
+            document.documentElement.removeAttribute("data-i18n-ready");
+        }
+        
         console.log(`[i18n] 正在请求语言包: /locales/${lang}.json`);
         
+        // 2. 本地直接双击运行时强制抛出，进入 catch 块的降级可见度流程
+        if (window.location.protocol === 'file:') {
+            throw new Error("Local file protocol detected. Shifting to fallback rendering.");
+        }
+
         const response = await fetch(`/locales/${lang}.json`);
         if (!response.ok) throw new Error(`无法加载语言文件: ${lang}`);
         const translations = await response.json();
 
-        // 1. 动态更新页面标题
+        // 动态更新页面标题
         if (translations["page_title"]) {
             document.title = translations["page_title"];
         }
 
-        // 2. 遍历并动态更新所有带有 data-i18n 属性的标签内容
+        // 遍历并动态更新所有带有 data-i18n 属性的标签内容
         const elements = document.querySelectorAll("[data-i18n]");
         elements.forEach(element => {
             const key = element.getAttribute("data-i18n");
@@ -37,7 +50,6 @@ async function loadLanguage(lang) {
             if (targetText !== undefined && targetText !== null) {
                 const tagName = element.tagName.toLowerCase();
                 if (tagName === 'option') {
-                    // 🛡️ 架构核心修复：只改变显示文本，绝对不污染/覆盖 option 的原始 value 属性
                     element.text = targetText;
                 } else {
                     element.innerHTML = targetText;
@@ -45,7 +57,7 @@ async function loadLanguage(lang) {
             }
         });
 
-        // 3. 处理占位符属性的特殊替换 (如 textarea, input)
+        // 处理占位符属性的特殊替换
         const placeholders = document.querySelectorAll("[data-i18n-placeholder]");
         placeholders.forEach(element => {
             const key = element.getAttribute("data-i18n-placeholder");
@@ -55,23 +67,20 @@ async function loadLanguage(lang) {
             }
         });
 
-        // 4. 状态持久化与同步
         localStorage.setItem("preferred_lang", lang);
         window.currentLang = lang;
         updateDropdownUI(lang);
 
-        // 如果数字计数器已加载，语言切换后重新触发对齐计算
+    } catch (error) {
+        console.warn("[i18n] 触发架构降级线:", error.message);
+    } finally {
+        // 🛡️ 架构核心修复：无论异步获取成功还是失败、哪怕是本地离线运行，在最后一步也必须解除透明死锁
+        document.documentElement.setAttribute("data-i18n-ready", "true");
+        
+        // 如果数字计数器已加载，切换或降级后激活对齐计算
         if (typeof triggerStatsCounter === "function") {
             triggerStatsCounter();
         }
-        
-        // 成功挂载，通知 CSS 渐显显示，消除视觉闪烁
-        document.documentElement.setAttribute("data-i18n-ready", \"true\");
-        console.log(`[i18n] 语言已成功切换至: ${lang}`);
-
-    } catch (error) {
-        console.error("国际化架构加载失败，采用回滚机制:", error);
-        document.documentElement.setAttribute("data-i18n-ready", \"true\");
     }
 }
 
@@ -86,13 +95,13 @@ function updateDropdownUI(activeLang) {
     });
 }
 
-// 采用高性能的初始化时机
+// 执行高可用自适应流
 (async () => {
     await initFallback();
     const defaultLang = localStorage.getItem("preferred_lang") || 'en'; 
     await loadLanguage(defaultLang);
 
-    // 绑定多语言切换按钮事件
+    // 绑定事件
     document.addEventListener("DOMContentLoaded", () => {
         const langOptions = document.querySelectorAll(".lang-option");
         langOptions.forEach(option => {
