@@ -827,3 +827,15 @@ html[data-i18n-ready] [data-i18n],
 .modal-right-box form {
     margin-top: -10px !important;
 }
+
+/* 预先隐藏这些动态组件，防止它们在初始化前“抢跑” */
+.cyber-modal-overlay, 
+.binary-matrix-stream {
+    visibility: hidden;
+}
+
+/* 一旦页面就绪，JS 会通过类名或内联样式将它们设为 visible */
+.is-ready .cyber-modal-overlay,
+.is-ready .binary-matrix-stream {
+    visibility: visible;
+}
