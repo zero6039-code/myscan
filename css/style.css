@@ -760,10 +760,9 @@ html[data-i18n-ready] [data-i18n],
     text-shadow: 0 0 20px rgba(255, 74, 90, 0.4);
 }
 
-/* ============================================================
-   🌌 二进制矩阵 4列居中（唯一、强制、防溢出）
-   说明：此样式为最终版本，已删除所有历史冗余规则
-   ============================================================ */
+/* ============================================================================
+   🌌 二进制矩阵 4列居中（唯一、强制、防溢出、防数字黏连终极补丁）
+   ============================================================================ */
 
 /* 容器：使用flex列，推至底部，内容居中，不裁剪溢出 */
 .modal-left-box .binary-matrix-stream.aligned-right {
@@ -774,19 +773,22 @@ html[data-i18n-ready] [data-i18n],
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;       /* 水平居中所有行 */
-    font-size: 14px !important;           /* 适中字号，适应窄屏 */
+    font-size: 13px !important;           /* 适当微调基础字号 */
     line-height: 2.2 !important;
     overflow: visible !important;         /* 关键：禁止裁剪 */
     -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 30%, rgba(0,0,0,1) 100%) !important;
     mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 30%, rgba(0,0,0,1) 100%) !important;
 }
 
-/* 每行：flex居中，无换行，小间距 */
+/* 每行：flex居中，无换行 */
 .modal-left-box .binary-matrix-stream.aligned-right .matrix-row {
     display: flex !important;
     justify-content: center !important;
     flex-wrap: nowrap !important;
-    gap: 4px !important;                 /* 足够分隔但不过宽 */
+    
+    /* 👈 数据块（span）与数据块之间的间距，可根据视觉效果微调 */
+    gap: 16px !important;                 
+    
     white-space: nowrap !important;
     width: 100% !important;
     font-size: inherit !important;
@@ -796,14 +798,22 @@ html[data-i18n-ready] [data-i18n],
     padding: 0 !important;
 }
 
-/* 每个数字块：等宽字体，固定宽度，居中对齐 */
+/* 每个数字块：全面释放宽度，注入极客字间距 */
 .modal-left-box .binary-matrix-stream.aligned-right .matrix-row span {
     font-family: 'Courier New', monospace !important;
     font-variant-numeric: tabular-nums !important;
     display: inline-block !important;
-    width: 2.8em !important;             /* 精准控制每块宽度，避免溢出 */
+    
+    /* ⚡ 核心修复 1：将固定窄宽度释放，让等宽数据块自然伸展，彻底告别黏连重叠 */
+    width: auto !important;               
     text-align: center !important;
-    margin: 0 !important;
+    
+    /* ⚡ 核心修复 2：利用字间距精准控制 8 位数字内部每个 0 和 1 之间的呼吸感 */
+    letter-spacing: 0.18em !important;    
+    
+    /* 消除可能导致右侧轻微偏斜的末尾字间距多余占位 */
+    margin-right: -0.18em !important;     
+    margin-left: 0 !important;
     padding: 0 !important;
 }
 
