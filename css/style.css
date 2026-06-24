@@ -986,49 +986,7 @@ html[data-i18n-ready] [data-i18n],
     }
 }
 
-/* ============================================================
-   🌌 二进制矩阵 4列居中放大（唯一、强制、不裁剪）
-   ============================================================ */
 
-/* 1. 容器设置：相对定位，flex列，不裁剪溢出 */
-.modal-left-box .binary-matrix-stream.aligned-right {
-    position: relative !important;
-    width: 100% !important;
-    margin-top: auto !important;          /* 推至底部 */
-    margin-bottom: 12px !important;
-    text-align: center !important;
-    font-size: 16px !important;           /* 固定字号，可调 */
-    line-height: 2.4 !important;
-    overflow: visible !important;         /* 关键：不裁剪溢出内容 */
-    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 30%, rgba(0,0,0,1) 100%) !important;
-    mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 30%, rgba(0,0,0,1) 100%) !important;
-}
-
-/* 2. 每行使用 flex 居中 */
-.modal-left-box .binary-matrix-stream.aligned-right .matrix-row {
-    display: flex !important;
-    justify-content: center !important;
-    flex-wrap: nowrap !important;
-    gap: 6px !important;                 /* 数字间距，可调 */
-    white-space: nowrap !important;
-    width: 100% !important;
-    font-size: inherit !important;
-    line-height: inherit !important;
-    color: rgba(255, 255, 255, 0.25) !important;
-    margin: 0 !important;
-    padding: 0 !important;
-}
-
-/* 3. 每个数字：等宽、居中对齐 */
-.modal-left-box .binary-matrix-stream.aligned-right .matrix-row span {
-    font-family: 'Courier New', monospace !important;
-    font-variant-numeric: tabular-nums !important;
-    display: inline-block !important;
-    min-width: 3.2em !important;          /* 略缩小，适应宽度 */
-    text-align: center !important;
-    margin: 0 !important;
-    padding: 0 !important;
-}
 
 /* ============================================================
    🚀 二进制矩阵终极修复：flex居中 + 自适应字号
@@ -1086,4 +1044,50 @@ html[data-i18n-ready] [data-i18n],
 .modal-left-box {
     display: flex !important;
     flex-direction: column !important;
+}
+
+/* ============================================================
+   🌌 二进制矩阵 4列居中（唯一、强制、防溢出）
+   ============================================================ */
+
+/* 容器：使用flex列，推至底部，内容居中，不裁剪溢出 */
+.modal-left-box .binary-matrix-stream.aligned-right {
+    position: relative !important;
+    width: 100% !important;
+    margin-top: auto !important;          /* 推到底部 */
+    margin-bottom: 12px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;       /* 水平居中所有行 */
+    font-size: 14px !important;           /* 关键：缩小字号以适应窄屏 */
+    line-height: 2.2 !important;
+    overflow: visible !important;         /* 不裁剪溢出（虽然我们通过控制宽度防止溢出） */
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 30%, rgba(0,0,0,1) 100%) !important;
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 30%, rgba(0,0,0,1) 100%) !important;
+}
+
+/* 每行：flex居中，无换行，固定间距 */
+.modal-left-box .binary-matrix-stream.aligned-right .matrix-row {
+    display: flex !important;
+    justify-content: center !important;
+    flex-wrap: nowrap !important;
+    gap: 4px !important;                 /* 小间距，节省宽度 */
+    white-space: nowrap !important;
+    width: 100% !important;
+    font-size: inherit !important;
+    line-height: inherit !important;
+    color: rgba(255, 255, 255, 0.25) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* 每个数字：等宽字体，固定宽度（避免宽度变化） */
+.modal-left-box .binary-matrix-stream.aligned-right .matrix-row span {
+    font-family: 'Courier New', monospace !important;
+    font-variant-numeric: tabular-nums !important;
+    display: inline-block !important;
+    width: 2.8em !important;             /* 固定宽度，使7位数字占2.8个字符宽度 */
+    text-align: center !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
