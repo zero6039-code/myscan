@@ -505,7 +505,7 @@ html[data-i18n-ready] [data-i18n],
 }
 
 /* ==========================================================================
-   9. 模态框 - 无滚动一屏版
+   9. 模态框 - 美观双列、无滚动（平衡版）
    ========================================================================== */
 .cyber-modal-overlay {
     position: fixed;
@@ -533,10 +533,9 @@ html[data-i18n-ready] [data-i18n],
     position: relative;
     width: 95%;
     max-width: 1180px;
-    /* 关键：固定高度为视口高度 85%，且不超过 95vh */
     height: 85vh;
     max-height: 95vh;
-    min-height: 500px;
+    min-height: 520px;
     background: #ffffff;
     border-radius: 16px;
     display: flex;
@@ -603,7 +602,7 @@ html[data-i18n-ready] [data-i18n],
     text-shadow: 0 0 20px rgba(255, 74, 90, 0.4);
 }
 
-/* 二进制矩阵 - 彻底防溢出、居中、紧凑 */
+/* 二进制矩阵 */
 .modal-left-box .binary-matrix-stream.aligned-right {
     margin-top: auto;
     margin-bottom: 4px;
@@ -628,11 +627,11 @@ html[data-i18n-ready] [data-i18n],
     letter-spacing: 0.12em;
 }
 
-/* 右侧 - 使用 flex 垂直居中，无滚动 */
+/* ================= 右侧 - 美观、双列、舒适 ================= */
 .modal-right-box {
     flex: 1;
     background: #ffffff;
-    padding: 20px 30px 16px 30px;
+    padding: 28px 40px 20px 40px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -640,16 +639,16 @@ html[data-i18n-ready] [data-i18n],
     color: #1e293b;
 }
 .modal-right-box h2 {
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 700;
     color: #0f172a;
-    margin: 0 0 2px 0;
-    line-height: 1.1;
+    margin: 0 0 4px 0;
+    line-height: 1.2;
 }
 .modal-right-box .modal-subtitle {
-    font-size: 12px;
+    font-size: 14px;
     color: #64748b;
-    margin: 0 0 10px 0;
+    margin: 0 0 16px 0;
 }
 .modal-right-box .modal-form-scroll-body,
 .modal-right-box form {
@@ -657,26 +656,30 @@ html[data-i18n-ready] [data-i18n],
     flex-direction: column;
     justify-content: center;
     overflow: visible;
+    width: 100%;
 }
+
+/* 表单项 - 适中间距 */
 .modal-right-box .form-group {
-    margin-bottom: 4px;
+    margin-bottom: 12px;
 }
 .modal-right-box .form-group label {
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 600;
     color: #334155;
-    margin-bottom: 2px;
+    margin-bottom: 4px;
 }
 .required-label::after { content: " *"; color: #ef4444; }
 
+/* 输入框、选择框、自定义通道 */
 .modal-right-box .form-group input,
 .modal-right-box .form-group select,
 .modal-right-box .custom-single-channel,
 .modal-right-box .custom-single-channel input {
-    height: 28px;
-    line-height: 26px;
-    padding: 0 8px;
-    font-size: 12px;
+    height: 36px;
+    line-height: 34px;
+    padding: 0 12px;
+    font-size: 14px;
     border: 1px solid #cbd5e1;
     border-radius: 4px;
     background: #ffffff;
@@ -695,14 +698,14 @@ html[data-i18n-ready] [data-i18n],
     display: flex;
     align-items: center;
     padding: 0;
-    height: 28px;
+    height: 36px;
     background: #ffffff;
 }
 .modal-right-box .whatsapp-badge {
     background: #f1f5f9;
     color: #128c7e;
-    padding: 0 8px;
-    font-size: 11px;
+    padding: 0 12px;
+    font-size: 13px;
     font-weight: 600;
     height: 100%;
     display: flex;
@@ -712,15 +715,15 @@ html[data-i18n-ready] [data-i18n],
 .modal-right-box .custom-single-channel input {
     border: none !important;
     height: 100%;
-    padding: 0 8px;
+    padding: 0 12px;
     flex: 1;
 }
 .modal-right-box .form-group textarea {
-    height: 36px;
-    min-height: 36px;
-    max-height: 36px;
-    padding: 4px 8px;
-    font-size: 12px;
+    height: 56px;
+    min-height: 56px;
+    max-height: 56px;
+    padding: 6px 12px;
+    font-size: 14px;
     resize: none;
     border: 1px solid #cbd5e1;
     border-radius: 4px;
@@ -729,8 +732,8 @@ html[data-i18n-ready] [data-i18n],
 }
 
 .modal-right-box .form-footer-notice {
-    margin: 2px 0 4px 0;
-    font-size: 10px;
+    margin: 4px 0 6px 0;
+    font-size: 12px;
     color: #64748b;
 }
 .modal-right-box .form-submit-row {
@@ -742,9 +745,9 @@ html[data-i18n-ready] [data-i18n],
     background: #0f172a;
     color: #ffffff;
     border: none;
-    padding: 0 20px;
-    height: 30px;
-    font-size: 12px;
+    padding: 0 28px;
+    height: 38px;
+    font-size: 14px;
     font-weight: 600;
     border-radius: 4px;
     cursor: pointer;
@@ -755,17 +758,27 @@ html[data-i18n-ready] [data-i18n],
 }
 .modal-right-box .btn-submit-quote:hover { background: #1e293b; }
 
-/* 双列并排 */
+/* 双列并排 (form-grid-row) */
 .modal-right-box .form-grid-row {
     display: flex;
-    gap: 12px;
+    gap: 16px;
     width: 100%;
 }
 .modal-right-box .form-grid-row .form-group {
     flex: 1;
 }
 
-/* 表单错误 */
+/* 单行 (form-row) 也保留弹性，但此项目用 grid-row 较多 */
+.modal-right-box .form-row {
+    display: flex;
+    gap: 16px;
+    width: 100%;
+}
+.modal-right-box .form-row .form-group {
+    flex: 1;
+}
+
+/* 错误状态 */
 .form-group.has-error input,
 .form-group.has-error .custom-single-channel {
     border-color: #ef4444 !important;
@@ -774,7 +787,7 @@ html[data-i18n-ready] [data-i18n],
 .form-group.has-error label { color: #b91c1c; }
 .error-msg {
     color: #ef4444;
-    font-size: 10px;
+    font-size: 11px;
     margin-top: 2px;
     display: none;
 }
@@ -795,7 +808,7 @@ html[data-i18n-ready] [data-i18n],
         flex: 0 0 auto;
         width: 100%;
         padding: 16px 20px;
-        min-height: 120px;
+        min-height: 100px;
         justify-content: flex-start;
     }
     .modal-left-box .binary-matrix-stream.aligned-right {
@@ -808,92 +821,9 @@ html[data-i18n-ready] [data-i18n],
         overflow-y: auto;
         justify-content: flex-start;
     }
-    .modal-right-box .form-grid-row {
+    .modal-right-box .form-grid-row,
+    .modal-right-box .form-row {
         flex-direction: column;
         gap: 0;
     }
-}
-
-
-/* ==========================================================================
-   🎯 完美复原图2比例补丁：锁死右侧视窗，内部自然高弹居中 🎯
-   ========================================================================== */
-
-/* 1. 锁死右侧容器为100%一屏，并开启垂直居中布局 */
-.cyber-modal-wrapper .modal-right-box {
-    height: 100% !important;
-    max-height: 100% !important;
-    overflow: hidden !important;
-    overflow-y: hidden !important;
-    box-sizing: border-box !important;
-    padding: 30px 45px 25px 45px !important; /* 恢复图2舒适的宽大内边距 */
-    
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: center !important; /* 确保整体在长面板中完美垂直居中 */
-}
-
-/* 2. 中间夹层和 Form 释放 flex: 1，回归原本的自然高度 */
-.modal-right-box .modal-form-scroll-body,
-.modal-right-box form {
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: center !important;
-    height: auto !important;      /* 绝不强制拉伸，允许元素保持自然饱满度 */
-    flex: none !important;        /* 撤销弹性拉伸，防止输入框变形 */
-    overflow: visible !important;
-}
-
-/* 3. 像素级精准还原输入框与组间距（严格参照图2比例） */
-.modal-right-box h2 {
-    font-size: 24px !important;    /* 恢复大标题气势 */
-    margin: 0 0 4px 0 !important;
-    line-height: 1.2 !important;
-}
-
-.modal-right-box .modal-subtitle {
-    font-size: 13px !important;
-    margin: 0 0 16px 0 !important; /* 给标题下方留出舒适空隙 */
-}
-
-.modal-right-box .form-group {
-    margin-bottom: 10px !important; /* 纵向组间距，不多不少，刚好不滚动 */
-}
-
-.modal-right-box .form-group label {
-    font-size: 12px !important;
-    margin-bottom: 5px !important;  /* Label 与输入框的精致间距 */
-    display: block !important;
-}
-
-/* 4. 恢复输入框原本饱满的图2质感高度 */
-.modal-right-box .form-group input,
-.modal-right-box .form-group select,
-.modal-right-box .custom-single-channel,
-.modal-right-box .custom-single-channel input {
-    height: 34px !important;        /* 告别 28px/32px 的拥挤感，恢复精致的 34px 高度 */
-    line-height: 32px !important;
-    padding: 0 12px !important;
-    font-size: 13px !important;
-}
-
-/* 5. 唯一需要微调的控高点：多行文本框 */
-.modal-right-box .form-group textarea {
-    height: 48px !important;        /* 比普通输入框略高，既能看清多行，又刚好截住总高 */
-    min-height: 48px !important;
-    max-height: 48px !important;
-    padding: 6px 12px !important;
-    font-size: 13px !important;
-}
-
-/* 6. 页脚与按钮定位 */
-.modal-right-box .form-footer-notice {
-    margin: 6px 0 12px 0 !important;
-    font-size: 11px !important;
-}
-
-.modal-right-box .btn-submit-quote {
-    height: 36px !important;        /* 优雅高档的提交按钮高度 */
-    padding: 0 24px !important;
-    font-size: 13px !important;
 }
