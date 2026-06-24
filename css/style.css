@@ -871,3 +871,86 @@ html[data-i18n-ready] [data-i18n],
     min-height: 32px !important;
     max-height: 32px !important;
 }
+
+/* ==========================================================================
+   🎯 完美复原图2比例补丁：锁死右侧视窗，内部自然高弹居中 🎯
+   ========================================================================== */
+
+/* 1. 锁死右侧容器为100%一屏，并开启垂直居中布局 */
+.cyber-modal-wrapper .modal-right-box {
+    height: 100% !important;
+    max-height: 100% !important;
+    overflow: hidden !important;
+    overflow-y: hidden !important;
+    box-sizing: border-box !important;
+    padding: 30px 45px 25px 45px !important; /* 恢复图2舒适的宽大内边距 */
+    
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important; /* 确保整体在长面板中完美垂直居中 */
+}
+
+/* 2. 中间夹层和 Form 释放 flex: 1，回归原本的自然高度 */
+.modal-right-box .modal-form-scroll-body,
+.modal-right-box form {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    height: auto !important;      /* 绝不强制拉伸，允许元素保持自然饱满度 */
+    flex: none !important;        /* 撤销弹性拉伸，防止输入框变形 */
+    overflow: visible !important;
+}
+
+/* 3. 像素级精准还原输入框与组间距（严格参照图2比例） */
+.modal-right-box h2 {
+    font-size: 24px !important;    /* 恢复大标题气势 */
+    margin: 0 0 4px 0 !important;
+    line-height: 1.2 !important;
+}
+
+.modal-right-box .modal-subtitle {
+    font-size: 13px !important;
+    margin: 0 0 16px 0 !important; /* 给标题下方留出舒适空隙 */
+}
+
+.modal-right-box .form-group {
+    margin-bottom: 10px !important; /* 纵向组间距，不多不少，刚好不滚动 */
+}
+
+.modal-right-box .form-group label {
+    font-size: 12px !important;
+    margin-bottom: 5px !important;  /* Label 与输入框的精致间距 */
+    display: block !important;
+}
+
+/* 4. 恢复输入框原本饱满的图2质感高度 */
+.modal-right-box .form-group input,
+.modal-right-box .form-group select,
+.modal-right-box .custom-single-channel,
+.modal-right-box .custom-single-channel input {
+    height: 34px !important;        /* 告别 28px/32px 的拥挤感，恢复精致的 34px 高度 */
+    line-height: 32px !important;
+    padding: 0 12px !important;
+    font-size: 13px !important;
+}
+
+/* 5. 唯一需要微调的控高点：多行文本框 */
+.modal-right-box .form-group textarea {
+    height: 48px !important;        /* 比普通输入框略高，既能看清多行，又刚好截住总高 */
+    min-height: 48px !important;
+    max-height: 48px !important;
+    padding: 6px 12px !important;
+    font-size: 13px !important;
+}
+
+/* 6. 页脚与按钮定位 */
+.modal-right-box .form-footer-notice {
+    margin: 6px 0 12px 0 !important;
+    font-size: 11px !important;
+}
+
+.modal-right-box .btn-submit-quote {
+    height: 36px !important;        /* 优雅高档的提交按钮高度 */
+    padding: 0 24px !important;
+    font-size: 13px !important;
+}
