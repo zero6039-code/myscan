@@ -594,7 +594,7 @@ html[data-i18n-ready] [data-i18n],
 .modal-left-box .binary-matrix-stream.aligned-right {
     margin-top: auto;
     margin-bottom: 4px;
-    font-size: 12px;               /* 从 12px 降到 11px */
+    font-size: 14px;               /* 增大字号 */
     line-height: 1.9;
     text-align: center;
     overflow: visible;
@@ -605,7 +605,7 @@ html[data-i18n-ready] [data-i18n],
     display: flex !important;
     justify-content: center !important;
     flex-wrap: nowrap !important;
-    gap: 8px !important;
+    gap: 12px !important;          /* 增大数字间隔，更协调 */
     overflow: visible !important;
 
 }
@@ -613,6 +613,7 @@ html[data-i18n-ready] [data-i18n],
     flex-shrink: 0 !important;            /* 每个二进制单元格不压缩 */
     white-space: nowrap !important;
     display: inline-block !important;
+    letter-spacing: 0.08em;        /* 微调字符间距，让8位数字更紧凑 */
 }
 
 /* ================= 右侧 - 优化布局，修复间距与对齐 ================= */
