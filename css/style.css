@@ -79,7 +79,7 @@ h1 img {
     position: relative;
     cursor: pointer;
     padding: 25px 0;
-    font-size: 16px;
+    font-size: 18px;          /* 原 16px */
     font-weight: 500;
     color: #cbd5e1;
     transition: color 0.2s;
@@ -119,14 +119,14 @@ h1 img {
 }
 .dropdown-intro h3 {
     margin: 0 0 12px 0;
-    font-size: 22px;
+    font-size: 26px;          /* 原 22px */
     color: #fff;
     font-weight: 600;
     letter-spacing: 0.5px;
 }
 .dropdown-intro p {
     margin: 0;
-    font-size: 13px;
+    font-size: 18px; !important;         /* 原 13px */
     color: #8896a7;
     line-height: 1.6;
     text-align: justify;
@@ -171,13 +171,13 @@ h1 img {
     flex-direction: column;
 }
 .dropdown-link .title {
-    font-size: 15px;
+    font-size: 18px;          /* 原 15px */
     font-weight: 600;
     color: #fff;
     white-space: nowrap;
 }
 .dropdown-link .desc {
-    font-size: 12px;
+    font-size: 16px;          /* 原 12px */
     color: #8896a7;
     margin-top: 4px;
     white-space: nowrap;
@@ -194,13 +194,13 @@ h1 img {
 }
 .disclaimer-item h4 {
     margin: 0;
-    font-size: 14px;
+    font-size: 18px;          /* 原 14px */
     color: #00a6f4;
     font-weight: 600;
 }
 .disclaimer-item p {
     margin: 0;
-    font-size: 12px;
+    font-size: 16px;          /* 原 12px */
     color: #cbd5e1;
     line-height: 1.6;
     text-align: justify;
@@ -581,7 +581,7 @@ html[data-i18n-ready] [data-i18n],
 }
 .modal-left-box .matrix-title {
     margin-top: 20px;     /* 适当增加顶部间距 */
-    font-size: 42px;      /* 原 22px */
+    font-size: 40px;      /* 原 22px */
     font-weight: 700;
     color: #ffffff;
     line-height: 1.2;
@@ -619,9 +619,10 @@ html[data-i18n-ready] [data-i18n],
 
 /* ================= 右侧 - 优化布局，修复间距与对齐 ================= */
 .modal-right-box {
+    position: relative;   /* 新增 */
     flex: 1;
     background: #ffffff;
-    padding: 24px 40px 24px 40px; /* 稍微调整内外边距 */
+    padding: 24px 40px 24px 40px; /* 稍微调整内外边距，原 24px 40px 24px 40px */ 
     display: flex;
     flex-direction: column;
     justify-content: flex-start; /* 改为 flex-start 让内容从顶部开始，不再强制居中 */
