@@ -569,24 +569,25 @@ html[data-i18n-ready] [data-i18n],
     gap: 12px;
 }
 .modal-left-box .brand-header img {
-    width: 44px;
-    height: 44px;
+    width: 100px;          /* 原 44px */
+    height: 100px;         /* 原 44px */
     object-fit: contain;
 }
 .modal-left-box .brand-header span {
-    font-size: 26px;
-    font-weight: 800;
+    font-size: 40px;      /* 原 26px */
+    font-weight: normal;
     color: #ffffff;
     white-space: nowrap;
 }
 .modal-left-box .matrix-title {
-    margin-top: 16px;
-    font-size: 22px;
+    margin-top: 20px;     /* 适当增加顶部间距 */
+    font-size: 42px;      /* 原 22px */
     font-weight: 700;
     color: #ffffff;
     line-height: 1.2;
 }
 .modal-left-box .highlight-red {
+    font-size: 48px;      /* 确保红色部分同步变大 */
     color: #ff4a5a;
     display: block;
     text-shadow: 0 0 20px rgba(255, 74, 90, 0.4);
