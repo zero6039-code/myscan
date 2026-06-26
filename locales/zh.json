@@ -70,6 +70,26 @@
 
   "alert_success": "提交成功！DewSecure 团队将尽快与您取得联系。",
   "alert_error_email": "请检查邮箱地址是否正确。",
-  "alert_error_network": "网络错误，请稍后再试。"
+  "alert_error_network": "网络错误，请稍后再试。",
+
+  "service_basic": "初级安全检测",
+  "service_deep": "深度渗透测试",
+  "service_annual": "年度安全顾问",
+
+  "table_header_service": "服务",
+  "table_header_basic": "初级安全检测",
+  "table_header_deep": "深度渗透测试",
+  "table_header_annual": "年度安全顾问",
+
+  "feature_sast": "漏洞扫描 (SAST/DAST)",
+  "feature_logic": "高级逻辑漏洞测试 / 代码审计",
+  "feature_payment": "支付与数据安全审计",
+  "feature_fix": "修复指南 (Pull Request)",
+  "feature_retest": "复测验证 (闭环服务)",
+  "feature_retest_basic": "",
+  "feature_retest_deep": " (含1次)",
+  "feature_retest_annual": " (无限次)",
+  "feature_support": "优先响应顾问支持",
+  "feature_cert": "DewSecure 认证证书"
   
 }
