@@ -988,3 +988,61 @@ html[data-i18n-ready] [data-i18n],
 .modal-right-box .form-group {
     margin-bottom: 12px !important;
 }
+
+/* ==========================================================================
+   追加：全局动画与表单底部对齐优化管理
+   ========================================================================== */
+
+/* 原 HTML 里的 body 渐入配置移入此处 */
+body {
+    opacity: 0;
+    transition: opacity 0.5s ease-in;
+}
+body.is-ready {
+    opacity: 1;
+}
+
+/* “借助专业的 Web3...” 副标题往上移一点 */
+.modal-right-box .modal-subtitle {
+    margin-top: -4px !important;    /* 负外边距使其往上微调 */
+    margin-bottom: 20px !important; /* 控制好与下方表格的间距 */
+}
+
+/* 底部包裹层：横向弹性布局 */
+.form-actions-wrapper {
+    display: flex !important;
+    align-items: center !important;       /* 垂直居中对齐 */
+    justify-content: space-between !important; /* 左右两端分布 */
+    gap: 20px !important;                 /* 防止两部分挨得太近 */
+    margin-top: 24px !important;          /* 增加与上方表单的间距 */
+}
+
+/* 左侧提示文字基础微调 */
+.form-actions-wrapper .form-footer-notice {
+    margin: 0 !important;                 /* 清除多余的外边距干扰 */
+    text-align: left !important;
+    flex: 1 !important;                   /* 自动铺满左边剩余空间 */
+}
+
+/* 右侧提交按钮行微调 */
+.form-actions-wrapper .form-submit-row {
+    margin: 0 !important;                 /* 移除以往包裹层的强制 margin */
+    display: block !important;
+    flex-shrink: 0 !important;            /* 防止按钮被挤压变形 */
+}
+
+/* 移动端媒体查询：在小屏幕上自动变成上下两排 */
+@media (max-width: 768px) {
+    .form-actions-wrapper {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 12px !important;
+    }
+    .form-actions-wrapper .form-submit-row {
+        width: 100% !important;
+    }
+    .form-actions-wrapper .btn-submit-quote {
+        width: 100% !important;
+        justify-content: center !important;
+    }
+}
