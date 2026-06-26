@@ -945,3 +945,46 @@ html[data-i18n-ready] [data-i18n],
     font-size: 14px;
     opacity: 0.4;
 }
+
+/* ============================================================
+   🟢 针对一页无滚动条展示 & 整个对比表格上移的功能优化
+   ============================================================ */
+
+/* 1. 解除右侧区域的局部滚动，让其完全展开平铺 */
+.modal-right-box {
+    overflow-y: visible !important;
+    height: auto !important;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-form-scroll-body {
+    overflow-y: visible !important;
+    height: auto !important;
+    max-height: none !important;
+    padding-right: 0 !important; /* 隐藏以前为了滚动条预留的右侧间距 */
+}
+
+/* 2. 让整个大弹窗的包装盒自适应内部高度，杜绝内部出现独立滚动条 */
+.cyber-modal-wrapper {
+    height: auto !important;
+    max-height: 90vh !important; /* 限制最高不超过屏幕 90%，防止溢出屏幕 */
+    overflow-y: auto !important;  /* 如果屏幕实在太矮，只让最外层统一出一个平滑滚动条，内部表格和表单决不割裂 */
+}
+
+/* 3. 产品功能对比表格向上移动，同时微调内边距让其排版更紧凑 */
+.product-matrix-table-wrapper {
+    margin-top: -4px !important;    /* 负外边距：强制表格整体向上移动，缩短和标题的空隙 */
+    margin-bottom: 24px !important; /* 增大下方外边距，自然地把下方表单资料栏目往下移动推开 */
+}
+
+.product-matrix-table th, 
+.product-matrix-table td {
+    padding: 8px 10px !important;   /* 稍微压缩单元格上下高度，使得在一页内完全平铺展开 */
+    font-size: 13px !important;
+}
+
+/* 4. 微调下方输入框之间的行间距，确保紧凑且一目了然 */
+.modal-right-box .form-group {
+    margin-bottom: 12px !important;
+}
