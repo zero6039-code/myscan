@@ -622,7 +622,7 @@ html[data-i18n-ready] [data-i18n],
     position: relative;   /* 新增 */
     flex: 1;
     background: #ffffff;
-    padding: 24px 40px 24px 40px; /* 稍微调整内外边距，原 24px 40px 24px 40px */ 
+    padding: 12px 40px 24px 40px; /* 稍微调整内外边距，原 24px 40px 24px 40px */ 
     display: flex;
     flex-direction: column;
     justify-content: flex-start; /* 改为 flex-start 让内容从顶部开始，不再强制居中 */
@@ -977,7 +977,7 @@ html[data-i18n-ready] [data-i18n],
 
 /* 3. 产品功能对比表格向上移动，同时微调内边距让其排版更紧凑 */
 .product-matrix-table-wrapper {
-    margin-top: -4px !important;    /* 负外边距：强制表格整体向上移动，缩短和标题的空隙 */
+    margin-top: -6px !important;    /* 原 -4px */
     margin-bottom: 24px !important; /* 增大下方外边距，自然地把下方表单资料栏目往下移动推开 */
 }
 
@@ -1000,8 +1000,8 @@ html[data-i18n-ready] [data-i18n],
 
 /* “借助专业的 Web3...” 副标题往上移一点 */
 .modal-right-box .modal-subtitle {
-    margin-top: -4px !important;    /* 负外边距使其往上微调 */
-    margin-bottom: 20px !important; /* 控制好与下方表格的间距 */
+    margin-top: -8px !important;   /* 原 -4px，再上移一点 */
+    margin-bottom: 16px !important; /* 控制与表格的间距 */
 }
 
 /* 底部包裹层：横向弹性布局 */
