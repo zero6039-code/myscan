@@ -70,6 +70,26 @@
 
   "alert_success": "Berjaya! Pasukan DewSecure akan menghubungi anda sebentar lagi.",
   "alert_error_email": "Sila semak sama ada alamat e-mel betul.",
-  "alert_error_network": "Ralat rangkaian, sila cuba lagi kemudian."
+  "alert_error_network": "Ralat rangkaian, sila cuba lagi kemudian.",
+
+  "service_basic": "Pemeriksaan Keselamatan Asas",
+  "service_deep": "Ujian Penembusan Mendalam",
+  "service_annual": "Penasihat Keselamatan Tahunan",
+
+  "table_header_service": "Perkhidmatan",
+  "table_header_basic": "Pemeriksaan Asas",
+  "table_header_deep": "Ujian Penembusan",
+  "table_header_annual": "Penasihat Tahunan",
+
+  "feature_sast": "Imbasan Kerentanan (SAST/DAST)",
+  "feature_logic": "Ujian Pepijat Logik / Audit Kod",
+  "feature_payment": "Audit Keselamatan Pembayaran & Data",
+  "feature_fix": "Panduan Pembaikan (Pull Request)",
+  "feature_retest": "Ujian Semula (Gelung Tertutup)",
+  "feature_retest_basic": "",
+  "feature_retest_deep": " (1 kali)",
+  "feature_retest_annual": " (Tidak terhad)",
+  "feature_support": "Sokongan Perunding Keutamaan",
+  "feature_cert": "Pensijilan DewSecure"
   
 }
