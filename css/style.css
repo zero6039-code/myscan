@@ -458,11 +458,6 @@ h1 img {
     to { opacity: 1; transform: translateY(0); }
 }
 
-[data-i18n] {
-    opacity: 0;
-    transition: opacity 0.15s ease-in-out;
-}
-
 html[data-i18n-ready] [data-i18n],
 .i18n-ready [data-i18n] {
     opacity: 1;
