@@ -1,7 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark" data-i18n-ready="true">
-<head>
-    <meta charset="UTF-8">
+<html lang="en" data-theme="dark" data-i18n-ready="true"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     
     <title>DewSecure</title>
@@ -13,27 +12,69 @@
     <meta property="og:type" content="website">
     <meta property="og:title" content="DewSecure - Web &amp; Blockchain Security">
     <meta property="og:description" content="提供自动化漏洞扫描与高阶源码安全审计服务。助力企业与去中心化协议打造安全闭环。">
-    <meta property="og:image" content="DewSecure.png">
+    <meta property="og:image" content="https://dewsecure.vercel.app/DewSecure.png">
+    <meta property="og:url" content="https://dewsecure.vercel.app/">
 
-    <link class="icon" type="image/png" href="DewSecure.png" sizes="128x128">
+    <link class="icon" type="image/png" href="./DewSecure_files/DewSecure.png" sizes="128x128">
     
-    <link class="stylesheet" href="css/style.css">
-    <link class="stylesheet" href="css/all.css">
+    <link class="stylesheet" href="./DewSecure_files/style.css">
+    <link class="stylesheet" href="./DewSecure_files/all.css">
 
     <style>
         body {
             opacity: 0;
             transition: opacity 0.5s ease-in;
         }
+
+        /* ============================================================
+           🟢 完美体验：实现单页完全铺满展开、无滚动条割裂感、表格上移
+           ============================================================ */
+        
+        /* 1. 彻底打破弹窗内部的硬性滚动条限制，让内容自由铺展流式分布 */
+        .modal-right-box {
+            overflow-y: visible !important;
+            height: auto !important;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-form-scroll-body {
+            overflow-y: visible !important;
+            height: auto !important;
+            max-height: none !important;
+            padding-right: 0 !important; /* 移除为了右侧滚动条留白带来的偏心视觉差 */
+        }
+
+        /* 2. 让大弹窗壳子自适应内部内容高度，最大高度不超过屏幕90vh */
+        .cyber-modal-wrapper {
+            height: auto !important;
+            max-height: 90vh !important;
+            overflow-y: auto !important; /* 仅当极端小屏幕时，由最外层统一出一个平滑大滚动，内部决不割裂 */
+        }
+
+        /* 3. 对比表格向上移动贴近标题，并微调单元格间距达到紧凑展开的效果 */
+        .product-matrix-table-wrapper {
+            margin-top: -12px !important;   /* 负边距：推动产品对比框完美向上移动 */
+            margin-bottom: 24px !important; /* 加大下边距：如有必要将下面的资料栏目顺畅地往下推移 */
+        }
+
+        .product-matrix-table th, 
+        .product-matrix-table td {
+            padding: 8px 10px !important;   /* 精简单元格上下空间，一行完全平铺 */
+            font-size: 13px !important;
+        }
+
+        /* 4. 微调资料表单输入框行距，使其紧凑精美 */
+        .modal-right-box .form-group {
+            margin-bottom: 12px !important;
+        }
     </style>
 </head>
-<body style="opacity: 1;" class="is-ready">
-    <canvas id="bg-canvas" width="1920" height="945" style="position: fixed; top: 0px; left: 0px; width: 1920px; height: 945px; z-index: -1; pointer-events: none;"></canvas>
-    
+<body style="opacity: 1;" class="is-ready"><canvas id="bg-canvas" width="1920" height="945" style="position: fixed; top: 0px; left: 0px; width: 1920px; height: 945px; z-index: -1; pointer-events: none;"></canvas>
     <div class="container">
         <header class="header">
             <div class="header-left">
-                <h1><img src="DewSecure.png" alt="Logo"> DewSecure</h1>
+                <h1><img src="./DewSecure_files/DewSecure.png" alt="Logo"> DewSecure</h1>
             </div>
 
             <nav class="nav-menu">
@@ -42,11 +83,11 @@
                     <div class="mega-dropdown">
                         <div class="dropdown-intro">
                             <h3 data-i18n="sol_intro_title">解决方案</h3>
-                            <p data-i18n="sol_intro_desc">为您 中小企业网站或个人网站提供安全和合规解决方案与风险管理。</p>
+                            <p data-i18n="sol_intro_desc">为您 中小企业网站或个人网站提供安全和合规解决方案与风险 management。</p>
                         </div>
                         
                         <div class="dropdown-grid">
-                            <a href="#" class="dropdown-link">
+                            <a href="https://dewsecure.zero6039.workers.dev/#" class="dropdown-link">
                                 <div class="icon-box"><i class="fa-solid fa-code"></i></div>
                                 <div class="text-box">
                                     <span class="title" data-i18n="sol_item1_title">代码审核</span>
@@ -54,7 +95,7 @@
                                 </div>
                             </a>
 
-                            <a href="#" class="dropdown-link">
+                            <a href="https://dewsecure.zero6039.workers.dev/#" class="dropdown-link">
                                 <div class="icon-box"><i class="fa-solid fa-crosshairs"></i></div>
                                 <div class="text-box">
                                     <span class="title" data-i18n="sol_item2_title">渗透测试</span>
@@ -62,7 +103,7 @@
                                 </div>
                             </a>
 
-                            <a href="#" class="dropdown-link">
+                            <a href="https://dewsecure.zero6039.workers.dev/#" class="dropdown-link">
                                 <div class="icon-box"><i class="fa-solid fa-calculator"></i></div>
                                 <div class="text-box">
                                     <span class="title" data-i18n="sol_item3_title">形式化验证</span>
@@ -70,7 +111,7 @@
                                 </div>
                             </a>
 
-                            <a href="#" class="dropdown-link">
+                            <a href="https://dewsecure.zero6039.workers.dev/#" class="dropdown-link">
                                 <div class="icon-box"><i class="fa-solid fa-file-invoice"></i></div>
                                 <div class="text-box">
                                     <span class="title" data-i18n="sol_item4_title">审计报告</span>
@@ -78,7 +119,7 @@
                                 </div>
                             </a>
 
-                            <a href="#" class="dropdown-link">
+                            <a href="https://dewsecure.zero6039.workers.dev/#" class="dropdown-link">
                                 <div class="icon-box"><i class="fa-solid fa-comments"></i></div>
                                 <div class="text-box">
                                     <span class="title" data-i18n="sol_item5_title">安全咨询服务</span>
@@ -139,10 +180,7 @@
 
             <div class="header-right">
                 <div class="nav-stats">
-                    <div class="counter-runner" id="stats-counter" data-target="116">
-                        <div class="counter-digit-slot" style="transform: translateY(-336px);"><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span></div>
-                        <div class="counter-digit-slot" style="transform: translateY(-504px);"><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span></div>
-                    </div>
+                    <div class="counter-runner" id="stats-counter" data-target="116"><div class="counter-digit-slot" style="transform: translateY(-336px);"><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span></div><div class="counter-digit-slot" style="transform: translateY(-504px);"><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span></div></div>
                     <span class="label" data-i18n="stats_label">项目审计</span>
                 </div>
 
@@ -163,7 +201,7 @@
                  <p class="hero-desc" data-i18n="hero_desc">DewSecure 是由精英专家团队打造的顶级 Web3 安全平台，集成了深度渗透测试、高级源代码审计和全面的安全架构。将您的审计工作委托给我们，确保您的项目和网络生态系统在强大可靠的环境中持续蓬勃发展。</p>
                  
                  <div class="hero-action">
-                     <a href="#contact" class="btn-cyber-red" data-i18n="hero_btn_quote">咨询专家</a>
+                     <a href="https://dewsecure.zero6039.workers.dev/#contact" class="btn-cyber-red" data-i18n="hero_btn_quote">咨询专家</a>
                  </div>
             </div>
         </main>
@@ -175,7 +213,7 @@
             
             <div class="modal-left-box">
                 <div class="brand-header">
-                    <img src="DewSecure.png" class="brand-logo-img" alt="Logo">
+                    <img src="./DewSecure_files/DewSecure.png" class="brand-logo-img" alt="Logo">
                     <span data-i18n="page_title" class="brand-logo-text">DewSecure</span>
                 </div>
                 
@@ -197,7 +235,7 @@
 
             <div class="modal-right-box">
                 <div class="modal-form-scroll-body">
-                    <h2 data-i18n="modal_title" style="margin-bottom: 12px;">立刻保护您的项目</h2>
+                    <h2 data-i18n="modal_title" style="margin-bottom: 16px;">立刻保护您的项目</h2>
                     
                     <div class="product-matrix-table-wrapper">
                         <table class="product-matrix-table">
@@ -255,7 +293,6 @@
                             </tbody>
                         </table>
                     </div>
-                    
                     <form id="quote-form" novalidate="">
                         <div class="form-grid-row">
                             <div class="form-group">
@@ -327,8 +364,8 @@
         <span id="alert-network-error" data-i18n="alert_error_network">网络错误，请稍后再试。</span>
     </div>
 
-    <script src="js/bg-canvas.js"></script>
-    <script src="js/app.js"></script>
-    <script src="js/i18n.js"></script>
-</body>
-</html>
+    <script src="./DewSecure_files/bg-canvas.js.download"></script>
+    <script src="./DewSecure_files/app.js.download"></script>
+    <script src="./DewSecure_files/i18n.js.download"></script>
+
+</body></html>
