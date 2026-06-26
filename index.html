@@ -201,51 +201,51 @@
                         <table class="product-matrix-table">
                             <thead>
                                 <tr>
-                                    <th style="width: 40%;">服务</th>
-                                    <th style="width: 20%;">初级安全检测</th>
-                                    <th style="width: 20%;">深度渗透测试</th>
-                                    <th style="width: 20%;">年度安全顾问</th>
+                                    <th style="width: 40%;" data-i18n="table_header_service">服务</th>
+                                    <th style="width: 20%;" data-i18n="table_header_basic">初级安全检测</th>
+                                    <th style="width: 20%;" data-i18n="table_header_deep">深度渗透测试</th>
+                                    <th style="width: 20%;" data-i18n="table_header_annual">年度安全顾问</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td class="feature-name">漏洞扫描 (SAST/DAST)</td>
+                                    <td class="feature-name" data-i18n="feature_sast">漏洞扫描 (SAST/DAST)</td>
                                     <td class="status-yes"><i class="fa-solid fa-check"></i></td>
                                     <td class="status-yes"><i class="fa-solid fa-check"></i></td>
                                     <td class="status-yes"><i class="fa-solid fa-check"></i></td>
                                 </tr>
                                 <tr>
-                                    <td class="feature-name">高级逻辑漏洞测试 / 代码审计</td>
+                                    <td class="feature-name" data-i18n="feature_logic">高级逻辑漏洞测试 / 代码审计</td>
                                     <td class="status-no"><i class="fa-solid fa-xmark"></i></td>
                                     <td class="status-yes"><i class="fa-solid fa-check"></i></td>
                                     <td class="status-yes"><i class="fa-solid fa-check"></i></td>
                                 </tr>
                                 <tr>
-                                    <td class="feature-name">支付与数据安全审计</td>
+                                    <td class="feature-name" data-i18n="feature_payment">支付与数据安全审计</td>
                                     <td class="status-no"><i class="fa-solid fa-xmark"></i></td>
                                     <td class="status-yes"><i class="fa-solid fa-check"></i></td>
                                     <td class="status-yes"><i class="fa-solid fa-check"></i></td>
                                 </tr>
                                 <tr>
-                                    <td class="feature-name">修复指南 (Pull Request)</td>
+                                    <td class="feature-name" data-i18n="feature_fix">修复指南 (Pull Request)</td>
                                     <td class="status-yes"><i class="fa-solid fa-check"></i></td>
                                     <td class="status-yes"><i class="fa-solid fa-check"></i></td>
                                     <td class="status-yes"><i class="fa-solid fa-check"></i></td>
                                 </tr>
                                 <tr>
-                                    <td class="feature-name">复测验证 (闭环服务)</td>
+                                    <td class="feature-name" data-i18n="feature_retest">复测验证 (闭环服务)</td>
                                     <td class="status-no"><i class="fa-solid fa-xmark"></i></td>
-                                    <td class="status-yes"><span><i class="fa-solid fa-check"></i> (含1次)</span></td>
-                                    <td class="status-yes"><span><i class="fa-solid fa-check"></i> (无限次)</span></td>
+                                    <td class="status-yes"><span><i class="fa-solid fa-check"></i> <span data-i18n="feature_retest_deep">(含1次)</span></span></td>
+                                    <td class="status-yes"><span><i class="fa-solid fa-check"></i> <span data-i18n="feature_retest_annual">(无限次)</span></span></td>
                                 </tr>
                                 <tr>
-                                    <td class="feature-name">优先响应顾问支持</td>
+                                    <td class="feature-name" data-i18n="feature_support">优先响应顾问支持</td>
                                     <td class="status-no"><i class="fa-solid fa-xmark"></i></td>
                                     <td class="status-no"><i class="fa-solid fa-xmark"></i></td>
                                     <td class="status-yes"><i class="fa-solid fa-check"></i></td>
                                 </tr>
                                 <tr>
-                                    <td class="feature-name">DewSecure 认证证书</td>
+                                    <td class="feature-name" data-i18n="feature_cert">DewSecure 认证证书</td>
                                     <td class="status-yes"><i class="fa-solid fa-check"></i></td>
                                     <td class="status-yes"><i class="fa-solid fa-check"></i></td>
                                     <td class="status-yes"><i class="fa-solid fa-check"></i></td>
@@ -294,7 +294,7 @@
                             <div class="form-group">
                                 <label data-i18n="form_lbl_service">服务意向</label>
                                 <select id="form-service">
-                                    <option value="Select a service" data-i18n="form_opt_default">选择一项服务</option>
+                                    <option value="" data-i18n="form_opt_default">选择意向服务</option>
                                     <option value="basic" data-i18n="service_basic">初级安全检测</option>
                                     <option value="deep" data-i18n="service_deep">深度渗透测试</option>
                                     <option value="annual" data-i18n="service_annual">年度安全顾问</option>
