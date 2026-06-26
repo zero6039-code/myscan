@@ -458,6 +458,11 @@ h1 img {
     to { opacity: 1; transform: translateY(0); }
 }
 
+[data-i18n] {
+    opacity: 0;
+    transition: opacity 0.15s ease-in-out;
+}
+
 html[data-i18n-ready] [data-i18n],
 .i18n-ready [data-i18n] {
     opacity: 1;
@@ -997,13 +1002,6 @@ html[data-i18n-ready] [data-i18n],
    ========================================================================== */
 
 /* 原 HTML 里的 body 渐入配置移入此处 */
-body {
-    opacity: 0;
-    transition: opacity 0.5s ease-in;
-}
-body.is-ready {
-    opacity: 1;
-}
 
 /* “借助专业的 Web3...” 副标题往上移一点 */
 .modal-right-box .modal-subtitle {
