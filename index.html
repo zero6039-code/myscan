@@ -17,56 +17,13 @@
 
     <link class="icon" type="image/png" href="./DewSecure_files/DewSecure.png" sizes="128x128">
     
-    <link class="stylesheet" href="./DewSecure_files/style.css">
-    <link class="stylesheet" href="./DewSecure_files/all.css">
+    <link rel="stylesheet" href="./DewSecure_files/style.css">
+    <link rel="stylesheet" href="./DewSecure_files/all.css">
 
     <style>
         body {
             opacity: 0;
             transition: opacity 0.5s ease-in;
-        }
-
-        /* ============================================================
-           🟢 完美体验：实现单页完全铺满展开、无滚动条割裂感、表格上移
-           ============================================================ */
-        
-        /* 1. 彻底打破弹窗内部的硬性滚动条限制，让内容自由铺展流式分布 */
-        .modal-right-box {
-            overflow-y: visible !important;
-            height: auto !important;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .modal-form-scroll-body {
-            overflow-y: visible !important;
-            height: auto !important;
-            max-height: none !important;
-            padding-right: 0 !important; /* 移除为了右侧滚动条留白带来的偏心视觉差 */
-        }
-
-        /* 2. 让大弹窗壳子自适应内部内容高度，最大高度不超过屏幕90vh */
-        .cyber-modal-wrapper {
-            height: auto !important;
-            max-height: 90vh !important;
-            overflow-y: auto !important; /* 仅当极端小屏幕时，由最外层统一出一个平滑大滚动，内部决不割裂 */
-        }
-
-        /* 3. 对比表格向上移动贴近标题，并微调单元格间距达到紧凑展开的效果 */
-        .product-matrix-table-wrapper {
-            margin-top: -12px !important;   /* 负边距：推动产品对比框完美向上移动 */
-            margin-bottom: 24px !important; /* 加大下边距：如有必要将下面的资料栏目顺畅地往下推移 */
-        }
-
-        .product-matrix-table th, 
-        .product-matrix-table td {
-            padding: 8px 10px !important;   /* 精简单元格上下空间，一行完全平铺 */
-            font-size: 13px !important;
-        }
-
-        /* 4. 微调资料表单输入框行距，使其紧凑精美 */
-        .modal-right-box .form-group {
-            margin-bottom: 12px !important;
         }
     </style>
 </head>
@@ -83,7 +40,7 @@
                     <div class="mega-dropdown">
                         <div class="dropdown-intro">
                             <h3 data-i18n="sol_intro_title">解决方案</h3>
-                            <p data-i18n="sol_intro_desc">为您 中小企业网站或个人网站提供安全和合规解决方案与风险 management。</p>
+                            <p data-i18n="sol_intro_desc">为您 中小企业网站或个人网站提供安全和合规解决方案与风险管理。</p>
                         </div>
                         
                         <div class="dropdown-grid">
@@ -235,16 +192,17 @@
 
             <div class="modal-right-box">
                 <div class="modal-form-scroll-body">
-                    <h2 data-i18n="modal_title" style="margin-bottom: 16px;">立刻保护您的项目</h2>
+                    <h2 data-i18n="modal_title">立刻保护您的项目</h2>
+                    <p class="modal-subtitle" data-i18n="modal_subtitle">借助专业的 Web3 安全提供商来增强您的项目。</p>
                     
                     <div class="product-matrix-table-wrapper">
                         <table class="product-matrix-table">
                             <thead>
                                 <tr>
-                                    <th style="width: 34%;">功能</th>
-                                    <th style="width: 22%;">产品一：基础体检</th>
-                                    <th style="width: 22%;">产品二：深度渗透</th>
-                                    <th style="width: 22%;">产品三：年度顾问</th>
+                                    <th style="width: 40%;">功能</th>
+                                    <th style="width: 20%;">产品一：基础体检</th>
+                                    <th style="width: 20%;">产品二：深度渗透</th>
+                                    <th style="width: 20%;">产品三：年度顾问</th>
                                 </tr>
                             </thead>
                             <tbody>
