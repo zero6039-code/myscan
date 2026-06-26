@@ -4,30 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">  
     <title>DewSecure</title>
+    
     <!-- ⚡ 立即隐藏所有翻译文本，防止闪现 -->
     <style>
         .i18n-loading [data-i18n] {
             visibility: hidden !important;
         }
-     </style>
+    </style>
+
     <meta name="description" content="DewSecure Web Security Services">
     <meta name="keywords" content="DewSecure, 安全审计, 漏洞扫描, DeFi安全, 智能合约审计, 链上追踪, Web安全, 区块链安全">
     <meta name="author" content="DewSecure Team">
     <meta name="robots" content="index, follow">
 
     <meta property="og:type" content="website">
-    <meta property="og:title" content="DewSecure - Web &amp; Blockchain Security">
+    <meta property="og:title" content="DewSecure - Web & Blockchain Security">
     <meta property="og:description" content="提供自动化漏洞扫描与高阶源码安全审计服务。助力企业与去中心化协议打造安全闭环。">
     <meta property="og:image" content="DewSecure.png">
 
-    <link class="icon" type="image/png" href="DewSecure.png" sizes="128x128">
+    <link rel="icon" type="image/png" href="DewSecure.png" sizes="128x128">
     
-    <!-- 🟢 路径修正：匹配您的 css 文件夹 -->
+    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0-beta3/css/all.css">
-
 </head>
-<body style="opacity: 1;" class="is-ready">
-    <canvas id="bg-canvas" width="1920" height="945" style="position: fixed; top: 0px; left: 0px; width: 1920px; height: 945px; z-index: -1; pointer-events: none;"></canvas>
+<body>
+    <canvas id="bg-canvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none;"></canvas>
     
     <div class="container">
         <header class="header">
@@ -41,7 +42,7 @@
                     <div class="mega-dropdown">
                         <div class="dropdown-intro">
                             <h3 data-i18n="sol_intro_title">解决方案</h3>
-                            <p data-i18n="sol_intro_desc">为您 中小企业网站或个人网站提供安全和合规解决方案与风险管理。</p>
+                            <p data-i18n="sol_intro_desc">为您中小企业网站或个人网站提供安全和合规解决方案与风险管理。</p>
                         </div>
                         
                         <div class="dropdown-grid">
@@ -113,11 +114,11 @@
                             </div>
                             <div class="disclaimer-item">
                                 <h4 data-i18n="disc_t2">2. 技术局限性</h4>
-                                <p data-i18n="disc_d2">尽管 DewSecure 采取专业的技术手段 and 严谨的评估流程，但由于网络攻击手段的不断演变及系统环境的复杂性，我们无法保证经过测试的系统在未来绝对不存在任何安全漏洞或风险。</p>
+                                <p data-i18n="disc_d2">尽管 DewSecure 采取专业的技术手段与严谨的评估流程，但由于网络攻击手段的不断演变及系统环境的复杂性，我们无法保证经过测试的系统在未来绝对不存在任何安全漏洞或风险。</p>
                             </div>
                             <div class="disclaimer-item">
                                 <h4 data-i18n="disc_t3">3. 第三方责任</h4>
-                                <p data-i18n="disc_d3">本服务涉及的测试过程可能涉及对客户 system、数据或网络的访问。DewSecure 不对因第三方 product、服务或客户未及时修补漏洞而导致的任何损失承担责任。</p>
+                                <p data-i18n="disc_d3">本服务涉及的测试过程可能涉及对客户系统、数据或网络的访问。DewSecure 不对因第三方产品、服务或客户未及时修补漏洞而导致的任何损失承担责任。</p>
                             </div>
                             <div class="disclaimer-item">
                                 <h4 data-i18n="disc_t4">4. 网站内容</h4>
@@ -138,10 +139,7 @@
 
             <div class="header-right">
                 <div class="nav-stats">
-                    <div class="counter-runner" id="stats-counter" data-target="116">
-                        <div class="counter-digit-slot" style="transform: translateY(-336px);"><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span></div>
-                        <div class="counter-digit-slot" style="transform: translateY(-504px);"><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span></div>
-                    </div>
+                    <div class="counter-runner" id="stats-counter" data-target="116"></div>
                     <span class="label" data-i18n="stats_label">项目审计</span>
                 </div>
 
@@ -170,7 +168,7 @@
 
     <div id="quote-modal" class="cyber-modal-overlay">
         <div class="cyber-modal-wrapper">
-            <button class="modal-close-btn" id="modal-close-btn" aria-label="Close Modal">×</button>
+            <button class="modal-close-btn" id="modal-close-btn" aria-label="Close Modal">&times;</button>
             
             <div class="modal-left-box">
                 <div class="brand-header">
@@ -199,7 +197,6 @@
                     <h2 data-i18n="modal_title">立刻保护您的项目</h2>
                     <p class="modal-subtitle" data-i18n="modal_subtitle">借助专业的 Web3 安全提供商来增强您的项目。</p>
                     
-                    <!-- ==================== 产品功能对比矩阵表格 ==================== -->
                     <div class="product-matrix-table-wrapper">
                         <table class="product-matrix-table">
                             <thead>
@@ -257,7 +254,7 @@
                         </table>
                     </div>
                     
-                    <form id="quote-form" novalidate="">
+                    <form id="quote-form" novalidate>
                         <div class="form-grid-row">
                             <div class="form-group">
                                 <label class="required-label" data-i18n="form_lbl_company">项目/公司</label>
@@ -309,12 +306,13 @@
                             <textarea id="form-info" rows="3" maxlength="500" placeholder="请详细介绍您的项目。分享项目详情，相关链接或任何疑问。（500字以内）" data-i18n-placeholder="form_plh_info"></textarea>
                         </div>
 
-                        <p class="form-footer-notice" data-i18n="form_notice">DewSecure 安全专家将审阅您的请求，并尽快与您联系。</p>
-
-                        <div class="form-submit-row">
-                            <button type="submit" class="btn-submit-quote">
-                                <span data-i18n="hero_btn_quote">咨询专家</span> <i class="fa-solid fa-arrow-right"></i>
-                            </button>
+                        <div class="form-actions-wrapper">
+                            <p class="form-footer-notice" data-i18n="form_notice">DewSecure 安全专家将审阅您的请求，并尽快与您联系。</p>
+                            <div class="form-submit-row">
+                                <button type="submit" class="btn-submit-quote">
+                                    <span data-i18n="hero_btn_quote">咨询专家</span> <i class="fa-solid fa-arrow-right"></i>
+                                </button>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -322,15 +320,15 @@
         </div>
     </div>
 
-    <div hidden="">
+    <div hidden>
         <span id="alert-success" data-i18n="alert_success">提交成功！DewSecure 团队将尽快与您取得联系。</span>
         <span id="alert-email-error" data-i18n="alert_error_email">请检查邮箱地址是否正确。</span>
         <span id="alert-network-error" data-i18n="alert_error_network">网络错误，请稍后再试。</span>
     </div>
 
-    <!-- 🟢 路径修正：匹配您的 js 文件夹 -->
+    <!-- 脚本顺序：背景 → 国际化（翻译必须最先初始化） → 主业务 -->
     <script src="js/bg-canvas.js"></script>
-    <script src="js/app.js"></script>
     <script src="js/i18n.js"></script>
+    <script src="js/app.js"></script>
 </body>
 </html>
