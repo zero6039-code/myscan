@@ -642,10 +642,10 @@ html[data-i18n-ready] [data-i18n],
 
 /* 按钮容器：强制右下角对齐 */
 .modal-right-box .form-submit-row {
-    display: flex;
-    justify-content: flex-end;   /* 水平靠右 */
-    margin-top: auto !important; /* 强制推到底部 */
-    padding-top: 10px;
+    display: flex; !important;
+    justify-content: flex-end; !important;  /* 水平靠右 */
+    margin-top: 0 !important;      /* 不再自动推底 */
+    padding-top: 0 !important;     /* 去掉多余上内边距 */
 }
 
 /* 修正 label 的一些间距 */
@@ -1017,7 +1017,7 @@ body.is-ready {
     align-items: center !important;       /* 垂直居中对齐 */
     justify-content: space-between !important; /* 左右两端分布 */
     gap: 20px !important;                 /* 防止两部分挨得太近 */
-    margin-top: 24px !important;          /* 增加与上方表单的间距 */
+    margin-top: 8px !important;          /* 增加与上方表单的间距 */
 }
 
 /* 左侧提示文字基础微调 */
