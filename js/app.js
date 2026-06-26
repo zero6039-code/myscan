@@ -1,6 +1,6 @@
 // DewSecure 最终稳定版（4列二进制跳动 + FormData 邮件 + 多语言）
 document.addEventListener('DOMContentLoaded', () => {
-    document.body.style.opacity = '1';
+
     triggerStatsCounter();
     initQuoteModal();
     initBinaryStream();
