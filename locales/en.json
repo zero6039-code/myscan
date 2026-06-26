@@ -61,7 +61,7 @@
   "form_lbl_service": "Service Intent",
   "form_opt_default": "Select a service",
   "form_lbl_info": "Other Information",
-  "form_plh_info": "Please introduce your project in detail and Linked (within 500 words).",
+  "form_plh_info": "Please introduce your project in detail and Linked (within 2000 words).",
   "form_notice": "DewSecure security experts will review your request and contact you as soon as possible.",
   "btn_submit": "Submit Request",
   
