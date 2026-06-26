@@ -70,6 +70,27 @@
 
   "alert_success": "Submission successful! The DewSecure team will contact you shortly.",
   "alert_error_email": "Please check if the email address is correct.",
-  "alert_error_network": "Network error, please try again later."
+  "alert_error_network": "Network error, please try again later.",
+
+  "service_basic": "Basic Security Check",
+  "service_deep": "Deep Penetration Test",
+  "service_annual": "Annual Security Advisor",
+
+  "table_header_service": "Service",
+  "table_header_basic": "Basic Security Check",
+  "table_header_deep": "Deep Penetration Test",
+  "table_header_annual": "Annual Security Advisor",
+
+  "feature_sast": "Vulnerability Scan (SAST/DAST)",
+  "feature_logic": "Advanced Logic Bug / Code Audit",
+  "feature_payment": "Payment & Data Security Audit",
+  "feature_fix": "Fix Guide (Pull Request)",
+  "feature_retest": "Re-test (Closed-loop)",
+  "feature_retest_basic": "",
+  "feature_retest_deep": " (1 time)",
+  "feature_retest_annual": " (Unlimited)",
+  "feature_support": "Priority Consultant Support",
+  "feature_cert": "DewSecure Certification"
+  
   
 }
