@@ -642,10 +642,10 @@ html[data-i18n-ready] [data-i18n],
 
 /* 按钮容器：强制右下角对齐 */
 .modal-right-box .form-submit-row {
-    display: flex;
-    justify-content: flex-end;   /* 水平靠右 */
-    margin-top: auto !important; /* 强制推到底部 */
-    padding-top: 10px;
+    display: flex; !important;
+    justify-content: flex-end; !important;  /* 水平靠右 */
+    margin-top: 0 !important;      /* 不再自动推底 */
+    padding-top: 0 !important;     /* 去掉多余上内边距 */
 }
 
 /* 修正 label 的一些间距 */
@@ -718,18 +718,21 @@ html[data-i18n-ready] [data-i18n],
 }
 
 .modal-right-box .form-footer-notice {
-    margin: 4px 0 6px 0;
+    margin: 10px 0 4px 0 !important;   /* 上间距10px，下间距4px */
+    margin-bottom: 4px !important; /* 保持与按钮的微小间隙 */
     font-size: 12px;
     color: #64748b;
 }
 
 /* ★★★ 按钮向右下角靠拢 ★★★ */
 .modal-right-box .form-submit-row {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 8px !important;      /* 原 0，改为 8px 让按钮下移 */
-    padding-right: 0;     /* 确保完全靠右 */
+    display: flex !important;
+    justify-content: flex-end !important;
+    margin-top: 6px !important;   /* 按钮紧贴上方内容 */
+    padding-top: 10px !important;
 }
+
+
 .modal-right-box .btn-submit-quote {
     background: #0f172a;
     color: #ffffff;
@@ -824,7 +827,7 @@ html[data-i18n-ready] [data-i18n],
 .modal-right-box .form-submit-row {
     display: flex !important;
     justify-content: flex-end !important;
-    margin-top: auto !important;
+    margin-top: 6px !important;   /* 改为固定小值，紧贴上方内容 */
     padding-top: 10px !important;
 }
 .modal-right-box form {
@@ -1014,21 +1017,23 @@ body.is-ready {
     align-items: center !important;       /* 垂直居中对齐 */
     justify-content: space-between !important; /* 左右两端分布 */
     gap: 20px !important;                 /* 防止两部分挨得太近 */
-    margin-top: 24px !important;          /* 增加与上方表单的间距 */
+    margin-top: 8px !important;          /* 增加与上方表单的间距 */
 }
 
 /* 左侧提示文字基础微调 */
 .form-actions-wrapper .form-footer-notice {
-    margin: 0 !important;                 /* 清除多余的外边距干扰 */
-    text-align: left !important;
+    margin: 0 !important;  
+    padding: 0 !important;               /* 清除多余的外边距干扰 */
+    line-height: 1.4 !important;         /* 与按钮高度协调 */
     flex: 1 !important;                   /* 自动铺满左边剩余空间 */
 }
 
 /* 右侧提交按钮行微调 */
 .form-actions-wrapper .form-submit-row {
-    margin: 0 !important;                 /* 移除以往包裹层的强制 margin */
-    display: block !important;
-    flex-shrink: 0 !important;            /* 防止按钮被挤压变形 */
+    margin: 0 !important;               /* 移除以往包裹层的强制 margin */
+    display: flex !important;
+    padding: 0 !important;
+    align-items: center !important;          /* 防止按钮被挤压变形 */
 }
 
 /* 移动端媒体查询：在小屏幕上自动变成上下两排 */
