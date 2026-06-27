@@ -24,7 +24,7 @@
         { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none';"
+          "value": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://use.fontawesome.com; img-src 'self' data:; font-src 'self' https://use.fontawesome.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none';"
         },
         {
           "key": "Permissions-Policy",
