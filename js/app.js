@@ -1,5 +1,6 @@
-// DewSecure 最终版（Formspree 邮件 + 多语言提示）
+// DewSecure 最终稳定版（4列二进制跳动 + FormData 邮件 + 多语言）
 document.addEventListener('DOMContentLoaded', () => {
+
     triggerStatsCounter();
     initQuoteModal();
     initBinaryStream();
@@ -47,6 +48,7 @@ function initBinaryStream() {
     const rows = document.querySelectorAll('.binary-matrix-stream .matrix-row');
     if (!rows.length) return;
 
+    // 初始 4 列数据（每行 4 个 8-bit 二进制串）
     const initialData = [
         "11100011", "01100001", "01101100", "10101011",
         "00001111", "01011100", "00011100", "01101010",
@@ -60,6 +62,7 @@ function initBinaryStream() {
         "11010101", "10001010", "11001110", "00001111"
     ];
 
+    // 初始化：每行清空后重建 4 个 <span>
     rows.forEach((row, index) => {
         row.innerHTML = '';
         const startIdx = index * 4;
@@ -70,11 +73,12 @@ function initBinaryStream() {
         }
     });
 
+    // 定时器：随机翻转 1~2 个 <span> 中的某一位
     setInterval(() => {
         const allSpans = document.querySelectorAll('.binary-matrix-stream .matrix-row span');
         if (allSpans.length === 0) return;
 
-        const mutationCount = Math.floor(Math.random() * 2) + 1;
+        const mutationCount = Math.floor(Math.random() * 2) + 1; // 1 或 2 次突变
         for (let i = 0; i < mutationCount; i++) {
             const randomSpan = allSpans[Math.floor(Math.random() * allSpans.length)];
             const bits = randomSpan.textContent.split('');
@@ -85,7 +89,7 @@ function initBinaryStream() {
     }, 45);
 }
 
-/* ========== 弹窗 + Formspree 邮件 + 多语言 ========== */
+/* ========== 弹窗 + 邮件 + 多语言 ========== */
 function initQuoteModal() {
     const overlay = document.getElementById("quote-modal");
     if (!overlay) return;
@@ -117,9 +121,9 @@ function initQuoteModal() {
         if (e.key === "Escape" && overlay.classList.contains("is-open")) close();
     });
 
-    // 限制输入长度 (2000字)
+    // 限制500字
     textarea?.addEventListener("input", () => {
-        if (textarea.value.length > 2000) textarea.value = textarea.value.substring(0, 2000);
+        if (textarea.value.length > 500) textarea.value = textarea.value.substring(0, 500);
     });
 
     // 表单提交
@@ -148,11 +152,11 @@ function initQuoteModal() {
         formData.append('contact', contact.value.trim());
         formData.append('fullname', document.getElementById("form-name")?.value || '');
         formData.append('role', document.getElementById("form-role")?.value || '');
-        formData.append('service', document.getElementById("form-service")?.options[document.getElementById("form-service").selectedIndex]?.text || '');
+        formData.append('service', document.getElementById("form-service")?.value || '');
         formData.append('message', document.getElementById("form-info")?.value || '');
         formData.append('_subject', '新的咨询报价请求');
 
-        // 多语言提示
+        // 多语言提示（从隐藏元素读取，若元素不存在则使用默认中文）
         const msgSuccess = document.getElementById('alert-success')?.textContent || '提交成功！DewSecure 团队将尽快与您取得联系。';
         const msgEmailError = document.getElementById('alert-email-error')?.textContent || '请检查邮箱地址是否正确。';
         const msgNetworkError = document.getElementById('alert-network-error')?.textContent || '网络错误，请稍后再试。';
