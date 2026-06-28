@@ -1,4 +1,4 @@
-// DewSecure 最终版（防滥用 + 倒计时 + Formspree + 多语言 + 二进制跳动）
+// DewSecure 最终版（抖动验证 + 防滥用 + 倒计时 + Formspree + 多语言 + 二进制跳动）
 document.addEventListener('DOMContentLoaded', () => {
     triggerStatsCounter();
     initQuoteModal();
@@ -42,7 +42,7 @@ function triggerStatsCounter() {
     }
 }
 
-/* ========== 二进制矩阵（4列跳动，保留<span>结构） ========== */
+/* ========== 二进制矩阵（4列跳动） ========== */
 function initBinaryStream() {
     const rows = document.querySelectorAll('.binary-matrix-stream .matrix-row');
     if (!rows.length) return;
@@ -85,7 +85,7 @@ function initBinaryStream() {
     }, 45);
 }
 
-/* ========== 弹窗 + Formspree 邮件 + 多语言 + 防滥用 + 倒计时 ========== */
+/* ========== 弹窗 + Formspree + 多语言 + 防滥用 + 倒计时 + 抖动验证 ========== */
 function initQuoteModal() {
     const overlay = document.getElementById("quote-modal");
     if (!overlay) return;
@@ -93,31 +93,29 @@ function initQuoteModal() {
     const form = document.getElementById("quote-form");
     const textarea = document.getElementById("form-info");
 
+    // 抖动动画函数
     function shakeElement(el) {
         if (!el) return;
-        // 移除可能正在进行的动画
         el.style.animation = 'none';
         el.offsetHeight; // 强制回流
         el.style.animation = 'shake-error 0.4s ease-in-out';
-        // 动画结束后清除动画属性，以便下次可以重新触发
         el.addEventListener('animationend', () => {
             el.style.animation = '';
         }, { once: true });
-     }
+    }
 
     // 防滥用变量
     let isSubmitting = false;
-    const COOLDOWN_SECONDS = 30;          // 按钮冷却时间（秒）
-    const MAX_SUBMISSIONS = 5;            // 每小时最大提交次数
+    const COOLDOWN_SECONDS = 30;
+    const MAX_SUBMISSIONS = 5;
     const STORAGE_KEY = 'dewsecure_submissions';
 
-    // 提交按钮及倒计时相关
+    // 提交按钮及倒计时
     const submitBtn = form?.querySelector('.btn-submit-quote');
     const submitBtnTextSpan = submitBtn?.querySelector('span[data-i18n="hero_btn_quote"]');
     let originalBtnText = '咨询专家';
     let countdownTimer = null;
 
-    // 更新原始按钮文本（多语言感知）
     function updateOriginalBtnText() {
         if (submitBtnTextSpan) {
             originalBtnText = submitBtnTextSpan.textContent || '咨询专家';
@@ -125,7 +123,6 @@ function initQuoteModal() {
     }
     updateOriginalBtnText();
 
-    // 获取提交次数
     function getSubmissionCount() {
         const raw = localStorage.getItem(STORAGE_KEY);
         if (!raw) return 0;
@@ -140,7 +137,6 @@ function initQuoteModal() {
         }
     }
 
-    // 记录一次提交
     function recordSubmission() {
         const raw = localStorage.getItem(STORAGE_KEY);
         const records = raw ? JSON.parse(raw) : [];
@@ -148,7 +144,6 @@ function initQuoteModal() {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
     }
 
-    // 倒计时启动
     function startCooldown(seconds) {
         let remaining = seconds;
         if (submitBtn) {
@@ -156,7 +151,7 @@ function initQuoteModal() {
             submitBtn.style.opacity = '0.7';
             submitBtn.style.cursor = 'not-allowed';
         }
-        const template = '请稍候 ({seconds}s)';  // 可多语言化，这里用中文
+        const template = '请稍候 ({seconds}s)';
         function updateBtnText() {
             if (submitBtnTextSpan) {
                 submitBtnTextSpan.textContent = template.replace('{seconds}', remaining);
@@ -201,7 +196,6 @@ function initQuoteModal() {
             form.querySelectorAll(".has-error").forEach(el => el.classList.remove("has-error"));
             form.reset();
         }
-        // 清除倒计时，恢复按钮
         if (countdownTimer) {
             clearInterval(countdownTimer);
             countdownTimer = null;
@@ -235,13 +229,11 @@ function initQuoteModal() {
         // 清除错误样式
         form.querySelectorAll(".has-error").forEach(el => el.classList.remove("has-error"));
 
-        // 检查是否正在提交
         if (isSubmitting) {
             alert('请稍等，您的请求正在处理中...');
             return;
         }
 
-        // 频率限制
         const count = getSubmissionCount();
         if (count >= MAX_SUBMISSIONS) {
             alert('提交次数已超过每小时限制，请稍后再试。感谢您的关注！');
@@ -256,21 +248,34 @@ function initQuoteModal() {
         // 蜜罐检查
         const honeypot = document.getElementById('fax');
         if (honeypot && honeypot.value.trim() !== '') {
-            const msgSuccess = document.getElementById('alert-success')?.textContent || '提交成功！';
-            alert(msgSuccess);
+            alert(document.getElementById('alert-success')?.textContent || '提交成功！');
             close();
             return;
         }
 
         let ok = true;
+
         const company = document.getElementById("form-company");
-        if (!company?.value.trim()) { company?.closest(".form-group")?.classList.add("has-error"); ok = false; }
+        if (!company?.value.trim()) {
+            company?.closest(".form-group")?.classList.add("has-error");
+            shakeElement(company);
+            ok = false;
+        }
 
         const email = document.getElementById("form-email");
-        if (!email?.value.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) { email?.closest(".form-group")?.classList.add("has-error"); ok = false; }
+        const emailReg = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!email?.value.trim() || !emailReg.test(email.value.trim())) {
+            email?.closest(".form-group")?.classList.add("has-error");
+            shakeElement(email);
+            ok = false;
+        }
 
         const contact = document.getElementById("form-contact-val");
-        if (!contact?.value.trim()) { contact?.closest(".form-group")?.classList.add("has-error"); ok = false; }
+        if (!contact?.value.trim()) {
+            contact?.closest(".form-group")?.classList.add("has-error");
+            shakeElement(contact?.closest(".custom-single-channel")); // 抖动整个通道容器
+            ok = false;
+        }
 
         if (!ok) return;
 
@@ -293,7 +298,6 @@ function initQuoteModal() {
         formData.append('message', document.getElementById("form-info")?.value || '');
         formData.append('_subject', '新的咨询报价请求');
 
-        // 多语言提示
         const msgSuccess = document.getElementById('alert-success')?.textContent || '提交成功！DewSecure 团队将尽快与您取得联系。';
         const msgEmailError = document.getElementById('alert-email-error')?.textContent || '请检查邮箱地址是否正确。';
         const msgNetworkError = document.getElementById('alert-network-error')?.textContent || '网络错误，请稍后再试。';
@@ -311,14 +315,13 @@ function initQuoteModal() {
             } else {
                 const data = await response.json();
                 alert(data.errors ? msgEmailError : msgNetworkError);
-                // 如果发送失败，解锁按钮（不启动倒计时）
                 isSubmitting = false;
                 if (submitBtn) {
                     submitBtn.disabled = false;
                     submitBtn.style.opacity = '1';
                     submitBtn.style.cursor = 'pointer';
                 }
-                return; // 避免进入 finally 的倒计时
+                return;
             }
         } catch (error) {
             alert(msgNetworkError);
@@ -331,7 +334,6 @@ function initQuoteModal() {
             return;
         }
 
-        // 成功提交后启动倒计时
         if (!countdownTimer) {
             startCooldown(COOLDOWN_SECONDS);
         }
