@@ -93,7 +93,9 @@
   "feature_cert": "DewSecure Certification",
 
   "auto_reply_subject": "DewSecure has received your inquiry",
-  "auto_reply_message": "Dear Customer, we have received your inquiry. Our team will review it and get back to you shortly. Thank you for your patience."
+  "auto_reply_message": "Dear Customer, we have received your inquiry. Our team will review it and get back to you shortly. Thank you for your patience.",
+
+  "btn_wait": "Please wait ({seconds}s)"
   
   
 }
