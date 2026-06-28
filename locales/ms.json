@@ -93,6 +93,8 @@
   "feature_cert": "Pensijilan DewSecure",
 
   "auto_reply_subject": "DewSecure telah menerima pertanyaan anda",
-  "auto_reply_message": "Pelanggan yang dihormati, kami telah menerima pertanyaan anda. Pasukan kami akan meninjaunya dan menghubungi anda secepat mungkin. Terima kasih atas kesabaran anda."
+  "auto_reply_message": "Pelanggan yang dihormati, kami telah menerima pertanyaan anda. Pasukan kami akan meninjaunya dan menghubungi anda secepat mungkin. Terima kasih atas kesabaran anda.",
+
+  "btn_wait": "Sila tunggu ({seconds}s)"
   
 }
