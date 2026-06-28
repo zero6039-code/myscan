@@ -1,4 +1,4 @@
-// DewSecure 最终版（Web3Forms 双向邮件 + 自动回复 + 多语言）
+// DewSecure 最终版（Formspree 邮件 + 多语言提示）
 document.addEventListener('DOMContentLoaded', () => {
     triggerStatsCounter();
     initQuoteModal();
@@ -85,7 +85,7 @@ function initBinaryStream() {
     }, 45);
 }
 
-/* ========== 弹窗 + Web3Forms 邮件 + 多语言 ========== */
+/* ========== 弹窗 + Formspree 邮件 + 多语言 ========== */
 function initQuoteModal() {
     const overlay = document.getElementById("quote-modal");
     if (!overlay) return;
@@ -117,7 +117,7 @@ function initQuoteModal() {
         if (e.key === "Escape" && overlay.classList.contains("is-open")) close();
     });
 
-    // 限制输入长度
+    // 限制输入长度 (2000字)
     textarea?.addEventListener("input", () => {
         if (textarea.value.length > 2000) textarea.value = textarea.value.substring(0, 2000);
     });
@@ -141,31 +141,16 @@ function initQuoteModal() {
 
         if (!ok) return;
 
-        // 获取服务名称（文本内容）
-        const serviceSelect = document.getElementById("form-service");
-        const serviceText = serviceSelect?.options[serviceSelect.selectedIndex]?.text || '';
-
-        // 构建 Web3Forms 发送数据
-        const payload = {
-            access_key: 'b2e02c7e-07d5-4ac4-81e9-3be596d089fe',  // 你的 Access Key
-            subject: '新的咨询报价请求',                         // 你收到的邮件标题
-            from_name: 'DewSecure Contact Form',
-            replyto: email.value.trim(),                        // 客户回复地址
-
-            // 业务字段
-            company: company.value.trim(),
-            email: email.value.trim(),
-            contact: contact.value.trim(),
-            fullname: document.getElementById("form-name")?.value || '',
-            role: document.getElementById("form-role")?.value || '',
-            service: serviceText,
-            message: document.getElementById("form-info")?.value || '',
-
-            // 自动回复设置
-            auto_reply: "true",
-            auto_reply_subject: document.getElementById('auto-reply-subject')?.textContent || 'DewSecure 收到您的咨询',
-            auto_reply_message: document.getElementById('auto-reply-message')?.textContent || '尊敬的客户，您好！我们已经收到您的咨询请求，我们的团队会尽快查看并回复您。感谢您的等待。'
-        };
+        // 构建 FormData
+        const formData = new FormData();
+        formData.append('email', email.value.trim());
+        formData.append('company', company.value.trim());
+        formData.append('contact', contact.value.trim());
+        formData.append('fullname', document.getElementById("form-name")?.value || '');
+        formData.append('role', document.getElementById("form-role")?.value || '');
+        formData.append('service', document.getElementById("form-service")?.options[document.getElementById("form-service").selectedIndex]?.text || '');
+        formData.append('message', document.getElementById("form-info")?.value || '');
+        formData.append('_subject', '新的咨询报价请求');
 
         // 多语言提示
         const msgSuccess = document.getElementById('alert-success')?.textContent || '提交成功！DewSecure 团队将尽快与您取得联系。';
@@ -173,23 +158,19 @@ function initQuoteModal() {
         const msgNetworkError = document.getElementById('alert-network-error')?.textContent || '网络错误，请稍后再试。';
 
         try {
-            const response = await fetch('https://api.web3forms.com/submit', {
+            const response = await fetch('https://formspree.io/f/xojojwrq', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
+                headers: { 'Accept': 'application/json' },
+                body: formData
             });
-
-            const data = await response.json();
-
-            if (data.success) {
+            if (response.ok) {
                 alert(msgSuccess);
                 close();
             } else {
-                console.error('Web3Forms Error:', data);
-                alert(data.message || msgNetworkError);
+                const data = await response.json();
+                alert(data.errors ? msgEmailError : msgNetworkError);
             }
         } catch (error) {
-            console.error('Network Error:', error);
             alert(msgNetworkError);
         }
     });
