@@ -255,6 +255,9 @@
                     </div>
                     
                     <form id="quote-form" novalidate>
+                            <!-- 蜜罐：人类不可见，机器人会自动填写 -->
+                        <input type="text" id="fax" style="display:none" tabindex="-1" autocomplete="off">
+                        
                         <div class="form-grid-row">
                             <div class="form-group">
                                 <label class="required-label" data-i18n="form_lbl_company">项目/公司</label>
