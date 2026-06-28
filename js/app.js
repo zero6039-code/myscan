@@ -93,6 +93,18 @@ function initQuoteModal() {
     const form = document.getElementById("quote-form");
     const textarea = document.getElementById("form-info");
 
+    function shakeElement(el) {
+        if (!el) return;
+        // 移除可能正在进行的动画
+        el.style.animation = 'none';
+        el.offsetHeight; // 强制回流
+        el.style.animation = 'shake-error 0.4s ease-in-out';
+        // 动画结束后清除动画属性，以便下次可以重新触发
+        el.addEventListener('animationend', () => {
+            el.style.animation = '';
+        }, { once: true });
+     }
+
     // 防滥用变量
     let isSubmitting = false;
     const COOLDOWN_SECONDS = 30;          // 按钮冷却时间（秒）
