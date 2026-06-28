@@ -93,6 +93,8 @@
   "feature_cert": "DewSecure 认证证书",
 
   "auto_reply_subject": "DewSecure 已收到您的咨询",
-  "auto_reply_message": "尊敬的客户，您好！我们已经收到您的咨询请求，我们的团队会尽快查看并回复您。感谢您的耐心等待。"
+  "auto_reply_message": "尊敬的客户，您好！我们已经收到您的咨询请求，我们的团队会尽快查看并回复您。感谢您的耐心等待。",
+
+  "btn_wait": "请稍候 ({seconds}s)"
   
 }
