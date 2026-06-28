@@ -1,6 +1,5 @@
-// DewSecure 最终稳定版（4列二进制跳动 + FormData 邮件 + 多语言）
+// DewSecure 最终版（Web3Forms 双向邮件 + 自动回复 + 多语言）
 document.addEventListener('DOMContentLoaded', () => {
-
     triggerStatsCounter();
     initQuoteModal();
     initBinaryStream();
@@ -48,7 +47,6 @@ function initBinaryStream() {
     const rows = document.querySelectorAll('.binary-matrix-stream .matrix-row');
     if (!rows.length) return;
 
-    // 初始 4 列数据（每行 4 个 8-bit 二进制串）
     const initialData = [
         "11100011", "01100001", "01101100", "10101011",
         "00001111", "01011100", "00011100", "01101010",
@@ -62,7 +60,6 @@ function initBinaryStream() {
         "11010101", "10001010", "11001110", "00001111"
     ];
 
-    // 初始化：每行清空后重建 4 个 <span>
     rows.forEach((row, index) => {
         row.innerHTML = '';
         const startIdx = index * 4;
@@ -73,12 +70,11 @@ function initBinaryStream() {
         }
     });
 
-    // 定时器：随机翻转 1~2 个 <span> 中的某一位
     setInterval(() => {
         const allSpans = document.querySelectorAll('.binary-matrix-stream .matrix-row span');
         if (allSpans.length === 0) return;
 
-        const mutationCount = Math.floor(Math.random() * 2) + 1; // 1 或 2 次突变
+        const mutationCount = Math.floor(Math.random() * 2) + 1;
         for (let i = 0; i < mutationCount; i++) {
             const randomSpan = allSpans[Math.floor(Math.random() * allSpans.length)];
             const bits = randomSpan.textContent.split('');
@@ -89,7 +85,7 @@ function initBinaryStream() {
     }, 45);
 }
 
-/* ========== 弹窗 + 邮件 + 多语言 ========== */
+/* ========== 弹窗 + Web3Forms 邮件 + 多语言 ========== */
 function initQuoteModal() {
     const overlay = document.getElementById("quote-modal");
     if (!overlay) return;
@@ -121,9 +117,9 @@ function initQuoteModal() {
         if (e.key === "Escape" && overlay.classList.contains("is-open")) close();
     });
 
-    // 限制500字
+    // 限制输入长度
     textarea?.addEventListener("input", () => {
-        if (textarea.value.length > 500) textarea.value = textarea.value.substring(0, 500);
+        if (textarea.value.length > 2000) textarea.value = textarea.value.substring(0, 2000);
     });
 
     // 表单提交
@@ -145,36 +141,55 @@ function initQuoteModal() {
 
         if (!ok) return;
 
-        // 构建 FormData
-        const formData = new FormData();
-        formData.append('email', email.value.trim());
-        formData.append('company', company.value.trim());
-        formData.append('contact', contact.value.trim());
-        formData.append('fullname', document.getElementById("form-name")?.value || '');
-        formData.append('role', document.getElementById("form-role")?.value || '');
-        formData.append('service', document.getElementById("form-service")?.value || '');
-        formData.append('message', document.getElementById("form-info")?.value || '');
-        formData.append('_subject', '新的咨询报价请求');
+        // 获取服务名称（文本内容）
+        const serviceSelect = document.getElementById("form-service");
+        const serviceText = serviceSelect?.options[serviceSelect.selectedIndex]?.text || '';
 
-        // 多语言提示（从隐藏元素读取，若元素不存在则使用默认中文）
+        // 构建 Web3Forms 发送数据
+        const payload = {
+            access_key: 'b2e02c7e-07d5-4ac4-81e9-3be596d089fe',  // 你的 Access Key
+            subject: '新的咨询报价请求',                         // 你收到的邮件标题
+            from_name: 'DewSecure Contact Form',
+            replyto: email.value.trim(),                        // 客户回复地址
+
+            // 业务字段
+            company: company.value.trim(),
+            email: email.value.trim(),
+            contact: contact.value.trim(),
+            fullname: document.getElementById("form-name")?.value || '',
+            role: document.getElementById("form-role")?.value || '',
+            service: serviceText,
+            message: document.getElementById("form-info")?.value || '',
+
+            // 自动回复设置
+            auto_reply: "true",
+            auto_reply_subject: document.getElementById('auto-reply-subject')?.textContent || 'DewSecure 收到您的咨询',
+            auto_reply_message: document.getElementById('auto-reply-message')?.textContent || '尊敬的客户，您好！我们已经收到您的咨询请求，我们的团队会尽快查看并回复您。感谢您的等待。'
+        };
+
+        // 多语言提示
         const msgSuccess = document.getElementById('alert-success')?.textContent || '提交成功！DewSecure 团队将尽快与您取得联系。';
         const msgEmailError = document.getElementById('alert-email-error')?.textContent || '请检查邮箱地址是否正确。';
         const msgNetworkError = document.getElementById('alert-network-error')?.textContent || '网络错误，请稍后再试。';
 
         try {
-            const response = await fetch('https://formspree.io/f/xojojwrq', {
+            const response = await fetch('https://api.web3forms.com/submit', {
                 method: 'POST',
-                headers: { 'Accept': 'application/json' },
-                body: formData
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
             });
-            if (response.ok) {
+
+            const data = await response.json();
+
+            if (data.success) {
                 alert(msgSuccess);
                 close();
             } else {
-                const data = await response.json();
-                alert(data.errors ? msgEmailError : msgNetworkError);
+                console.error('Web3Forms Error:', data);
+                alert(data.message || msgNetworkError);
             }
         } catch (error) {
+            console.error('Network Error:', error);
             alert(msgNetworkError);
         }
     });
