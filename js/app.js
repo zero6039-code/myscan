@@ -1,4 +1,4 @@
-// DewSecure 最终稳定版（4列二进制跳动 + Formspree 邮件 + 多语言 + 防滥用）
+// DewSecure 最终版（防滥用 + 倒计时 + Formspree + 多语言 + 二进制跳动）
 document.addEventListener('DOMContentLoaded', () => {
     triggerStatsCounter();
     initQuoteModal();
@@ -85,7 +85,7 @@ function initBinaryStream() {
     }, 45);
 }
 
-/* ========== 弹窗 + Formspree 邮件 + 多语言 + 防滥用 ========== */
+/* ========== 弹窗 + Formspree 邮件 + 多语言 + 防滥用 + 倒计时 ========== */
 function initQuoteModal() {
     const overlay = document.getElementById("quote-modal");
     if (!overlay) return;
@@ -99,14 +99,27 @@ function initQuoteModal() {
     const MAX_SUBMISSIONS = 5;            // 每小时最大提交次数
     const STORAGE_KEY = 'dewsecure_submissions';
 
-    // 获取当前时间窗口内的提交次数
+    // 提交按钮及倒计时相关
+    const submitBtn = form?.querySelector('.btn-submit-quote');
+    const submitBtnTextSpan = submitBtn?.querySelector('span[data-i18n="hero_btn_quote"]');
+    let originalBtnText = '咨询专家';
+    let countdownTimer = null;
+
+    // 更新原始按钮文本（多语言感知）
+    function updateOriginalBtnText() {
+        if (submitBtnTextSpan) {
+            originalBtnText = submitBtnTextSpan.textContent || '咨询专家';
+        }
+    }
+    updateOriginalBtnText();
+
+    // 获取提交次数
     function getSubmissionCount() {
         const raw = localStorage.getItem(STORAGE_KEY);
         if (!raw) return 0;
         try {
             const records = JSON.parse(raw);
             const now = Date.now();
-            // 保留最近一小时的记录
             const valid = records.filter(time => now - time < 3600000);
             localStorage.setItem(STORAGE_KEY, JSON.stringify(valid));
             return valid.length;
@@ -123,8 +136,41 @@ function initQuoteModal() {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
     }
 
-    // 获取提交按钮
-    const submitBtn = form?.querySelector('.btn-submit-quote');
+    // 倒计时启动
+    function startCooldown(seconds) {
+        let remaining = seconds;
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.style.opacity = '0.7';
+            submitBtn.style.cursor = 'not-allowed';
+        }
+        const template = '请稍候 ({seconds}s)';  // 可多语言化，这里用中文
+        function updateBtnText() {
+            if (submitBtnTextSpan) {
+                submitBtnTextSpan.textContent = template.replace('{seconds}', remaining);
+            }
+        }
+        updateBtnText();
+
+        countdownTimer = setInterval(() => {
+            remaining--;
+            if (remaining <= 0) {
+                clearInterval(countdownTimer);
+                countdownTimer = null;
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.style.opacity = '1';
+                    submitBtn.style.cursor = 'pointer';
+                }
+                if (submitBtnTextSpan) {
+                    submitBtnTextSpan.textContent = originalBtnText;
+                }
+                isSubmitting = false;
+            } else {
+                updateBtnText();
+            }
+        }, 1000);
+    }
 
     // 打开弹窗
     document.addEventListener("click", (e) => {
@@ -136,21 +182,36 @@ function initQuoteModal() {
         }
     });
 
-    // 关闭弹窗
+    // 关闭弹窗（清除倒计时）
     function close() {
         overlay.classList.remove("is-open");
         if (form) {
             form.querySelectorAll(".has-error").forEach(el => el.classList.remove("has-error"));
             form.reset();
         }
+        // 清除倒计时，恢复按钮
+        if (countdownTimer) {
+            clearInterval(countdownTimer);
+            countdownTimer = null;
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.style.opacity = '1';
+                submitBtn.style.cursor = 'pointer';
+            }
+            if (submitBtnTextSpan) {
+                submitBtnTextSpan.textContent = originalBtnText;
+            }
+            isSubmitting = false;
+        }
     }
+
     closeBtn?.addEventListener("click", close);
     overlay.addEventListener("click", (e) => { if (e.target === overlay) close(); });
     document.addEventListener("keydown", (e) => {
         if (e.key === "Escape" && overlay.classList.contains("is-open")) close();
     });
 
-    // 限制输入长度 (2000字，更友好)
+    // 输入长度限制
     textarea?.addEventListener("input", () => {
         if (textarea.value.length > 2000) textarea.value = textarea.value.substring(0, 2000);
     });
@@ -162,13 +223,13 @@ function initQuoteModal() {
         // 清除错误样式
         form.querySelectorAll(".has-error").forEach(el => el.classList.remove("has-error"));
 
-        // 检查是否正在提交中（按钮锁定）
+        // 检查是否正在提交
         if (isSubmitting) {
             alert('请稍等，您的请求正在处理中...');
             return;
         }
 
-        // 频率限制检查
+        // 频率限制
         const count = getSubmissionCount();
         if (count >= MAX_SUBMISSIONS) {
             alert('提交次数已超过每小时限制，请稍后再试。感谢您的关注！');
@@ -180,10 +241,9 @@ function initQuoteModal() {
             return;
         }
 
-        // 蜜罐检查：隐藏字段 #fax 被填写则拒绝（需要在HTML中添加 <input type="text" id="fax" style="display:none" tabindex="-1" autocomplete="off">）
+        // 蜜罐检查
         const honeypot = document.getElementById('fax');
         if (honeypot && honeypot.value.trim() !== '') {
-            // 假装成功，但实际不发送
             const msgSuccess = document.getElementById('alert-success')?.textContent || '提交成功！';
             alert(msgSuccess);
             close();
@@ -191,7 +251,6 @@ function initQuoteModal() {
         }
 
         let ok = true;
-
         const company = document.getElementById("form-company");
         if (!company?.value.trim()) { company?.closest(".form-group")?.classList.add("has-error"); ok = false; }
 
@@ -203,7 +262,7 @@ function initQuoteModal() {
 
         if (!ok) return;
 
-        // 锁定提交状态
+        // 锁定提交
         isSubmitting = true;
         if (submitBtn) {
             submitBtn.disabled = true;
@@ -233,27 +292,36 @@ function initQuoteModal() {
                 headers: { 'Accept': 'application/json' },
                 body: formData
             });
-
             if (response.ok) {
-                recordSubmission();  // 记录成功提交
+                recordSubmission();
                 alert(msgSuccess);
                 close();
             } else {
                 const data = await response.json();
                 alert(data.errors ? msgEmailError : msgNetworkError);
-            }
-        } catch (error) {
-            alert(msgNetworkError);
-        } finally {
-            // 冷却计时器：30秒后恢复按钮
-            if (submitBtn) {
-                setTimeout(() => {
-                    isSubmitting = false;
+                // 如果发送失败，解锁按钮（不启动倒计时）
+                isSubmitting = false;
+                if (submitBtn) {
                     submitBtn.disabled = false;
                     submitBtn.style.opacity = '1';
                     submitBtn.style.cursor = 'pointer';
-                }, COOLDOWN_SECONDS * 1000);
+                }
+                return; // 避免进入 finally 的倒计时
             }
+        } catch (error) {
+            alert(msgNetworkError);
+            isSubmitting = false;
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.style.opacity = '1';
+                submitBtn.style.cursor = 'pointer';
+            }
+            return;
+        }
+
+        // 成功提交后启动倒计时
+        if (!countdownTimer) {
+            startCooldown(COOLDOWN_SECONDS);
         }
     });
 }
