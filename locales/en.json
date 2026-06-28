@@ -90,7 +90,10 @@
   "feature_retest_deep": " (1 time)",
   "feature_retest_annual": " (Unlimited)",
   "feature_support": "Priority Consultant Support",
-  "feature_cert": "DewSecure Certification"
+  "feature_cert": "DewSecure Certification",
+
+  "auto_reply_subject": "DewSecure has received your inquiry",
+  "auto_reply_message": "Dear Customer, we have received your inquiry. Our team will review it and get back to you shortly. Thank you for your patience."
   
   
 }
