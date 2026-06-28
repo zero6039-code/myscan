@@ -614,7 +614,9 @@ html[data-i18n-ready] [data-i18n],
     flex-shrink: 0 !important;            /* 每个二进制单元格不压缩 */
     white-space: nowrap !important;
     display: inline-block !important;
+    color: #00ffff;   /* 黑客青色 */
     letter-spacing: 0.08em;        /* 微调字符间距，让8位数字更紧凑 */
+    text-shadow: 0 0 6px rgba(0, 255, 255, 0.5); /* 可选发光，更酷 */
 }
 
 /* ================= 右侧 - 优化布局，修复间距与对齐 ================= */
