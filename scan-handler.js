@@ -6,20 +6,20 @@ export async function handleScan(request) {
   const target = url.searchParams.get('url');
 
   if (!target) {
-    return jsonResponse({ error: '缺少 url 参数' }, 400);
+    return jsonResponse({ error: 'Missing url parameter' }, 400);
   }
 
   let targetUrl;
   try {
     targetUrl = new URL(target);
     if (!targetUrl.protocol.startsWith('http')) {
-      throw new Error('仅支持 http/https 协议');
+      throw new Error('Only http/https protocols are supported');
     }
     if (isPrivateIp(targetUrl.hostname)) {
-      return jsonResponse({ error: '不允许扫描内网地址' }, 403);
+      return jsonResponse({ error: 'Scanning internal addresses is not allowed' }, 403);
     }
   } catch (e) {
-    return jsonResponse({ error: '无效的 URL 格式' }, 400);
+    return jsonResponse({ error: 'Invalid URL format' }, 400);
   }
 
   let response;
@@ -31,114 +31,134 @@ export async function handleScan(request) {
       signal: AbortSignal.timeout(8000)
     });
   } catch (err) {
-    return jsonResponse({ error: '无法连接目标服务器' }, 502);
+    return jsonResponse({ error: 'Unable to connect to target server' }, 502);
   }
 
   const headers = response.headers;
 
-  // CSP 详细分析
+  // CSP analysis
   const cspHeader = headers.get('content-security-policy') || '';
   const hasUnsafeInline = /'unsafe-inline'/.test(cspHeader);
   const hasUnsafeEval = /'unsafe-eval'/.test(cspHeader);
-  const cspValue = cspHeader || '未设置';
-  const cspAnalysis = cspHeader
+  const cspValue = cspHeader || 'Not set';
+  const cspSub = cspHeader
     ? (hasUnsafeInline && hasUnsafeEval
-        ? '包含 unsafe-inline 和 unsafe-eval'
+        ? 'unsafe_inline_eval'
         : hasUnsafeInline
-          ? '包含 unsafe-inline'
+          ? 'unsafe_inline'
           : hasUnsafeEval
-            ? '包含 unsafe-eval'
-            : '策略较严格')
+            ? 'unsafe_eval'
+            : 'strict')
     : '';
 
-  // 服务器信息泄漏分析
+  // Server info leak analysis
   const serverVal = headers.get('server');
   const poweredByVal = headers.get('x-powered-by');
-  const serverLeakValue = [serverVal, poweredByVal].filter(Boolean).join(' ') || '未发现信息泄漏';
-  const serverLeakRecommendation = serverVal
-    ? `已检测到 Server 头暴露了 "${serverVal}"，这通常是 CDN 的正常行为，但请确认源站未额外泄漏技术栈信息。`
-    : '隐藏 Server/X-Powered-By 响应头，降低针对性攻击风险。';
+  const serverLeakValue = [serverVal, poweredByVal].filter(Boolean).join(' ') || 'No information leakage detected';
+  const serverLeakSub = serverVal ? 'cloudflare' : '';
 
   const checks = {
-    // ---- 基础核心 8 项 ----
     https: {
-      label: 'HTTPS 启用',
+      id: 'https',
+      label: 'HTTPS Enabled',
       passed: targetUrl.protocol === 'https:',
-      value: targetUrl.protocol === 'https:' ? '已启用' : '未启用',
-      recommendation: '请将网站迁移至 HTTPS，并强制所有流量使用加密连接。'
+      value: targetUrl.protocol === 'https:' ? 'Enabled' : 'Not enabled',
+      sub: '',
+      recommendation: 'Migrate your site to HTTPS and enforce encryption for all traffic.'
     },
     hsts: {
+      id: 'hsts',
       label: 'Strict-Transport-Security (HSTS)',
       passed: headers.has('strict-transport-security'),
-      value: headers.get('strict-transport-security') || '未设置',
-      recommendation: '添加 HTTP 头 "Strict-Transport-Security: max-age=31536000; includeSubDomains; preload"。'
+      value: headers.get('strict-transport-security') || 'Not set',
+      sub: '',
+      recommendation: 'Add the header "Strict-Transport-Security: max-age=31536000; includeSubDomains; preload".'
     },
     xFrameOptions: {
+      id: 'x_frame_options',
       label: 'X-Frame-Options',
       passed: headers.has('x-frame-options'),
-      value: headers.get('x-frame-options') || '未设置',
-      recommendation: '设置 "X-Frame-Options: DENY" 或 "SAMEORIGIN" 防止点击劫持。'
+      value: headers.get('x-frame-options') || 'Not set',
+      sub: '',
+      recommendation: 'Set "X-Frame-Options: DENY" or "SAMEORIGIN" to prevent clickjacking.'
     },
     xContentTypeOptions: {
+      id: 'x_content_type_options',
       label: 'X-Content-Type-Options',
       passed: headers.has('x-content-type-options') && headers.get('x-content-type-options').toLowerCase() === 'nosniff',
-      value: headers.get('x-content-type-options') || '未设置',
-      recommendation: '添加 "X-Content-Type-Options: nosniff" 阻止 MIME 类型嗅探。'
+      value: headers.get('x-content-type-options') || 'Not set',
+      sub: '',
+      recommendation: 'Add "X-Content-Type-Options: nosniff" to prevent MIME sniffing.'
     },
     contentSecurityPolicy: {
+      id: 'csp',
       label: 'Content-Security-Policy (CSP)',
       passed: headers.has('content-security-policy'),
       value: cspValue,
-      sub: cspAnalysis ? `分析: ${cspAnalysis}` : '',
+      sub: cspSub,
       recommendation: headers.has('content-security-policy')
         ? (hasUnsafeInline || hasUnsafeEval
-            ? 'CSP 存在但包含不安全的指令 (unsafe-inline/unsafe-eval)，建议使用 nonce 或 hash 替代。'
-            : 'CSP 策略配置良好。')
-        : '实施严格的 CSP 策略，限制资源来源，防范 XSS 攻击。'
+            ? 'CSP is present but contains unsafe directives (unsafe-inline/unsafe-eval). Consider using nonce or hash.'
+            : 'CSP policy is well configured.')
+        : 'Implement a strict CSP policy to restrict resource sources and prevent XSS attacks.'
     },
     referrerPolicy: {
+      id: 'referrer_policy',
       label: 'Referrer-Policy',
       passed: headers.has('referrer-policy'),
-      value: headers.get('referrer-policy') || '未设置',
-      recommendation: '设置 "Referrer-Policy: strict-origin-when-cross-origin"。'
+      value: headers.get('referrer-policy') || 'Not set',
+      sub: '',
+      recommendation: 'Set "Referrer-Policy: strict-origin-when-cross-origin".'
     },
     permissionsPolicy: {
+      id: 'permissions_policy',
       label: 'Permissions-Policy',
       passed: headers.has('permissions-policy'),
-      value: headers.get('permissions-policy') || '未设置',
-      recommendation: '使用 Permissions-Policy 限制浏览器 API 访问。'
+      value: headers.get('permissions-policy') || 'Not set',
+      sub: '',
+      recommendation: 'Use Permissions-Policy to limit browser API access.'
     },
     serverInfoLeak: {
-      label: '服务器信息泄漏',
+      id: 'server_info_leak',
+      label: 'Server Information Leakage',
       passed: !serverVal && !poweredByVal,
       value: serverLeakValue,
-      recommendation: serverLeakRecommendation
+      sub: serverLeakSub,
+      recommendation: serverVal
+        ? `The Server header reveals "${serverVal}". This is often normal for a CDN, but ensure the origin server does not leak additional information.`
+        : 'Hide Server/X-Powered-By headers to reduce attack surface.'
     },
-
-    // ---- 新增 4 项 ----
     xPermittedCrossDomain: {
+      id: 'x_permitted_cross_domain',
       label: 'X-Permitted-Cross-Domain-Policies',
       passed: headers.has('x-permitted-cross-domain-policies'),
-      value: headers.get('x-permitted-cross-domain-policies') || '未设置',
-      recommendation: '设置 "X-Permitted-Cross-Domain-Policies: none" 以限制 Adobe 产品的跨域请求。'
+      value: headers.get('x-permitted-cross-domain-policies') || 'Not set',
+      sub: '',
+      recommendation: 'Set "X-Permitted-Cross-Domain-Policies: none" to restrict Adobe cross-domain requests.'
     },
     crossOriginResourcePolicy: {
+      id: 'corp',
       label: 'Cross-Origin-Resource-Policy (CORP)',
       passed: headers.has('cross-origin-resource-policy'),
-      value: headers.get('cross-origin-resource-policy') || '未设置',
-      recommendation: '设置 "Cross-Origin-Resource-Policy: same-origin" 以限制跨域资源加载。'
+      value: headers.get('cross-origin-resource-policy') || 'Not set',
+      sub: '',
+      recommendation: 'Set "Cross-Origin-Resource-Policy: same-origin" to limit cross-origin resource loading.'
     },
     crossOriginOpenerPolicy: {
+      id: 'coop',
       label: 'Cross-Origin-Opener-Policy (COOP)',
       passed: headers.has('cross-origin-opener-policy'),
-      value: headers.get('cross-origin-opener-policy') || '未设置',
-      recommendation: '设置 "Cross-Origin-Opener-Policy: same-origin" 以隔离跨域窗口。'
+      value: headers.get('cross-origin-opener-policy') || 'Not set',
+      sub: '',
+      recommendation: 'Set "Cross-Origin-Opener-Policy: same-origin" to isolate cross-origin windows.'
     },
     cacheControl: {
+      id: 'cache_control',
       label: 'Cache-Control',
       passed: headers.has('cache-control'),
-      value: headers.get('cache-control') || '未设置',
-      recommendation: '合理设置 Cache-Control 策略，防止敏感页面被缓存（如 "no-store, max-age=0"）。'
+      value: headers.get('cache-control') || 'Not set',
+      sub: '',
+      recommendation: 'Set appropriate Cache-Control policy, e.g., "no-store, max-age=0" for sensitive pages.'
     }
   };
 
@@ -148,8 +168,8 @@ export async function handleScan(request) {
 
   const failedItems = Object.values(checks).filter(c => !c.passed);
   const generalAdvice = failedItems.length > 0
-    ? `共发现 ${failedItems.length} 个安全问题，请优先修复。此扫描仅检查 HTTP 响应头。`
-    : '所有基础安全头均已正确配置。';
+    ? `Found ${failedItems.length} security issues. This scan only checks HTTP response headers.`
+    : 'All basic security headers are properly configured.';
 
   return jsonResponse({
     url: targetUrl.href,
@@ -160,6 +180,7 @@ export async function handleScan(request) {
       Object.entries(checks).map(([key, val]) => [
         key,
         {
+          id: val.id,
           label: val.label,
           passed: val.passed,
           current_value: val.value,
@@ -168,7 +189,7 @@ export async function handleScan(request) {
         }
       ])
     ),
-    disclaimer: '本扫描仅读取公开响应头信息，不进行任何主动攻击或未授权渗透测试。完整安全审计请联系 DewSecure 专家。'
+    disclaimer: 'This scan only reads publicly available response headers. No active attacks or unauthorized penetration testing is performed. For a full security audit, please contact DewSecure experts.'
   }, 200);
 }
 
