@@ -360,7 +360,6 @@ function initPolicyModal() {
 
     showPolicyLink.addEventListener('click', (e) => {
         e.preventDefault();
-        // 根据当前语言切换条款内容显示
         const lang = window.currentLang || 'en';
         policyModal.querySelectorAll('.policy-content-lang').forEach(el => {
             el.style.display = el.getAttribute('data-lang-policy') === lang ? 'block' : 'none';
@@ -379,7 +378,7 @@ function initPolicyModal() {
     });
 }
 
-/* ========== 免费网站安全扫描工具（完整多语言 + 修复按钮 + 状态显示） ========== */
+/* ========== 免费网站安全扫描工具（完整多语言 + 修复按钮 + 推销文案） ========== */
 function initQuickScanner() {
     const scanInput = document.getElementById('scan-url-input');
     const scanBtn = document.getElementById('scan-btn');
@@ -435,7 +434,6 @@ function initQuickScanner() {
                 return;
             }
 
-            // 构建结果表格（完整多语言）
             let html = `<div class="score-line">${t('scan_score_prefix')}${data.score}</div>`;
             html += `<table class="scan-result-table"><tbody>`;
 
@@ -443,12 +441,10 @@ function initQuickScanner() {
                 const checkId = check.id || key;
                 let statusIcon = check.passed ? '✅' : '❌';
                 let statusClass = check.passed ? 'pass' : 'fail';
-                let analysisText = '';
 
-                // 翻译标签
                 const labelTranslated = t('scan_check_label_' + checkId) || check.label;
-                // 翻译修复建议
                 let recTranslated = '';
+
                 if (checkId === 'csp') {
                     if (!check.passed) {
                         recTranslated = t('scan_check_rec_csp_missing');
@@ -470,9 +466,8 @@ function initQuickScanner() {
                     recTranslated = t('scan_check_rec_' + checkId) || check.recommendation;
                 }
 
-                // 分析文本
+                let analysisText = '';
                 if (check.sub) {
-                    // 如果有 sub，尝试用 sub 作为翻译键（如 unsafe_inline_eval）
                     const subKey = 'scan_sub_' + check.sub.toLowerCase().replace(/[^a-z0-9_]/g, '_');
                     analysisText = t(subKey) || check.sub;
                 } else if (check.passed) {
@@ -492,7 +487,6 @@ function initQuickScanner() {
                     }
                 }
 
-                // CSP 警告
                 if (checkId === 'csp' && check.sub && check.passed) {
                     statusIcon = '⚠️';
                     statusClass = 'warn';
@@ -516,12 +510,12 @@ function initQuickScanner() {
             }
 
             html += `</tbody></table>`;
-            // 追加推销文案（青色黑客风格）
+            // ★ 追加推销文案
             html += `<div class="scan-upsell">${escapeHtml(t('scan_upsell'))}</div>`;
+
             scanModalContent.innerHTML = html;
             scanModal.classList.add('is-open');
 
-            // 绑定修复按钮
             scanModalContent.querySelectorAll('.fix-btn').forEach(btn => {
                 btn.addEventListener('click', function (e) {
                     e.stopPropagation();
