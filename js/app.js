@@ -5,7 +5,23 @@ document.addEventListener('DOMContentLoaded', () => {
     initBinaryStream();
     initQuickScanner();   // ← 新增：免费网站扫描工具
     window.addEventListener('resize', triggerStatsCounter);
+
+    // ========== 延迟显示按钮和扫描工具（黑客帝国风格） ==========
+    const heroAction = document.querySelector('.hero-action.delayed-btn');
+    if (heroAction) {
+        setTimeout(() => {
+            heroAction.classList.add('show');
+        }, 1000);
+    }
+
+    const scanner = document.querySelector('.quick-scanner.delayed-scanner');
+    if (scanner) {
+        setTimeout(() => {
+            scanner.classList.add('show');
+        }, 2000);
+    }
 });
+
 window.addEventListener('load', () => {
     document.body.classList.add('is-ready');
 });
