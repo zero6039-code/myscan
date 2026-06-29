@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     triggerStatsCounter();
     initQuoteModal();
     initBinaryStream();
-    initQuickScanner();   // ← 新增：免费网站扫描工具
+    initQuickScanner();
     window.addEventListener('resize', triggerStatsCounter);
 
     // ========== 延迟显示按钮和扫描工具（黑客帝国风格） ==========
@@ -358,15 +358,31 @@ function initQuoteModal() {
 }
 
 /* ============================================
-   新增：免费网站安全扫描工具
+   新增：免费网站安全扫描工具（优化版）
    ============================================ */
 function initQuickScanner() {
     const scanInput = document.getElementById('scan-url-input');
     const scanBtn = document.getElementById('scan-btn');
     const resultBox = document.getElementById('scan-result');
+    const scanModal = document.getElementById('scan-modal');
+    const scanModalContent = document.getElementById('scan-modal-content');
 
-    // 确保元素存在
-    if (!scanBtn || !scanInput || !resultBox) return;
+    // 确保所有必要元素存在
+    if (!scanBtn || !scanInput || !resultBox || !scanModal || !scanModalContent) return;
+
+    // 关闭弹窗的通用函数
+    function closeScanModal() {
+        scanModal.classList.remove('is-open');
+    }
+
+    // 预先绑定关闭事件（避免重复绑定）
+    const closeScanBtn = scanModal.querySelector('.scan-modal-close');
+    if (closeScanBtn) {
+        closeScanBtn.addEventListener('click', closeScanModal);
+    }
+    scanModal.addEventListener('click', (e) => {
+        if (e.target === scanModal) closeScanModal();
+    });
 
     scanBtn.addEventListener('click', async () => {
         let url = scanInput.value.trim();
@@ -383,17 +399,19 @@ function initQuickScanner() {
         resultBox.innerHTML = '<div style="text-align:center;color:#94a3b8;">⏳ 正在扫描...</div>';
 
         try {
-            // 调用 Cloudflare Worker / Pages Function API
             const apiEndpoint = '/api/scan?url=' + encodeURIComponent(url);
             const response = await fetch(apiEndpoint);
             const data = await response.json();
 
+            // 隐藏加载提示
+            resultBox.style.display = 'none';
+
             if (data.error) {
-                resultBox.innerHTML = `<div style="color:#ef4444;">❌ ${escapeHtml(data.error)}</div>`;
+                alert('扫描失败: ' + data.error);
                 return;
             }
 
-            // 渲染结果
+            // 构建结果 HTML
             let html = `<div class="score-line">安全评分: ${data.score}</div>`;
             for (const [key, check] of Object.entries(data.checks)) {
                 const icon = check.passed ? '✅' : '❌';
@@ -406,7 +424,11 @@ function initQuickScanner() {
                     </div>
                 `;
             }
-            resultBox.innerHTML = html;
+
+            // 打开扫描结果弹窗
+            scanModalContent.innerHTML = html;
+            scanModal.classList.add('is-open');
+
         } catch (err) {
             resultBox.innerHTML = '<div style="color:#ef4444;">网络错误，请稍后再试</div>';
         }
