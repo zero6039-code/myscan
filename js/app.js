@@ -350,12 +350,20 @@ function initQuoteModal() {
 function initQuickScanner() {
     const scanInput = document.getElementById('scan-url-input');
     const scanBtn = document.getElementById('scan-btn');
+    const complianceCheck = document.getElementById('compliance-check');
     const resultBox = document.getElementById('scan-result');
     const scanModal = document.getElementById('scan-modal');
     const scanModalContent = document.getElementById('scan-modal-content');
 
     if (!scanBtn || !scanInput || !resultBox || !scanModal || !scanModalContent) return;
 
+     // 控制按钮状态
+    if (complianceCheck) {
+        complianceCheck.addEventListener('change', () => {
+            scanBtn.disabled = !complianceCheck.checked;
+        });
+    }
+    
     function closeScanModal() {
         scanModal.classList.remove('is-open');
     }
