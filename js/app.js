@@ -3,13 +3,14 @@ document.addEventListener('DOMContentLoaded', () => {
     triggerStatsCounter();
     initQuoteModal();
     initBinaryStream();
+    initQuickScanner();   // ← 新增：免费网站扫描工具
     window.addEventListener('resize', triggerStatsCounter);
 });
 window.addEventListener('load', () => {
     document.body.classList.add('is-ready');
 });
 
-/* ========== 数字滚动 ========== */
+/* ========== 数字滚动（原版） ========== */
 function animateCounter(targetNumber) {
     const c = document.getElementById("stats-counter");
     if (!c) return;
@@ -42,7 +43,7 @@ function triggerStatsCounter() {
     }
 }
 
-/* ========== 二进制矩阵（4列跳动） ========== */
+/* ========== 二进制矩阵（原版） ========== */
 function initBinaryStream() {
     const rows = document.querySelectorAll('.binary-matrix-stream .matrix-row');
     if (!rows.length) return;
@@ -85,7 +86,7 @@ function initBinaryStream() {
     }, 45);
 }
 
-/* ========== 弹窗 + Formspree + 多语言 + 防滥用 + 倒计时 + 抖动验证 ========== */
+/* ========== 弹窗 + Formspree + 多语言 + 防滥用 + 倒计时 + 抖动验证（原版） ========== */
 function initQuoteModal() {
     const overlay = document.getElementById("quote-modal");
     if (!overlay) return;
@@ -338,4 +339,72 @@ function initQuoteModal() {
             startCooldown(COOLDOWN_SECONDS);
         }
     });
+}
+
+/* ============================================
+   新增：免费网站安全扫描工具
+   ============================================ */
+function initQuickScanner() {
+    const scanInput = document.getElementById('scan-url-input');
+    const scanBtn = document.getElementById('scan-btn');
+    const resultBox = document.getElementById('scan-result');
+
+    // 确保元素存在
+    if (!scanBtn || !scanInput || !resultBox) return;
+
+    scanBtn.addEventListener('click', async () => {
+        let url = scanInput.value.trim();
+        if (!url) return;
+
+        // 自动补全 https://
+        if (!/^https?:\/\//i.test(url)) {
+            url = 'https://' + url;
+            scanInput.value = url;
+        }
+
+        // 显示加载状态
+        resultBox.style.display = 'block';
+        resultBox.innerHTML = '<div style="text-align:center;color:#94a3b8;">⏳ 正在扫描...</div>';
+
+        try {
+            // 调用 Cloudflare Worker / Pages Function API
+            const apiEndpoint = '/api/scan?url=' + encodeURIComponent(url);
+            const response = await fetch(apiEndpoint);
+            const data = await response.json();
+
+            if (data.error) {
+                resultBox.innerHTML = `<div style="color:#ef4444;">❌ ${escapeHtml(data.error)}</div>`;
+                return;
+            }
+
+            // 渲染结果
+            let html = `<div class="score-line">安全评分: ${data.score}</div>`;
+            for (const [key, check] of Object.entries(data.checks)) {
+                const icon = check.passed ? '✅' : '❌';
+                const iconClass = check.passed ? 'pass' : 'fail';
+                html += `
+                    <div class="scan-check-item">
+                        <span class="scan-check-icon ${iconClass}">${icon}</span>
+                        <span class="scan-check-label">${check.label}</span>
+                        <span class="scan-check-value">${escapeHtml(check.value)}</span>
+                    </div>
+                `;
+            }
+            resultBox.innerHTML = html;
+        } catch (err) {
+            resultBox.innerHTML = '<div style="color:#ef4444;">网络错误，请稍后再试</div>';
+        }
+    });
+}
+
+// HTML 转义辅助函数（防止 XSS）
+function escapeHtml(text) {
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+    return String(text).replace(/[&<>"']/g, m => map[m]);
 }
