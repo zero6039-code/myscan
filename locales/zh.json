@@ -109,6 +109,7 @@
   "scan_network_error": "网络错误，请稍后再试",
   "scan_result_title": "[ 系统扫描结果 ]",
   "scan_score_prefix": "安全评分: ",
-  "fix_btn": "💡 修复"
+  "fix_btn": "💡 修复",
+  "policy_modal_title": "[ 安全审计工具使用声明 ]"
   
 }
