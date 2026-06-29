@@ -1139,16 +1139,29 @@ html[data-i18n-ready] [data-i18n],
     z-index: 1;
 }
 
-/* 扫描按钮黑客绿 */
-#scan-btn.btn-cyber-red {
-    border-color: rgba(0, 255, 65, 0.5);
+#scan-btn {
+    display: inline-block;
+    padding: 12px 36px;
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    letter-spacing: 2px;
+    background: rgba(0, 255, 65, 0.04);
+    border: 1px solid rgba(0, 255, 65, 0.5);
+    border-radius: 4px;
     color: #00ff41;
     box-shadow: 0 0 10px rgba(0, 255, 65, 0.15);
     transition: all 0.3s;
+    cursor: pointer;
 }
-#scan-btn.btn-cyber-red:hover {
+#scan-btn:hover {
     background: #00ff41;
     color: #000;
     border-color: #00ff41;
     box-shadow: 0 0 20px rgba(0, 255, 65, 0.6);
+    transform: translateY(-2px);
+}
+#scan-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 0 15px rgba(0, 255, 65, 0.3);
 }
