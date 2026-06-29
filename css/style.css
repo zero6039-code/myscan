@@ -1402,3 +1402,52 @@ html[data-i18n-ready] [data-i18n],
     margin-bottom: 16px;
     text-shadow: 0 0 8px #00ff41;
 }
+
+/* 合规声明复选框 */
+.scanner-compliance {
+    margin: 12px 0;
+    text-align: left;
+}
+
+.compliance-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: #aaffaa;
+    cursor: pointer;
+    user-select: none;
+}
+
+.compliance-label input[type="checkbox"] {
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 1px solid #00ff41;
+    border-radius: 3px;
+    background: transparent;
+    cursor: pointer;
+    position: relative;
+}
+
+.compliance-label input[type="checkbox"]:checked {
+    background: #00ff41;
+    border-color: #00ff41;
+}
+
+.compliance-label input[type="checkbox"]:checked::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #000;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+#scan-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
