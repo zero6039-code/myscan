@@ -110,7 +110,45 @@
   "scan_result_title": "[ SYSTEM SCAN RESULT ]",
   "scan_score_prefix": "Security Score: ",
   "fix_btn": "💡 Fix",
-  "policy_modal_title": "[ Security Audit Tool Usage Policy ]"
+  "policy_modal_title": "[ Security Audit Tool Usage Policy ]",
+
+  {
+    "scan_check_label_https": "HTTPS Enabled",
+    "scan_check_rec_https": "Migrate your site to HTTPS and enforce encryption for all traffic.",
+    "scan_check_label_hsts": "Strict-Transport-Security (HSTS)",
+    "scan_check_rec_hsts": "Add the header \"Strict-Transport-Security: max-age=31536000; includeSubDomains; preload\".",
+    "scan_check_label_x_frame_options": "X-Frame-Options",
+    "scan_check_rec_x_frame_options": "Set \"X-Frame-Options: DENY\" or \"SAMEORIGIN\" to prevent clickjacking.",
+    "scan_check_label_x_content_type_options": "X-Content-Type-Options",
+    "scan_check_rec_x_content_type_options": "Add \"X-Content-Type-Options: nosniff\" to prevent MIME sniffing.",
+    "scan_check_label_csp": "Content-Security-Policy (CSP)",
+    "scan_check_rec_csp_present_unsafe": "CSP is present but contains unsafe directives (unsafe-inline/unsafe-eval). Consider using nonce or hash.",
+    "scan_check_rec_csp_present_safe": "CSP policy is well configured.",
+    "scan_check_rec_csp_missing": "Implement a strict CSP policy to restrict resource sources and prevent XSS attacks.",
+    "scan_check_label_referrer_policy": "Referrer-Policy",
+    "scan_check_rec_referrer_policy": "Set \"Referrer-Policy: strict-origin-when-cross-origin\".",
+    "scan_check_label_permissions_policy": "Permissions-Policy",
+    "scan_check_rec_permissions_policy": "Use Permissions-Policy to limit browser API access.",
+    "scan_check_label_server_info_leak": "Server Information Leakage",
+    "scan_check_rec_server_info_leak_cdnty": "Server header reveals \"cloudflare\". This is usually normal for a CDN, but ensure the origin server does not leak additional information.",
+    "scan_check_rec_server_info_leak_generic": "Hide Server/X-Powered-By headers to reduce attack surface.",
+    "scan_check_label_x_permitted_cross_domain": "X-Permitted-Cross-Domain-Policies",
+    "scan_check_rec_x_permitted_cross_domain": "Set \"X-Permitted-Cross-Domain-Policies: none\" to restrict Adobe cross-domain requests.",
+    "scan_check_label_corp": "Cross-Origin-Resource-Policy (CORP)",
+    "scan_check_rec_corp": "Set \"Cross-Origin-Resource-Policy: same-origin\" to limit cross-origin resource loading.",
+    "scan_check_label_coop": "Cross-Origin-Opener-Policy (COOP)",
+    "scan_check_rec_coop": "Set \"Cross-Origin-Opener-Policy: same-origin\" to isolate cross-origin windows.",
+    "scan_check_label_cache_control": "Cache-Control",
+    "scan_check_rec_cache_control": "Set appropriate Cache-Control policy, e.g., \"no-store, max-age=0\" for sensitive pages.",
+    "scan_analysis_enabled": "Enabled",
+    "scan_analysis_not_set": "Not set",
+    "scan_analysis_leak": "Server information leaked",
+    "scan_analysis_not_found": "No information leakage detected",
+    "scan_sub_csp_unsafe": "Contains unsafe-inline and unsafe-eval",
+    "scan_sub_csp_inline": "Contains unsafe-inline",
+    "scan_sub_csp_eval": "Contains unsafe-eval",
+    "scan_sub_csp_strict": "Strict policy"
+}
   
   
 }
