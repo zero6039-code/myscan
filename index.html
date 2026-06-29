@@ -159,7 +159,6 @@
                  <div class="hero-title" data-i18n="hero_title">专注 Web3 的网页渗透与代码审计</div>
                  <p class="hero-desc" data-i18n="hero_desc">DewSecure 是由精英专家团队打造的顶级 Web3 安全平台，集成了深度渗透测试、高级源代码审计和全面的安全架构。将您的审计工作委托给我们，确保您的项目和网络生态系统在强大可靠的环境中持续蓬勃发展。</p>
                  
-                 <!-- 按钮和扫描工具延迟出现，类名已保留，由 js 控制 -->
                  <div class="hero-action delayed-btn">
                      <a href="#contact" class="btn-cyber-red" data-i18n="hero_btn_quote">咨询专家</a>
                  </div>
@@ -173,15 +172,14 @@
                              <input type="text" id="scan-url-input" placeholder="https://example.com" aria-label="网站 URL">
                          </div>
 
-                         <!-- 合规复选框 -->
+                         <!-- 强化后的合规复选框 + 服务条款链接 -->
                          <div class="scanner-compliance">
                              <label class="compliance-label">
                                  <input type="checkbox" id="compliance-check">
-                                 我已获得授权扫描此 URL，并同意自行承担全部责任。
+                                 使用本工具即表示您已获得目标网站的明确授权和已阅读同意<a href="#" id="show-policy">《服务条款》</a>，并承诺仅将其用于合规的安全健康体检，且自行承担因扫描行为产生的一切法律责任。
                              </label>
                          </div>
 
-                         <!-- 按钮 + 状态文字 -->
                          <div class="scanner-action-row">
                              <button id="scan-btn" disabled>
                                  <i class="fa-solid fa-magnifying-glass"></i> 扫描
@@ -196,6 +194,7 @@
         </main>
     </div>
 
+    <!-- 咨询报价弹窗（原有） -->
     <div id="quote-modal" class="cyber-modal-overlay">
         <div class="cyber-modal-wrapper">
             <button class="modal-close-btn" id="modal-close-btn" aria-label="Close Modal">&times;</button>
@@ -353,7 +352,7 @@
         </div>
     </div>
 
-    <!-- 扫描结果模态弹窗（黑客风格） -->
+    <!-- 扫描结果弹窗（黑客风格） -->
     <div id="scan-modal" class="cyber-modal-overlay scan-modal-overlay">
         <div class="cyber-modal-wrapper scan-modal-wrapper">
             <button class="modal-close-btn scan-modal-close" aria-label="Close">&times;</button>
@@ -364,6 +363,39 @@
         </div>
     </div>
     
+    <!-- 服务条款弹窗（黑客风格） -->
+    <div id="policy-modal" class="cyber-modal-overlay policy-modal-overlay">
+        <div class="cyber-modal-wrapper policy-modal-wrapper">
+            <button class="modal-close-btn policy-modal-close" aria-label="Close">&times;</button>
+            <div class="policy-modal-body">
+                <h2 class="policy-modal-title">[ 安全审计工具使用声明 ]</h2>
+                <div class="policy-modal-content">
+                    <h3>Security Audit Tool Usage Policy</h3>
+                    <p>本工具旨在协助进行 Web 应用安全基线审计。为确保审计行为的合法性、合规性及非破坏性，所有使用者及本工具的运行须严格遵守以下条款：</p>
+
+                    <h4>1. 行为原则 (Principles of Operation)</h4>
+                    <p>本工具采用只读模式 (Read-Only Mode)，仅执行 HTTP HEAD 或 GET 请求。工具严格禁止执行以下任何操作：</p>
+                    <ul>
+                        <li>任何形式的写入、修改、删除、POST/PUT/DELETE 请求。</li>
+                        <li>任何形式的暴力破解、密码枚举或利用漏洞的主动探测。</li>
+                        <li>任何导致目标服务器资源饱和、性能下降或拒绝服务 (DoS) 的高并发请求。</li>
+                    </ul>
+
+                    <h4>2. 合规边界 (Compliance Boundaries)</h4>
+                    <p><strong>授权限定：</strong>本工具仅允许在使用者拥有明确授权的资产上运行。严禁对第三方系统进行未经授权的扫描。</p>
+                    <p><strong>隐私保护：</strong>本工具不存储、不传输任何用户敏感数据（包括但不限于 Cookies、Authorization Tokens、PII 信息）。扫描日志应进行脱敏处理，移除所有包含会话信息的原始响应头。</p>
+                    <p><strong>合规责任：</strong>工具产生的所有审计结果仅供内部安全评审参考。使用者需对审计结果的合法使用负责，不得利用审计发现的信息从事任何非法活动。</p>
+
+                    <h4>3. 免责声明 (Disclaimer)</h4>
+                    <p>本工具提供的所有安全配置评估（如 CSP 评分、Header 完整性分析）基于行业通用标准（如 OWASP ASVS）。工具提供的结果仅供参考，不作为唯一的安全合规性证明。因网络环境波动或系统配置复杂性导致的误报，开发者概不负责。</p>
+
+                    <h4>4. 协作联系 (Contact)</h4>
+                    <p>若在使用本工具过程中发现任何误报、异常或潜在风险，请及时通过安全反馈渠道与我们取得联系。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div hidden>
         <span id="alert-success" data-i18n="alert_success">提交成功！DewSecure 团队将尽快与您取得联系。</span>
         <span id="alert-email-error" data-i18n="alert_error_email">请检查邮箱地址是否正确。</span>
