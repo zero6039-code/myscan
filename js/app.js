@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initQuoteModal();
     initBinaryStream();
     initQuickScanner();
-    initPolicyModal();       // 新增：服务条款弹窗
+    initPolicyModal();       // 服务条款弹窗
     window.addEventListener('resize', triggerStatsCounter);
 
     // ========== 延迟显示按钮和扫描工具（黑客帝国风格） ==========
@@ -26,6 +26,11 @@ document.addEventListener('DOMContentLoaded', () => {
 window.addEventListener('load', () => {
     document.body.classList.add('is-ready');
 });
+
+/* ========== 多语言快捷函数 ========== */
+function t(key) {
+    return (window.fallbackTranslations && window.fallbackTranslations[key]) || key;
+}
 
 /* ========== 数字滚动 ========== */
 function animateCounter(targetNumber) {
@@ -347,7 +352,7 @@ function initQuoteModal() {
     });
 }
 
-/* ========== 服务条款弹窗 ========== */
+/* ========== 服务条款弹窗（支持三语） ========== */
 function initPolicyModal() {
     const policyModal = document.getElementById('policy-modal');
     const showPolicyLink = document.getElementById('show-policy');
@@ -355,6 +360,11 @@ function initPolicyModal() {
 
     showPolicyLink.addEventListener('click', (e) => {
         e.preventDefault();
+        // 根据当前语言切换条款内容显示
+        const lang = window.currentLang || 'en';
+        policyModal.querySelectorAll('.policy-content-lang').forEach(el => {
+            el.style.display = el.getAttribute('data-lang-policy') === lang ? 'block' : 'none';
+        });
         policyModal.classList.add('is-open');
     });
 
@@ -369,7 +379,7 @@ function initPolicyModal() {
     });
 }
 
-/* ========== 免费网站安全扫描工具（带修复按钮 + 按钮右侧加载状态） ========== */
+/* ========== 免费网站安全扫描工具（带修复按钮 + 按钮右侧加载状态 + 多语言） ========== */
 function initQuickScanner() {
     const scanInput = document.getElementById('scan-url-input');
     const scanBtn = document.getElementById('scan-btn');
@@ -408,8 +418,9 @@ function initQuickScanner() {
             scanInput.value = url;
         }
 
+        // 显示加载状态（多语言）
         scanStatus.style.display = 'inline';
-        scanStatus.textContent = '⏳ 正在扫描...';
+        scanStatus.textContent = t('scan_loading');
         resultBox.style.display = 'none';
 
         try {
@@ -421,11 +432,12 @@ function initQuickScanner() {
 
             if (data.error) {
                 resultBox.style.display = 'block';
-                resultBox.innerHTML = `<div style="color:#ef4444;">❌ ${escapeHtml(data.error)}</div>`;
+                resultBox.innerHTML = `<div style="color:#ef4444;">${t('scan_error_prefix')}${escapeHtml(data.error)}</div>`;
                 return;
             }
 
-            let html = `<div class="score-line">安全评分: ${data.score}</div>`;
+            // 构建结果表格
+            let html = `<div class="score-line">${t('scan_score_prefix')}${data.score}</div>`;
             html += `<table class="scan-result-table"><tbody>`;
 
             for (const [key, check] of Object.entries(data.checks)) {
@@ -439,6 +451,7 @@ function initQuickScanner() {
                     const val = check.current_value || '';
                     analysisText = val.length > 40 ? val.substring(0, 40) + '…' : val;
                 } else {
+                    // 简单判断，针对服务器信息泄漏做本地化
                     if (check.label === '服务器信息泄漏') {
                         analysisText = '暴露了服务器信息';
                     } else {
@@ -446,13 +459,14 @@ function initQuickScanner() {
                     }
                 }
 
+                // CSP 警告
                 if (key === 'contentSecurityPolicy' && check.sub && check.passed) {
                     statusIcon = '⚠️';
                     statusClass = 'warn';
                 }
 
                 const needFix = !check.passed || check.sub;
-                const fixButton = needFix ? `<button class="fix-btn">💡 修复</button>` : '';
+                const fixButton = needFix ? `<button class="fix-btn">${t('fix_btn')}</button>` : '';
 
                 html += `<tr class="scan-row ${statusClass}">
                     <td class="scan-label">${escapeHtml(check.label)}</td>
@@ -472,6 +486,7 @@ function initQuickScanner() {
             scanModalContent.innerHTML = html;
             scanModal.classList.add('is-open');
 
+            // 绑定修复按钮
             scanModalContent.querySelectorAll('.fix-btn').forEach(btn => {
                 btn.addEventListener('click', function (e) {
                     e.stopPropagation();
@@ -486,7 +501,7 @@ function initQuickScanner() {
         } catch (err) {
             scanStatus.style.display = 'none';
             resultBox.style.display = 'block';
-            resultBox.innerHTML = '<div style="color:#ef4444;">网络错误，请稍后再试</div>';
+            resultBox.innerHTML = `<div style="color:#ef4444;">${t('scan_network_error')}</div>`;
         }
     });
 }
