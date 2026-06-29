@@ -109,7 +109,8 @@
   "scan_network_error": "Network error, please try again later",
   "scan_result_title": "[ SYSTEM SCAN RESULT ]",
   "scan_score_prefix": "Security Score: ",
-  "fix_btn": "💡 Fix"
+  "fix_btn": "💡 Fix",
+  "policy_modal_title": "[ Security Audit Tool Usage Policy ]"
   
   
 }
