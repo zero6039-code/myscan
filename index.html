@@ -170,7 +170,15 @@
                          <p class="scanner-desc">输入网站 URL，立即检测常见安全配置（HTTPS、安全头等）</p>
                          <div class="scanner-input-group">
                              <input type="text" id="scan-url-input" placeholder="https://example.com" aria-label="网站 URL">
-                             <button id="scan-btn">
+                             </div>
+                             <!-- 新增合规复选框 -->
+                             <div class="scanner-compliance">
+                                 <label class="compliance-label">
+                                     <input type="checkbox" id="compliance-check">
+                                     我已获得授权扫描此 URL，并同意自行承担全部责任。
+                                 </label>
+                             </div>
+                             <button id="scan-btn" disabled>
                                  <i class="fa-solid fa-magnifying-glass"></i> 扫描
                              </button>
                          </div>
