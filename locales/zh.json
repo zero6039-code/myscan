@@ -95,6 +95,20 @@
   "auto_reply_subject": "DewSecure 已收到您的咨询",
   "auto_reply_message": "尊敬的客户，您好！我们已经收到您的咨询请求，我们的团队会尽快查看并回复您。感谢您的耐心等待。",
 
-  "btn_wait": "请稍候 ({seconds}s)"
+  "btn_wait": "请稍候 ({seconds}s)",
+
+  "scan_title": "🔍 快速安全检测",
+  "scan_desc": "输入网站 URL，立即检测常见安全配置（HTTPS、安全头等）",
+  "scan_placeholder": "https://example.com",
+  "scan_compliance": "使用本工具即表示您已获得目标网站的明确授权，并承诺仅将其用于合规的安全健康体检，且自行承担因扫描行为产生的一切法律责任。",
+  "scan_policy_prefix": "请先阅读并同意",
+  "scan_policy_link": "《服务条款》",
+  "scan_btn": "扫描",
+  "scan_loading": "⏳ 正在扫描...",
+  "scan_error_prefix": "扫描失败: ",
+  "scan_network_error": "网络错误，请稍后再试",
+  "scan_result_title": "[ 系统扫描结果 ]",
+  "scan_score_prefix": "安全评分: ",
+  "fix_btn": "💡 修复"
   
 }
