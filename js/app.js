@@ -346,7 +346,7 @@ function initQuoteModal() {
     });
 }
 
-/* ========== 免费网站安全扫描工具（简洁表格版） ========== */
+/* ========== 免费网站安全扫描工具（带修复按钮） ========== */
 function initQuickScanner() {
     const scanInput = document.getElementById('scan-url-input');
     const scanBtn = document.getElementById('scan-btn');
@@ -401,15 +401,12 @@ function initQuickScanner() {
                 let statusClass = check.passed ? 'pass' : 'fail';
                 let analysisText = '';
 
-                // 生成简短分析
                 if (check.sub) {
-                    analysisText = check.sub;          // 优先使用后端返回的子分析
+                    analysisText = check.sub;
                 } else if (check.passed) {
-                    // 通过且无 sub，显示简洁值（如“已启用”、“nosniff”）
                     const val = check.current_value || '';
                     analysisText = val.length > 40 ? val.substring(0, 40) + '…' : val;
                 } else {
-                    // 未通过且无 sub，根据标签生成默认分析
                     if (check.label === '服务器信息泄漏') {
                         analysisText = '暴露了服务器信息';
                     } else {
@@ -423,16 +420,19 @@ function initQuickScanner() {
                     statusClass = 'warn';
                 }
 
+                const needFix = !check.passed || check.sub;  // 不达标或有子分析（如 CSP 警告）
+                const fixButton = needFix ? `<button class="fix-btn">💡 修复</button>` : '';
+
                 html += `<tr class="scan-row ${statusClass}">
                     <td class="scan-label">${escapeHtml(check.label)}</td>
                     <td class="scan-status">${statusIcon}</td>
                     <td class="scan-analysis">${escapeHtml(analysisText)}</td>
+                    <td class="scan-action">${fixButton}</td>
                 </tr>`;
 
-                // 如果存在修复建议（失败或警告），添加隐藏的修复建议行
-                if (!check.passed || check.sub) {
+                if (needFix) {
                     html += `<tr class="scan-fix-row" style="display:none;">
-                        <td colspan="3" class="scan-fix-text">💡 ${escapeHtml(check.recommendation)}</td>
+                        <td colspan="4" class="scan-fix-text">💡 ${escapeHtml(check.recommendation)}</td>
                     </tr>`;
                 }
             }
@@ -441,10 +441,12 @@ function initQuickScanner() {
             scanModalContent.innerHTML = html;
             scanModal.classList.add('is-open');
 
-            // 绑定点击展开修复建议
-            scanModalContent.querySelectorAll('.scan-row').forEach(row => {
-                row.addEventListener('click', function () {
-                    const fixRow = this.nextElementSibling;
+            // 绑定修复按钮事件
+            scanModalContent.querySelectorAll('.fix-btn').forEach(btn => {
+                btn.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    const row = this.closest('tr');
+                    const fixRow = row.nextElementSibling;
                     if (fixRow && fixRow.classList.contains('scan-fix-row')) {
                         fixRow.style.display = fixRow.style.display === 'none' ? 'table-row' : 'none';
                     }
