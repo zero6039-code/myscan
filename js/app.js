@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initQuoteModal();
     initBinaryStream();
     initQuickScanner();
+    initPolicyModal();       // 新增：服务条款弹窗
     window.addEventListener('resize', triggerStatsCounter);
 
     // ========== 延迟显示按钮和扫描工具（黑客帝国风格） ==========
@@ -346,19 +347,40 @@ function initQuoteModal() {
     });
 }
 
+/* ========== 服务条款弹窗 ========== */
+function initPolicyModal() {
+    const policyModal = document.getElementById('policy-modal');
+    const showPolicyLink = document.getElementById('show-policy');
+    if (!policyModal || !showPolicyLink) return;
+
+    showPolicyLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        policyModal.classList.add('is-open');
+    });
+
+    const closeBtn = policyModal.querySelector('.policy-modal-close');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+            policyModal.classList.remove('is-open');
+        });
+    }
+    policyModal.addEventListener('click', (e) => {
+        if (e.target === policyModal) policyModal.classList.remove('is-open');
+    });
+}
+
 /* ========== 免费网站安全扫描工具（带修复按钮 + 按钮右侧加载状态） ========== */
 function initQuickScanner() {
     const scanInput = document.getElementById('scan-url-input');
     const scanBtn = document.getElementById('scan-btn');
     const complianceCheck = document.getElementById('compliance-check');
     const resultBox = document.getElementById('scan-result');
-    const scanStatus = document.getElementById('scan-status');   // 新增：按钮右侧状态文字
+    const scanStatus = document.getElementById('scan-status');
     const scanModal = document.getElementById('scan-modal');
     const scanModalContent = document.getElementById('scan-modal-content');
 
     if (!scanBtn || !scanInput || !resultBox || !scanStatus || !scanModal || !scanModalContent) return;
 
-    // 控制按钮状态
     if (complianceCheck) {
         complianceCheck.addEventListener('change', () => {
             scanBtn.disabled = !complianceCheck.checked;
@@ -386,7 +408,6 @@ function initQuickScanner() {
             scanInput.value = url;
         }
 
-        // 显示按钮右侧加载状态，隐藏错误区域
         scanStatus.style.display = 'inline';
         scanStatus.textContent = '⏳ 正在扫描...';
         resultBox.style.display = 'none';
@@ -396,7 +417,7 @@ function initQuickScanner() {
             const response = await fetch(apiEndpoint);
             const data = await response.json();
 
-            scanStatus.style.display = 'none';   // 隐藏加载
+            scanStatus.style.display = 'none';
 
             if (data.error) {
                 resultBox.style.display = 'block';
@@ -404,7 +425,6 @@ function initQuickScanner() {
                 return;
             }
 
-            // 构建简洁表格
             let html = `<div class="score-line">安全评分: ${data.score}</div>`;
             html += `<table class="scan-result-table"><tbody>`;
 
@@ -426,7 +446,6 @@ function initQuickScanner() {
                     }
                 }
 
-                // CSP 特殊处理：即使 passed 但有不安全指令，显示警告
                 if (key === 'contentSecurityPolicy' && check.sub && check.passed) {
                     statusIcon = '⚠️';
                     statusClass = 'warn';
@@ -453,7 +472,6 @@ function initQuickScanner() {
             scanModalContent.innerHTML = html;
             scanModal.classList.add('is-open');
 
-            // 绑定修复按钮事件
             scanModalContent.querySelectorAll('.fix-btn').forEach(btn => {
                 btn.addEventListener('click', function (e) {
                     e.stopPropagation();
@@ -473,7 +491,7 @@ function initQuickScanner() {
     });
 }
 
-// HTML 转义辅助函数（防止 XSS）
+// HTML 转义辅助函数
 function escapeHtml(text) {
     const map = {
         '&': '&amp;',
