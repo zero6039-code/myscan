@@ -163,31 +163,31 @@
                      <a href="#contact" class="btn-cyber-red" data-i18n="hero_btn_quote">咨询专家</a>
                  </div>
 
+                 <!-- 扫描工具（多语言） -->
                  <div class="quick-scanner delayed-scanner">
                      <div class="scanner-card">
-                         <h3 class="scanner-title">🔍 快速安全检测</h3>
-                         <p class="scanner-desc">输入网站 URL，立即检测常见安全配置（HTTPS、安全头等）</p>
+                         <h3 class="scanner-title" data-i18n="scan_title">🔍 快速安全检测</h3>
+                         <p class="scanner-desc" data-i18n="scan_desc">输入网站 URL，立即检测常见安全配置（HTTPS、安全头等）</p>
                          
                          <div class="scanner-input-group">
-                             <input type="text" id="scan-url-input" placeholder="https://example.com" aria-label="网站 URL">
+                             <input type="text" id="scan-url-input" data-i18n-placeholder="scan_placeholder" placeholder="https://example.com" aria-label="网站 URL">
                          </div>
 
-                         <!-- 强化后的合规复选框 + 服务条款链接 -->
                          <div class="scanner-compliance">
                              <label class="compliance-label">
                                  <input type="checkbox" id="compliance-check">
-                                 使用本工具即表示您已获得目标网站的明确授权，并承诺仅将其用于合规的安全健康体检，且自行承担因扫描行为产生的一切法律责任。
+                                 <span data-i18n="scan_compliance">使用本工具即表示您已获得目标网站的明确授权，并承诺仅将其用于合规的安全健康体检，且自行承担因扫描行为产生的一切法律责任。</span>
                              </label>
                              <p class="policy-link-row">
-                                 请先阅读并同意 <a href="#" id="show-policy">《服务条款》</a>
+                                 <span data-i18n="scan_policy_prefix">请先阅读并同意</span> <a href="#" id="show-policy" data-i18n="scan_policy_link">《服务条款》</a>
                              </p>
                          </div>
 
                          <div class="scanner-action-row">
                              <button id="scan-btn" disabled>
-                                 <i class="fa-solid fa-magnifying-glass"></i> 扫描
+                                 <i class="fa-solid fa-magnifying-glass"></i> <span data-i18n="scan_btn">扫描</span>
                              </button>
-                             <span id="scan-status" style="display:none;"></span>
+                             <span id="scan-status" style="display:none;" data-i18n="scan_loading">⏳ 正在扫描...</span>
                          </div>
                          
                          <div id="scan-result" class="scan-result-box" style="display:none;"></div>
@@ -360,22 +360,21 @@
         <div class="cyber-modal-wrapper scan-modal-wrapper">
             <button class="modal-close-btn scan-modal-close" aria-label="Close">&times;</button>
             <div class="scan-modal-body">
-                <h2 class="scan-modal-title">[ SYSTEM SCAN RESULT ]</h2>
+                <h2 class="scan-modal-title" data-i18n="scan_result_title">[ SYSTEM SCAN RESULT ]</h2>
                 <div id="scan-modal-content"></div>
             </div>
         </div>
     </div>
     
-    <!-- 服务条款弹窗（黑客风格） -->
+    <!-- 服务条款弹窗（三语内容块） -->
     <div id="policy-modal" class="cyber-modal-overlay policy-modal-overlay">
         <div class="cyber-modal-wrapper policy-modal-wrapper">
             <button class="modal-close-btn policy-modal-close" aria-label="Close">&times;</button>
             <div class="policy-modal-body">
-                <h2 class="policy-modal-title">[ 安全审计工具使用声明 ]</h2>
-                <div class="policy-modal-content">
-                    <h3>Security Audit Tool Usage Policy</h3>
+                <h2 class="policy-modal-title" data-i18n="policy_modal_title">[ 安全审计工具使用声明 ]</h2>
+                <!-- 中文版本 -->
+                <div class="policy-content-lang" data-lang-policy="zh">
                     <p>本工具旨在协助进行 Web 应用安全基线审计。为确保审计行为的合法性、合规性及非破坏性，所有使用者及本工具的运行须严格遵守以下条款：</p>
-
                     <h4>1. 行为原则 (Principles of Operation)</h4>
                     <p>本工具采用只读模式 (Read-Only Mode)，仅执行 HTTP HEAD 或 GET 请求。工具严格禁止执行以下任何操作：</p>
                     <ul>
@@ -383,17 +382,52 @@
                         <li>任何形式的暴力破解、密码枚举或利用漏洞的主动探测。</li>
                         <li>任何导致目标服务器资源饱和、性能下降或拒绝服务 (DoS) 的高并发请求。</li>
                     </ul>
-
                     <h4>2. 合规边界 (Compliance Boundaries)</h4>
                     <p><strong>授权限定：</strong>本工具仅允许在使用者拥有明确授权的资产上运行。严禁对第三方系统进行未经授权的扫描。</p>
                     <p><strong>隐私保护：</strong>本工具不存储、不传输任何用户敏感数据（包括但不限于 Cookies、Authorization Tokens、PII 信息）。扫描日志应进行脱敏处理，移除所有包含会话信息的原始响应头。</p>
                     <p><strong>合规责任：</strong>工具产生的所有审计结果仅供内部安全评审参考。使用者需对审计结果的合法使用负责，不得利用审计发现的信息从事任何非法活动。</p>
-
                     <h4>3. 免责声明 (Disclaimer)</h4>
                     <p>本工具提供的所有安全配置评估（如 CSP 评分、Header 完整性分析）基于行业通用标准（如 OWASP ASVS）。工具提供的结果仅供参考，不作为唯一的安全合规性证明。因网络环境波动或系统配置复杂性导致的误报，开发者概不负责。</p>
-
                     <h4>4. 协作联系 (Contact)</h4>
                     <p>若在使用本工具过程中发现任何误报、异常或潜在风险，请及时通过安全反馈渠道与我们取得联系。</p>
+                </div>
+                <!-- 英文版本 -->
+                <div class="policy-content-lang" data-lang-policy="en" style="display:none;">
+                    <p>This tool is designed to assist with web application security baseline audits. To ensure the legality, compliance, and non-destructive nature of the auditing process, all users and the operation of this tool must strictly adhere to the following terms:</p>
+                    <h4>1. Principles of Operation</h4>
+                    <p>This tool operates in read-only mode, executing only HTTP HEAD or GET requests. The tool is strictly prohibited from performing any of the following:</p>
+                    <ul>
+                        <li>Any form of write, modify, delete, POST/PUT/DELETE requests.</li>
+                        <li>Any form of brute force, password enumeration, or active exploitation of vulnerabilities.</li>
+                        <li>Any high-concurrency requests that could cause resource saturation, performance degradation, or denial of service (DoS) on the target server.</li>
+                    </ul>
+                    <h4>2. Compliance Boundaries</h4>
+                    <p><strong>Authorization Limit:</strong> This tool may only be run on assets for which the user has explicit authorization. Unauthorized scanning of third-party systems is strictly prohibited.</p>
+                    <p><strong>Privacy Protection:</strong> This tool does not store or transmit any user-sensitive data (including but not limited to Cookies, Authorization Tokens, PII). Scan logs should be sanitized to remove all original response headers containing session information.</p>
+                    <p><strong>Compliance Responsibility:</strong> All audit results generated by the tool are for internal security review only. Users are responsible for the legal use of the audit findings and must not engage in any illegal activities using the information discovered.</p>
+                    <h4>3. Disclaimer</h4>
+                    <p>All security configuration assessments provided by this tool (such as CSP scores, header integrity analysis) are based on industry-standard criteria (e.g., OWASP ASVS). The results are for reference only and do not serve as the sole proof of security compliance. The developer is not responsible for false positives caused by network fluctuations or system configuration complexity.</p>
+                    <h4>4. Contact</h4>
+                    <p>If you encounter any false positives, anomalies, or potential risks while using this tool, please contact us through our security feedback channel promptly.</p>
+                </div>
+                <!-- 马来文版本 -->
+                <div class="policy-content-lang" data-lang-policy="ms" style="display:none;">
+                    <p>Alat ini direka untuk membantu audit garis dasar keselamatan aplikasi web. Untuk memastikan kesahihan, pematuhan, dan sifat tidak merosakkan proses audit, semua pengguna dan pengendalian alat ini mestilah mematuhi syarat-syarat berikut dengan ketat:</p>
+                    <h4>1. Prinsip Operasi</h4>
+                    <p>Alat ini beroperasi dalam mod baca sahaja, melaksanakan permintaan HTTP HEAD atau GET sahaja. Alat ini dilarang sama sekali melakukan perkara berikut:</p>
+                    <ul>
+                        <li>Sebarang bentuk permintaan tulis, ubah suai, hapus, POST/PUT/DELETE.</li>
+                        <li>Sebarang bentuk brute force, penghitungan kata laluan, atau eksploitasi kerentanan secara aktif.</li>
+                        <li>Sebarang permintaan konkuren tinggi yang boleh menyebabkan ketepuan sumber, penurunan prestasi, atau penafian perkhidmatan (DoS) pada pelayan sasaran.</li>
+                    </ul>
+                    <h4>2. Sempadan Pematuhan</h4>
+                    <p><strong>Had Kebenaran:</strong> Alat ini hanya boleh dijalankan pada aset yang pengguna mempunyai kebenaran yang jelas. Pengimbasan tanpa kebenaran ke atas sistem pihak ketiga adalah dilarang sama sekali.</p>
+                    <p><strong>Perlindungan Privasi:</strong> Alat ini tidak menyimpan atau menghantar sebarang data sensitif pengguna (termasuk tetapi tidak terhad kepada Kuki, Token Kebenaran, PII). Log imbasan hendaklah dibersihkan untuk membuang semua tajuk respons asal yang mengandungi maklumat sesi.</p>
+                    <p><strong>Tanggungjawab Pematuhan:</strong> Semua hasil audit yang dihasilkan oleh alat adalah untuk semakan keselamatan dalaman sahaja. Pengguna bertanggungjawab ke atas penggunaan undang-undang hasil audit dan tidak boleh terlibat dalam sebarang aktiviti haram menggunakan maklumat yang ditemui.</p>
+                    <h4>3. Penafian</h4>
+                    <p>Semua penilaian konfigurasi keselamatan yang disediakan oleh alat ini (seperti skor CSP, analisis integriti tajuk) adalah berdasarkan kriteria standard industri (mis., OWASP ASVS). Hasilnya adalah untuk rujukan sahaja dan tidak berfungsi sebagai bukti tunggal pematuhan keselamatan. Pemaju tidak bertanggungjawab ke atas positif palsu yang disebabkan oleh turun naik rangkaian atau kerumitan konfigurasi sistem.</p>
+                    <h4>4. Hubungi</h4>
+                    <p>Sekiranya anda menghadapi sebarang positif palsu, anomali, atau risiko yang berpotensi semasa menggunakan alat ini, sila hubungi kami melalui saluran maklum balas keselamatan kami dengan segera.</p>
                 </div>
             </div>
         </div>
