@@ -1411,7 +1411,7 @@ html[data-i18n-ready] [data-i18n],
 
 .compliance-label {
     display: flex;
-    align-items: center;
+    align-items: flex-start;    /* 让文字与复选框顶部对齐 */
     gap: 10px;
     font-size: 13px;
     color: #aaffaa;
@@ -1420,14 +1420,17 @@ html[data-i18n-ready] [data-i18n],
 }
 
 .compliance-label input[type="checkbox"] {
+    flex-shrink: 0;            /* 禁止复选框被压缩 */
     appearance: none;
     width: 18px;
     height: 18px;
+    min-width: 18px;           /* 确保最小宽度 */
     border: 1px solid #00ff41;
     border-radius: 3px;
     background: transparent;
     cursor: pointer;
     position: relative;
+    margin-top: 2px;           /* 微调垂直对齐 */
 }
 
 .compliance-label input[type="checkbox"]:checked {
