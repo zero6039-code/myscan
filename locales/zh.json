@@ -146,6 +146,7 @@
   "scan_sub_csp_unsafe": "包含 unsafe-inline 和 unsafe-eval",
   "scan_sub_csp_inline": "包含 unsafe-inline",
   "scan_sub_csp_eval": "包含 unsafe-eval",
-  "scan_sub_csp_strict": "策略较严格"
+  "scan_sub_csp_strict": "策略较严格",
+  "scan_upsell": "以上检测结果基于标准化基线审计，旨在为您提供快速的风险感知。为确保漏洞修复的彻底性并避免无效修复，我们建议结合业务逻辑进行人工渗透测试。如有需求，我们可以为您提供针对性的修复方案指导，帮助您实现从“发现漏洞”到“闭环加固”的完整跨越。"
   
 }
