@@ -110,24 +110,21 @@ function initQuoteModal() {
     const form = document.getElementById("quote-form");
     const textarea = document.getElementById("form-info");
 
-    // 抖动动画函数
     function shakeElement(el) {
         if (!el) return;
         el.style.animation = 'none';
-        el.offsetHeight; // 强制回流
+        el.offsetHeight;
         el.style.animation = 'shake-error 0.4s ease-in-out';
         el.addEventListener('animationend', () => {
             el.style.animation = '';
         }, { once: true });
     }
 
-    // 防滥用变量
     let isSubmitting = false;
     const COOLDOWN_SECONDS = 30;
     const MAX_SUBMISSIONS = 5;
     const STORAGE_KEY = 'dewsecure_submissions';
 
-    // 提交按钮及倒计时
     const submitBtn = form?.querySelector('.btn-submit-quote');
     const submitBtnTextSpan = submitBtn?.querySelector('span[data-i18n="hero_btn_quote"]');
     let originalBtnText = '咨询专家';
@@ -196,7 +193,6 @@ function initQuoteModal() {
         }, 1000);
     }
 
-    // 打开弹窗
     document.addEventListener("click", (e) => {
         if (e.target.closest(".btn-cyber-red") || e.target.closest('[data-i18n="hero_btn_quote"]')) {
             if (!e.target.closest("#quote-form")) {
@@ -206,7 +202,6 @@ function initQuoteModal() {
         }
     });
 
-    // 关闭弹窗（清除倒计时）
     function close() {
         overlay.classList.remove("is-open");
         if (form) {
@@ -234,12 +229,10 @@ function initQuoteModal() {
         if (e.key === "Escape" && overlay.classList.contains("is-open")) close();
     });
 
-    // 输入长度限制
     textarea?.addEventListener("input", () => {
         if (textarea.value.length > 2000) textarea.value = textarea.value.substring(0, 2000);
     });
 
-    // 表单提交
     form?.addEventListener("submit", async (e) => {
         e.preventDefault();
 
@@ -261,7 +254,6 @@ function initQuoteModal() {
             return;
         }
 
-        // 蜜罐检查
         const honeypot = document.getElementById('fax');
         if (honeypot && honeypot.value.trim() !== '') {
             alert(document.getElementById('alert-success')?.textContent || '提交成功！');
@@ -354,7 +346,7 @@ function initQuoteModal() {
     });
 }
 
-/* ========== 免费网站安全扫描工具 ========== */
+/* ========== 免费网站安全扫描工具（简洁表格版） ========== */
 function initQuickScanner() {
     const scanInput = document.getElementById('scan-url-input');
     const scanBtn = document.getElementById('scan-btn');
@@ -400,25 +392,64 @@ function initQuickScanner() {
                 return;
             }
 
+            // 构建简洁表格
             let html = `<div class="score-line">安全评分: ${data.score}</div>`;
+            html += `<table class="scan-result-table"><tbody>`;
+
             for (const [key, check] of Object.entries(data.checks)) {
-                const icon = check.passed ? '✅' : '❌';
-                const iconClass = check.passed ? 'pass' : 'fail';
-                let valueHtml = escapeHtml(check.current_value);
+                let statusIcon = check.passed ? '✅' : '❌';
+                let statusClass = check.passed ? 'pass' : 'fail';
+                let analysisText = '';
+
+                // 生成简短分析
                 if (check.sub) {
-                    valueHtml += ` <br><small style="color:#ffcc00;">${escapeHtml(check.sub)}</small>`;
+                    analysisText = check.sub;          // 优先使用后端返回的子分析
+                } else if (check.passed) {
+                    // 通过且无 sub，显示简洁值（如“已启用”、“nosniff”）
+                    const val = check.current_value || '';
+                    analysisText = val.length > 40 ? val.substring(0, 40) + '…' : val;
+                } else {
+                    // 未通过且无 sub，根据标签生成默认分析
+                    if (check.label === '服务器信息泄漏') {
+                        analysisText = '暴露了服务器信息';
+                    } else {
+                        analysisText = '未设置';
+                    }
                 }
-                html += `
-                    <div class="scan-check-item">
-                        <span class="scan-check-icon ${iconClass}">${icon}</span>
-                        <span class="scan-check-label">${check.label}</span>
-                        <span class="scan-check-value">${valueHtml}</span>
-                    </div>
-                `;
+
+                // CSP 特殊处理：即使 passed 但有不安全指令，显示警告
+                if (key === 'contentSecurityPolicy' && check.sub && check.passed) {
+                    statusIcon = '⚠️';
+                    statusClass = 'warn';
+                }
+
+                html += `<tr class="scan-row ${statusClass}">
+                    <td class="scan-label">${escapeHtml(check.label)}</td>
+                    <td class="scan-status">${statusIcon}</td>
+                    <td class="scan-analysis">${escapeHtml(analysisText)}</td>
+                </tr>`;
+
+                // 如果存在修复建议（失败或警告），添加隐藏的修复建议行
+                if (!check.passed || check.sub) {
+                    html += `<tr class="scan-fix-row" style="display:none;">
+                        <td colspan="3" class="scan-fix-text">💡 ${escapeHtml(check.recommendation)}</td>
+                    </tr>`;
+                }
             }
 
+            html += `</tbody></table>`;
             scanModalContent.innerHTML = html;
             scanModal.classList.add('is-open');
+
+            // 绑定点击展开修复建议
+            scanModalContent.querySelectorAll('.scan-row').forEach(row => {
+                row.addEventListener('click', function () {
+                    const fixRow = this.nextElementSibling;
+                    if (fixRow && fixRow.classList.contains('scan-fix-row')) {
+                        fixRow.style.display = fixRow.style.display === 'none' ? 'table-row' : 'none';
+                    }
+                });
+            });
 
         } catch (err) {
             resultBox.innerHTML = '<div style="color:#ef4444;">网络错误，请稍后再试</div>';
