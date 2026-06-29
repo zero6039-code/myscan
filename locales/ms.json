@@ -146,6 +146,7 @@
   "scan_sub_csp_unsafe": "Mengandungi unsafe-inline dan unsafe-eval",
   "scan_sub_csp_inline": "Mengandungi unsafe-inline",
   "scan_sub_csp_eval": "Mengandungi unsafe-eval",
-  "scan_sub_csp_strict": "Polisi ketat"
+  "scan_sub_csp_strict": "Polisi ketat",
+  "scan_upsell": "Keputusan di atas adalah berdasarkan audit garis dasar piawai, bertujuan untuk memberi anda kesedaran risiko yang pantas. Untuk memastikan pemulihan yang menyeluruh dan mengelakkan pembaikan yang tidak berkesan, kami mengesyorkan ujian penembusan manual yang mengambil kira logik perniagaan anda. Jika perlu, kami boleh menyediakan panduan pemulihan yang disesuaikan untuk membantu anda melangkah dari \"mengesan kerentanan\" kepada pengukuhan gelung tertutup yang lengkap."
   
 }
