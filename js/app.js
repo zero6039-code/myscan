@@ -1,4 +1,4 @@
-// DewSecure 最终版（抖动验证 + 防滥用 + 倒计时 + Formspree + 多语言 + 二进制跳动）
+// DewSecure 最终版（抖动验证 + 防滥用 + 倒计时 + Formspree + 多语言 + 二进制跳动 + 安全扫描）
 document.addEventListener('DOMContentLoaded', () => {
     triggerStatsCounter();
     initQuoteModal();
@@ -26,7 +26,7 @@ window.addEventListener('load', () => {
     document.body.classList.add('is-ready');
 });
 
-/* ========== 数字滚动（原版） ========== */
+/* ========== 数字滚动 ========== */
 function animateCounter(targetNumber) {
     const c = document.getElementById("stats-counter");
     if (!c) return;
@@ -59,7 +59,7 @@ function triggerStatsCounter() {
     }
 }
 
-/* ========== 二进制矩阵（原版） ========== */
+/* ========== 二进制矩阵 ========== */
 function initBinaryStream() {
     const rows = document.querySelectorAll('.binary-matrix-stream .matrix-row');
     if (!rows.length) return;
@@ -102,7 +102,7 @@ function initBinaryStream() {
     }, 45);
 }
 
-/* ========== 弹窗 + Formspree + 多语言 + 防滥用 + 倒计时 + 抖动验证（原版） ========== */
+/* ========== 弹窗 + Formspree + 多语言 + 防滥用 + 倒计时 + 抖动验证 ========== */
 function initQuoteModal() {
     const overlay = document.getElementById("quote-modal");
     if (!overlay) return;
@@ -243,7 +243,6 @@ function initQuoteModal() {
     form?.addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        // 清除错误样式
         form.querySelectorAll(".has-error").forEach(el => el.classList.remove("has-error"));
 
         if (isSubmitting) {
@@ -290,13 +289,12 @@ function initQuoteModal() {
         const contact = document.getElementById("form-contact-val");
         if (!contact?.value.trim()) {
             contact?.closest(".form-group")?.classList.add("has-error");
-            shakeElement(contact?.closest(".custom-single-channel")); // 抖动整个通道容器
+            shakeElement(contact?.closest(".custom-single-channel"));
             ok = false;
         }
 
         if (!ok) return;
 
-        // 锁定提交
         isSubmitting = true;
         if (submitBtn) {
             submitBtn.disabled = true;
@@ -304,7 +302,6 @@ function initQuoteModal() {
             submitBtn.style.cursor = 'wait';
         }
 
-        // 构建 FormData
         const formData = new FormData();
         formData.append('email', email.value.trim());
         formData.append('company', company.value.trim());
@@ -357,9 +354,7 @@ function initQuoteModal() {
     });
 }
 
-/* ============================================
-   新增：免费网站安全扫描工具（优化版）
-   ============================================ */
+/* ========== 免费网站安全扫描工具 ========== */
 function initQuickScanner() {
     const scanInput = document.getElementById('scan-url-input');
     const scanBtn = document.getElementById('scan-btn');
@@ -367,15 +362,12 @@ function initQuickScanner() {
     const scanModal = document.getElementById('scan-modal');
     const scanModalContent = document.getElementById('scan-modal-content');
 
-    // 确保所有必要元素存在
     if (!scanBtn || !scanInput || !resultBox || !scanModal || !scanModalContent) return;
 
-    // 关闭弹窗的通用函数
     function closeScanModal() {
         scanModal.classList.remove('is-open');
     }
 
-    // 预先绑定关闭事件（避免重复绑定）
     const closeScanBtn = scanModal.querySelector('.scan-modal-close');
     if (closeScanBtn) {
         closeScanBtn.addEventListener('click', closeScanModal);
@@ -388,13 +380,11 @@ function initQuickScanner() {
         let url = scanInput.value.trim();
         if (!url) return;
 
-        // 自动补全 https://
         if (!/^https?:\/\//i.test(url)) {
             url = 'https://' + url;
             scanInput.value = url;
         }
 
-        // 显示加载状态
         resultBox.style.display = 'block';
         resultBox.innerHTML = '<div style="text-align:center;color:#94a3b8;">⏳ 正在扫描...</div>';
 
@@ -403,7 +393,6 @@ function initQuickScanner() {
             const response = await fetch(apiEndpoint);
             const data = await response.json();
 
-            // 隐藏加载提示
             resultBox.style.display = 'none';
 
             if (data.error) {
@@ -411,21 +400,23 @@ function initQuickScanner() {
                 return;
             }
 
-            // 构建结果 HTML
             let html = `<div class="score-line">安全评分: ${data.score}</div>`;
             for (const [key, check] of Object.entries(data.checks)) {
                 const icon = check.passed ? '✅' : '❌';
                 const iconClass = check.passed ? 'pass' : 'fail';
+                let valueHtml = escapeHtml(check.current_value);
+                if (check.sub) {
+                    valueHtml += ` <br><small style="color:#ffcc00;">${escapeHtml(check.sub)}</small>`;
+                }
                 html += `
                     <div class="scan-check-item">
                         <span class="scan-check-icon ${iconClass}">${icon}</span>
                         <span class="scan-check-label">${check.label}</span>
-                        <span class="scan-check-value">${escapeHtml(check.current_value)}</span>
+                        <span class="scan-check-value">${valueHtml}</span>
                     </div>
                 `;
             }
 
-            // 打开扫描结果弹窗
             scanModalContent.innerHTML = html;
             scanModal.classList.add('is-open');
 
