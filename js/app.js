@@ -516,6 +516,8 @@ function initQuickScanner() {
             }
 
             html += `</tbody></table>`;
+            // 追加推销文案（青色黑客风格）
+            html += `<div class="scan-upsell">${escapeHtml(t('scan_upsell'))}</div>`;
             scanModalContent.innerHTML = html;
             scanModal.classList.add('is-open');
 
