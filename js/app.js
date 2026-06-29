@@ -379,7 +379,7 @@ function initPolicyModal() {
     });
 }
 
-/* ========== 免费网站安全扫描工具（带修复按钮 + 按钮右侧加载状态 + 多语言） ========== */
+/* ========== 免费网站安全扫描工具（完整多语言 + 修复按钮 + 状态显示） ========== */
 function initQuickScanner() {
     const scanInput = document.getElementById('scan-url-input');
     const scanBtn = document.getElementById('scan-btn');
@@ -418,7 +418,6 @@ function initQuickScanner() {
             scanInput.value = url;
         }
 
-        // 显示加载状态（多语言）
         scanStatus.style.display = 'inline';
         scanStatus.textContent = t('scan_loading');
         resultBox.style.display = 'none';
@@ -436,40 +435,74 @@ function initQuickScanner() {
                 return;
             }
 
-            // 构建结果表格
+            // 构建结果表格（完整多语言）
             let html = `<div class="score-line">${t('scan_score_prefix')}${data.score}</div>`;
             html += `<table class="scan-result-table"><tbody>`;
 
             for (const [key, check] of Object.entries(data.checks)) {
+                const checkId = check.id || key;
                 let statusIcon = check.passed ? '✅' : '❌';
                 let statusClass = check.passed ? 'pass' : 'fail';
                 let analysisText = '';
 
-                if (check.sub) {
-                    analysisText = check.sub;
-                } else if (check.passed) {
-                    const val = check.current_value || '';
-                    analysisText = val.length > 40 ? val.substring(0, 40) + '…' : val;
-                } else {
-                    // 简单判断，针对服务器信息泄漏做本地化
-                    if (check.label === '服务器信息泄漏') {
-                        analysisText = '暴露了服务器信息';
+                // 翻译标签
+                const labelTranslated = t('scan_check_label_' + checkId) || check.label;
+                // 翻译修复建议
+                let recTranslated = '';
+                if (checkId === 'csp') {
+                    if (!check.passed) {
+                        recTranslated = t('scan_check_rec_csp_missing');
                     } else {
-                        analysisText = '未设置';
+                        const sub = check.sub || '';
+                        if (sub.includes('unsafe_inline') || sub.includes('unsafe_eval')) {
+                            recTranslated = t('scan_check_rec_csp_present_unsafe');
+                        } else {
+                            recTranslated = t('scan_check_rec_csp_present_safe');
+                        }
+                    }
+                } else if (checkId === 'server_info_leak') {
+                    if (check.sub && check.sub.includes('cloudflare')) {
+                        recTranslated = t('scan_check_rec_server_info_leak_cdnty');
+                    } else {
+                        recTranslated = t('scan_check_rec_server_info_leak_generic');
+                    }
+                } else {
+                    recTranslated = t('scan_check_rec_' + checkId) || check.recommendation;
+                }
+
+                // 分析文本
+                if (check.sub) {
+                    // 如果有 sub，尝试用 sub 作为翻译键（如 unsafe_inline_eval）
+                    const subKey = 'scan_sub_' + check.sub.toLowerCase().replace(/[^a-z0-9_]/g, '_');
+                    analysisText = t(subKey) || check.sub;
+                } else if (check.passed) {
+                    if (checkId === 'https') {
+                        analysisText = t('scan_analysis_enabled');
+                    } else if (checkId === 'server_info_leak') {
+                        analysisText = t('scan_analysis_not_found');
+                    } else {
+                        const val = check.current_value || '';
+                        analysisText = val.length > 40 ? val.substring(0, 40) + '…' : val;
+                    }
+                } else {
+                    if (checkId === 'server_info_leak') {
+                        analysisText = t('scan_analysis_leak');
+                    } else {
+                        analysisText = t('scan_analysis_not_set');
                     }
                 }
 
                 // CSP 警告
-                if (key === 'contentSecurityPolicy' && check.sub && check.passed) {
+                if (checkId === 'csp' && check.sub && check.passed) {
                     statusIcon = '⚠️';
                     statusClass = 'warn';
                 }
 
-                const needFix = !check.passed || check.sub;
+                const needFix = !check.passed || (checkId === 'csp' && check.sub);
                 const fixButton = needFix ? `<button class="fix-btn">${t('fix_btn')}</button>` : '';
 
                 html += `<tr class="scan-row ${statusClass}">
-                    <td class="scan-label">${escapeHtml(check.label)}</td>
+                    <td class="scan-label">${escapeHtml(labelTranslated)}</td>
                     <td class="scan-status">${statusIcon}</td>
                     <td class="scan-analysis">${escapeHtml(analysisText)}</td>
                     <td class="scan-action">${fixButton}</td>
@@ -477,7 +510,7 @@ function initQuickScanner() {
 
                 if (needFix) {
                     html += `<tr class="scan-fix-row" style="display:none;">
-                        <td colspan="4" class="scan-fix-text">💡 ${escapeHtml(check.recommendation)}</td>
+                        <td colspan="4" class="scan-fix-text">💡 ${escapeHtml(recTranslated)}</td>
                     </tr>`;
                 }
             }
