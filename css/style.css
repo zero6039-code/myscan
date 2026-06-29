@@ -1523,3 +1523,20 @@ html[data-i18n-ready] [data-i18n],
     color: #00ff41;
     text-decoration: underline;
 }
+
+/* 服务条款链接行 */
+.policy-link-row {
+    margin: 8px 0 0;
+    font-size: 13px;
+    color: #aaffaa;
+}
+
+.policy-link-row a {
+    color: #ffffff;           /* 白色显示 */
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+.policy-link-row a:hover {
+    color: #ffcc00;           /* 悬停时变为亮黄色，增强交互反馈 */
+}
