@@ -22,6 +22,9 @@ async function loadLanguage(lang) {
         if (!response.ok) throw new Error(`无法加载语言文件: ${lang}`);
         const translations = await response.json();
 
+        // ★ 关键：立即更新全局翻译对象，让 app.js 中的 t() 函数能获取最新翻译
+        window.fallbackTranslations = translations;
+
         // 更新页面标题
         if (translations["page_title"]) {
             document.title = translations["page_title"];
@@ -63,10 +66,13 @@ async function loadLanguage(lang) {
             triggerStatsCounter();
         }
 
-        // ✅ 关键：移除防闪烁类，显示所有翻译文本
+        // 移除防闪烁类，显示所有翻译文本
         document.documentElement.classList.remove("i18n-loading");
         document.documentElement.setAttribute("data-i18n-ready", "true");
         console.log(`[i18n] 语言已成功切换至: ${lang}`);
+
+        // ★ 关键：通知其他模块（如扫描工具）语言已变更，触发重新渲染
+        window.dispatchEvent(new Event('languageChanged'));
 
     } catch (error) {
         console.error("国际化架构加载失败:", error);
