@@ -346,24 +346,25 @@ function initQuoteModal() {
     });
 }
 
-/* ========== 免费网站安全扫描工具（带修复按钮） ========== */
+/* ========== 免费网站安全扫描工具（带修复按钮 + 按钮右侧加载状态） ========== */
 function initQuickScanner() {
     const scanInput = document.getElementById('scan-url-input');
     const scanBtn = document.getElementById('scan-btn');
     const complianceCheck = document.getElementById('compliance-check');
     const resultBox = document.getElementById('scan-result');
+    const scanStatus = document.getElementById('scan-status');   // 新增：按钮右侧状态文字
     const scanModal = document.getElementById('scan-modal');
     const scanModalContent = document.getElementById('scan-modal-content');
 
-    if (!scanBtn || !scanInput || !resultBox || !scanModal || !scanModalContent) return;
+    if (!scanBtn || !scanInput || !resultBox || !scanStatus || !scanModal || !scanModalContent) return;
 
-     // 控制按钮状态
+    // 控制按钮状态
     if (complianceCheck) {
         complianceCheck.addEventListener('change', () => {
             scanBtn.disabled = !complianceCheck.checked;
         });
     }
-    
+
     function closeScanModal() {
         scanModal.classList.remove('is-open');
     }
@@ -385,18 +386,21 @@ function initQuickScanner() {
             scanInput.value = url;
         }
 
-        resultBox.style.display = 'block';
-        resultBox.innerHTML = '<div style="text-align:center;color:#94a3b8;">⏳ 正在扫描...</div>';
+        // 显示按钮右侧加载状态，隐藏错误区域
+        scanStatus.style.display = 'inline';
+        scanStatus.textContent = '⏳ 正在扫描...';
+        resultBox.style.display = 'none';
 
         try {
             const apiEndpoint = '/api/scan?url=' + encodeURIComponent(url);
             const response = await fetch(apiEndpoint);
             const data = await response.json();
 
-            resultBox.style.display = 'none';
+            scanStatus.style.display = 'none';   // 隐藏加载
 
             if (data.error) {
-                alert('扫描失败: ' + data.error);
+                resultBox.style.display = 'block';
+                resultBox.innerHTML = `<div style="color:#ef4444;">❌ ${escapeHtml(data.error)}</div>`;
                 return;
             }
 
@@ -428,7 +432,7 @@ function initQuickScanner() {
                     statusClass = 'warn';
                 }
 
-                const needFix = !check.passed || check.sub;  // 不达标或有子分析（如 CSP 警告）
+                const needFix = !check.passed || check.sub;
                 const fixButton = needFix ? `<button class="fix-btn">💡 修复</button>` : '';
 
                 html += `<tr class="scan-row ${statusClass}">
@@ -462,6 +466,8 @@ function initQuickScanner() {
             });
 
         } catch (err) {
+            scanStatus.style.display = 'none';
+            resultBox.style.display = 'block';
             resultBox.innerHTML = '<div style="color:#ef4444;">网络错误，请稍后再试</div>';
         }
     });
