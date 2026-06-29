@@ -159,12 +159,12 @@
                  <div class="hero-title" data-i18n="hero_title">专注 Web3 的网页渗透与代码审计</div>
                  <p class="hero-desc" data-i18n="hero_desc">DewSecure 是由精英专家团队打造的顶级 Web3 安全平台，集成了深度渗透测试、高级源代码审计和全面的安全架构。将您的审计工作委托给我们，确保您的项目和网络生态系统在强大可靠的环境中持续蓬勃发展。</p>
                  
-                 <div class="hero-action">
+                 <!-- 按钮和扫描工具延迟出现，类名已保留，由 js 控制 -->
+                 <div class="hero-action delayed-btn">
                      <a href="#contact" class="btn-cyber-red" data-i18n="hero_btn_quote">咨询专家</a>
                  </div>
 
-                 <!-- ✅ 新增：免费网站安全扫描工具 -->
-                 <div class="quick-scanner">
+                 <div class="quick-scanner delayed-scanner">
                      <div class="scanner-card">
                          <h3 class="scanner-title">🔍 快速安全检测</h3>
                          <p class="scanner-desc">输入网站 URL，立即检测常见安全配置（HTTPS、安全头等）</p>
@@ -270,7 +270,6 @@
                     </div>
                     
                     <form id="quote-form" novalidate>
-                            <!-- 蜜罐：人类不可见，机器人会自动填写 -->
                         <input type="text" id="fax" style="display:none" tabindex="-1" autocomplete="off">
                         
                         <div class="form-grid-row">
@@ -347,7 +346,6 @@
         <span id="auto-reply-message" data-i18n="auto_reply_message">尊敬的客户，您好！我们已经收到您的咨询请求，我们的团队会尽快查看并回复您。感谢您的等待。</span>
     </div>
 
-    <!-- 脚本顺序：背景 → 国际化（翻译必须最先初始化） → 主业务 -->
     <script src="js/bg-canvas.js"></script>
     <script src="js/i18n.js"></script>
     <script src="js/app.js"></script>
