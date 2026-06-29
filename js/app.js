@@ -5,12 +5,6 @@ document.addEventListener('DOMContentLoaded', () => {
     triggerStatsCounter();
     initQuoteModal();
     initBinaryStream();
-    // 防抖处理 resize 事件，避免高频重建数字滚动
-    let resizeTimer;
-    window.addEventListener('resize', () => {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(triggerStatsCounter, 200);
-    });
 });
 
 window.addEventListener('load', () => {
