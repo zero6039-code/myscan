@@ -95,7 +95,21 @@
   "auto_reply_subject": "DewSecure has received your inquiry",
   "auto_reply_message": "Dear Customer, we have received your inquiry. Our team will review it and get back to you shortly. Thank you for your patience.",
 
-  "btn_wait": "Please wait ({seconds}s)"
+  "btn_wait": "Please wait ({seconds}s)",
+
+  "scan_title": "🔍 Quick Security Scan",
+  "scan_desc": "Enter a website URL to instantly check common security configurations (HTTPS, security headers, etc.)",
+  "scan_placeholder": "https://example.com",
+  "scan_compliance": "By using this tool, you confirm that you have obtained explicit authorization from the target website and agree to the Terms of Service, and you undertake to use it only for compliant security health checks, bearing full legal responsibility for any consequences of the scan.",
+  "scan_policy_prefix": "Please read and agree to the",
+  "scan_policy_link": "Terms of Service",
+  "scan_btn": "Scan",
+  "scan_loading": "⏳ Scanning...",
+  "scan_error_prefix": "Scan failed: ",
+  "scan_network_error": "Network error, please try again later",
+  "scan_result_title": "[ SYSTEM SCAN RESULT ]",
+  "scan_score_prefix": "Security Score: ",
+  "fix_btn": "💡 Fix"
   
   
 }
