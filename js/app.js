@@ -4,22 +4,17 @@ document.addEventListener('DOMContentLoaded', () => {
     initQuoteModal();
     initBinaryStream();
     initQuickScanner();
-    initPolicyModal();       // 服务条款弹窗
+    initPolicyModal();
     window.addEventListener('resize', triggerStatsCounter);
 
-    // ========== 延迟显示按钮和扫描工具（黑客帝国风格） ==========
     const heroAction = document.querySelector('.hero-action.delayed-btn');
     if (heroAction) {
-        setTimeout(() => {
-            heroAction.classList.add('show');
-        }, 1000);
+        setTimeout(() => heroAction.classList.add('show'), 1000);
     }
 
     const scanner = document.querySelector('.quick-scanner.delayed-scanner');
     if (scanner) {
-        setTimeout(() => {
-            scanner.classList.add('show');
-        }, 2000);
+        setTimeout(() => scanner.classList.add('show'), 2000);
     }
 });
 
@@ -27,7 +22,6 @@ window.addEventListener('load', () => {
     document.body.classList.add('is-ready');
 });
 
-/* ========== 多语言快捷函数 ========== */
 function t(key) {
     return (window.fallbackTranslations && window.fallbackTranslations[key]) || key;
 }
@@ -121,9 +115,7 @@ function initQuoteModal() {
         el.style.animation = 'none';
         el.offsetHeight;
         el.style.animation = 'shake-error 0.4s ease-in-out';
-        el.addEventListener('animationend', () => {
-            el.style.animation = '';
-        }, { once: true });
+        el.addEventListener('animationend', () => { el.style.animation = ''; }, { once: true });
     }
 
     let isSubmitting = false;
@@ -137,9 +129,7 @@ function initQuoteModal() {
     let countdownTimer = null;
 
     function updateOriginalBtnText() {
-        if (submitBtnTextSpan) {
-            originalBtnText = submitBtnTextSpan.textContent || '咨询专家';
-        }
+        if (submitBtnTextSpan) originalBtnText = submitBtnTextSpan.textContent || '咨询专家';
     }
     updateOriginalBtnText();
 
@@ -152,9 +142,7 @@ function initQuoteModal() {
             const valid = records.filter(time => now - time < 3600000);
             localStorage.setItem(STORAGE_KEY, JSON.stringify(valid));
             return valid.length;
-        } catch (e) {
-            return 0;
-        }
+        } catch (e) { return 0; }
     }
 
     function recordSubmission() {
@@ -173,9 +161,7 @@ function initQuoteModal() {
         }
         const template = '请稍候 ({seconds}s)';
         function updateBtnText() {
-            if (submitBtnTextSpan) {
-                submitBtnTextSpan.textContent = template.replace('{seconds}', remaining);
-            }
+            if (submitBtnTextSpan) submitBtnTextSpan.textContent = template.replace('{seconds}', remaining);
         }
         updateBtnText();
 
@@ -189,9 +175,7 @@ function initQuoteModal() {
                     submitBtn.style.opacity = '1';
                     submitBtn.style.cursor = 'pointer';
                 }
-                if (submitBtnTextSpan) {
-                    submitBtnTextSpan.textContent = originalBtnText;
-                }
+                if (submitBtnTextSpan) submitBtnTextSpan.textContent = originalBtnText;
                 isSubmitting = false;
             } else {
                 updateBtnText();
@@ -222,9 +206,7 @@ function initQuoteModal() {
                 submitBtn.style.opacity = '1';
                 submitBtn.style.cursor = 'pointer';
             }
-            if (submitBtnTextSpan) {
-                submitBtnTextSpan.textContent = originalBtnText;
-            }
+            if (submitBtnTextSpan) submitBtnTextSpan.textContent = originalBtnText;
             isSubmitting = false;
         }
     }
@@ -241,22 +223,14 @@ function initQuoteModal() {
 
     form?.addEventListener("submit", async (e) => {
         e.preventDefault();
-
         form.querySelectorAll(".has-error").forEach(el => el.classList.remove("has-error"));
 
-        if (isSubmitting) {
-            alert('请稍等，您的请求正在处理中...');
-            return;
-        }
+        if (isSubmitting) { alert('请稍等，您的请求正在处理中...'); return; }
 
         const count = getSubmissionCount();
         if (count >= MAX_SUBMISSIONS) {
             alert('提交次数已超过每小时限制，请稍后再试。感谢您的关注！');
-            if (submitBtn) {
-                submitBtn.disabled = true;
-                submitBtn.style.opacity = '0.5';
-                submitBtn.style.cursor = 'not-allowed';
-            }
+            if (submitBtn) { submitBtn.disabled = true; submitBtn.style.opacity = '0.5'; submitBtn.style.cursor = 'not-allowed'; }
             return;
         }
 
@@ -268,37 +242,20 @@ function initQuoteModal() {
         }
 
         let ok = true;
-
         const company = document.getElementById("form-company");
-        if (!company?.value.trim()) {
-            company?.closest(".form-group")?.classList.add("has-error");
-            shakeElement(company);
-            ok = false;
-        }
+        if (!company?.value.trim()) { company?.closest(".form-group")?.classList.add("has-error"); shakeElement(company); ok = false; }
 
         const email = document.getElementById("form-email");
         const emailReg = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!email?.value.trim() || !emailReg.test(email.value.trim())) {
-            email?.closest(".form-group")?.classList.add("has-error");
-            shakeElement(email);
-            ok = false;
-        }
+        if (!email?.value.trim() || !emailReg.test(email.value.trim())) { email?.closest(".form-group")?.classList.add("has-error"); shakeElement(email); ok = false; }
 
         const contact = document.getElementById("form-contact-val");
-        if (!contact?.value.trim()) {
-            contact?.closest(".form-group")?.classList.add("has-error");
-            shakeElement(contact?.closest(".custom-single-channel"));
-            ok = false;
-        }
+        if (!contact?.value.trim()) { contact?.closest(".form-group")?.classList.add("has-error"); shakeElement(contact?.closest(".custom-single-channel")); ok = false; }
 
         if (!ok) return;
 
         isSubmitting = true;
-        if (submitBtn) {
-            submitBtn.disabled = true;
-            submitBtn.style.opacity = '0.6';
-            submitBtn.style.cursor = 'wait';
-        }
+        if (submitBtn) { submitBtn.disabled = true; submitBtn.style.opacity = '0.6'; submitBtn.style.cursor = 'wait'; }
 
         const formData = new FormData();
         formData.append('email', email.value.trim());
@@ -310,15 +267,13 @@ function initQuoteModal() {
         formData.append('message', document.getElementById("form-info")?.value || '');
         formData.append('_subject', '新的咨询报价请求');
 
-        const msgSuccess = document.getElementById('alert-success')?.textContent || '提交成功！DewSecure 团队将尽快与您取得联系。';
-        const msgEmailError = document.getElementById('alert-email-error')?.textContent || '请检查邮箱地址是否正确。';
-        const msgNetworkError = document.getElementById('alert-network-error')?.textContent || '网络错误，请稍后再试。';
+        const msgSuccess = document.getElementById('alert-success')?.textContent || '提交成功！';
+        const msgEmailError = document.getElementById('alert-email-error')?.textContent || '请检查邮箱地址';
+        const msgNetworkError = document.getElementById('alert-network-error')?.textContent || '网络错误';
 
         try {
             const response = await fetch('https://formspree.io/f/xojojwrq', {
-                method: 'POST',
-                headers: { 'Accept': 'application/json' },
-                body: formData
+                method: 'POST', headers: { 'Accept': 'application/json' }, body: formData
             });
             if (response.ok) {
                 recordSubmission();
@@ -328,27 +283,15 @@ function initQuoteModal() {
                 const data = await response.json();
                 alert(data.errors ? msgEmailError : msgNetworkError);
                 isSubmitting = false;
-                if (submitBtn) {
-                    submitBtn.disabled = false;
-                    submitBtn.style.opacity = '1';
-                    submitBtn.style.cursor = 'pointer';
-                }
-                return;
+                if (submitBtn) { submitBtn.disabled = false; submitBtn.style.opacity = '1'; submitBtn.style.cursor = 'pointer'; }
             }
         } catch (error) {
             alert(msgNetworkError);
             isSubmitting = false;
-            if (submitBtn) {
-                submitBtn.disabled = false;
-                submitBtn.style.opacity = '1';
-                submitBtn.style.cursor = 'pointer';
-            }
-            return;
+            if (submitBtn) { submitBtn.disabled = false; submitBtn.style.opacity = '1'; submitBtn.style.cursor = 'pointer'; }
         }
 
-        if (!countdownTimer) {
-            startCooldown(COOLDOWN_SECONDS);
-        }
+        if (!countdownTimer) startCooldown(COOLDOWN_SECONDS);
     });
 }
 
@@ -368,17 +311,11 @@ function initPolicyModal() {
     });
 
     const closeBtn = policyModal.querySelector('.policy-modal-close');
-    if (closeBtn) {
-        closeBtn.addEventListener('click', () => {
-            policyModal.classList.remove('is-open');
-        });
-    }
-    policyModal.addEventListener('click', (e) => {
-        if (e.target === policyModal) policyModal.classList.remove('is-open');
-    });
+    closeBtn?.addEventListener('click', () => policyModal.classList.remove('is-open'));
+    policyModal.addEventListener('click', (e) => { if (e.target === policyModal) policyModal.classList.remove('is-open'); });
 }
 
-/* ========== 免费网站安全扫描工具（完整多语言 + 修复按钮 + 推销文案） ========== */
+/* ========== 免费网站安全扫描工具（完整多语言 + 修复按钮 + 推销文案 + 自动重渲染） ========== */
 function initQuickScanner() {
     const scanInput = document.getElementById('scan-url-input');
     const scanBtn = document.getElementById('scan-btn');
@@ -389,6 +326,8 @@ function initQuickScanner() {
     const scanModalContent = document.getElementById('scan-modal-content');
 
     if (!scanBtn || !scanInput || !resultBox || !scanStatus || !scanModal || !scanModalContent) return;
+
+    let lastScanData = null;   // 缓存最近一次扫描数据
 
     if (complianceCheck) {
         complianceCheck.addEventListener('change', () => {
@@ -401,11 +340,107 @@ function initQuickScanner() {
     }
 
     const closeScanBtn = scanModal.querySelector('.scan-modal-close');
-    if (closeScanBtn) {
-        closeScanBtn.addEventListener('click', closeScanModal);
+    closeScanBtn?.addEventListener('click', closeScanModal);
+    scanModal.addEventListener('click', (e) => { if (e.target === scanModal) closeScanModal(); });
+
+    // 核心渲染函数
+    function renderScanResult(data) {
+        let html = `<div class="score-line">${t('scan_score_prefix')}${data.score}</div>`;
+        html += `<table class="scan-result-table"><tbody>`;
+
+        for (const [key, check] of Object.entries(data.checks)) {
+            const checkId = check.id || key;
+            let statusIcon = check.passed ? '✅' : '❌';
+            let statusClass = check.passed ? 'pass' : 'fail';
+
+            const labelTranslated = t('scan_check_label_' + checkId) || check.label;
+            let recTranslated = '';
+            if (checkId === 'csp') {
+                if (!check.passed) {
+                    recTranslated = t('scan_check_rec_csp_missing');
+                } else {
+                    const sub = check.sub || '';
+                    if (sub.includes('unsafe_inline') || sub.includes('unsafe_eval')) {
+                        recTranslated = t('scan_check_rec_csp_present_unsafe');
+                    } else {
+                        recTranslated = t('scan_check_rec_csp_present_safe');
+                    }
+                }
+            } else if (checkId === 'server_info_leak') {
+                if (check.sub && check.sub.includes('cloudflare')) {
+                    recTranslated = t('scan_check_rec_server_info_leak_cdnty');
+                } else {
+                    recTranslated = t('scan_check_rec_server_info_leak_generic');
+                }
+            } else {
+                recTranslated = t('scan_check_rec_' + checkId) || check.recommendation;
+            }
+
+            let analysisText = '';
+            if (check.sub) {
+                const subKey = 'scan_sub_' + check.sub.toLowerCase().replace(/[^a-z0-9_]/g, '_');
+                analysisText = t(subKey) || check.sub;
+            } else if (check.passed) {
+                if (checkId === 'https') {
+                    analysisText = t('scan_analysis_enabled');
+                } else if (checkId === 'server_info_leak') {
+                    analysisText = t('scan_analysis_not_found');
+                } else {
+                    const val = check.current_value || '';
+                    analysisText = val.length > 40 ? val.substring(0, 40) + '…' : val;
+                }
+            } else {
+                if (checkId === 'server_info_leak') {
+                    analysisText = t('scan_analysis_leak');
+                } else {
+                    analysisText = t('scan_analysis_not_set');
+                }
+            }
+
+            if (checkId === 'csp' && check.sub && check.passed) {
+                statusIcon = '⚠️';
+                statusClass = 'warn';
+            }
+
+            const needFix = !check.passed || (checkId === 'csp' && check.sub);
+            const fixButton = needFix ? `<button class="fix-btn">${t('fix_btn')}</button>` : '';
+
+            html += `<tr class="scan-row ${statusClass}">
+                <td class="scan-label">${escapeHtml(labelTranslated)}</td>
+                <td class="scan-status">${statusIcon}</td>
+                <td class="scan-analysis">${escapeHtml(analysisText)}</td>
+                <td class="scan-action">${fixButton}</td>
+            </tr>`;
+
+            if (needFix) {
+                html += `<tr class="scan-fix-row" style="display:none;">
+                    <td colspan="4" class="scan-fix-text">💡 ${escapeHtml(recTranslated)}</td>
+                </tr>`;
+            }
+        }
+
+        html += `</tbody></table>`;
+        html += `<div class="scan-upsell">${escapeHtml(t('scan_upsell'))}</div>`;
+
+        scanModalContent.innerHTML = html;
+        // 重新绑定修复按钮事件
+        scanModalContent.querySelectorAll('.fix-btn').forEach(btn => {
+            btn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                const row = this.closest('tr');
+                const fixRow = row.nextElementSibling;
+                if (fixRow && fixRow.classList.contains('scan-fix-row')) {
+                    fixRow.style.display = fixRow.style.display === 'none' ? 'table-row' : 'none';
+                }
+            });
+        });
     }
-    scanModal.addEventListener('click', (e) => {
-        if (e.target === scanModal) closeScanModal();
+
+    // 语言变化时自动重渲染
+    window.addEventListener('languageChanged', () => {
+        if (scanModal.classList.contains('is-open') && lastScanData) {
+            renderScanResult(lastScanData);
+        }
     });
 
     scanBtn.addEventListener('click', async () => {
@@ -434,98 +469,9 @@ function initQuickScanner() {
                 return;
             }
 
-            let html = `<div class="score-line">${t('scan_score_prefix')}${data.score}</div>`;
-            html += `<table class="scan-result-table"><tbody>`;
-
-            for (const [key, check] of Object.entries(data.checks)) {
-                const checkId = check.id || key;
-                let statusIcon = check.passed ? '✅' : '❌';
-                let statusClass = check.passed ? 'pass' : 'fail';
-
-                const labelTranslated = t('scan_check_label_' + checkId) || check.label;
-                let recTranslated = '';
-
-                if (checkId === 'csp') {
-                    if (!check.passed) {
-                        recTranslated = t('scan_check_rec_csp_missing');
-                    } else {
-                        const sub = check.sub || '';
-                        if (sub.includes('unsafe_inline') || sub.includes('unsafe_eval')) {
-                            recTranslated = t('scan_check_rec_csp_present_unsafe');
-                        } else {
-                            recTranslated = t('scan_check_rec_csp_present_safe');
-                        }
-                    }
-                } else if (checkId === 'server_info_leak') {
-                    if (check.sub && check.sub.includes('cloudflare')) {
-                        recTranslated = t('scan_check_rec_server_info_leak_cdnty');
-                    } else {
-                        recTranslated = t('scan_check_rec_server_info_leak_generic');
-                    }
-                } else {
-                    recTranslated = t('scan_check_rec_' + checkId) || check.recommendation;
-                }
-
-                let analysisText = '';
-                if (check.sub) {
-                    const subKey = 'scan_sub_' + check.sub.toLowerCase().replace(/[^a-z0-9_]/g, '_');
-                    analysisText = t(subKey) || check.sub;
-                } else if (check.passed) {
-                    if (checkId === 'https') {
-                        analysisText = t('scan_analysis_enabled');
-                    } else if (checkId === 'server_info_leak') {
-                        analysisText = t('scan_analysis_not_found');
-                    } else {
-                        const val = check.current_value || '';
-                        analysisText = val.length > 40 ? val.substring(0, 40) + '…' : val;
-                    }
-                } else {
-                    if (checkId === 'server_info_leak') {
-                        analysisText = t('scan_analysis_leak');
-                    } else {
-                        analysisText = t('scan_analysis_not_set');
-                    }
-                }
-
-                if (checkId === 'csp' && check.sub && check.passed) {
-                    statusIcon = '⚠️';
-                    statusClass = 'warn';
-                }
-
-                const needFix = !check.passed || (checkId === 'csp' && check.sub);
-                const fixButton = needFix ? `<button class="fix-btn">${t('fix_btn')}</button>` : '';
-
-                html += `<tr class="scan-row ${statusClass}">
-                    <td class="scan-label">${escapeHtml(labelTranslated)}</td>
-                    <td class="scan-status">${statusIcon}</td>
-                    <td class="scan-analysis">${escapeHtml(analysisText)}</td>
-                    <td class="scan-action">${fixButton}</td>
-                </tr>`;
-
-                if (needFix) {
-                    html += `<tr class="scan-fix-row" style="display:none;">
-                        <td colspan="4" class="scan-fix-text">💡 ${escapeHtml(recTranslated)}</td>
-                    </tr>`;
-                }
-            }
-
-            html += `</tbody></table>`;
-            // ★ 追加推销文案
-            html += `<div class="scan-upsell">${escapeHtml(t('scan_upsell'))}</div>`;
-
-            scanModalContent.innerHTML = html;
+            lastScanData = data;          // 缓存数据
+            renderScanResult(data);
             scanModal.classList.add('is-open');
-
-            scanModalContent.querySelectorAll('.fix-btn').forEach(btn => {
-                btn.addEventListener('click', function (e) {
-                    e.stopPropagation();
-                    const row = this.closest('tr');
-                    const fixRow = row.nextElementSibling;
-                    if (fixRow && fixRow.classList.contains('scan-fix-row')) {
-                        fixRow.style.display = fixRow.style.display === 'none' ? 'table-row' : 'none';
-                    }
-                });
-            });
 
         } catch (err) {
             scanStatus.style.display = 'none';
@@ -535,14 +481,7 @@ function initQuickScanner() {
     });
 }
 
-// HTML 转义辅助函数
 function escapeHtml(text) {
-    const map = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#039;'
-    };
+    const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
     return String(text).replace(/[&<>"']/g, m => map[m]);
 }
