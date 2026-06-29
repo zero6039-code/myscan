@@ -1165,3 +1165,83 @@ html[data-i18n-ready] [data-i18n],
     transform: translateY(0);
     box-shadow: 0 0 15px rgba(0, 255, 65, 0.3);
 }
+
+/* ==========================================================================
+   15. 扫描结果弹窗（黑客帝国风）
+   ========================================================================== */
+.scan-modal-overlay {
+    z-index: 10001; /* 高于普通弹窗 */
+}
+.scan-modal-wrapper {
+    max-width: 700px;
+    width: 90%;
+    height: auto;
+    min-height: 400px;
+    max-height: 85vh;
+    background: #0a0f0a;                /* 深绿黑底 */
+    border: 1px solid #00ff41;
+    box-shadow: 0 0 30px rgba(0, 255, 65, 0.3);
+    color: #00ff41;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Courier New', Courier, monospace;
+}
+.scan-modal-body {
+    padding: 28px;
+    overflow-y: auto;
+}
+.scan-modal-title {
+    font-size: 22px;
+    letter-spacing: 2px;
+    color: #00ff41;
+    text-align: center;
+    margin-bottom: 20px;
+    text-shadow: 0 0 8px #00ff41;
+    border-bottom: 1px dashed #00ff41;
+    padding-bottom: 10px;
+}
+.scan-modal-close {
+    color: #00ff41 !important;
+    font-size: 30px;
+    right: 20px;
+    top: 16px;
+}
+.scan-modal-close:hover {
+    color: #ff4a5a !important;
+}
+
+/* 结果列表项风格 */
+.scan-check-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(0, 255, 65, 0.15);
+    font-size: 14px;
+    color: #aaffaa;
+}
+.scan-check-item:last-child { border: none; }
+.scan-check-icon {
+    width: 28px;
+    font-size: 16px;
+}
+.scan-check-icon.pass { color: #00ff41; }
+.scan-check-icon.fail { color: #ff4a5a; }
+.scan-check-label {
+    flex: 1;
+    color: #baffba;
+}
+.scan-check-value {
+    font-size: 12px;
+    color: #88aa88;
+    margin-left: 8px;
+    word-break: break-all;
+}
+.score-line {
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: #00ff41;
+    margin-bottom: 18px;
+    text-shadow: 0 0 8px #00ff41;
+}
