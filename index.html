@@ -162,6 +162,21 @@
                  <div class="hero-action">
                      <a href="#contact" class="btn-cyber-red" data-i18n="hero_btn_quote">咨询专家</a>
                  </div>
+
+                 <!-- ✅ 新增：免费网站安全扫描工具 -->
+                 <div class="quick-scanner">
+                     <div class="scanner-card">
+                         <h3 class="scanner-title">🔍 快速安全检测</h3>
+                         <p class="scanner-desc">输入网站 URL，立即检测常见安全配置（HTTPS、安全头等）</p>
+                         <div class="scanner-input-group">
+                             <input type="text" id="scan-url-input" placeholder="https://example.com" aria-label="网站 URL">
+                             <button id="scan-btn" class="btn-cyber-red">
+                                 <i class="fa-solid fa-magnifying-glass"></i> 扫描
+                             </button>
+                         </div>
+                         <div id="scan-result" class="scan-result-box" style="display:none;"></div>
+                     </div>
+                 </div>
             </div>
         </main>
     </div>
