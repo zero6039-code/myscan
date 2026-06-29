@@ -51,7 +51,7 @@
   "form_lbl_company": "Projek/Syarikat",
   "form_plh_company": "Masukkan nama projek atau syarikat",
   "form_lbl_email": "E-mel",
-  "form_plh_email": "Masukkan e-mel kerja anda",
+  "form_plh_email": "John@example.com",
   "form_lbl_contact": "Maklumat Hubungan",
   "form_plh_contact": "Contoh: 123456789",
   "form_lbl_name": "Nama Penuh",
@@ -95,6 +95,20 @@
   "auto_reply_subject": "DewSecure telah menerima pertanyaan anda",
   "auto_reply_message": "Pelanggan yang dihormati, kami telah menerima pertanyaan anda. Pasukan kami akan meninjaunya dan menghubungi anda secepat mungkin. Terima kasih atas kesabaran anda.",
 
-  "btn_wait": "Sila tunggu ({seconds}s)"
+  "btn_wait": "Sila tunggu ({seconds}s)",
+
+  "scan_title": "🔍 Imbasan Keselamatan Pantas",
+  "scan_desc": "Masukkan URL laman web untuk memeriksa konfigurasi keselamatan umum (HTTPS, tajuk keselamatan, dll.)",
+  "scan_placeholder": "https://example.com",
+  "scan_compliance": "Dengan menggunakan alat ini, anda mengesahkan bahawa anda telah mendapat kebenaran yang jelas dari laman web sasaran dan bersetuju dengan Terma Perkhidmatan, serta berjanji untuk menggunakannya hanya untuk pemeriksaan keselamatan yang patuh, dan menanggung tanggungjawab undang-undang sepenuhnya atas sebarang akibat imbasan.",
+  "scan_policy_prefix": "Sila baca dan setuju dengan",
+  "scan_policy_link": "Terma Perkhidmatan",
+  "scan_btn": "Imbas",
+  "scan_loading": "⏳ Sedang mengimbas...",
+  "scan_error_prefix": "Imbasan gagal: ",
+  "scan_network_error": "Ralat rangkaian, sila cuba lagi kemudian",
+  "scan_result_title": "[ HASIL IMBASAN SISTEM ]",
+  "scan_score_prefix": "Skor Keselamatan: ",
+  "fix_btn": "💡 Baiki"
   
 }
