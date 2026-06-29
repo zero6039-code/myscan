@@ -1,4 +1,6 @@
 // scan-handler.js
+// Cloudflare Worker 扫描模块 —— 只读、合法、合规
+
 export async function handleScan(request) {
   const url = new URL(request.url);
   const target = url.searchParams.get('url');
@@ -34,7 +36,31 @@ export async function handleScan(request) {
 
   const headers = response.headers;
 
+  // CSP 详细分析
+  const cspHeader = headers.get('content-security-policy') || '';
+  const hasUnsafeInline = /'unsafe-inline'/.test(cspHeader);
+  const hasUnsafeEval = /'unsafe-eval'/.test(cspHeader);
+  const cspValue = cspHeader || '未设置';
+  const cspAnalysis = cspHeader
+    ? (hasUnsafeInline && hasUnsafeEval
+        ? '包含 unsafe-inline 和 unsafe-eval'
+        : hasUnsafeInline
+          ? '包含 unsafe-inline'
+          : hasUnsafeEval
+            ? '包含 unsafe-eval'
+            : '策略较严格')
+    : '';
+
+  // 服务器信息泄漏分析
+  const serverVal = headers.get('server');
+  const poweredByVal = headers.get('x-powered-by');
+  const serverLeakValue = [serverVal, poweredByVal].filter(Boolean).join(' ') || '未发现信息泄漏';
+  const serverLeakRecommendation = serverVal
+    ? `已检测到 Server 头暴露了 "${serverVal}"，这通常是 CDN 的正常行为，但请确认源站未额外泄漏技术栈信息。`
+    : '隐藏 Server/X-Powered-By 响应头，降低针对性攻击风险。';
+
   const checks = {
+    // ---- 基础核心 8 项 ----
     https: {
       label: 'HTTPS 启用',
       passed: targetUrl.protocol === 'https:',
@@ -62,8 +88,13 @@ export async function handleScan(request) {
     contentSecurityPolicy: {
       label: 'Content-Security-Policy (CSP)',
       passed: headers.has('content-security-policy'),
-      value: headers.get('content-security-policy') || '未设置',
-      recommendation: '实施严格的 CSP 策略，限制资源来源，防范 XSS 攻击。'
+      value: cspValue,
+      sub: cspAnalysis ? `分析: ${cspAnalysis}` : '',
+      recommendation: headers.has('content-security-policy')
+        ? (hasUnsafeInline || hasUnsafeEval
+            ? 'CSP 存在但包含不安全的指令 (unsafe-inline/unsafe-eval)，建议使用 nonce 或 hash 替代。'
+            : 'CSP 策略配置良好。')
+        : '实施严格的 CSP 策略，限制资源来源，防范 XSS 攻击。'
     },
     referrerPolicy: {
       label: 'Referrer-Policy',
@@ -79,9 +110,35 @@ export async function handleScan(request) {
     },
     serverInfoLeak: {
       label: '服务器信息泄漏',
-      passed: !headers.has('server') && !headers.has('x-powered-by'),
-      value: [headers.get('server'), headers.get('x-powered-by')].filter(Boolean).join(' ') || '未发现信息泄漏',
-      recommendation: '隐藏 Server/X-Powered-By 响应头，降低针对性攻击风险。'
+      passed: !serverVal && !poweredByVal,
+      value: serverLeakValue,
+      recommendation: serverLeakRecommendation
+    },
+
+    // ---- 新增 4 项 ----
+    xPermittedCrossDomain: {
+      label: 'X-Permitted-Cross-Domain-Policies',
+      passed: headers.has('x-permitted-cross-domain-policies'),
+      value: headers.get('x-permitted-cross-domain-policies') || '未设置',
+      recommendation: '设置 "X-Permitted-Cross-Domain-Policies: none" 以限制 Adobe 产品的跨域请求。'
+    },
+    crossOriginResourcePolicy: {
+      label: 'Cross-Origin-Resource-Policy (CORP)',
+      passed: headers.has('cross-origin-resource-policy'),
+      value: headers.get('cross-origin-resource-policy') || '未设置',
+      recommendation: '设置 "Cross-Origin-Resource-Policy: same-origin" 以限制跨域资源加载。'
+    },
+    crossOriginOpenerPolicy: {
+      label: 'Cross-Origin-Opener-Policy (COOP)',
+      passed: headers.has('cross-origin-opener-policy'),
+      value: headers.get('cross-origin-opener-policy') || '未设置',
+      recommendation: '设置 "Cross-Origin-Opener-Policy: same-origin" 以隔离跨域窗口。'
+    },
+    cacheControl: {
+      label: 'Cache-Control',
+      passed: headers.has('cache-control'),
+      value: headers.get('cache-control') || '未设置',
+      recommendation: '合理设置 Cache-Control 策略，防止敏感页面被缓存（如 "no-store, max-age=0"）。'
     }
   };
 
@@ -91,7 +148,7 @@ export async function handleScan(request) {
 
   const failedItems = Object.values(checks).filter(c => !c.passed);
   const generalAdvice = failedItems.length > 0
-    ? `共发现 ${failedItems.length} 个安全问题，请优先修复。`
+    ? `共发现 ${failedItems.length} 个安全问题，请优先修复。此扫描仅检查 HTTP 响应头。`
     : '所有基础安全头均已正确配置。';
 
   return jsonResponse({
@@ -100,9 +157,18 @@ export async function handleScan(request) {
     score,
     general_advice: generalAdvice,
     checks: Object.fromEntries(
-      Object.entries(checks).map(([key, val]) => [key, { label: val.label, passed: val.passed, current_value: val.value, recommendation: val.recommendation }])
+      Object.entries(checks).map(([key, val]) => [
+        key,
+        {
+          label: val.label,
+          passed: val.passed,
+          current_value: val.value,
+          sub: val.sub || '',
+          recommendation: val.recommendation
+        }
+      ])
     ),
-    disclaimer: '本扫描仅读取公开响应头信息，不进行任何主动攻击或未授权渗透测试。'
+    disclaimer: '本扫描仅读取公开响应头信息，不进行任何主动攻击或未授权渗透测试。完整安全审计请联系 DewSecure 专家。'
   }, 200);
 }
 
