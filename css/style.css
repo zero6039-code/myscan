@@ -18,6 +18,7 @@ body {
     z-index: 1;
     box-sizing: border-box;
 }
+/* 通配符在模态框内使用是安全的，保留但可接受，如需完全避免第三方冲突可改为具体容器，此处保留原设计 */
 .cyber-modal-overlay *,
 .cyber-modal-overlay *::before,
 .cyber-modal-overlay *::after {
@@ -25,7 +26,7 @@ body {
 }
 
 /* ==========================================================================
-   2. 头部（保持不变）
+   2. 头部
    ========================================================================== */
 .header {
     display: flex;
@@ -52,7 +53,7 @@ h1 {
     -webkit-background-clip: text;
     color: transparent;
     white-space: nowrap;
-    font-weight: 300 !important;
+    font-weight: 300;
     letter-spacing: 3px;
     text-shadow: 0 0 20px rgba(0, 166, 244, 0.2);
 }
@@ -65,7 +66,7 @@ h1 img {
 }
 
 /* ==========================================================================
-   3. 导航（保持不变）
+   3. 导航
    ========================================================================== */
 .nav-menu {
     display: flex;
@@ -79,7 +80,7 @@ h1 img {
     position: relative;
     cursor: pointer;
     padding: 25px 0;
-    font-size: 18px;          /* 原 16px */
+    font-size: 18px;
     font-weight: 500;
     color: #cbd5e1;
     transition: color 0.2s;
@@ -119,14 +120,15 @@ h1 img {
 }
 .dropdown-intro h3 {
     margin: 0 0 12px 0;
-    font-size: 26px;          /* 原 22px */
+    font-size: 26px;
     color: #fff;
     font-weight: 600;
     letter-spacing: 0.5px;
 }
 .dropdown-intro p {
     margin: 0;
-    font-size: 18px; !important;         /* 原 13px */
+    /* 修复：!important 语法错误 */
+    font-size: 18px !important;
     color: #8896a7;
     line-height: 1.6;
     text-align: justify;
@@ -171,13 +173,13 @@ h1 img {
     flex-direction: column;
 }
 .dropdown-link .title {
-    font-size: 18px;          /* 原 15px */
+    font-size: 18px;
     font-weight: 600;
     color: #fff;
     white-space: nowrap;
 }
 .dropdown-link .desc {
-    font-size: 16px;          /* 原 12px */
+    font-size: 16px;
     color: #8896a7;
     margin-top: 4px;
     white-space: nowrap;
@@ -194,20 +196,20 @@ h1 img {
 }
 .disclaimer-item h4 {
     margin: 0;
-    font-size: 18px;          /* 原 14px */
+    font-size: 18px;
     color: #00a6f4;
     font-weight: 600;
 }
 .disclaimer-item p {
     margin: 0;
-    font-size: 16px;          /* 原 12px */
+    font-size: 16px;
     color: #cbd5e1;
     line-height: 1.6;
     text-align: justify;
 }
 
 /* ==========================================================================
-   4. 右侧交互区（保持不变）
+   4. 右侧交互区
    ========================================================================== */
 .header-right {
     display: flex;
@@ -236,6 +238,7 @@ h1 img {
     white-space: nowrap;
 }
 .counter-runner {
+    /* 保留必要的重要声明以确保数字滚动布局，但移除无必要的 */
     display: inline-flex !important;
     justify-content: center !important;
     align-items: center !important;
@@ -325,7 +328,7 @@ h1 img {
 }
 
 /* ==========================================================================
-   5. 主 Banner（保持不变）
+   5. 主 Banner
    ========================================================================== */
 .placeholder-message {
     text-align: center;
@@ -348,7 +351,7 @@ h1 img {
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
-    font-weight: 400 !important;
+    font-weight: 400;
     letter-spacing: 2px;
 }
 .hero-desc {
@@ -357,7 +360,7 @@ h1 img {
     color: #cbd5e1;
     max-width: 850px;
     margin: 0 auto;
-    font-weight: 300 !important;
+    font-weight: 300;
     letter-spacing: 0.5px;
 }
 
@@ -426,7 +429,7 @@ h1 img {
 }
 
 /* ==========================================================================
-   7. 骨架屏（保持不变）
+   7. 骨架屏
    ========================================================================== */
 .skeleton-line {
     display: block;
@@ -464,7 +467,7 @@ html[data-i18n-ready] [data-i18n],
 }
 
 /* ==========================================================================
-   8. 按钮（保持不变）
+   8. 按钮
    ========================================================================== */
 .hero-action { margin-top: 36px; display: flex; justify-content: center; }
 .btn-cyber-red {
@@ -495,7 +498,7 @@ html[data-i18n-ready] [data-i18n],
 }
 
 /* ==========================================================================
-   9. 模态框 - 完美版（右侧不滚动，仅文本框内部滚动）
+   9. 模态框
    ========================================================================== */
 .cyber-modal-overlay {
     position: fixed;
@@ -523,16 +526,18 @@ html[data-i18n-ready] [data-i18n],
     position: relative;
     width: 95%;
     max-width: 1180px;
-    height: 85vh;
-    max-height: 95vh;
+    /* 高度自适应，但限制最高90vh */
+    height: auto;
+    max-height: 90vh;
     min-height: 520px;
     background: #ffffff;
     border-radius: 16px;
     display: flex;
-    overflow: hidden;
+    overflow: hidden; /* 外层作为滚动容器 */
     box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
     transform: scale(0.96) translateY(10px);
     transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    overflow-y: auto; /* 当内容超过90vh时外层滚动 */
 }
 .cyber-modal-overlay.is-open .cyber-modal-wrapper {
     transform: scale(1) translateY(0);
@@ -561,7 +566,7 @@ html[data-i18n-ready] [data-i18n],
     flex-direction: column;
     justify-content: space-between;
     border-right: 1px solid rgba(255, 255, 255, 0.04);
-    overflow: visible;          /* 允许内容溢出 */
+    overflow: visible;
 }
 .modal-left-box .brand-header {
     display: flex;
@@ -569,25 +574,25 @@ html[data-i18n-ready] [data-i18n],
     gap: 12px;
 }
 .modal-left-box .brand-header img {
-    width: 100px;          /* 原 44px */
-    height: 100px;         /* 原 44px */
+    width: 100px;
+    height: 100px;
     object-fit: contain;
 }
 .modal-left-box .brand-header span {
-    font-size: 40px;      /* 原 26px */
+    font-size: 40px;
     font-weight: normal;
     color: #ffffff;
     white-space: nowrap;
 }
 .modal-left-box .matrix-title {
-    margin-top: 20px;     /* 适当增加顶部间距 */
-    font-size: 40px;      /* 原 22px */
+    margin-top: 20px;
+    font-size: 40px;
     font-weight: 700;
     color: #ffffff;
     line-height: 1.2;
 }
 .modal-left-box .highlight-red {
-    font-size: 48px;      /* 确保红色部分同步变大 */
+    font-size: 48px;
     color: #ff4a5a;
     display: block;
     text-shadow: 0 0 20px rgba(255, 74, 90, 0.4);
@@ -595,7 +600,7 @@ html[data-i18n-ready] [data-i18n],
 .modal-left-box .binary-matrix-stream.aligned-right {
     margin-top: auto;
     margin-bottom: 4px;
-    font-size: 14px;               /* 增大字号 */
+    font-size: 14px;
     line-height: 1.9;
     text-align: center;
     overflow: visible;
@@ -606,51 +611,50 @@ html[data-i18n-ready] [data-i18n],
     display: flex !important;
     justify-content: center !important;
     flex-wrap: nowrap !important;
-    gap: 12px !important;          /* 增大数字间隔，更协调 */
+    gap: 12px !important;
     overflow: visible !important;
-
 }
 .modal-left-box .binary-matrix-stream.aligned-right .matrix-row span {
-    flex-shrink: 0 !important;            /* 每个二进制单元格不压缩 */
+    flex-shrink: 0 !important;
     white-space: nowrap !important;
     display: inline-block !important;
-    color: #00ffff;   /* 黑客青色 */
-    letter-spacing: 0.08em;        /* 微调字符间距，让8位数字更紧凑 */
-    text-shadow: 0 0 6px rgba(0, 255, 255, 0.5); /* 可选发光，更酷 */
+    color: #00ffff;
+    letter-spacing: 0.08em;
+    text-shadow: 0 0 6px rgba(0, 255, 255, 0.5);
 }
 
-/* ================= 右侧 - 优化布局，修复间距与对齐 ================= */
+/* ================= 右侧 - 统一间距与布局 ================= */
 .modal-right-box {
-    position: relative;   /* 新增 */
+    position: relative;
     flex: 1;
     background: #ffffff;
-    padding: 12px 40px 24px 40px; /* 稍微调整内外边距，原 24px 40px 24px 40px */ 
+    padding: 12px 40px 24px 40px;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start; /* 改为 flex-start 让内容从顶部开始，不再强制居中 */
-    overflow: hidden;
+    justify-content: flex-start;
+    overflow: visible;  /* 内容可自然延伸，外层滚动接管 */
     color: #1e293b;
+    height: auto;       /* 配合外层自适应 */
 }
 
-/* 通过增加顶部 margin-top 将表单整体向上推 */
 .modal-right-box form {
-    margin-top: -10px; 
+    margin-top: -10px;
 }
 
-/* 增大表单项间距 */
+/* 统一表单项间距为 16px，清除后续重复定义 */
 .modal-right-box .form-group {
-    margin-bottom: 18px !important; /* 统一加大间距 */
+    margin-bottom: 16px !important;
 }
 
-/* 按钮容器：强制右下角对齐 */
+/* 按钮容器固定右下角对齐 */
 .modal-right-box .form-submit-row {
-    display: flex; !important;
-    justify-content: flex-end; !important;  /* 水平靠右 */
-    margin-top: 0 !important;      /* 不再自动推底 */
-    padding-top: 0 !important;     /* 去掉多余上内边距 */
+    display: flex !important;
+    justify-content: flex-end !important;
+    margin-top: 6px !important;
+    padding-top: 10px !important;
 }
 
-/* 修正 label 的一些间距 */
+/* label */
 .modal-right-box .form-group label {
     display: block;
     font-size: 13px;
@@ -720,20 +724,10 @@ html[data-i18n-ready] [data-i18n],
 }
 
 .modal-right-box .form-footer-notice {
-    margin: 10px 0 4px 0 !important;   /* 上间距10px，下间距4px */
-    margin-bottom: 4px !important; /* 保持与按钮的微小间隙 */
+    margin: 10px 0 4px 0 !important;
     font-size: 12px;
     color: #64748b;
 }
-
-/* ★★★ 按钮向右下角靠拢 ★★★ */
-.modal-right-box .form-submit-row {
-    display: flex !important;
-    justify-content: flex-end !important;
-    margin-top: 6px !important;   /* 按钮紧贴上方内容 */
-    padding-top: 10px !important;
-}
-
 
 .modal-right-box .btn-submit-quote {
     background: #0f172a;
@@ -752,7 +746,7 @@ html[data-i18n-ready] [data-i18n],
 }
 .modal-right-box .btn-submit-quote:hover { background: #1e293b; }
 
-/* 双列并排 (form-grid-row) */
+/* 双列并排 */
 .modal-right-box .form-grid-row {
     display: flex;
     gap: 16px;
@@ -795,6 +789,7 @@ html[data-i18n-ready] [data-i18n],
         max-height: 96vh;
         min-height: auto;
         width: 92%;
+        overflow-y: auto;
     }
     .modal-left-box {
         flex: 0 0 auto;
@@ -810,7 +805,7 @@ html[data-i18n-ready] [data-i18n],
         flex: 1;
         width: 100%;
         padding: 16px 20px;
-        overflow-y: auto;
+        overflow-y: visible;
         justify-content: flex-start;
     }
     .modal-right-box .form-grid-row,
@@ -820,86 +815,44 @@ html[data-i18n-ready] [data-i18n],
     }
 }
 
-/* ============================================================
-   最终强制修复（间距 + 按钮位置 + 表单上移）
-   ============================================================ */
-.modal-right-box .form-group {
-    margin-bottom: 18px !important;
-}
-.modal-right-box .form-submit-row {
-    display: flex !important;
-    justify-content: flex-end !important;
-    margin-top: 6px !important;   /* 改为固定小值，紧贴上方内容 */
-    padding-top: 10px !important;
-}
-.modal-right-box form {
-    margin-top: -10px !important;
-}
-
-/* 预先隐藏这些动态组件，防止它们在初始化前“抢跑” */
-.cyber-modal-overlay, 
-.binary-matrix-stream {
-    visibility: hidden;
-}
-
-/* 一旦页面就绪，JS 会通过类名或内联样式将它们设为 visible */
-.is-ready .cyber-modal-overlay,
-.is-ready .binary-matrix-stream {
-    visibility: visible;
-}
-
 /* ==========================================================================
-   11. 新增：产品功能对比矩阵表格样式
+   11. 产品功能对比表格
    ========================================================================== */
-/* 让右侧内容区内部允许垂直滚动，确保表格和表单能共存 */
+/* 内部不再需要独立滚动，由外层接管 */
 .modal-right-box .modal-form-scroll-body {
     display: flex;
     flex-direction: column;
     height: 100%;
-    overflow-y: auto;
-    padding-right: 8px;
+    overflow-y: visible;
+    padding-right: 0;
 }
 
-/* 滚动条美化 */
-.modal-right-box .modal-form-scroll-body::-webkit-scrollbar {
-    width: 6px;
-}
-.modal-right-box .modal-form-scroll-body::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
-    border-radius: 3px;
-}
-.modal-right-box .modal-form-scroll-body::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-/* 表格外部容器：防止移动端撑开 */
 .product-matrix-table-wrapper {
     width: 100%;
     overflow-x: auto;
-    margin: 14px 0 24px 0;
+    margin: -6px 0 24px 0;
     border: 1px solid #e2e8f0;
     border-radius: 8px;
     background: #f8fafc;
 }
 
-/* 表格核心样式 */
 .product-matrix-table {
     width: 100%;
     border-collapse: collapse;
     text-align: left;
     font-size: 13px;
     color: #334155;
-    min-width: 600px; /* 确保在窄屏下表格不挤压变形 */
+    min-width: 600px;
 }
 
 .product-matrix-table th,
 .product-matrix-table td {
-    padding: 10px 14px;
+    padding: 8px 10px;
     border-bottom: 1px solid #e2e8f0;
     vertical-align: middle;
+    font-size: 13px;
 }
 
-/* 表头样式 */
 .product-matrix-table thead th {
     background: #0f172a;
     color: #ffffff;
@@ -914,7 +867,6 @@ html[data-i18n-ready] [data-i18n],
     border-top-right-radius: 7px;
 }
 
-/* 隔行变色 */
 .product-matrix-table tbody tr:nth-child(even) {
     background: #ffffff;
 }
@@ -922,21 +874,18 @@ html[data-i18n-ready] [data-i18n],
     background: #f1f5f9;
 }
 
-/* 功能名列加粗 */
 .product-matrix-table .feature-name {
     font-weight: 500;
     color: #1e293b;
 }
 
-/* 状态单元格（居中） */
 .product-matrix-table td:not(.feature-name) {
     text-align: center;
     font-weight: 600;
 }
 
-/* 完美适配打勾与打叉的颜色 */
 .product-matrix-table .status-yes {
-    color: #10b981; /* 极客绿 */
+    color: #10b981;
     font-size: 14px;
 }
 .product-matrix-table .status-yes span {
@@ -946,92 +895,42 @@ html[data-i18n-ready] [data-i18n],
     margin-left: 2px;
 }
 .product-matrix-table .status-no {
-    color: #ef4444; /* 警示红 */
+    color: #ef4444;
     font-size: 14px;
     opacity: 0.4;
 }
 
-/* ============================================================
-   🟢 针对一页无滚动条展示 & 整个对比表格上移的功能优化
-   ============================================================ */
-
-/* 1. 解除右侧区域的局部滚动，让其完全展开平铺 */
-.modal-right-box {
-    overflow-y: visible !important;
-    height: auto !important;
-    display: flex;
-    flex-direction: column;
-}
-
-.modal-form-scroll-body {
-    overflow-y: visible !important;
-    height: auto !important;
-    max-height: none !important;
-    padding-right: 0 !important; /* 隐藏以前为了滚动条预留的右侧间距 */
-}
-
-/* 2. 让整个大弹窗的包装盒自适应内部高度，杜绝内部出现独立滚动条 */
-.cyber-modal-wrapper {
-    height: auto !important;
-    max-height: 90vh !important; /* 限制最高不超过屏幕 90%，防止溢出屏幕 */
-    overflow-y: auto !important;  /* 如果屏幕实在太矮，只让最外层统一出一个平滑滚动条，内部表格和表单决不割裂 */
-}
-
-/* 3. 产品功能对比表格向上移动，同时微调内边距让其排版更紧凑 */
-.product-matrix-table-wrapper {
-    margin-top: -6px !important;    /* 原 -4px */
-    margin-bottom: 24px !important; /* 增大下方外边距，自然地把下方表单资料栏目往下移动推开 */
-}
-
-.product-matrix-table th, 
-.product-matrix-table td {
-    padding: 8px 10px !important;   /* 稍微压缩单元格上下高度，使得在一页内完全平铺展开 */
-    font-size: 13px !important;
-}
-
-/* 4. 微调下方输入框之间的行间距，确保紧凑且一目了然 */
-.modal-right-box .form-group {
-    margin-bottom: 12px !important;
-}
-
 /* ==========================================================================
-   追加：全局动画与表单底部对齐优化管理
+   12. 底部操作栏
    ========================================================================== */
-
-/* 原 HTML 里的 body 渐入配置移入此处 */
-
-/* “借助专业的 Web3...” 副标题往上移一点 */
 .modal-right-box .modal-subtitle {
-    margin-top: -8px !important;   /* 原 -4px，再上移一点 */
-    margin-bottom: 16px !important; /* 控制与表格的间距 */
+    margin-top: -8px;
+    margin-bottom: 16px;
 }
 
-/* 底部包裹层：横向弹性布局 */
 .form-actions-wrapper {
     display: flex !important;
-    align-items: center !important;       /* 垂直居中对齐 */
-    justify-content: space-between !important; /* 左右两端分布 */
-    gap: 20px !important;                 /* 防止两部分挨得太近 */
-    margin-top: 8px !important;          /* 增加与上方表单的间距 */
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 20px !important;
+    margin-top: 8px !important;
 }
 
-/* 左侧提示文字基础微调 */
 .form-actions-wrapper .form-footer-notice {
-    margin: 0 !important;  
-    padding: 0 !important;               /* 清除多余的外边距干扰 */
-    line-height: 1.4 !important;         /* 与按钮高度协调 */
-    flex: 1 !important;                   /* 自动铺满左边剩余空间 */
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1.4 !important;
+    flex: 1 !important;
 }
 
-/* 右侧提交按钮行微调 */
 .form-actions-wrapper .form-submit-row {
-    margin: 0 !important;               /* 移除以往包裹层的强制 margin */
+    margin: 0 !important;
     display: flex !important;
     padding: 0 !important;
-    align-items: center !important;          /* 防止按钮被挤压变形 */
+    align-items: center !important;
 }
 
-/* 移动端媒体查询：在小屏幕上自动变成上下两排 */
+/* 移动端表单底部 */
 @media (max-width: 768px) {
     .form-actions-wrapper {
         flex-direction: column !important;
@@ -1047,7 +946,10 @@ html[data-i18n-ready] [data-i18n],
     }
 }
 
-/* 输入框错误状态抖动动画 */
+/* ==========================================================================
+   13. 动画与初始状态
+   ========================================================================== */
+/* 抖动动画 */
 @keyframes shake-error {
     0%, 100% { transform: translateX(0); }
     10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
@@ -1059,4 +961,15 @@ html[data-i18n-ready] [data-i18n],
     animation: shake-error 0.4s ease-in-out;
     border-color: #ef4444 !important;
     background-color: #fef2f2 !important;
+}
+
+/* 初始隐藏（防闪烁） */
+.cyber-modal-overlay, 
+.binary-matrix-stream {
+    visibility: hidden;
+}
+
+.is-ready .cyber-modal-overlay,
+.is-ready .binary-matrix-stream {
+    visibility: visible;
 }
