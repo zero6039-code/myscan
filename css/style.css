@@ -1312,3 +1312,93 @@ html[data-i18n-ready] [data-i18n],
     margin-bottom: 16px;
     text-shadow: 0 0 8px #00ff41;
 }
+
+/* 扫描结果表格 - 简洁黑客风格 */
+.scan-result-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 14px;
+    color: #aaffaa;
+}
+
+.scan-result-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid rgba(0, 255, 65, 0.2);
+    vertical-align: middle;
+}
+
+.scan-label {
+    font-weight: bold;
+    width: 35%;
+    color: #baffba;
+}
+
+.scan-status {
+    width: 10%;
+    text-align: center;
+    font-size: 18px;
+}
+
+.scan-analysis {
+    width: 35%;
+    color: #88cc88;
+    word-break: break-word;
+}
+
+.scan-action {
+    width: 20%;
+    text-align: right;
+}
+
+.scan-row {
+    transition: background 0.2s;
+}
+
+.scan-row:hover {
+    background: rgba(0, 255, 65, 0.04);
+}
+
+.scan-row.fail .scan-status { color: #ff4a5a; }
+.scan-row.warn .scan-status { color: #ffcc00; }
+
+.scan-fix-row td {
+    padding: 6px 10px;
+    background: rgba(0, 0, 0, 0.3);
+    border-bottom: 1px solid rgba(0, 255, 65, 0.1);
+}
+
+.scan-fix-text {
+    font-size: 12px;
+    color: #ffcc00;
+    line-height: 1.5;
+}
+
+/* 修复建议按钮 */
+.fix-btn {
+    background: transparent;
+    border: 1px solid #00ff41;
+    color: #00ff41;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-family: 'Courier New', monospace;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.fix-btn:hover {
+    background: #00ff41;
+    color: #000;
+    box-shadow: 0 0 8px #00ff41;
+}
+
+/* 评分行 */
+.score-line {
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: #00ff41;
+    margin-bottom: 16px;
+    text-shadow: 0 0 8px #00ff41;
+}
