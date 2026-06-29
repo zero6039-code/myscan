@@ -109,6 +109,7 @@
   "scan_network_error": "Ralat rangkaian, sila cuba lagi kemudian",
   "scan_result_title": "[ HASIL IMBASAN SISTEM ]",
   "scan_score_prefix": "Skor Keselamatan: ",
-  "fix_btn": "💡 Baiki"
+  "fix_btn": "💡 Baiki",
+  "policy_modal_title": "[ Polisi Penggunaan Alat Audit Keselamatan ]"
   
 }
