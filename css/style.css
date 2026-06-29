@@ -1543,3 +1543,16 @@ html[data-i18n-ready] [data-i18n],
 .policy-link-row a:hover {
     color: #ffcc00;           /* 悬停时变为亮黄色，增强交互反馈 */
 }
+
+.scan-upsell {
+    margin-top: 20px;
+    padding: 14px 18px;
+    background: rgba(0, 255, 255, 0.05);
+    border: 1px solid rgba(0, 255, 255, 0.35);
+    border-radius: 6px;
+    color: #00ffff;
+    font-size: 14px;
+    line-height: 1.7;
+    text-align: left;          /* 长文本左对齐更易阅读 */
+    word-break: break-word;
+}
