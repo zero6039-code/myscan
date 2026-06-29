@@ -402,7 +402,7 @@ function initQuickScanner() {
                     <div class="scan-check-item">
                         <span class="scan-check-icon ${iconClass}">${icon}</span>
                         <span class="scan-check-label">${check.label}</span>
-                        <span class="scan-check-value">${escapeHtml(check.value)}</span>
+                        <span class="scan-check-value">${escapeHtml(check.current_value)}</span>
                     </div>
                 `;
             }
