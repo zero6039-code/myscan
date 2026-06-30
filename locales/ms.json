@@ -149,6 +149,43 @@
   "scan_upsell": "Keputusan di atas adalah berdasarkan audit garis dasar piawai, bertujuan untuk memberi anda kesedaran risiko yang pantas. Untuk memastikan pemulihan yang menyeluruh dan mengelakkan pembaikan yang tidak berkesan, kami mengesyorkan ujian penembusan manual yang mengambil kira logik perniagaan anda. Jika perlu, kami boleh menyediakan panduan pemulihan yang disesuaikan untuk membantu anda melangkah dari \"mengesan kerentanan\" kepada pengukuhan gelung tertutup yang lengkap.",
   "scan_sub_cloudflare": "Mendedahkan maklumat Cloudflare",
 
-  "cooldown_msg": "{seconds}s sejukkan"
+  "cooldown_msg": "{seconds}s sejukkan",
+
+  "modal_subtitle_new": "Harga telus, tiada kos tersembunyi.<br>DewSecure mematuhi penyampaian piawai. Kami tidak bermain 'sebut harga tersuai' untuk mendapatkan maklumat bajet anda. Berikut adalah ambang permulaan untuk perkhidmatan teras kami, direka untuk membantu anda menentukan sama ada kami sesuai dengan bajet keselamatan anda.",
+
+  "table_header_basic_sub": "(Pemeriksaan Kesihatan)",
+  "table_header_deep_sub": "(🔥 Cadangan Teras)",
+  "table_header_annual_sub": "(Penjaga Jangka Panjang)",
+
+  "row_price": "Harga Permulaan",
+  "row_price_note": "Nota Harga",
+
+  "price_basic": "$200",
+  "price_deep": "$800",
+  "price_annual": "$990 / tahun",
+
+  "note_basic": "Berbeza mengikut kerumitan aset",
+  "note_deep": "Mengikut aliran perniagaan (1 aliran $800, 3 aliran $1800)",
+  "note_annual": "Berbeza mengikut kekerapan pemantauan dan ujian mendalam",
+
+  "sast_basic": "✅ Automatik + penyingkiran palsu manual",
+  "sast_deep": "✅ Verifikasi mendalam (suntikan buta/peringkat kedua)",
+  "sast_annual": "✅ Imbasan bulanan + pemeriksaan suku tahunan",
+
+  "logic_basic": "❌",
+  "logic_deep": "✅ Matriks serentak/pembayaran/kebenaran",
+  "logic_annual": "✅ Penemuan mendalam setengah tahun (ikut pakej)",
+
+  "fix_basic": "✅ Menyediakan cebisan patch tepat",
+  "fix_deep": "✅ Menyediakan cebisan patch tepat",
+  "fix_annual": "✅ Menyediakan cebisan patch tepat",
+
+  "retest_basic": "❌",
+  "retest_deep": "✅ Termasuk 1 ujian semula percuma",
+  "retest_annual": "✅ Mengikut kuota pakej",
+
+  "cert_basic": "✅",
+  "cert_deep": "✅",
+  "cert_annual": "✅ Pensijilan tahunan"
   
 }
