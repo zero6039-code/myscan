@@ -84,7 +84,7 @@
   "feature_sast": "Imbasan Kerentanan (SAST/DAST)",
   "feature_logic": "Ujian Pepijat Logik / Audit Kod",
   "feature_payment": "Audit Keselamatan Pembayaran & Data",
-  "feature_fix": "Panduan Pembaikan (Pull Request)",
+  "feature_fix": "Panduan & Contoh Kod Pembetulan",
   "feature_retest": "Ujian Semula (Gelung Tertutup)",
   "feature_retest_basic": "",
   "feature_retest_deep": " (1 kali)",
