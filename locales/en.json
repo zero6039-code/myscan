@@ -84,7 +84,7 @@
   "feature_sast": "Vulnerability Scan (SAST/DAST)",
   "feature_logic": "Advanced Logic Bug / Code Audit",
   "feature_payment": "Payment & Data Security Audit",
-  "feature_fix": "Fix Guide (Pull Request)",
+  "feature_fix": "Code-Level Fixes & Guidance",
   "feature_retest": "Re-test (Closed-loop)",
   "feature_retest_basic": "",
   "feature_retest_deep": " (1 time)",
