@@ -1,4 +1,4 @@
-// _worker.js - 完整版本（扫描逻辑 + 安全头注入 + 域名白名单）
+// _worker.js - 完整版本（扫描逻辑 + 安全头注入 + 域名白名单 + 域名格式校验）
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
@@ -19,6 +19,11 @@ export default {
         if (!targetUrl.protocol.startsWith('http')) throw new Error('Invalid protocol');
         if (isPrivateIp(targetUrl.hostname)) {
           return jsonResponse({ error: 'Scanning internal addresses is not allowed' }, 403);
+        }
+
+        // ★ 域名格式校验：必须包含点号 (如 example.com) 或为 localhost
+        if (!targetUrl.hostname.includes('.') && targetUrl.hostname !== 'localhost') {
+          return jsonResponse({ error: 'Invalid domain format. Please enter a fully qualified domain name (e.g., example.com).' }, 400);
         }
 
         // ★ 白名单检查：禁止扫描自己的域名
