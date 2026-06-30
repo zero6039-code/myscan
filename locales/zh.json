@@ -72,9 +72,9 @@
   "alert_error_email": "请检查邮箱地址是否正确。",
   "alert_error_network": "网络错误，请稍后再试。",
 
-  "service_basic": "初级安全检测",
-  "service_deep": "深度渗透测试",
-  "service_annual": "年度安全顾问",
+  "service_basic": "初级安全检测 (健康体检)",
+  "service_deep": "深度渗透测试 (🔥 核心推荐)",
+  "service_annual": "年度订阅 (长期守护)",
 
   "table_header_service": "服务",
   "table_header_basic": "初级安全检测",
@@ -151,7 +151,7 @@
 
   "cooldown_msg": "冷却 {seconds}s",
 
-  "modal_subtitle_new": "透明定价，拒绝隐形消费。<br>DewSecure 坚持标准化交付。我们不玩“按需报价”的套路来套取您的预算信息。以下是我们核心服务的起步门槛，旨在帮助您快速判断我们是否契合您的安全预算。",
+  "modal_subtitle_new": "透明定价，拒绝隐形消费。<br>DewSecure 坚持标准化交付。我们不“按需报价”的策略来套取您的预算信息。以下是我们核心服务的起步门槛，旨在帮助您快速判断我们是否契合您的安全预算。",
 
   "table_header_basic_sub": "(健康体检)",
   "table_header_deep_sub": "(🔥 核心推荐)",
