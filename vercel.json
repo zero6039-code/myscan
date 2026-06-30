@@ -32,5 +32,9 @@
         }
       ]
     }
+  ],
+  "routes": [
+    {"src": "/.git/(.*)", "status": 404},
+    {"src": "/vercel.json", "status": 404}
   ]
 }
