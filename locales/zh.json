@@ -79,7 +79,7 @@
   "table_header_service": "服务",
   "table_header_basic": "初级安全检测",
   "table_header_deep": "深度渗透测试",
-  "table_header_annual": "年度安全顾问",
+  "table_header_annual": "年度订阅",
 
   "feature_sast": "漏洞扫描 (SAST/DAST)",
   "feature_logic": "高级逻辑漏洞测试 / 代码审计",
@@ -87,9 +87,8 @@
   "feature_fix": "代码级修复片段和指南",
   "feature_retest": "复测验证 (闭环服务)",
   "feature_retest_basic": "",
-  "feature_retest_deep": " (含1次)",
-  "feature_retest_annual": " (无限次)",
-  "feature_support": "优先响应顾问支持",
+  "feature_retest_deep": " (1次)",
+  "feature_retest_annual": " (2次)",
   "feature_cert": "DewSecure 认证证书",
 
   "auto_reply_subject": "DewSecure 已收到您的咨询",
