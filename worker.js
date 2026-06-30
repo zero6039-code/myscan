@@ -1,4 +1,4 @@
-// _worker.js - 完整版本（扫描逻辑 + 安全头注入 + 域名白名单 + 域名格式校验）
+// _worker.js - 完整版本（扫描 API + 安全头 + CSP 已修复）
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
@@ -7,10 +7,7 @@ export default {
     if (url.pathname === '/api/scan') {
       const target = url.searchParams.get('url');
       if (!target) {
-        return new Response(JSON.stringify({ error: 'Missing url parameter' }), {
-          status: 400,
-          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
-        });
+        return jsonResponse({ error: 'Missing url parameter' }, 400);
       }
 
       let targetUrl;
@@ -20,13 +17,9 @@ export default {
         if (isPrivateIp(targetUrl.hostname)) {
           return jsonResponse({ error: 'Scanning internal addresses is not allowed' }, 403);
         }
-
-        // ★ 域名格式校验：必须包含点号 (如 example.com) 或为 localhost
         if (!targetUrl.hostname.includes('.') && targetUrl.hostname !== 'localhost') {
           return jsonResponse({ error: 'Invalid domain format. Please enter a fully qualified domain name (e.g., example.com).' }, 400);
         }
-
-        // ★ 白名单检查：禁止扫描自己的域名
         const blockedDomains = ['dewsecure.com', 'www.dewsecure.com'];
         if (blockedDomains.includes(targetUrl.hostname) || targetUrl.hostname.endsWith('.dewsecure.com')) {
           return jsonResponse({ error: 'Scanning this domain is not allowed.' }, 403);
@@ -66,11 +59,8 @@ export default {
         xFrameOptions: { id: 'x_frame_options', label: 'X-Frame-Options', passed: headers.has('x-frame-options'), value: headers.get('x-frame-options') || 'Not set', sub: '', recommendation: 'Set "X-Frame-Options: DENY" or "SAMEORIGIN" to prevent clickjacking.' },
         xContentTypeOptions: { id: 'x_content_type_options', label: 'X-Content-Type-Options', passed: headers.has('x-content-type-options') && headers.get('x-content-type-options').toLowerCase() === 'nosniff', value: headers.get('x-content-type-options') || 'Not set', sub: '', recommendation: 'Add "X-Content-Type-Options: nosniff" to prevent MIME sniffing.' },
         contentSecurityPolicy: {
-          id: 'csp',
-          label: 'Content-Security-Policy (CSP)',
-          passed: headers.has('content-security-policy'),
-          value: cspValue,
-          sub: cspSub,
+          id: 'csp', label: 'Content-Security-Policy (CSP)', passed: headers.has('content-security-policy'),
+          value: cspValue, sub: cspSub,
           recommendation: headers.has('content-security-policy')
             ? (hasUnsafeInline || hasUnsafeEval ? 'CSP is present but contains unsafe directives (unsafe-inline/unsafe-eval). Consider using nonce or hash.' : 'CSP policy is well configured.')
             : 'Implement a strict CSP policy to restrict resource sources and prevent XSS attacks.'
@@ -111,15 +101,16 @@ export default {
       }, 200);
     }
 
-    // ---- 拦截敏感路径（.git 和 vercel.json） ----
+    // ---- 拦截敏感路径 ----
     if (url.pathname.startsWith('/.git') || url.pathname === '/vercel.json') {
       return new Response('Not Found', { status: 404 });
     }
     
-    // ---- 静态资源请求：注入安全头 ----
+    // ---- 静态资源请求：注入安全头和正确的 CSP ----
     let response = await env.ASSETS.fetch(request);
     const newHeaders = new Headers(response.headers);
 
+    // 安全头
     newHeaders.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
     newHeaders.set('X-Frame-Options', 'DENY');
     newHeaders.set('X-Content-Type-Options', 'nosniff');
@@ -128,14 +119,18 @@ export default {
     newHeaders.set('Cross-Origin-Resource-Policy', 'same-origin');
     newHeaders.set('Cross-Origin-Opener-Policy', 'same-origin');
     newHeaders.set('X-Permitted-Cross-Domain-Policies', 'none');
+
+    // ★★★ 最终修复的 CSP ★★★
     newHeaders.set('Content-Security-Policy', 
-    "default-src 'self'; " +
-    "connect-src 'self' https://formspree.io; " +
-    "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://static.cloudflareinsights.com; " +
-    "style-src 'self' 'unsafe-inline' https://use.fontawesome.com; " +
-    "font-src 'self' https://use.fontawesome.com; " +
-    "img-src 'self' data:;"
-);
+      "default-src 'self'; " +
+      "connect-src 'self' https://formspree.io; " +
+      "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://static.cloudflareinsights.com; " +
+      "style-src 'self' 'unsafe-inline' https://use.fontawesome.com; " +
+      "font-src 'self' https://use.fontawesome.com; " +
+      "img-src 'self' data:;"
+    );
+
+    // 删除服务器信息泄露头
     newHeaders.delete('server');
 
     return new Response(response.body, {
