@@ -1556,3 +1556,7 @@ html[data-i18n-ready] [data-i18n],
     text-align: left;          /* 长文本左对齐更易阅读 */
     word-break: break-word;
 }
+
+.product-matrix-table td {
+    word-break: break-word;
+}
