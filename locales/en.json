@@ -149,7 +149,44 @@
   "scan_upsell": "The above results are based on a standardized baseline audit, designed to give you rapid risk awareness. To ensure thorough remediation and avoid ineffective fixes, we recommend a manual penetration test that considers your business logic. If needed, we can provide tailored remediation guidance to help you go from \"finding vulnerabilities\" to a fully closed loop of hardening.",
   "scan_sub_cloudflare": "Exposes Cloudflare information",
 
-  "cooldown_msg": "{seconds}s cooldown"
+  "cooldown_msg": "{seconds}s cooldown",
+
+  "modal_subtitle_new": "Transparent pricing, no hidden costs.<br>DewSecure adheres to standardized delivery. We do not play the 'custom quote' game to extract your budget information. Below are the starting thresholds for our core services, designed to help you quickly determine if we fit your security budget.",
+
+  "table_header_basic_sub": "(Health Check)",
+  "table_header_deep_sub": "(🔥 Core Recommendation)",
+  "table_header_annual_sub": "(Long-term Guardian)",
+
+  "row_price": "Starting Price",
+  "row_price_note": "Pricing Notes",
+
+  "price_basic": "$200",
+  "price_deep": "$800",
+  "price_annual": "$990 / year",
+
+  "note_basic": "Varies based on asset complexity",
+  "note_deep": "Strictly per business flow (1 flow $800, 3 flows $1800)",
+  "note_annual": "Varies by monitoring frequency and depth tests",
+
+  "sast_basic": "✅ Automated + Manual false-positive removal",
+  "sast_deep": "✅ Deep verification (second-order/blind injection)",
+  "sast_annual": "✅ Monthly scan + quarterly health check",
+
+  "logic_basic": "❌",
+  "logic_deep": "✅ Concurrency/payment/authorization matrix",
+  "logic_annual": "✅ Semi-annual deep discovery (per package)",
+
+  "fix_basic": "✅ Provides precise patch snippets",
+  "fix_deep": "✅ Provides precise patch snippets",
+  "fix_annual": "✅ Provides precise patch snippets",
+
+  "retest_basic": "❌",
+  "retest_deep": "✅ Includes 1 free retest",
+  "retest_annual": "✅ Based on package quota",
+
+  "cert_basic": "✅",
+  "cert_deep": "✅",
+  "cert_annual": "✅ Annual certification"
   
   
 }
