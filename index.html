@@ -197,7 +197,7 @@
         </main>
     </div>
 
-    <!-- 咨询报价弹窗（原有） -->
+    <!-- 咨询报价弹窗（全新定价矩阵） -->
     <div id="quote-modal" class="cyber-modal-overlay">
         <div class="cyber-modal-wrapper">
             <button class="modal-close-btn" id="modal-close-btn" aria-label="Close Modal">&times;</button>
@@ -227,54 +227,72 @@
             <div class="modal-right-box">
                 <div class="modal-form-scroll-body">
                     <h2 data-i18n="modal_title">立刻保护您的项目</h2>
-                    <p class="modal-subtitle" data-i18n="modal_subtitle">借助专业的 Web3 安全提供商来增强您的项目。</p>
+                    <!-- 新副标题 -->
+                    <p class="modal-subtitle" data-i18n="modal_subtitle_new">
+                        透明定价，拒绝隐形消费。<br>DewSecure 坚持标准化交付。我们不玩“按需报价”的套路来套取您的预算信息。以下是我们核心服务的起步门槛，旨在帮助您快速判断我们是否契合您的安全预算。
+                    </p>
                     
                     <div class="product-matrix-table-wrapper">
                         <table class="product-matrix-table">
                             <thead>
                                 <tr>
-                                    <th style="width: 40%;" data-i18n="table_header_service">服务</th>
-                                    <th style="width: 20%;" data-i18n="table_header_basic">初级安全检测</th>
-                                    <th style="width: 20%;" data-i18n="table_header_deep">深度渗透测试</th>
-                                    <th style="width: 20%;" data-i18n="table_header_annual">年度安全顾问</th>
+                                    <th style="width: 28%;" data-i18n="table_header_service">服务模块</th>
+                                    <th style="width: 24%;">
+                                        <span data-i18n="table_header_basic">初级安全检测</span>
+                                        <small data-i18n="table_header_basic_sub">(健康体检)</small>
+                                    </th>
+                                    <th style="width: 24%;">
+                                        <span data-i18n="table_header_deep">深度渗透测试</span>
+                                        <small data-i18n="table_header_deep_sub">(🔥 核心推荐)</small>
+                                    </th>
+                                    <th style="width: 24%;">
+                                        <span data-i18n="table_header_annual">年度安全订阅</span>
+                                        <small data-i18n="table_header_annual_sub">(长期守护)</small>
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td class="feature-name" data-i18n="feature_sast">漏洞扫描 (SAST/DAST)</td>
-                                    <td class="status-yes"><i class="fa-solid fa-check"></i></td>
-                                    <td class="status-yes"><i class="fa-solid fa-check"></i></td>
-                                    <td class="status-yes"><i class="fa-solid fa-check"></i></td>
+                                    <td class="feature-name" data-i18n="row_price">起步价</td>
+                                    <td data-i18n="price_basic">$200</td>
+                                    <td data-i18n="price_deep">$800</td>
+                                    <td data-i18n="price_annual">$990 / 年</td>
                                 </tr>
                                 <tr>
-                                    <td class="feature-name" data-i18n="feature_logic">高级逻辑漏洞测试 / 代码审计</td>
-                                    <td class="status-no"><i class="fa-solid fa-xmark"></i></td>
-                                    <td class="status-yes"><i class="fa-solid fa-check"></i></td>
-                                    <td class="status-yes"><i class="fa-solid fa-check"></i></td>
+                                    <td class="feature-name" data-i18n="row_price_note">价格说明</td>
+                                    <td data-i18n="note_basic">视资产复杂度浮动</td>
+                                    <td data-i18n="note_deep">严格按业务流数量计费 (1条流$800，3条流$1800)</td>
+                                    <td data-i18n="note_annual">视监控频率与深度测试次数浮动</td>
                                 </tr>
                                 <tr>
-                                    <td class="feature-name" data-i18n="feature_payment">支付与数据安全审计</td>
-                                    <td class="status-no"><i class="fa-solid fa-xmark"></i></td>
-                                    <td class="status-yes"><i class="fa-solid fa-check"></i></td>
-                                    <td class="status-yes"><i class="fa-solid fa-check"></i></td>
+                                    <td class="feature-name" data-i18n="feature_sast">漏洞扫描 (DAST)</td>
+                                    <td data-i18n="sast_basic">✅ 自动化+人工排误报</td>
+                                    <td data-i18n="sast_deep">✅ 深度验证(二阶/盲注)</td>
+                                    <td data-i18n="sast_annual">✅ 月度巡航 + 季度体检</td>
                                 </tr>
                                 <tr>
-                                    <td class="feature-name" data-i18n="feature_fix">代码级修复片段和指南</td>
-                                    <td class="status-yes"><i class="fa-solid fa-check"></i></td>
-                                    <td class="status-yes"><i class="fa-solid fa-check"></i></td>
-                                    <td class="status-yes"><i class="fa-solid fa-check"></i></td>
+                                    <td class="feature-name" data-i18n="feature_logic">逻辑漏洞挖掘</td>
+                                    <td data-i18n="logic_basic">❌</td>
+                                    <td data-i18n="logic_deep">✅ 并发/支付/越权矩阵</td>
+                                    <td data-i18n="logic_annual">✅ 半年度深度挖掘 (依套餐)</td>
                                 </tr>
                                 <tr>
-                                    <td class="feature-name" data-i18n="feature_retest">复测验证 (闭环服务)</td>
-                                    <td class="status-no"><i class="fa-solid fa-xmark"></i></td>
-                                    <td class="status-yes"><span><i class="fa-solid fa-check"></i> <span data-i18n="feature_retest_deep">(含1次)</span></span></td>
-                                    <td class="status-yes"><span><i class="fa-solid fa-check"></i> <span data-i18n="feature_retest_annual">(含2次)</span></span></td>
+                                    <td class="feature-name" data-i18n="feature_fix">代码级修复指南</td>
+                                    <td data-i18n="fix_basic">✅ 提供精准 Patch 片段</td>
+                                    <td data-i18n="fix_deep">✅ 提供精准 Patch 片段</td>
+                                    <td data-i18n="fix_annual">✅ 提供精准 Patch 片段</td>
                                 </tr>
                                 <tr>
-                                    <td class="feature-name" data-i18n="feature_cert">DewSecure 认证证书</td>
-                                    <td class="status-yes"><i class="fa-solid fa-check"></i></td>
-                                    <td class="status-yes"><i class="fa-solid fa-check"></i></td>
-                                    <td class="status-yes"><i class="fa-solid fa-check"></i></td>
+                                    <td class="feature-name" data-i18n="feature_retest">复测验证 (闭环)</td>
+                                    <td data-i18n="retest_basic">❌</td>
+                                    <td data-i18n="retest_deep">✅ 含 1 次免费复测</td>
+                                    <td data-i18n="retest_annual">✅ 依套餐额度</td>
+                                </tr>
+                                <tr>
+                                    <td class="feature-name" data-i18n="feature_cert">DewSecure 证书</td>
+                                    <td data-i18n="cert_basic">✅</td>
+                                    <td data-i18n="cert_deep">✅</td>
+                                    <td data-i18n="cert_annual">✅ 年度认证</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -325,7 +343,7 @@
                                     <option value="" data-i18n="form_opt_default">选择意向服务</option>
                                     <option value="basic" data-i18n="service_basic">初级安全检测</option>
                                     <option value="deep" data-i18n="service_deep">深度渗透测试</option>
-                                    <option value="annual" data-i18n="service_annual">年度安全顾问</option>
+                                    <option value="annual" data-i18n="service_annual">年度安全订阅</option>
                                 </select>
                             </div>
                         </div>
