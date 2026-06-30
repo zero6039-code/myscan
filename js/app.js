@@ -1,4 +1,4 @@
-// DewSecure 最终版（抖动验证 + 防滥用 + 倒计时 + Formspree + 多语言 + 二进制跳动 + 安全扫描）
+// DewSecure 最终版（抖动验证 + 防滥用 + 倒计时 + Formspree + 多语言 + 二进制跳动 + 安全扫描 + 扫描冷却）
 document.addEventListener('DOMContentLoaded', () => {
     triggerStatsCounter();
     initQuoteModal();
@@ -315,7 +315,7 @@ function initPolicyModal() {
     policyModal.addEventListener('click', (e) => { if (e.target === policyModal) policyModal.classList.remove('is-open'); });
 }
 
-/* ========== 免费网站安全扫描工具（完整多语言 + 修复按钮 + 推销文案 + 自动重渲染） ========== */
+/* ========== 免费网站安全扫描工具（带修复按钮 + 推销文案 + 自动重渲染 + 1分钟冷却） ========== */
 function initQuickScanner() {
     const scanInput = document.getElementById('scan-url-input');
     const scanBtn = document.getElementById('scan-btn');
@@ -327,12 +327,18 @@ function initQuickScanner() {
 
     if (!scanBtn || !scanInput || !resultBox || !scanStatus || !scanModal || !scanModalContent) return;
 
-    let lastScanData = null;   // 缓存最近一次扫描数据
+    let lastScanData = null;
+    let scanCooldownTimer = null;          // 扫描冷却定时器
+    const SCAN_COOLDOWN_SECONDS = 60;      // 1分钟冷却
+
+    // 合规复选框控制按钮（需考虑冷却状态）
+    function updateScanButtonState() {
+        const isCooldown = scanCooldownTimer !== null;
+        scanBtn.disabled = !complianceCheck.checked || isCooldown;
+    }
 
     if (complianceCheck) {
-        complianceCheck.addEventListener('change', () => {
-            scanBtn.disabled = !complianceCheck.checked;
-        });
+        complianceCheck.addEventListener('change', updateScanButtonState);
     }
 
     function closeScanModal() {
@@ -342,6 +348,30 @@ function initQuickScanner() {
     const closeScanBtn = scanModal.querySelector('.scan-modal-close');
     closeScanBtn?.addEventListener('click', closeScanModal);
     scanModal.addEventListener('click', (e) => { if (e.target === scanModal) closeScanModal(); });
+
+    // 启动扫描冷却
+    function startScanCooldown(seconds) {
+        let remaining = seconds;
+        scanBtn.disabled = true;
+        scanStatus.style.display = 'inline';
+        const template = t('cooldown_msg') || 'Please wait {seconds}s';
+        function updateDisplay() {
+            scanStatus.textContent = template.replace('{seconds}', remaining);
+        }
+        updateDisplay();
+        scanCooldownTimer = setInterval(() => {
+            remaining--;
+            if (remaining <= 0) {
+                clearInterval(scanCooldownTimer);
+                scanCooldownTimer = null;
+                scanStatus.style.display = 'none';
+                scanStatus.textContent = '';
+                updateScanButtonState();       // 冷却结束，根据合规勾选恢复按钮状态
+            } else {
+                updateDisplay();
+            }
+        }, 1000);
+    }
 
     // 核心渲染函数
     function renderScanResult(data) {
@@ -423,7 +453,6 @@ function initQuickScanner() {
         html += `<div class="scan-upsell">${escapeHtml(t('scan_upsell'))}</div>`;
 
         scanModalContent.innerHTML = html;
-        // 重新绑定修复按钮事件
         scanModalContent.querySelectorAll('.fix-btn').forEach(btn => {
             btn.addEventListener('click', function (e) {
                 e.stopPropagation();
@@ -444,6 +473,8 @@ function initQuickScanner() {
     });
 
     scanBtn.addEventListener('click', async () => {
+        if (scanCooldownTimer !== null) return;   // 冷却中，不允许重复点击
+
         let url = scanInput.value.trim();
         if (!url) return;
 
@@ -469,7 +500,10 @@ function initQuickScanner() {
                 return;
             }
 
-            lastScanData = data;          // 缓存数据
+            // 扫描成功，启动冷却
+            startScanCooldown(SCAN_COOLDOWN_SECONDS);
+
+            lastScanData = data;
             renderScanResult(data);
             scanModal.classList.add('is-open');
 
