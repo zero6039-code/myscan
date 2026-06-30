@@ -84,7 +84,7 @@
   "feature_sast": "漏洞扫描 (SAST/DAST)",
   "feature_logic": "高级逻辑漏洞测试 / 代码审计",
   "feature_payment": "支付与数据安全审计",
-  "feature_fix": "修复指南 (Pull Request)",
+  "feature_fix": "代码级修复片段和指南",
   "feature_retest": "复测验证 (闭环服务)",
   "feature_retest_basic": "",
   "feature_retest_deep": " (含1次)",
