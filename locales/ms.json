@@ -79,7 +79,7 @@
   "table_header_service": "Perkhidmatan",
   "table_header_basic": "Pemeriksaan Asas",
   "table_header_deep": "Ujian Penembusan",
-  "table_header_annual": "Penasihat Tahunan",
+  "table_header_annual": "Langganan Tahunan",
 
   "feature_sast": "Imbasan Kerentanan (SAST/DAST)",
   "feature_logic": "Ujian Pepijat Logik / Audit Kod",
@@ -88,7 +88,7 @@
   "feature_retest": "Ujian Semula (Gelung Tertutup)",
   "feature_retest_basic": "",
   "feature_retest_deep": " (1 kali)",
-  "feature_retest_annual": " (Tidak terhad)",
+  "feature_retest_annual": " (2 kali)",
   "feature_support": "Sokongan Perunding Keutamaan",
   "feature_cert": "Pensijilan DewSecure",
 
