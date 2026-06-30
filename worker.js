@@ -111,6 +111,11 @@ export default {
       }, 200);
     }
 
+    // ---- 拦截敏感路径（.git 和 vercel.json） ----
+    if (url.pathname.startsWith('/.git') || url.pathname === '/vercel.json') {
+      return new Response('Not Found', { status: 404 });
+    }
+    
     // ---- 静态资源请求：注入安全头 ----
     let response = await env.ASSETS.fetch(request);
     const newHeaders = new Headers(response.headers);
