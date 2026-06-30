@@ -119,15 +119,6 @@ export default {
     newHeaders.set('Cross-Origin-Resource-Policy', 'same-origin');
     newHeaders.set('Cross-Origin-Opener-Policy', 'same-origin');
     newHeaders.set('X-Permitted-Cross-Domain-Policies', 'none');
-
-    // ★★★ 最终修复的 CSP ★★★
-    newHeaders.set('Content-Security-Policy', 
-      "default-src 'self'; " +
-      "connect-src 'self' https://formspree.io; " +
-      "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://static.cloudflareinsights.com; " +
-      "style-src 'self' 'unsafe-inline' https://use.fontawesome.com; " +
-      "font-src 'self' https://use.fontawesome.com; " +
-      "img-src 'self' data:;"
     );
 
     // 删除服务器信息泄露头
