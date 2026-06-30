@@ -148,7 +148,9 @@
   "scan_sub_csp_eval": "Contains unsafe-eval",
   "scan_sub_csp_strict": "Strict policy",
   "scan_upsell": "The above results are based on a standardized baseline audit, designed to give you rapid risk awareness. To ensure thorough remediation and avoid ineffective fixes, we recommend a manual penetration test that considers your business logic. If needed, we can provide tailored remediation guidance to help you go from \"finding vulnerabilities\" to a fully closed loop of hardening.",
-  "scan_sub_cloudflare": "Exposes Cloudflare information"
+  "scan_sub_cloudflare": "Exposes Cloudflare information",
+
+  "cooldown_msg": "{seconds}s cooldown"
   
   
 }
