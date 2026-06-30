@@ -72,9 +72,9 @@
   "alert_error_email": "Please check if the email address is correct.",
   "alert_error_network": "Network error, please try again later.",
 
-  "service_basic": "Basic Security Check",
-  "service_deep": "Deep Penetration Test",
-  "service_annual": "Annual Security Advisor",
+  "service_basic": "Basic Security Check (Health Check)",
+  "service_deep": "Deep Penetration Test (🔥 Core Recommendation)",
+  "service_annual": "Annual Subscription (Long-term Guardian)",
 
   "table_header_service": "Service",
   "table_header_basic": "Basic Security Check",
@@ -151,7 +151,7 @@
 
   "cooldown_msg": "{seconds}s cooldown",
 
-  "modal_subtitle_new": "Transparent pricing, no hidden costs.<br>DewSecure adheres to standardized delivery. We do not play the 'custom quote' game to extract your budget information. Below are the starting thresholds for our core services, designed to help you quickly determine if we fit your security budget.",
+  "modal_subtitle_new": "Transparent pricing, no hidden costs.<br>DewSecure adheres to standardized delivery. We do not use "custom quote" tactics to probe your budget. Below are the starting thresholds for our core services, designed to help you quickly determine if we are the right fit for your security budget.",
 
   "table_header_basic_sub": "(Health Check)",
   "table_header_deep_sub": "(🔥 Core Recommendation)",
