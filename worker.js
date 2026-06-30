@@ -27,8 +27,8 @@ export default {
         }
 
         // ★ 白名单检查：禁止扫描自己的域名
-        const blockedDomains = ['dewsecure.com', 'www.dewsecure.com'];
-        if (blockedDomains.includes(targetUrl.hostname) || targetUrl.hostname.endsWith('.dewsecure.com')) {
+        //const blockedDomains = ['dewsecure.com', 'www.dewsecure.com'];
+        //if (blockedDomains.includes(targetUrl.hostname) || targetUrl.hostname.endsWith('.dewsecure.com')) {
           return jsonResponse({ error: 'Scanning this domain is not allowed.' }, 403);
         }
       } catch (e) {
