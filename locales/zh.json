@@ -149,6 +149,43 @@
   "scan_upsell": "以上检测结果基于标准化基线审计，旨在为您提供快速的风险感知。为确保漏洞修复的彻底性并避免无效修复，我们建议结合业务逻辑进行人工渗透测试。如有需求，我们可以为您提供针对性的修复方案指导，帮助您实现从“发现漏洞”到“闭环加固”的完整跨越。",
   "scan_sub_cloudflare": "暴露了 Cloudflare 信息",
 
-  "cooldown_msg": "冷却 {seconds}s"
+  "cooldown_msg": "冷却 {seconds}s",
+
+  "modal_subtitle_new": "透明定价，拒绝隐形消费。<br>DewSecure 坚持标准化交付。我们不玩“按需报价”的套路来套取您的预算信息。以下是我们核心服务的起步门槛，旨在帮助您快速判断我们是否契合您的安全预算。",
+
+  "table_header_basic_sub": "(健康体检)",
+  "table_header_deep_sub": "(🔥 核心推荐)",
+  "table_header_annual_sub": "(长期守护)",
+
+  "row_price": "起步价",
+  "row_price_note": "价格说明",
+
+  "price_basic": "$200",
+  "price_deep": "$800",
+  "price_annual": "$990 / 年",
+
+  "note_basic": "视资产复杂度浮动",
+  "note_deep": "严格按业务流数量计费 (1条流$800，3条流$1800)",
+  "note_annual": "视监控频率与深度测试次数浮动",
+
+  "sast_basic": "✅ 自动化+人工排误报",
+  "sast_deep": "✅ 深度验证(二阶/盲注)",
+  "sast_annual": "✅ 月度巡航 + 季度体检",
+
+  "logic_basic": "❌",
+  "logic_deep": "✅ 并发/支付/越权矩阵",
+  "logic_annual": "✅ 半年度深度挖掘 (依套餐)",
+
+  "fix_basic": "✅ 提供精准 Patch 片段",
+  "fix_deep": "✅ 提供精准 Patch 片段",
+  "fix_annual": "✅ 提供精准 Patch 片段",
+
+  "retest_basic": "❌",
+  "retest_deep": "✅ 含 1 次免费复测",
+  "retest_annual": "✅ 依套餐额度",
+
+  "cert_basic": "✅",
+  "cert_deep": "✅",
+  "cert_annual": "✅ 年度认证"
   
 }
