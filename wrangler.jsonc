@@ -1,7 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "dewsecure",
-  "main": "_worker.js",                // 关键：告诉 wrangler 入口文件
   "compatibility_date": "2026-06-27",
   "observability": {
     "enabled": true
