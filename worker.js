@@ -128,7 +128,14 @@ export default {
     newHeaders.set('Cross-Origin-Resource-Policy', 'same-origin');
     newHeaders.set('Cross-Origin-Opener-Policy', 'same-origin');
     newHeaders.set('X-Permitted-Cross-Domain-Policies', 'none');
-    newHeaders.set('Content-Security-Policy', "default-src 'self'; connect-src 'self' https://formspree.io; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://use.fontawesome.com; font-src 'self' https://use.fontawesome.com; img-src 'self' data:;");
+    newHeaders.set('Content-Security-Policy', 
+    "default-src 'self'; " +
+    "connect-src 'self' https://formspree.io; " +
+    "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://static.cloudflareinsights.com; " +
+    "style-src 'self' 'unsafe-inline' https://use.fontawesome.com; " +
+    "font-src 'self' https://use.fontawesome.com; " +
+    "img-src 'self' data:;"
+);
     newHeaders.delete('server');
 
     return new Response(response.body, {
