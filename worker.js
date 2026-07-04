@@ -118,7 +118,7 @@ export default {
     newHeaders.set('Content-Security-Policy', 
       "default-src 'self'; " +
       "connect-src 'self' https://formspree.io; " +
-      "script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com https://cdn.jsdelivr.net; " +
+      "script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; " +
       "style-src 'self' 'unsafe-inline' https://use.fontawesome.com; " +
       "font-src 'self' https://use.fontawesome.com; " +
       "img-src 'self' data:;"
