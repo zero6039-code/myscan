@@ -186,7 +186,10 @@
 
   "cert_basic": "✅",
   "cert_deep": "✅",
-  "cert_annual": "✅ Annual certification"
+  "cert_annual": "✅ Annual certification",
+
+  "service_partner": "Partnership",
+  "service_other": "Other"
   
   
 }
