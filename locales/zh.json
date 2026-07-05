@@ -186,6 +186,9 @@
 
   "cert_basic": "✅",
   "cert_deep": "✅",
-  "cert_annual": "✅ 年度认证"
+  "cert_annual": "✅ 年度认证",
+
+  "service_partner": "合作伙伴",
+  "service_other": "其他"
   
 }
