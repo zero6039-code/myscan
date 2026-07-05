@@ -186,6 +186,9 @@
 
   "cert_basic": "✅",
   "cert_deep": "✅",
-  "cert_annual": "✅ Pensijilan tahunan"
+  "cert_annual": "✅ Pensijilan tahunan",
+
+  "service_partner": "Perkongsian",
+  "service_other": "Lain-lain"
   
 }
