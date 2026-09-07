@@ -1,14 +1,15 @@
 {
   "meta_desc": "DewSecure Web3 网页渗透与代码审计。",
   "nav_solution": "解决方案",
+  "nav_service_detail": "服务详情",
   "nav_company": "关于公司",
   "nav_disclaimer": "免责声明",
   "stats_label": "项目审计",
   "placeholder_text": "🚀 重构中，新功能即将上线...",
-  
+
   "sol_intro_title": "解决方案",
-  "sol_intro_desc": "为您 中小企业网站或个人网站提供安全和合规解决方案与风险管理。",
-  
+  "sol_intro_desc": "为您中小企业网站或个人网站提供安全和合规解决方案与风险管理。",
+
   "sol_item1_title": "代码审核",
   "sol_item1_desc": "人工 + AI深度审查",
   "sol_item2_title": "渗透测试",
@@ -19,13 +20,13 @@
   "sol_item4_desc": "生成审计报告和修复建议",
   "sol_item5_title": "安全咨询服务",
   "sol_item5_desc": "了解详情",
-  
+
   "comp_intro_title": "关于公司",
   "comp_intro_desc": "DewSecure 是一家由资深行业专家创立的顶尖 Web3 安全平台，集深度渗透测试、高级源代码审计与全方位安全解决方案于一体。凭借在各大漏洞赏金平台上的长期活跃表现，以及为众多项目提供渗透测试与高阶代码审计服务的丰富经验，DewSecure 积累了深厚的实战专长。面对人工智能重塑安全边界与全球网络安全格局所带来的前所未有的复杂挑战，DewSecure 始终坚守阵地，致力于捍卫数字世界的安全防线。",
-  
+
   "disc_intro_title": "免责声明",
   "disc_intro_desc": "DewSecure 安全服务法律合规与服务性质责任限制说明。",
-  
+
   "disc_t1": "1. 服务性质声明",
   "disc_d1": "DewSecure 提供的渗透测试、代码审计及安全咨询服务，旨在帮助客户发现和修复潜在安全风险。所有测试均在客户书面授权范围内进行，并严格遵循行业标准与合规要求。",
   "disc_t2": "2. 技术局限性",
@@ -41,17 +42,19 @@
 
   "hero_title": "Web3 网页渗透与代码审计",
   "hero_desc": "DewSecure 是一家顶尖的 Web3 安全平台，由业内资深专家创立，集深度渗透测试、先进源代码审计与全方位安全解决方案于一体。将审计工作交给我们，确保您的项目及数字生态系统始终运行在安全可靠且经受过实战检验的环境之中。",
-  
+
   "hero_btn_quote": "咨询专家",
 
   "modal_matrix_slogan": "技术为器，<span class=\"highlight-red\">诚信为道。</span>",
   "modal_title": "立刻保护您的项目",
   "modal_subtitle": "借助专业的 Web3 安全提供商来增强您的项目。",
-  
+
   "form_lbl_company": "项目/公司",
   "form_plh_company": "项目或公司名称",
   "form_lbl_email": "电子邮件",
   "form_plh_email": "John@example.com",
+  "form_lbl_target": "目标网站",
+  "form_plh_target": "example.com",
   "form_lbl_contact": "联系方式",
   "form_plh_contact": "例如: 123456789",
   "form_lbl_name": "全名",
@@ -64,7 +67,7 @@
   "form_plh_info": "请详细介绍您的项目。分享项目详情，相关链接或任何疑问。（2000字以内）",
   "form_notice": "DewSecure 安全专家将审阅您的请求，并尽快与您联系。",
   "btn_submit": "提交申请",
-  
+
   "err_required": "该字段不能为空",
   "err_email": "请输入有效的电子邮件地址",
 
@@ -72,24 +75,84 @@
   "alert_error_email": "请检查邮箱地址是否正确。",
   "alert_error_network": "网络错误，请稍后再试。",
 
-  "service_basic": "初级安全检测 (健康体检)",
-  "service_deep": "深度渗透测试 (🔥 核心推荐)",
-  "service_annual": "年度订阅 (长期守护)",
+  "service_basic_health": "基础健康体检",
+  "service_blackbox": "黑盒测试",
+  "service_greybox": "灰盒测试 (🔥 核心推荐)",
+  "service_whitebox": "白盒代码审计",
+  "service_outsource": "接受外包订单",
+  "service_partner": "合作伙伴",
+  "service_other": "其他",
 
-  "table_header_service": "服务",
-  "table_header_basic": "初级安全检测",
-  "table_header_deep": "深度渗透测试",
-  "table_header_annual": "年度订阅",
+  "service_detail_title": "服务详情",
+  "service_detail_desc": "全面的安全服务对比，助您选择最适合的方案。",
 
-  "feature_sast": "漏洞扫描 (SAST/DAST)",
-  "feature_logic": "高级逻辑漏洞测试 / 代码审计",
-  "feature_payment": "支付与数据安全审计",
-  "feature_fix": "代码级修复片段和指南",
-  "feature_retest": "复测验证 (闭环服务)",
-  "feature_retest_basic": "",
-  "feature_retest_deep": " (1次)",
-  "feature_retest_annual": " (2次)",
-  "feature_cert": "商业信任增信工具（Trust Badge）",
+  "sd_th1": "服务项目",
+  "sd_th2": "基础健康体检 (基础扫描与排查)",
+  "sd_th3": "黑盒测试 (外部边界盲测)",
+  "sd_th4": "灰盒测试 🔥 核心推荐 (内部业务逻辑穿透)",
+  "sd_th5": "白盒代码审计 (源码级深度审查)",
+
+  "sd_row1_label": "起步价 (USD)",
+  "sd_row1_c1": "$200+",
+  "sd_row1_c2": "$1,000+",
+  "sd_row1_c3": "$800+ (按核心业务流计费)",
+  "sd_row1_c4": "$1,500+",
+
+  "sd_row2_label": "目标客群与场景",
+  "sd_row2_c1": "适合上线前做的最后一道检测，轻量/静态站点，做快速安全基线排查",
+  "sd_row2_c2": "模拟外部真实黑客，测试外围防线与未授权漏洞",
+  "sd_row2_c3": "核心推荐：针对 SaaS/API，深度排查越权与业务逻辑漏洞",
+  "sd_row2_c4": "针对金融级或强合规项目，进行源码级深度审计",
+
+  "sd_row3_label": "价格说明",
+  "sd_row3_c1": "零账号 / 自动化扫描结合基础排查",
+  "sd_row3_c2": "视外围资产暴露面、子域名与系统防护复杂度浮动",
+  "sd_row3_c3": "严格按业务流数量计费 (例: 1条流$800, 3条流$1800)",
+  "sd_row3_c4": "视代码量、语言复杂度及架构深度浮动",
+
+  "sd_row4_label": "测试权限与前置条件",
+  "sd_row4_c1": "零背景、无账号",
+  "sd_row4_c2": "零背景、无账号、纯外围盲测",
+  "sd_row4_c3": "提供测试账号矩阵(普通/管理) + API 文档",
+  "sd_row4_c4": "提供完整源码、数据库结构、内部文档",
+
+  "sd_row5_label": "漏洞扫描 (SAST/DAST)",
+  "sd_row5_c1": "✅ 自动化扫描 + 人工排误报",
+  "sd_row5_c2": "✅ 资产搜集 , 深度外围扫描与边界突破",
+  "sd_row5_c3": "✅ 轻量外围辅助扫描 (20%) + 核心内部测试 (80%)",
+  "sd_row5_c4": "✅ 静态代码分析 (SAST) + 人工逐行深度审计",
+
+  "sd_row6_label": "高级逻辑漏洞测试",
+  "sd_row6_c1": "仅排查表层与公开漏洞",
+  "sd_row6_c2": "外部盲打 (二阶/盲注/未授权访问/不涉及深度业务逻辑)",
+  "sd_row6_c3": "✅ 80% 专注并发、支付、BOLA/IDOR 越权与矩阵测试",
+  "sd_row6_c4": "✅ 架构级风险、代码审计，深层反序列化与隐蔽漏洞挖掘",
+
+  "sd_row7_label": "代码级修复片段与指南",
+  "sd_row7_c1": "✅ 基础修改建议",
+  "sd_row7_c2": "✅ 提供精准 Patch 片段 / 防御策略",
+  "sd_row7_c3": "✅ 提供精准 Patch 片段 (开发极度友好)",
+  "sd_row7_c4": "✅ 提供精准至特定代码行的 Patch 片段",
+
+  "sd_row8_label": "复测验证 (闭环服务)",
+  "sd_row8_c1": "❌ (一次性交付，不含复测)",
+  "sd_row8_c2": "✅ 含 1 次免费验证复测",
+  "sd_row8_c3": "✅ 含 1 次免费验证复测",
+  "sd_row8_c4": "✅ 含 1 次免费验证复测",
+
+  "sd_row9_label": "商业信任增信工具",
+  "sd_row9_c1": "❌",
+  "sd_row9_c2": "✅ 允许展示测试认证",
+  "sd_row9_c3": "✅ 允许展示测试认证",
+  "sd_row9_c4": "✅ 允许展示测试认证",
+
+  "sd_row10_label": "最终交付物",
+  "sd_row10_c1": "红黑榜体检清单",
+  "sd_row10_c2": "专业边界安全漏洞评估报告",
+  "sd_row10_c3": "深度业务逻辑安全渗透报告",
+  "sd_row10_c4": "专业源码级安全合规审计报告",
+
+  "sd_footer_note": "起步价 (USD)仅做参考，最终报价将基于实际系统的 API 接口数量、用户角色维度及业务复杂度进行精准评估，请联系获取完整报价单。",
 
   "auto_reply_subject": "DewSecure 已收到您的咨询",
   "auto_reply_message": "尊敬的客户，您好！我们已经收到您的咨询请求，我们的团队会尽快查看并回复您。感谢您的耐心等待。",
@@ -149,46 +212,5 @@
   "scan_upsell": "以上检测结果基于标准化基线审计，旨在为您提供快速的风险感知。为确保漏洞修复的彻底性并避免无效修复，我们建议结合业务逻辑进行人工渗透测试。如有需求，我们可以为您提供针对性的修复方案指导，帮助您实现从“发现漏洞”到“闭环加固”的完整跨越。",
   "scan_sub_cloudflare": "暴露了 Cloudflare 信息",
 
-  "cooldown_msg": "冷却 {seconds}s",
-
-  "modal_subtitle_new": "透明定价，拒绝隐形消费。<br>DewSecure 坚持标准化交付。我们不“按需报价”的策略来套取您的预算信息。以下是我们核心服务的起步门槛，旨在帮助您快速判断我们是否契合您的安全预算。",
-
-  "table_header_basic_sub": "(健康体检)",
-  "table_header_deep_sub": "(🔥 核心推荐)",
-  "table_header_annual_sub": "(长期守护)",
-
-  "row_price": "起步价",
-  "row_price_note": "价格说明",
-
-  "price_basic": "$200",
-  "price_deep": "$800",
-  "price_annual": "$990 / 年",
-
-  "note_basic": "视资产复杂度浮动",
-  "note_deep": "严格按业务流数量计费 (1条流$800，3条流$1800)",
-  "note_annual": "视监控频率与深度测试次数浮动",
-
-  "sast_basic": "✅ 自动化+人工排误报",
-  "sast_deep": "✅ 深度验证(二阶/盲注)",
-  "sast_annual": "✅ 月度巡航 + 季度体检",
-
-  "logic_basic": "❌",
-  "logic_deep": "✅ 并发/支付/越权矩阵",
-  "logic_annual": "✅ 半年度深度挖掘 (依套餐)",
-
-  "fix_basic": "✅ 提供精准 Patch 片段",
-  "fix_deep": "✅ 提供精准 Patch 片段",
-  "fix_annual": "✅ 提供精准 Patch 片段",
-
-  "retest_basic": "❌",
-  "retest_deep": "✅ 含 1 次免费复测",
-  "retest_annual": "✅ 依套餐额度",
-
-  "cert_basic": "✅",
-  "cert_deep": "✅",
-  "cert_annual": "✅ 年度认证",
-
-  "service_partner": "合作伙伴",
-  "service_other": "其他"
-  
+  "cooldown_msg": "冷却 {seconds}s"
 }
