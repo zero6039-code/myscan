@@ -1,14 +1,15 @@
 {
   "meta_desc": "DewSecure menumpukan pada menyediakan audit kontrak pintar peringkat tinggi, pertahanan keselamatan DeFi, imbasan kerentanan automatik, dan penjejakan rantaian penuh.",
   "nav_solution": "Solusi",
+  "nav_service_detail": "Butiran Perkhidmatan",
   "nav_company": "Mengenai Kami",
   "nav_disclaimer": "Penafian",
   "stats_label": "Audit Projek",
   "placeholder_text": "🚀 Dalam pembinaan semula, fungsi baru akan datang...",
-  
+
   "sol_intro_title": "Solusi",
   "sol_intro_desc": "Menyediakan penyelesaian keselamatan, pematuhan, dan pengurusan risiko untuk laman web PKS atau peribadi anda.",
-  
+
   "sol_item1_title": "Audit Kod",
   "sol_item1_desc": "Manual + Pemeriksaan Mendalam AI",
   "sol_item2_title": "Ujian Penembusan",
@@ -19,13 +20,13 @@
   "sol_item4_desc": "Laporan Audit & Cadangan Pembaikan",
   "sol_item5_title": "Perkhidmatan Rundingan",
   "sol_item5_desc": "Ketahui Lebih Lanjut",
-  
+
   "comp_intro_title": "Mengenai Syarikat",
   "comp_intro_desc": "DewSecure ialah platform keselamatan Web3 terkemuka yang diasaskan oleh pakar industri berpengalaman, mengintegrasikan ujian penembusan mendalam, audit kod sumber termaju, dan penyelesaian keselamatan menyeluruh. Dengan kehadiran aktif bertahun-tahun di platform bug bounty utama serta penglibatan meluas dalam ujian penembusan dan audit kod peringkat tinggi untuk pelbagai projek, DewSecure telah mengumpul kepakaran praktikal yang mendalam. Kini, apabila AI mentakrifkan semula sempadan keselamatan dan membentuk semula landskap keselamatan siber global, membawa cabaran kompleks yang belum pernah terjadi sebelum ini, DewSecure kekal teguh dalam mempertahankan benteng keselamatan dunia digital.",
-  
+
   "disc_intro_title": "Penafian",
   "disc_intro_desc": "Kenyataan pematuhan undang-undang dan had liabiliti untuk perkhidmatan keselamatan DewSecure.",
-  
+
   "disc_t1": "1. Sifat Perkhidmatan",
   "disc_d1": "Ujian penembusan, audit kod, dan rundingan keselamatan yang disediakan oleh DewSecure bertujuan untuk membantu menemui risiko. Semua ujian dijalankan di bawah kebenaran bertulis.",
   "disc_t2": "2. Had Teknikal",
@@ -41,17 +42,19 @@
 
   "hero_title": "Ujian Penembusan Web3 & Audit Kod",
   "hero_desc": "DewSecure ialah platform keselamatan Web3 yang dibina oleh pasukan pakar berpengalaman luas, menyatukan ujian penembusan mendalam, audit kod sumber peringkat tinggi, dan penyelesaian keselamatan menyeluruh. Serahkan audit anda kepada kami untuk memastikan projek atau ekosistem web anda sentiasa berkembang pesat dalam persekitaran yang selamat dan mampan.",
-  
+
   "hero_btn_quote": "Rujuk Pakar",
 
   "modal_matrix_slogan": "Berteraskan teknologi, <span class=\"highlight-red\">dipandu integriti.</span>",
   "modal_title": "Lindungi Projek Anda Serta-merta",
   "modal_subtitle": "Tingkatkan keselamatan projek anda dengan penyedia keselamatan Web3 profesional.",
-  
+
   "form_lbl_company": "Projek/Syarikat",
   "form_plh_company": "Masukkan nama projek atau syarikat",
   "form_lbl_email": "E-mel",
   "form_plh_email": "John@example.com",
+  "form_lbl_target": "Laman Web Sasaran",
+  "form_plh_target": "example.com",
   "form_lbl_contact": "Maklumat Hubungan",
   "form_plh_contact": "Contoh: 123456789",
   "form_lbl_name": "Nama Penuh",
@@ -61,10 +64,10 @@
   "form_lbl_service": "Niat Perkhidmatan",
   "form_opt_default": "Pilih satu perkhidmatan",
   "form_lbl_info": "Maklumat Lain",
-  "form_plh_info": "Mohon perkenalkan projek anda secara terperinci. Kongsikan butiran projek, pautan berkaitan Linked , atau sebarang pertanyaan. (dalam 2000 patah perkataan)",
+  "form_plh_info": "Sila perkenalkan projek anda secara terperinci dan sertakan pautan berkaitan (dalam 2000 patah perkataan).",
   "form_notice": "Pakar keselamatan DewSecure akan menyemak permintaan anda dan menghubungi anda secepat mungkin.",
   "btn_submit": "Hantar Permintaan",
-  
+
   "err_required": "Medan ini wajib diisi",
   "err_email": "Sila masukkan alamat e-mel yang sah",
 
@@ -72,24 +75,84 @@
   "alert_error_email": "Sila semak sama ada alamat e-mel betul.",
   "alert_error_network": "Ralat rangkaian, sila cuba lagi kemudian.",
 
-  "service_basic": "Pemeriksaan Asas (Pemeriksaan Kesihatan)",
-  "service_deep": "Ujian Penembusan (🔥 Cadangan Teras)",
-  "service_annual": "Langganan Tahunan (Penjaga Jangka Panjang)",
+  "service_basic_health": "Pemeriksaan Kesihatan Asas",
+  "service_blackbox": "Ujian Kotak Hitam",
+  "service_greybox": "Ujian Kotak Kelabu (🔥 Cadangan Teras)",
+  "service_whitebox": "Audit Kod Kotak Putih",
+  "service_outsource": "Terima Pesanan Luar",
+  "service_partner": "Perkongsian",
+  "service_other": "Lain-lain",
 
-  "table_header_service": "Perkhidmatan",
-  "table_header_basic": "Pemeriksaan Asas",
-  "table_header_deep": "Ujian Penembusan",
-  "table_header_annual": "Langganan Tahunan",
+  "service_detail_title": "Butiran Perkhidmatan",
+  "service_detail_desc": "Perbandingan perkhidmatan keselamatan yang komprehensif untuk membantu anda memilih penyelesaian terbaik.",
 
-  "feature_sast": "Imbasan Kerentanan (SAST/DAST)",
-  "feature_logic": "Ujian Pepijat Logik / Audit Kod",
-  "feature_payment": "Audit Keselamatan Pembayaran & Data",
-  "feature_fix": "Panduan & Contoh Kod Pembetulan",
-  "feature_retest": "Ujian Semula (Gelung Tertutup)",
-  "feature_retest_basic": "",
-  "feature_retest_deep": " (1 kali)",
-  "feature_retest_annual": " (2 kali)",
-  "feature_cert": "Lencana Kepercayaan Perniagaan (Trust Badge)",
+  "sd_th1": "Item Perkhidmatan",
+  "sd_th2": "Pemeriksaan Kesihatan Asas (Imbasan & Saringan Asas)",
+  "sd_th3": "Ujian Kotak Hitam (Ujian Buta Sempadan Luaran)",
+  "sd_th4": "Ujian Kotak Kelabu 🔥 Cadangan Teras (Penembusan Logik Perniagaan Dalaman)",
+  "sd_th5": "Audit Kod Kotak Putih (Kajian Mendalam Peringkat Sumber)",
+
+  "sd_row1_label": "Harga Permulaan (USD)",
+  "sd_row1_c1": "$200+",
+  "sd_row1_c2": "$1,000+",
+  "sd_row1_c3": "$800+ (mengikut aliran perniagaan teras)",
+  "sd_row1_c4": "$1,500+",
+
+  "sd_row2_label": "Khalayak Sasaran & Senario",
+  "sd_row2_c1": "Pemeriksaan terakhir sebelum pelancaran; laman ringan/statik; saringan keselamatan pantas",
+  "sd_row2_c2": "Mensimulasikan penggodam luaran sebenar, menguji pertahanan perimeter dan kerentanan tanpa kebenaran",
+  "sd_row2_c3": "Cadangan teras: untuk SaaS/API, pemeriksaan mendalam terhadap peningkatan hak istimewa dan kelemahan logik perniagaan",
+  "sd_row2_c4": "Untuk projek gred kewangan atau pematuhan ketat, menjalankan audit mendalam peringkat sumber",
+
+  "sd_row3_label": "Nota Harga",
+  "sd_row3_c1": "Akaun sifar / imbasan automatik digabungkan dengan saringan asas",
+  "sd_row3_c2": "Berbeza mengikut pendedahan aset perimeter, subdomain, dan kerumitan pertahanan sistem",
+  "sd_row3_c3": "Dikenakan bayaran mengikut bilangan aliran perniagaan (cth: 1 aliran $800, 3 aliran $1800)",
+  "sd_row3_c4": "Berbeza mengikut jumlah kod, kerumitan bahasa, dan kedalaman seni bina",
+
+  "sd_row4_label": "Kebenaran & Prasyarat Ujian",
+  "sd_row4_c1": "Tiada latar belakang, tiada akaun diperlukan",
+  "sd_row4_c2": "Tiada latar belakang, tiada akaun, ujian buta luaran tulen",
+  "sd_row4_c3": "Menyediakan matriks akaun ujian (biasa/pentadbir) + dokumentasi API",
+  "sd_row4_c4": "Menyediakan kod sumber lengkap, skema pangkalan data, dokumentasi dalaman",
+
+  "sd_row5_label": "Imbasan Kerentanan (SAST/DAST)",
+  "sd_row5_c1": "✅ Imbasan automatik + penyingkiran positif palsu manual",
+  "sd_row5_c2": "✅ Penemuan aset, imbasan perimeter mendalam, dan penembusan sempadan",
+  "sd_row5_c3": "✅ Imbasan perimeter ringan (20%) + ujian dalaman teras (80%)",
+  "sd_row5_c4": "✅ Analisis kod statik (SAST) + audit mendalam baris demi baris manual",
+
+  "sd_row6_label": "Ujian Kerentanan Logik Lanjutan",
+  "sd_row6_c1": "Hanya pemeriksaan kerentanan permukaan dan awam",
+  "sd_row6_c2": "Serangan buta luaran (suntikan peringkat kedua/buta/akses tanpa kebenaran, tanpa logik perniagaan mendalam)",
+  "sd_row6_c3": "✅ 80% tumpuan pada konkurensi, pembayaran, peningkatan hak istimewa BOLA/IDOR dan ujian matriks",
+  "sd_row6_c4": "✅ Risiko peringkat seni bina, audit kod, deserialisasi mendalam dan penemuan kerentanan tersembunyi",
+
+  "sd_row7_label": "Cebisan Pembetulan & Panduan Peringkat Kod",
+  "sd_row7_c1": "✅ Cadangan pengubahsuaian asas",
+  "sd_row7_c2": "✅ Menyediakan cebisan patch tepat / strategi pertahanan",
+  "sd_row7_c3": "✅ Menyediakan cebisan patch tepat (mesra pembangun)",
+  "sd_row7_c4": "✅ Menyediakan cebisan patch tepat hingga ke baris kod tertentu",
+
+  "sd_row8_label": "Pengesahan Ujian Semula (Gelung Tertutup)",
+  "sd_row8_c1": "❌ (Penghantaran sekali sahaja, tanpa ujian semula)",
+  "sd_row8_c2": "✅ Termasuk 1 ujian semula pengesahan percuma",
+  "sd_row8_c3": "✅ Termasuk 1 ujian semula pengesahan percuma",
+  "sd_row8_c4": "✅ Termasuk 1 ujian semula pengesahan percuma",
+
+  "sd_row9_label": "Alat Peningkatan Kepercayaan Perniagaan",
+  "sd_row9_c1": "❌",
+  "sd_row9_c2": "✅ Dibenarkan memaparkan pensijilan ujian",
+  "sd_row9_c3": "✅ Dibenarkan memaparkan pensijilan ujian",
+  "sd_row9_c4": "✅ Dibenarkan memaparkan pensijilan ujian",
+
+  "sd_row10_label": "Hasil Akhir",
+  "sd_row10_c1": "Senarai semak kesihatan merah/hitam",
+  "sd_row10_c2": "Laporan penilaian kerentanan keselamatan perimeter profesional",
+  "sd_row10_c3": "Laporan penembusan keselamatan logik perniagaan mendalam",
+  "sd_row10_c4": "Laporan audit pematuhan keselamatan kod sumber profesional",
+
+  "sd_footer_note": "Harga permulaan hanyalah rujukan. Sebut harga akhir akan dinilai dengan tepat berdasarkan bilangan sebenar API, dimensi peranan pengguna, dan kerumitan perniagaan. Sila hubungi kami untuk sebut harga penuh.",
 
   "auto_reply_subject": "DewSecure telah menerima pertanyaan anda",
   "auto_reply_message": "Pelanggan yang dihormati, kami telah menerima pertanyaan anda. Pasukan kami akan meninjaunya dan menghubungi anda secepat mungkin. Terima kasih atas kesabaran anda.",
@@ -149,46 +212,5 @@
   "scan_upsell": "Keputusan di atas adalah berdasarkan audit garis dasar piawai, bertujuan untuk memberi anda kesedaran risiko yang pantas. Untuk memastikan pemulihan yang menyeluruh dan mengelakkan pembaikan yang tidak berkesan, kami mengesyorkan ujian penembusan manual yang mengambil kira logik perniagaan anda. Jika perlu, kami boleh menyediakan panduan pemulihan yang disesuaikan untuk membantu anda melangkah dari \"mengesan kerentanan\" kepada pengukuhan gelung tertutup yang lengkap.",
   "scan_sub_cloudflare": "Mendedahkan maklumat Cloudflare",
 
-  "cooldown_msg": "{seconds}s sejukkan",
-
-  "modal_subtitle_new": "Harga telus, tiada kos tersembunyi.<br>DewSecure mengamalkan penyampaian piawai. Kami tidak menggunakan taktik sebut harga tersuai untuk menyelidik bajet anda. Berikut adalah ambang permulaan bagi perkhidmatan teras kami, direka untuk membantu anda menilai dengan cepat sama ada kami sesuai dengan bajet keselamatan anda.",
-
-  "table_header_basic_sub": "(Pemeriksaan Kesihatan)",
-  "table_header_deep_sub": "(🔥 Cadangan Teras)",
-  "table_header_annual_sub": "(Penjaga Jangka Panjang)",
-
-  "row_price": "Harga Permulaan",
-  "row_price_note": "Nota Harga",
-
-  "price_basic": "$200",
-  "price_deep": "$800",
-  "price_annual": "$990 / tahun",
-
-  "note_basic": "Berbeza mengikut kerumitan aset",
-  "note_deep": "Mengikut aliran perniagaan (1 aliran $800, 3 aliran $1800)",
-  "note_annual": "Berbeza mengikut kekerapan pemantauan dan ujian mendalam",
-
-  "sast_basic": "✅ Automatik + penyingkiran palsu manual",
-  "sast_deep": "✅ Verifikasi mendalam (suntikan buta/peringkat kedua)",
-  "sast_annual": "✅ Imbasan bulanan + pemeriksaan suku tahunan",
-
-  "logic_basic": "❌",
-  "logic_deep": "✅ Matriks serentak/pembayaran/kebenaran",
-  "logic_annual": "✅ Penemuan mendalam setengah tahun (ikut pakej)",
-
-  "fix_basic": "✅ Menyediakan cebisan patch tepat",
-  "fix_deep": "✅ Menyediakan cebisan patch tepat",
-  "fix_annual": "✅ Menyediakan cebisan patch tepat",
-
-  "retest_basic": "❌",
-  "retest_deep": "✅ Termasuk 1 ujian semula percuma",
-  "retest_annual": "✅ Mengikut kuota pakej",
-
-  "cert_basic": "✅",
-  "cert_deep": "✅",
-  "cert_annual": "✅ Pensijilan tahunan",
-
-  "service_partner": "Perkongsian",
-  "service_other": "Lain-lain"
-  
+  "cooldown_msg": "{seconds}s sejukkan"
 }
