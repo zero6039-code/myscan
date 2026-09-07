@@ -588,3 +588,55 @@ function escapeHtml(text) {
     const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
     return String(text).replace(/[&<>"']/g, m => map[m]);
 }
+
+function renderServiceDetailTable() {
+    const container = document.getElementById('service-detail-table-container');
+    if (!container || !window.fallbackTranslations) return;
+
+    const t = (key) => window.fallbackTranslations[key] || key;
+
+    // 表头
+    const headers = [
+        t('sd_th1'),
+        t('sd_th2'),
+        t('sd_th3'),
+        t('sd_th4'),
+        t('sd_th5')
+    ];
+
+    // 行数据：每行包含标签和4个内容单元格
+    const rows = [];
+    for (let i = 1; i <= 10; i++) {
+        const label = t(`sd_row${i}_label`);
+        const cells = [];
+        for (let j = 1; j <= 4; j++) {
+            cells.push(t(`sd_row${i}_c${j}`));
+        }
+        rows.push({ label, cells });
+    }
+
+    // 构建表格 HTML
+    let html = `<table>`;
+    html += `<thead><tr>`;
+    headers.forEach((header, index) => {
+        html += `<th style="width: ${index === 0 ? '12%' : '22%'};" data-col="${index + 1}">${escapeHtml(header)}</th>`;
+    });
+    html += `</tr></thead><tbody>`;
+
+    rows.forEach(row => {
+        html += `<tr>`;
+        html += `<td>${escapeHtml(row.label)}</td>`;
+        row.cells.forEach(cell => {
+            html += `<td>${escapeHtml(cell)}</td>`;
+        });
+        html += `</tr>`;
+    });
+
+    html += `</tbody></table>`;
+    html += `<p style="margin-top: 12px; color: #cbd5e1; line-height: 1.5; font-size: 0.85rem;">${escapeHtml(t('sd_footer_note'))}</p>`;
+
+    container.innerHTML = html;
+
+    // 重新初始化列高亮（因为表格被重建）
+    initServiceDetailColumnHighlight();
+}
