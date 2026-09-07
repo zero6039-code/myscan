@@ -1,4 +1,4 @@
-// DewSecure 最终版（抖动验证 + 防滥用 + 倒计时 + Formspree + 多语言 + 二进制跳动 + 安全扫描 + 持久化冷却）
+// DewSecure 最终版（抖动验证 + 防滥用 + 倒计时 + Formspree + 多语言 + 二进制跳动 + 安全扫描 + 持久化冷却 + reCAPTCHA）
 document.addEventListener('DOMContentLoaded', () => {
     triggerStatsCounter();
     initQuoteModal();
@@ -104,7 +104,7 @@ function initBinaryStream() {
     }, 45);
 }
 
-/* ========== 弹窗 + Formspree + 多语言 + 防滥用 + 倒计时 + 抖动验证 ========== */
+/* ========== 弹窗 + Formspree + 多语言 + 防滥用 + 倒计时 + 抖动验证 + reCAPTCHA ========== */
 function initQuoteModal() {
     const overlay = document.getElementById("quote-modal");
     if (!overlay) return;
@@ -225,6 +225,31 @@ function initQuoteModal() {
 
     form?.addEventListener("submit", async (e) => {
         e.preventDefault();
+
+        // 获取 reCAPTCHA token
+        try {
+            // 等待 grecaptcha 就绪
+            await new Promise((resolve) => {
+                if (window.grecaptcha && window.grecaptcha.execute) {
+                    resolve();
+                } else {
+                    const check = setInterval(() => {
+                        if (window.grecaptcha && window.grecaptcha.execute) {
+                            clearInterval(check);
+                            resolve();
+                        }
+                    }, 100);
+                }
+            });
+
+            const recaptchaToken = await grecaptcha.execute('6LdTVK4tAAAAAJJBFHQKn_uK004O62nX_uHItzgV', { action: 'submit' });
+            document.getElementById('g-recaptcha-response').value = recaptchaToken;
+        } catch (error) {
+            console.error('reCAPTCHA 执行失败:', error);
+            alert('人机验证失败，请刷新页面后重试。');
+            return;
+        }
+
         form.querySelectorAll(".has-error").forEach(el => el.classList.remove("has-error"));
 
         if (isSubmitting) { alert('请稍等，您的请求正在处理中...'); return; }
