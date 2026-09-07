@@ -200,7 +200,7 @@
         </main>
     </div>
 
-    <!-- 咨询报价弹窗（全新定价矩阵） -->
+    <!-- 咨询报价弹窗（已删除定价矩阵表格，并更新表单） -->
     <div id="quote-modal" class="cyber-modal-overlay">
         <div class="cyber-modal-wrapper">
             <button class="modal-close-btn" id="modal-close-btn" aria-label="Close Modal">&times;</button>
@@ -230,73 +230,8 @@
             <div class="modal-right-box">
                 <div class="modal-form-scroll-body">
                     <h2 data-i18n="modal_title">立刻保护您的项目</h2>
-                    </p>
                     
-                    <div class="product-matrix-table-wrapper">
-                        <table class="product-matrix-table">
-                            <thead>
-                                <tr>
-                                    <th style="width: 28%;" data-i18n="table_header_service">服务模块</th>
-                                    <th style="width: 24%;">
-                                        <span data-i18n="table_header_basic">初级安全检测</span>
-                                        <small data-i18n="table_header_basic_sub">(健康体检)</small>
-                                    </th>
-                                    <th style="width: 24%;">
-                                        <span data-i18n="table_header_deep">深度渗透测试</span>
-                                        <small data-i18n="table_header_deep_sub">(🔥 核心推荐)</small>
-                                    </th>
-                                    <th style="width: 24%;">
-                                        <span data-i18n="table_header_annual">年度安全订阅</span>
-                                        <small data-i18n="table_header_annual_sub">(长期守护)</small>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="feature-name" data-i18n="row_price">起步价</td>
-                                    <td data-i18n="price_basic">$200</td>
-                                    <td data-i18n="price_deep">$800</td>
-                                    <td data-i18n="price_annual">$990 / 年</td>
-                                </tr>
-                                <tr>
-                                    <td class="feature-name" data-i18n="row_price_note">价格说明</td>
-                                    <td data-i18n="note_basic">视资产复杂度浮动</td>
-                                    <td data-i18n="note_deep">严格按业务流数量计费 (1条流$800，3条流$1800)</td>
-                                    <td data-i18n="note_annual">视监控频率与深度测试次数浮动</td>
-                                </tr>
-                                <tr>
-                                    <td class="feature-name" data-i18n="feature_sast">漏洞扫描 (DAST)</td>
-                                    <td data-i18n="sast_basic">✅ 自动化+人工排误报</td>
-                                    <td data-i18n="sast_deep">✅ 深度验证(二阶/盲注)</td>
-                                    <td data-i18n="sast_annual">✅ 月度巡航 + 季度体检</td>
-                                </tr>
-                                <tr>
-                                    <td class="feature-name" data-i18n="feature_logic">逻辑漏洞挖掘</td>
-                                    <td data-i18n="logic_basic">❌</td>
-                                    <td data-i18n="logic_deep">✅ 并发/支付/越权矩阵</td>
-                                    <td data-i18n="logic_annual">✅ 半年度深度挖掘 (依套餐)</td>
-                                </tr>
-                                <tr>
-                                    <td class="feature-name" data-i18n="feature_fix">代码级修复指南</td>
-                                    <td data-i18n="fix_basic">✅ 提供精准 Patch 片段</td>
-                                    <td data-i18n="fix_deep">✅ 提供精准 Patch 片段</td>
-                                    <td data-i18n="fix_annual">✅ 提供精准 Patch 片段</td>
-                                </tr>
-                                <tr>
-                                    <td class="feature-name" data-i18n="feature_retest">复测验证 (闭环)</td>
-                                    <td data-i18n="retest_basic">❌</td>
-                                    <td data-i18n="retest_deep">✅ 含 1 次免费复测</td>
-                                    <td data-i18n="retest_annual">✅ 依套餐额度</td>
-                                </tr>
-                                <tr>
-                                    <td class="feature-name" data-i18n="feature_cert">DewSecure 证书</td>
-                                    <td data-i18n="cert_basic">✅</td>
-                                    <td data-i18n="cert_deep">✅</td>
-                                    <td data-i18n="cert_annual">✅ 年度认证</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                    <!-- 报价单表格已删除 -->
                     
                     <form id="quote-form" novalidate>
                         <input type="text" id="fax" style="display:none" tabindex="-1" autocomplete="off">
@@ -314,6 +249,14 @@
                                 <div class="error-msg" id="err-email" data-i18n="err_email">请输入有效的电子邮件地址</div>
                             </div>
                         </div> 
+
+                        <!-- 新增目标网站输入框（全宽） -->
+                        <div class="form-grid-row">
+                            <div class="form-group" style="grid-column: 1 / -1;">
+                                <label data-i18n="form_lbl_target">目标网站</label>
+                                <input type="text" id="form-target-url" placeholder="example.com" data-i18n-placeholder="form_plh_target">
+                            </div>
+                        </div>
 
                         <div class="form-grid-row">
                             <div class="form-group">
@@ -340,12 +283,14 @@
                             <div class="form-group">
                                 <label data-i18n="form_lbl_service">服务意向</label>
                                 <select id="form-service">
-                                    <option value="" data-i18n="form_opt_default">选择意向服务</option>
-                                    <option value="basic" data-i18n="service_basic">初级安全检测</option>
-                                    <option value="deep" data-i18n="service_deep">深度渗透测试</option>
-                                    <option value="annual" data-i18n="service_annual">年度安全订阅</option>
-                                    <option value="partner" data-i18n="service_partner">合作伙伴</option>
-                                    <option value="other" data-i18n="service_other">其他</option>
+                                    <option value="">选择意向服务</option>
+                                    <option value="basic_health">基础健康体检</option>
+                                    <option value="blackbox">黑盒测试</option>
+                                    <option value="greybox">灰盒测试 (🔥 核心推荐)</option>
+                                    <option value="whitebox">白盒代码审计</option>
+                                    <option value="outsource">接受外包订单</option>
+                                    <option value="partner">合作伙伴</option>
+                                    <option value="other">其他</option>
                                 </select>
                             </div>
                         </div>
