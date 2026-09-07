@@ -36,8 +36,7 @@ async function loadLanguage(lang) {
             let targetText = translations[key] || (window.fallbackTranslations && window.fallbackTranslations[key]);
             if (targetText !== undefined && targetText !== null) {
                 if (element.tagName.toLowerCase() === 'option') {
-                    element.text = targetText;
-                    element.value = element.getAttribute('value') || targetText;
+                    element.textContent = targetText;   // 只更新文本，保留原有的 value
                 } else {
                     if (/<[a-z="']/i.test(targetText)) {
                         element.innerHTML = targetText;
