@@ -1572,7 +1572,7 @@ html[data-i18n-ready] [data-i18n],
     max-height: 85vh;
     overflow-y: auto;
     padding: 25px;
-    font-size: 1.2rem;              /* 整体字号调大 */
+    font-size: 1.5rem;              /* 整体字号调大 */
     flex-direction: column;       /* 垂直排列，让介绍文字在上方 */
     gap: 15px;
 }
