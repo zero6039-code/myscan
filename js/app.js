@@ -1,4 +1,4 @@
-// DewSecure 最终版（抖动验证 + 防滥用 + 倒计时 + Formspree + 多语言 + 二进制跳动 + 安全扫描 + 持久化冷却 + reCAPTCHA）
+// DewSecure 最终版（抖动验证 + 防滥用 + 倒计时 + Formspree + 多语言 + 二进制跳动 + 安全扫描 + 持久化冷却）
 document.addEventListener('DOMContentLoaded', () => {
     triggerStatsCounter();
     initQuoteModal();
@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initQuickScanner();
     initPolicyModal();
     renderServiceDetailTable();
-    initServiceDetailColumnHighlight();   // 新增：服务详情列高亮
+    initServiceDetailColumnHighlight();
     window.addEventListener('resize', triggerStatsCounter);
 
     const heroAction = document.querySelector('.hero-action.delayed-btn');
@@ -104,7 +104,7 @@ function initBinaryStream() {
     }, 45);
 }
 
-/* ========== 弹窗 + Formspree + 多语言 + 防滥用 + 倒计时 + 抖动验证 + reCAPTCHA ========== */
+/* ========== 弹窗 + Formspree + 多语言 + 防滥用 + 倒计时 + 抖动验证 ========== */
 function initQuoteModal() {
     const overlay = document.getElementById("quote-modal");
     if (!overlay) return;
@@ -223,63 +223,8 @@ function initQuoteModal() {
         if (textarea.value.length > 2000) textarea.value = textarea.value.substring(0, 2000);
     });
 
-    // 动态加载 reCAPTCHA 脚本
-    function loadRecaptcha() {
-        return new Promise((resolve, reject) => {
-            if (window.grecaptcha && window.grecaptcha.execute) {
-                resolve();
-                return;
-            }
-
-            const existingScript = document.querySelector('script[src*="recaptcha/api.js"]');
-            if (existingScript) {
-                if (existingScript.dataset.loaded === 'true') {
-                    resolve();
-                } else {
-                    existingScript.addEventListener('load', () => {
-                        existingScript.dataset.loaded = 'true';
-                        resolve();
-                    });
-                    existingScript.addEventListener('error', reject);
-                }
-                return;
-            }
-
-            const script = document.createElement('script');
-            script.src = 'https://www.google.com/recaptcha/api.js?render=6LdTVK4tAAAAAJJBFHQKn_uK004O62nX_uHItzgV';
-            script.async = true;
-            script.defer = true;
-            script.onload = () => {
-                script.dataset.loaded = 'true';
-                resolve();
-            };
-            script.onerror = reject;
-            document.head.appendChild(script);
-        });
-    }
-
     form?.addEventListener("submit", async (e) => {
         e.preventDefault();
-
-        // 确保 reCAPTCHA 脚本加载完成
-        try {
-            await loadRecaptcha();
-
-            const recaptchaToken = await new Promise((resolve, reject) => {
-                grecaptcha.ready(() => {
-                    grecaptcha.execute('6LdTVK4tAAAAAJJBFHQKn_uK004O62nX_uHItzgV', { action: 'submit' })
-                        .then(resolve)
-                        .catch(reject);
-                });
-            });
-
-            document.getElementById('g-recaptcha-response').value = recaptchaToken;
-        } catch (error) {
-            console.error('reCAPTCHA 加载或执行失败:', error);
-            alert('人机验证组件加载失败，请检查网络后重试。');
-            return;
-        }
-
         form.querySelectorAll(".has-error").forEach(el => el.classList.remove("has-error"));
 
         if (isSubmitting) { alert('请稍等，您的请求正在处理中...'); return; }
@@ -613,7 +558,7 @@ function initQuickScanner() {
     });
 }
 
-/* ========== 服务详情表格列高亮（新增） ========== */
+/* ========== 服务详情表格列高亮 ========== */
 function initServiceDetailColumnHighlight() {
     const table = document.querySelector('.nav-item.service-detail table');
     if (!table) return;
