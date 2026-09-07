@@ -92,102 +92,15 @@
                     </div>
                 </div>
 
-                <!-- 新增：服务详情（优化版） -->
+                <!-- 服务详情（动态渲染表格） -->
                 <div class="nav-item service-detail">
-                    <span>服务详情</span>
+                    <span data-i18n="nav_service_detail">服务详情</span>
                     <div class="mega-dropdown">
                         <div class="dropdown-intro">
                             <h3 data-i18n="service_detail_title">服务详情</h3>
                             <p data-i18n="service_detail_desc">全面的安全服务对比，助您选择最适合的方案。</p>
                         </div>
                         <div id="service-detail-table-container" style="padding: 0; overflow-x: hidden;"></div>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th style="width: 12%;" data-col="1">服务项目</th>
-                                        <th style="width: 22%;" data-col="2">基础健康体检 (基础扫描与排查)</th>
-                                        <th style="width: 22%;" data-col="3">黑盒测试 (外部边界盲测)</th>
-                                        <th style="width: 22%;" data-col="4">灰盒测试 🔥 核心推荐 (内部业务逻辑穿透)</th>
-                                        <th style="width: 22%;" data-col="5">白盒代码审计 (源码级深度审查)</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>起步价 (USD)</td>
-                                        <td>$200+</td>
-                                        <td>$1,000+</td>
-                                        <td>$800+ (按核心业务流计费)</td>
-                                        <td>$1,500+</td>
-                                    </tr>
-                                    <tr>
-                                        <td>目标客群与场景</td>
-                                        <td>适合上线前做的最后一道检测，轻量/静态站点，做快速安全基线排查</td>
-                                        <td>模拟外部真实黑客，测试外围防线与未授权漏洞</td>
-                                        <td>核心推荐：针对 SaaS/API，深度排查越权与业务逻辑漏洞</td>
-                                        <td>针对金融级或强合规项目，进行源码级深度审计</td>
-                                    </tr>
-                                    <tr>
-                                        <td>价格说明</td>
-                                        <td>零账号 / 自动化扫描结合基础排查</td>
-                                        <td>视外围资产暴露面、子域名与系统防护复杂度浮动</td>
-                                        <td>严格按业务流数量计费 (例: 1条流$800, 3条流$1800)</td>
-                                        <td>视代码量、语言复杂度及架构深度浮动</td>
-                                    </tr>
-                                    <tr>
-                                        <td>测试权限与前置条件</td>
-                                        <td>零背景、无账号</td>
-                                        <td>零背景、无账号、纯外围盲测</td>
-                                        <td>提供测试账号矩阵(普通/管理) + API 文档</td>
-                                        <td>提供完整源码、数据库结构、内部文档</td>
-                                    </tr>
-                                    <tr>
-                                        <td>漏洞扫描 (SAST/DAST)</td>
-                                        <td>✅ 自动化扫描 + 人工排误报</td>
-                                        <td>✅ 资产搜集 , 深度外围扫描与边界突破</td>
-                                        <td>✅ 轻量外围辅助扫描 (20%) + 核心内部测试 (80%)</td>
-                                        <td>✅ 静态代码分析 (SAST) + 人工逐行深度审计</td>
-                                    </tr>
-                                    <tr>
-                                        <td>高级逻辑漏洞测试</td>
-                                        <td>仅排查表层与公开漏洞</td>
-                                        <td>外部盲打 (二阶/盲注/未授权访问/不涉及深度业务逻辑)</td>
-                                        <td>✅ 80% 专注并发、支付、BOLA/IDOR 越权与矩阵测试</td>
-                                        <td>✅ 架构级风险、代码审计，深层反序列化与隐蔽漏洞挖掘</td>
-                                    </tr>
-                                    <tr>
-                                        <td>代码级修复片段与指南</td>
-                                        <td>✅ 基础修改建议</td>
-                                        <td>✅ 提供精准 Patch 片段 / 防御策略</td>
-                                        <td>✅ 提供精准 Patch 片段 (开发极度友好)</td>
-                                        <td>✅ 提供精准至特定代码行的 Patch 片段</td>
-                                    </tr>
-                                    <tr>
-                                        <td>复测验证 (闭环服务)</td>
-                                        <td>❌ (一次性交付，不含复测)</td>
-                                        <td>✅ 含 1 次免费验证复测</td>
-                                        <td>✅ 含 1 次免费验证复测</td>
-                                        <td>✅ 含 1 次免费验证复测</td>
-                                    </tr>
-                                    <tr>
-                                        <td>商业信任增信工具</td>
-                                        <td>❌</td>
-                                        <td>✅ 允许展示测试认证</td>
-                                        <td>✅ 允许展示测试认证</td>
-                                        <td>✅ 允许展示测试认证</td>
-                                    </tr>
-                                    <tr>
-                                        <td>最终交付物</td>
-                                        <td>红黑榜体检清单</td>
-                                        <td>专业边界安全漏洞评估报告</td>
-                                        <td>深度业务逻辑安全渗透报告</td>
-                                        <td>专业源码级安全合规审计报告</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <p style="margin-top: 12px; color: #cbd5e1; line-height: 1.5; font-size: 0.85rem;">
-                                <strong>配套使用建议：</strong>起步价 (USD)仅做参考，最终报价将基于实际系统的 API 接口数量、用户角色维度及业务复杂度进行精准评估，请联系获取完整报价单。
-                            </p>
-                        </div>
                     </div>
                 </div>
 
