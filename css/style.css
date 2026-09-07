@@ -1603,7 +1603,7 @@ html[data-i18n-ready] [data-i18n],
     width: 100%;
     table-layout: fixed;
     border-collapse: collapse;
-    font-size: 1.2rem;             /* 表格字号调大 */
+    font-size: 1rem;             /* 表格字号调大 */
 }
 
 .nav-item.service-detail th,
