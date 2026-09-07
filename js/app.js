@@ -223,30 +223,60 @@ function initQuoteModal() {
         if (textarea.value.length > 2000) textarea.value = textarea.value.substring(0, 2000);
     });
 
+    // 动态加载 reCAPTCHA 脚本
+    function loadRecaptcha() {
+        return new Promise((resolve, reject) => {
+            if (window.grecaptcha && window.grecaptcha.execute) {
+                resolve();
+                return;
+            }
+
+            const existingScript = document.querySelector('script[src*="recaptcha/api.js"]');
+            if (existingScript) {
+                if (existingScript.dataset.loaded === 'true') {
+                    resolve();
+                } else {
+                    existingScript.addEventListener('load', () => {
+                        existingScript.dataset.loaded = 'true';
+                        resolve();
+                    });
+                    existingScript.addEventListener('error', reject);
+                }
+                return;
+            }
+
+            const script = document.createElement('script');
+            script.src = 'https://www.google.com/recaptcha/api.js?render=6LdTVK4tAAAAAJJBFHQKn_uK004O62nX_uHItzgV';
+            script.async = true;
+            script.defer = true;
+            script.onload = () => {
+                script.dataset.loaded = 'true';
+                resolve();
+            };
+            script.onerror = reject;
+            document.head.appendChild(script);
+        });
+    }
+
     form?.addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        // 获取 reCAPTCHA token
+        // 确保 reCAPTCHA 脚本加载完成
         try {
-            // 等待 grecaptcha 就绪
-            await new Promise((resolve) => {
-                if (window.grecaptcha && window.grecaptcha.execute) {
-                    resolve();
-                } else {
-                    const check = setInterval(() => {
-                        if (window.grecaptcha && window.grecaptcha.execute) {
-                            clearInterval(check);
-                            resolve();
-                        }
-                    }, 100);
-                }
+            await loadRecaptcha();
+
+            const recaptchaToken = await new Promise((resolve, reject) => {
+                grecaptcha.ready(() => {
+                    grecaptcha.execute('6LdTVK4tAAAAAJJBFHQKn_uK004O62nX_uHItzgV', { action: 'submit' })
+                        .then(resolve)
+                        .catch(reject);
+                });
             });
 
-            const recaptchaToken = await grecaptcha.execute('6LdTVK4tAAAAAJJBFHQKn_uK004O62nX_uHItzgV', { action: 'submit' });
             document.getElementById('g-recaptcha-response').value = recaptchaToken;
         } catch (error) {
-            console.error('reCAPTCHA 执行失败:', error);
-            alert('人机验证失败，请刷新页面后重试。');
+            console.error('reCAPTCHA 加载或执行失败:', error);
+            alert('人机验证组件加载失败，请检查网络后重试。');
             return;
         }
 
@@ -594,9 +624,7 @@ function initServiceDetailColumnHighlight() {
     headers.forEach(th => {
         th.addEventListener('mouseenter', function() {
             const colIndex = this.getAttribute('data-col');
-            // 高亮表头自身
             this.classList.add('col-highlight');
-            // 高亮对应列的所有 td
             const tds = table.querySelectorAll(`tbody td:nth-child(${colIndex})`);
             tds.forEach(td => td.classList.add('col-highlight'));
         });
@@ -621,7 +649,6 @@ function renderServiceDetailTable() {
 
     const t = (key) => window.fallbackTranslations[key] || key;
 
-    // 表头
     const headers = [
         t('sd_th1'),
         t('sd_th2'),
@@ -630,7 +657,6 @@ function renderServiceDetailTable() {
         t('sd_th5')
     ];
 
-    // 行数据：每行包含标签和4个内容单元格
     const rows = [];
     for (let i = 1; i <= 10; i++) {
         const label = t(`sd_row${i}_label`);
@@ -641,7 +667,6 @@ function renderServiceDetailTable() {
         rows.push({ label, cells });
     }
 
-    // 构建表格 HTML
     let html = `<table>`;
     html += `<thead><tr>`;
     headers.forEach((header, index) => {
@@ -662,7 +687,5 @@ function renderServiceDetailTable() {
     html += `<p style="margin-top: 12px; color: #cbd5e1; line-height: 1.5; font-size: 0.85rem;">${escapeHtml(t('sd_footer_note'))}</p>`;
 
     container.innerHTML = html;
-
-    // 重新初始化列高亮（因为表格被重建）
     initServiceDetailColumnHighlight();
 }
