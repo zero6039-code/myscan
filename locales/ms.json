@@ -22,7 +22,7 @@
   "sol_item5_desc": "Ketahui Lebih Lanjut",
 
   "comp_intro_title": "Mengenai Syarikat",
-  "comp_intro_desc": "DewSecure ialah platform keselamatan Web3 terkemuka yang diasaskan oleh pakar industri berpengalaman, mengintegrasikan ujian penembusan mendalam, audit kod sumber termaju, dan penyelesaian keselamatan menyeluruh. Dengan kehadiran aktif bertahun-tahun di platform bug bounty utama serta penglibatan meluas dalam ujian penembusan dan audit kod peringkat tinggi untuk pelbagai projek, DewSecure telah mengumpul kepakaran praktikal yang mendalam. Kini, apabila AI mentakrifkan semula sempadan keselamatan dan membentuk semula landskap keselamatan siber global, membawa cabaran kompleks yang belum pernah terjadi sebelum ini, DewSecure kekal teguh dalam mempertahankan benteng keselamatan dunia digital.",
+  "comp_intro_desc": "DewSecure ialah platform keselamatan Web3 terkemuka yang diasaskan oleh pakar industri berpengalaman, mengintegrasikan ujian penembusan mendalam, audit kod sumber termaju, dan penyelesaian keselamatan menyeluruh, serta memegang pensijilan ujian penembusan profesional CPTS. Dengan kehadiran aktif bertahun-tahun di platform bug bounty utama serta penglibatan meluas dalam ujian penembusan dan audit kod peringkat tinggi untuk pelbagai projek, DewSecure telah mengumpul kepakaran praktikal yang mendalam. Kini, apabila AI mentakrifkan semula sempadan keselamatan dan membentuk semula landskap keselamatan siber global, membawa cabaran kompleks yang belum pernah terjadi sebelum ini, DewSecure kekal teguh dalam mempertahankan benteng keselamatan dunia digital.",
 
   "disc_intro_title": "Penafian",
   "disc_intro_desc": "Kenyataan pematuhan undang-undang dan had liabiliti untuk perkhidmatan keselamatan DewSecure.",
@@ -65,7 +65,7 @@
   "form_opt_default": "Pilih satu perkhidmatan",
   "form_lbl_info": "Maklumat Lain",
   "form_plh_info": "Sila perkenalkan projek anda secara terperinci dan sertakan pautan berkaitan (dalam 2000 patah perkataan).",
-  "form_notice": "Pakar keselamatan DewSecure akan menyemak permintaan anda dan menghubungi anda secepat mungkin.",
+  "form_notice": "Maklumat anda tidak akan disimpan atau direkodkan di mana-mana. Pakar keselamatan DewSecure akan menyemak permintaan anda dan menghubungi anda secepat mungkin.",
   "btn_submit": "Hantar Permintaan",
 
   "err_required": "Medan ini wajib diisi",
