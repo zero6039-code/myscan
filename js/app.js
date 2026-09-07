@@ -1,4 +1,4 @@
-// DewSecure 最终版（抖动验证 + 防滥用 + 倒计时 + Formspree + 多语言 + 二进制跳动 + 安全扫描 + 持久化冷却）
+// DewSecure 最终版（抖动验证 + 防滥用 + 倒计时 + Formspree + 多语言 + 二进制跳动 + 安全扫描 + 持久化冷却 + reCAPTCHA）
 document.addEventListener('DOMContentLoaded', () => {
     triggerStatsCounter();
     initQuoteModal();
@@ -104,7 +104,7 @@ function initBinaryStream() {
     }, 45);
 }
 
-/* ========== 弹窗 + Formspree + 多语言 + 防滥用 + 倒计时 + 抖动验证 ========== */
+/* ========== 弹窗 + Formspree + 多语言 + 防滥用 + 倒计时 + 抖动验证 + reCAPTCHA ========== */
 function initQuoteModal() {
     const overlay = document.getElementById("quote-modal");
     if (!overlay) return;
@@ -256,6 +256,34 @@ function initQuoteModal() {
 
         if (!ok) return;
 
+        // ---------- reCAPTCHA token 获取 ----------
+        let recaptchaToken = '';
+        try {
+            // 等待 grecaptcha 就绪
+            await new Promise((resolve, reject) => {
+                const checkReady = () => {
+                    if (window.grecaptcha && typeof window.grecaptcha.execute === 'function') {
+                        resolve();
+                    } else {
+                        setTimeout(checkReady, 100);
+                    }
+                };
+                checkReady();
+                // 超时保护
+                setTimeout(() => reject(new Error('reCAPTCHA 加载超时')), 10000);
+            });
+
+            // 获取 token
+            recaptchaToken = await grecaptcha.execute('6LdTVK4tAAAAAJJBFHQKn_uK004O62nX_uHItzgV', { action: 'submit' });
+            document.getElementById('g-recaptcha-response').value = recaptchaToken;
+            console.log('Token 获取成功:', recaptchaToken);
+        } catch (error) {
+            console.error('reCAPTCHA 失败:', error);
+            alert('人机验证组件加载失败，请刷新页面后重试。');
+            return;
+        }
+        // -------------------------------------
+
         isSubmitting = true;
         if (submitBtn) { submitBtn.disabled = true; submitBtn.style.opacity = '0.6'; submitBtn.style.cursor = 'wait'; }
 
@@ -268,7 +296,8 @@ function initQuoteModal() {
         formData.append('service', document.getElementById("form-service")?.value || '');
         formData.append('message', document.getElementById("form-info")?.value || '');
         formData.append('_subject', '新的咨询报价请求');
-        formData.append('g-recaptcha-response', document.getElementById('g-recaptcha-response').value);
+        // 添加 reCAPTCHA token
+        formData.append('g-recaptcha-response', recaptchaToken);
 
         const msgSuccess = document.getElementById('alert-success')?.textContent || '提交成功！';
         const msgEmailError = document.getElementById('alert-email-error')?.textContent || '请检查邮箱地址';
