@@ -1,14 +1,17 @@
-{
+en: {
+  // 全局
   "meta_desc": "DewSecure focuses on providing high-level smart contract auditing, DeFi security defense, automated vulnerability scanning, and comprehensive on-chain tracking.",
+
+  // 导航
   "nav_solution": "Solutions",
+  "nav_service_detail": "Service Details",
   "nav_company": "About Us",
   "nav_disclaimer": "Disclaimer",
   "stats_label": "Project Audit",
-  "placeholder_text": "🚀 Under reconstruction, new features coming soon...",
-  
+
+  // 解决方案下拉
   "sol_intro_title": "Solutions",
   "sol_intro_desc": "Providing security, compliance solutions, and risk management for your SME or personal websites.",
-  
   "sol_item1_title": "Code Review",
   "sol_item1_desc": "Manual + AI Deep Review",
   "sol_item2_title": "Penetration Testing",
@@ -19,13 +22,14 @@
   "sol_item4_desc": "Audit Reports & Remediation",
   "sol_item5_title": "Security Consulting",
   "sol_item5_desc": "Learn More",
-  
+
+  // 关于公司下拉
   "comp_intro_title": "About Company",
   "comp_intro_desc": "DewSecure is a premier Web3 security platform founded by seasoned industry experts, integrating deep penetration testing, advanced source code auditing, and full-spectrum security solutions. With years of active presence on major bug bounty platforms and extensive involvement in penetration testing and high-level code auditing for numerous projects, DewSecure has amassed deep hands-on expertise. As AI redefines security boundaries and reshapes the global cybersecurity landscape, bringing unprecedented and complex challenges, DewSecure remains steadfast in safeguarding the digital world's line of defense.",
-  
+
+  // 免责声明下拉
   "disc_intro_title": "Disclaimer",
   "disc_intro_desc": "Legal compliance and limitation of liability statement for DewSecure security services.",
-  
   "disc_t1": "1. Nature of Service",
   "disc_d1": "Penetration testing, code auditing, and consulting services provided by DewSecure are intended to help discover and remediate risks. All tests are conducted within the scope of written authorization.",
   "disc_t2": "2. Technical Limitations",
@@ -38,20 +42,23 @@
   "disc_d5": "Reports, tools, and methodologies generated during the service belong to DewSecure unless otherwise agreed in writing.",
   "disc_t6": "6. Limitation of Liability",
   "disc_d6": "To the maximum extent permitted by law, DewSecure is not liable for any indirect, incidental, special, or consequential damages resulting from the use or inability to use this service.",
-  
+
+  // 主横幅
   "hero_title": "Web3 Penetration Testing & Code Auditing",
   "hero_desc": "DewSecure is a premier Web3 security platform built by a team of elite specialists, integrating deep penetration testing, advanced source code auditing, and comprehensive security architecture. Entrust your audits to us to ensure your projects and web ecosystems consistently thrive in a robust, bulletproof environment.",
-  
   "hero_btn_quote": "Consult an Expert",
 
+  // 弹窗左侧
   "modal_matrix_slogan": "Built on technology. <span class=\"highlight-red\">Driven by integrity.</span>",
   "modal_title": "Protect Your Project Instantly",
-  "modal_subtitle": "Enhance your project with a professional Web3 security provider.",
-  
+
+  // 表单标签和占位符
   "form_lbl_company": "Project/Company",
   "form_plh_company": "Enter project or company name",
   "form_lbl_email": "Email",
   "form_plh_email": "John@example.com",
+  "form_lbl_target": "Target Website",
+  "form_plh_target": "example.com",
   "form_lbl_contact": "Contact Info",
   "form_plh_contact": "Example: 123456789",
   "form_lbl_name": "Full Name",
@@ -61,41 +68,105 @@
   "form_lbl_service": "Service Intent",
   "form_opt_default": "Select a service",
   "form_lbl_info": "Other Information",
-  "form_plh_info": "Please introduce your project in detail and Linked (within 2000 words).",
+  "form_plh_info": "Please introduce your project in detail and include relevant links (within 2000 words).",
   "form_notice": "DewSecure security experts will review your request and contact you as soon as possible.",
   "btn_submit": "Submit Request",
-  
+
+  // 服务意向选项
+  "service_basic_health": "Basic Health Check",
+  "service_blackbox": "Black Box Testing",
+  "service_greybox": "Grey Box Testing (🔥 Core Recommendation)",
+  "service_whitebox": "White Box Code Audit",
+  "service_outsource": "Accept Outsourced Orders",
+  "service_partner": "Partnership",
+  "service_other": "Other",
+
+  // 服务详情下拉菜单
+  "service_detail_title": "Service Details",
+  "service_detail_desc": "Comprehensive security service comparison to help you choose the best solution.",
+
+  // 服务详情表格（扁平键，便于 data-i18n 使用）
+  "sd_th1": "Service Item",
+  "sd_th2": "Basic Health Check (Basic Scan & Screening)",
+  "sd_th3": "Black Box Testing (External Boundary Blind Test)",
+  "sd_th4": "Grey Box Testing 🔥 Core Recommendation (Internal Business Logic Penetration)",
+  "sd_th5": "White Box Code Audit (Source Code Level Deep Review)",
+
+  "sd_row1_label": "Starting Price (USD)",
+  "sd_row1_c1": "$200+",
+  "sd_row1_c2": "$1,000+",
+  "sd_row1_c3": "$800+ (billed per core business flow)",
+  "sd_row1_c4": "$1,500+",
+
+  "sd_row2_label": "Target Audience & Scenario",
+  "sd_row2_c1": "Last line of defense before launch; lightweight/static sites; quick security baseline screening",
+  "sd_row2_c2": "Simulates external real hackers, testing perimeter defenses and unauthorized vulnerabilities",
+  "sd_row2_c3": "Core recommendation: for SaaS/API, deep inspection of privilege escalation and business logic flaws",
+  "sd_row2_c4": "For financial-grade or strict compliance projects, conducting source-level deep audit",
+
+  "sd_row3_label": "Price Notes",
+  "sd_row3_c1": "Zero account / automated scanning combined with basic screening",
+  "sd_row3_c2": "Varies based on perimeter asset exposure, subdomains, and system defense complexity",
+  "sd_row3_c3": "Strictly billed per business flow (e.g., 1 flow $800, 3 flows $1800)",
+  "sd_row3_c4": "Varies by code volume, language complexity, and architectural depth",
+
+  "sd_row4_label": "Test Permission & Prerequisites",
+  "sd_row4_c1": "Zero background, no account required",
+  "sd_row4_c2": "Zero background, no account, pure external blind test",
+  "sd_row4_c3": "Provide test account matrix (normal/admin) + API documentation",
+  "sd_row4_c4": "Provide complete source code, database schema, internal documentation",
+
+  "sd_row5_label": "Vulnerability Scan (SAST/DAST)",
+  "sd_row5_c1": "✅ Automated scanning + manual false-positive removal",
+  "sd_row5_c2": "✅ Asset discovery, deep perimeter scanning, and boundary breakthrough",
+  "sd_row5_c3": "✅ Lightweight perimeter scan (20%) + core internal testing (80%)",
+  "sd_row5_c4": "✅ Static code analysis (SAST) + manual line-by-line deep audit",
+
+  "sd_row6_label": "Advanced Logic Vulnerability Testing",
+  "sd_row6_c1": "Only surface and public vulnerability checks",
+  "sd_row6_c2": "External blind attack (second-order/blind injection/unauthorized access, no deep business logic)",
+  "sd_row6_c3": "✅ 80% focus on concurrency, payment, BOLA/IDOR privilege escalation and matrix testing",
+  "sd_row6_c4": "✅ Architecture-level risk, code audit, deep deserialization and hidden vulnerability discovery",
+
+  "sd_row7_label": "Code-level Fix Snippets & Guidance",
+  "sd_row7_c1": "✅ Basic modification suggestions",
+  "sd_row7_c2": "✅ Provides precise patch snippets / defense strategies",
+  "sd_row7_c3": "✅ Provides precise patch snippets (developer-friendly)",
+  "sd_row7_c4": "✅ Provides precise patch snippets down to specific code lines",
+
+  "sd_row8_label": "Re-test Verification (Closed-loop)",
+  "sd_row8_c1": "❌ (One-time delivery, no retest)",
+  "sd_row8_c2": "✅ Includes 1 free verification retest",
+  "sd_row8_c3": "✅ Includes 1 free verification retest",
+  "sd_row8_c4": "✅ Includes 1 free verification retest",
+
+  "sd_row9_label": "Business Trust Enhancement Tool",
+  "sd_row9_c1": "❌",
+  "sd_row9_c2": "✅ Allowed to display testing certification",
+  "sd_row9_c3": "✅ Allowed to display testing certification",
+  "sd_row9_c4": "✅ Allowed to display testing certification",
+
+  "sd_row10_label": "Final Deliverable",
+  "sd_row10_c1": "Red/Black health check list",
+  "sd_row10_c2": "Professional perimeter security vulnerability assessment report",
+  "sd_row10_c3": "Deep business logic security penetration report",
+  "sd_row10_c4": "Professional source code security compliance audit report",
+
+  "sd_footer_note": "Starting prices are for reference only. Final quotes will be accurately evaluated based on the actual number of API interfaces, user role dimensions, and business complexity. Please contact us for a full quotation.",
+
+  // 错误消息
   "err_required": "This field is required",
   "err_email": "Please enter a valid email address",
 
+  // 通知
   "alert_success": "Submission successful! The DewSecure team will contact you shortly.",
   "alert_error_email": "Please check if the email address is correct.",
   "alert_error_network": "Network error, please try again later.",
-
-  "service_basic": "Basic Security Check (Health Check)",
-  "service_deep": "Deep Penetration Test (🔥 Core Recommendation)",
-  "service_annual": "Annual Subscription (Long-term Guardian)",
-
-  "table_header_service": "Service",
-  "table_header_basic": "Basic Security Check",
-  "table_header_deep": "Deep Penetration Test",
-  "table_header_annual": "Annual Subscription",
-
-  "feature_sast": "Vulnerability Scan (SAST/DAST)",
-  "feature_logic": "Advanced Logic Bug / Code Audit",
-  "feature_payment": "Payment & Data Security Audit",
-  "feature_fix": "Code-Level Fixes & Guidance",
-  "feature_retest": "Re-test (Closed-loop)",
-  "feature_retest_basic": "",
-  "feature_retest_deep": " (1 time)",
-  "feature_retest_annual": " (2 times)",
-  "feature_cert": "Business Trust Badge",
-
   "auto_reply_subject": "DewSecure has received your inquiry",
   "auto_reply_message": "Dear Customer, we have received your inquiry. Our team will review it and get back to you shortly. Thank you for your patience.",
-
   "btn_wait": "Please wait ({seconds}s)",
 
+  // 快速扫描
   "scan_title": "🔍 Quick Security Scan",
   "scan_desc": "Enter a website URL to instantly check common security configurations (HTTPS, security headers, etc.)",
   "scan_placeholder": "https://example.com",
@@ -110,7 +181,9 @@
   "scan_score_prefix": "Security Score: ",
   "fix_btn": "💡 Fix",
   "policy_modal_title": "[ Security Audit Tool Usage Policy ]",
+  "cooldown_msg": "{seconds}s cooldown",
 
+  // 扫描结果检查项
   "scan_check_label_https": "HTTPS Enabled",
   "scan_check_rec_https": "Migrate your site to HTTPS and enforce encryption for all traffic.",
   "scan_check_label_hsts": "Strict-Transport-Security (HSTS)",
@@ -138,6 +211,8 @@
   "scan_check_rec_coop": "Set \"Cross-Origin-Opener-Policy: same-origin\" to isolate cross-origin windows.",
   "scan_check_label_cache_control": "Cache-Control",
   "scan_check_rec_cache_control": "Set appropriate Cache-Control policy, e.g., \"no-store, max-age=0\" for sensitive pages.",
+
+  // 扫描分析文本
   "scan_analysis_enabled": "Enabled",
   "scan_analysis_not_set": "Not set",
   "scan_analysis_leak": "Server information leaked",
@@ -146,50 +221,6 @@
   "scan_sub_csp_inline": "Contains unsafe-inline",
   "scan_sub_csp_eval": "Contains unsafe-eval",
   "scan_sub_csp_strict": "Strict policy",
-  "scan_upsell": "The above results are based on a standardized baseline audit, designed to give you rapid risk awareness. To ensure thorough remediation and avoid ineffective fixes, we recommend a manual penetration test that considers your business logic. If needed, we can provide tailored remediation guidance to help you go from \"finding vulnerabilities\" to a fully closed loop of hardening.",
   "scan_sub_cloudflare": "Exposes Cloudflare information",
-
-  "cooldown_msg": "{seconds}s cooldown",
-
-  "modal_subtitle_new": "Transparent pricing, no hidden costs.<br>DewSecure adheres to standardized delivery. We do not use custom quote tactics to probe your budget. Below are the starting thresholds for our core services, designed to help you quickly determine if we are the right fit for your security budget.",
-
-  "table_header_basic_sub": "(Health Check)",
-  "table_header_deep_sub": "(🔥 Core Recommendation)",
-  "table_header_annual_sub": "(Long-term Guardian)",
-
-  "row_price": "Starting Price",
-  "row_price_note": "Pricing Notes",
-
-  "price_basic": "$200",
-  "price_deep": "$800",
-  "price_annual": "$990 / year",
-
-  "note_basic": "Varies based on asset complexity",
-  "note_deep": "Strictly per business flow (1 flow $800, 3 flows $1800)",
-  "note_annual": "Varies by monitoring frequency and depth tests",
-
-  "sast_basic": "✅ Automated + Manual false-positive removal",
-  "sast_deep": "✅ Deep verification (second-order/blind injection)",
-  "sast_annual": "✅ Monthly scan + quarterly health check",
-
-  "logic_basic": "❌",
-  "logic_deep": "✅ Concurrency/payment/authorization matrix",
-  "logic_annual": "✅ Semi-annual deep discovery (per package)",
-
-  "fix_basic": "✅ Provides precise patch snippets",
-  "fix_deep": "✅ Provides precise patch snippets",
-  "fix_annual": "✅ Provides precise patch snippets",
-
-  "retest_basic": "❌",
-  "retest_deep": "✅ Includes 1 free retest",
-  "retest_annual": "✅ Based on package quota",
-
-  "cert_basic": "✅",
-  "cert_deep": "✅",
-  "cert_annual": "✅ Annual certification",
-
-  "service_partner": "Partnership",
-  "service_other": "Other"
-  
-  
+  "scan_upsell": "The above results are based on a standardized baseline audit, designed to give you rapid risk awareness. To ensure thorough remediation and avoid ineffective fixes, we recommend a manual penetration test that considers your business logic. If needed, we can provide tailored remediation guidance to help you go from \"finding vulnerabilities\" to a fully closed loop of hardening."
 }
