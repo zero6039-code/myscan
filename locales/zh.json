@@ -65,7 +65,7 @@
   "form_opt_default": "选择意向服务",
   "form_lbl_info": "其他信息",
   "form_plh_info": "请详细介绍您的项目。分享项目详情，相关链接或任何疑问。（2000字以内）",
-  "form_notice": "DewSecure 安全专家将审阅您的请求，并尽快与您联系。",
+  "form_notice": "您的资料并不会保存或记录在任何地方。DewSecure 安全专家将审阅您的请求，并尽快与您联系。",
   "btn_submit": "提交申请",
 
   "err_required": "该字段不能为空",
