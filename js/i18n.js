@@ -112,7 +112,21 @@ function updateDropdownUI(activeLang) {
             const selectedLang = option.getAttribute("data-lang");
             if (selectedLang !== window.currentLang) {
                 loadLanguage(selectedLang);
+            } else {
+                // 可选：即使相同也重新加载，保证最新翻译
+                loadLanguage(selectedLang);
             }
         });
     });
+})();
+
+// 然后再加载默认语言
+(async () => {
+    await initFallback();
+    let defaultLang = localStorage.getItem("preferred_lang");
+    if (!defaultLang) {
+        defaultLang = 'en';
+        localStorage.setItem("preferred_lang", 'en');
+    }
+    await loadLanguage(defaultLang);
 })();
