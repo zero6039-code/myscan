@@ -1,15 +1,11 @@
-en: {
-  // 全局
+{
   "meta_desc": "DewSecure focuses on providing high-level smart contract auditing, DeFi security defense, automated vulnerability scanning, and comprehensive on-chain tracking.",
-
-  // 导航
   "nav_solution": "Solutions",
   "nav_service_detail": "Service Details",
   "nav_company": "About Us",
   "nav_disclaimer": "Disclaimer",
   "stats_label": "Project Audit",
 
-  // 解决方案下拉
   "sol_intro_title": "Solutions",
   "sol_intro_desc": "Providing security, compliance solutions, and risk management for your SME or personal websites.",
   "sol_item1_title": "Code Review",
@@ -23,11 +19,9 @@ en: {
   "sol_item5_title": "Security Consulting",
   "sol_item5_desc": "Learn More",
 
-  // 关于公司下拉
   "comp_intro_title": "About Company",
   "comp_intro_desc": "DewSecure is a premier Web3 security platform founded by seasoned industry experts, integrating deep penetration testing, advanced source code auditing, and full-spectrum security solutions. With years of active presence on major bug bounty platforms and extensive involvement in penetration testing and high-level code auditing for numerous projects, DewSecure has amassed deep hands-on expertise. As AI redefines security boundaries and reshapes the global cybersecurity landscape, bringing unprecedented and complex challenges, DewSecure remains steadfast in safeguarding the digital world's line of defense.",
 
-  // 免责声明下拉
   "disc_intro_title": "Disclaimer",
   "disc_intro_desc": "Legal compliance and limitation of liability statement for DewSecure security services.",
   "disc_t1": "1. Nature of Service",
@@ -43,16 +37,13 @@ en: {
   "disc_t6": "6. Limitation of Liability",
   "disc_d6": "To the maximum extent permitted by law, DewSecure is not liable for any indirect, incidental, special, or consequential damages resulting from the use or inability to use this service.",
 
-  // 主横幅
   "hero_title": "Web3 Penetration Testing & Code Auditing",
   "hero_desc": "DewSecure is a premier Web3 security platform built by a team of elite specialists, integrating deep penetration testing, advanced source code auditing, and comprehensive security architecture. Entrust your audits to us to ensure your projects and web ecosystems consistently thrive in a robust, bulletproof environment.",
   "hero_btn_quote": "Consult an Expert",
 
-  // 弹窗左侧
   "modal_matrix_slogan": "Built on technology. <span class=\"highlight-red\">Driven by integrity.</span>",
   "modal_title": "Protect Your Project Instantly",
 
-  // 表单标签和占位符
   "form_lbl_company": "Project/Company",
   "form_plh_company": "Enter project or company name",
   "form_lbl_email": "Email",
@@ -72,7 +63,6 @@ en: {
   "form_notice": "DewSecure security experts will review your request and contact you as soon as possible.",
   "btn_submit": "Submit Request",
 
-  // 服务意向选项
   "service_basic_health": "Basic Health Check",
   "service_blackbox": "Black Box Testing",
   "service_greybox": "Grey Box Testing (🔥 Core Recommendation)",
@@ -81,11 +71,9 @@ en: {
   "service_partner": "Partnership",
   "service_other": "Other",
 
-  // 服务详情下拉菜单
   "service_detail_title": "Service Details",
   "service_detail_desc": "Comprehensive security service comparison to help you choose the best solution.",
 
-  // 服务详情表格（扁平键，便于 data-i18n 使用）
   "sd_th1": "Service Item",
   "sd_th2": "Basic Health Check (Basic Scan & Screening)",
   "sd_th3": "Black Box Testing (External Boundary Blind Test)",
@@ -154,11 +142,9 @@ en: {
 
   "sd_footer_note": "Starting prices are for reference only. Final quotes will be accurately evaluated based on the actual number of API interfaces, user role dimensions, and business complexity. Please contact us for a full quotation.",
 
-  // 错误消息
   "err_required": "This field is required",
   "err_email": "Please enter a valid email address",
 
-  // 通知
   "alert_success": "Submission successful! The DewSecure team will contact you shortly.",
   "alert_error_email": "Please check if the email address is correct.",
   "alert_error_network": "Network error, please try again later.",
@@ -166,7 +152,6 @@ en: {
   "auto_reply_message": "Dear Customer, we have received your inquiry. Our team will review it and get back to you shortly. Thank you for your patience.",
   "btn_wait": "Please wait ({seconds}s)",
 
-  // 快速扫描
   "scan_title": "🔍 Quick Security Scan",
   "scan_desc": "Enter a website URL to instantly check common security configurations (HTTPS, security headers, etc.)",
   "scan_placeholder": "https://example.com",
@@ -183,7 +168,6 @@ en: {
   "policy_modal_title": "[ Security Audit Tool Usage Policy ]",
   "cooldown_msg": "{seconds}s cooldown",
 
-  // 扫描结果检查项
   "scan_check_label_https": "HTTPS Enabled",
   "scan_check_rec_https": "Migrate your site to HTTPS and enforce encryption for all traffic.",
   "scan_check_label_hsts": "Strict-Transport-Security (HSTS)",
@@ -212,7 +196,6 @@ en: {
   "scan_check_label_cache_control": "Cache-Control",
   "scan_check_rec_cache_control": "Set appropriate Cache-Control policy, e.g., \"no-store, max-age=0\" for sensitive pages.",
 
-  // 扫描分析文本
   "scan_analysis_enabled": "Enabled",
   "scan_analysis_not_set": "Not set",
   "scan_analysis_leak": "Server information leaked",
