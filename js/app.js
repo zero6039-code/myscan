@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initBinaryStream();
     initQuickScanner();
     initPolicyModal();
+    initServiceDetailColumnHighlight();   // 新增：服务详情列高亮
     window.addEventListener('resize', triggerStatsCounter);
 
     const heroAction = document.querySelector('.hero-action.delayed-btn');
@@ -332,23 +333,19 @@ function initQuickScanner() {
     const SCAN_COOLDOWN_SECONDS = 60;
     const COOLDOWN_STORAGE_KEY = 'scan_cooldown_end';
 
-    // 从 localStorage 获取冷却结束时间
     function getCooldownEnd() {
         const stored = localStorage.getItem(COOLDOWN_STORAGE_KEY);
         return stored ? parseInt(stored, 10) : 0;
     }
 
-    // 设置冷却结束时间
     function setCooldownEnd(endTime) {
         localStorage.setItem(COOLDOWN_STORAGE_KEY, endTime.toString());
     }
 
-    // 清除冷却记录
     function clearCooldownEnd() {
         localStorage.removeItem(COOLDOWN_STORAGE_KEY);
     }
 
-    // 更新按钮状态（综合考虑合规勾选和冷却）
     function updateScanButtonState() {
         const isCooldown = scanCooldownTimer !== null || getCooldownEnd() > Date.now();
         scanBtn.disabled = !complianceCheck.checked || isCooldown;
@@ -366,7 +363,6 @@ function initQuickScanner() {
     closeScanBtn?.addEventListener('click', closeScanModal);
     scanModal.addEventListener('click', (e) => { if (e.target === scanModal) closeScanModal(); });
 
-    // 根据剩余秒数更新显示文本（使用当前语言）
     function updateCooldownDisplay(remaining) {
         if (!scanStatus) return;
         scanStatus.style.display = 'inline';
@@ -374,7 +370,6 @@ function initQuickScanner() {
         scanStatus.textContent = template.replace('{seconds}', remaining);
     }
 
-    // 启动冷却倒计时（指定结束时间）
     function startScanCooldownByEndTime(endTime) {
         if (scanCooldownTimer) clearInterval(scanCooldownTimer);
 
@@ -393,23 +388,20 @@ function initQuickScanner() {
             updateCooldownDisplay(remaining);
         }
 
-        tick(); // 立即更新
+        tick();
         scanCooldownTimer = setInterval(tick, 1000);
         scanBtn.disabled = true;
     }
 
-    // 扫描成功后启动冷却
     function startScanCooldown() {
         const endTime = Date.now() + SCAN_COOLDOWN_SECONDS * 1000;
         setCooldownEnd(endTime);
         startScanCooldownByEndTime(endTime);
     }
 
-    // 页面加载时检查是否有未结束的冷却
     (function checkPersistedCooldown() {
         const cooldownEnd = getCooldownEnd();
         if (cooldownEnd > Date.now()) {
-            // 存在有效冷却，启动倒计时
             startScanCooldownByEndTime(cooldownEnd);
         } else if (cooldownEnd) {
             clearCooldownEnd();
@@ -417,7 +409,6 @@ function initQuickScanner() {
         updateScanButtonState();
     })();
 
-    // 核心渲染函数
     function renderScanResult(data) {
         let html = `<div class="score-line">${t('scan_score_prefix')}${data.score}</div>`;
         html += `<table class="scan-result-table"><tbody>`;
@@ -509,12 +500,10 @@ function initQuickScanner() {
         });
     }
 
-    // 语言变化时自动重渲染结果弹窗，以及刷新冷却显示
     window.addEventListener('languageChanged', () => {
         if (scanModal.classList.contains('is-open') && lastScanData) {
             renderScanResult(lastScanData);
         }
-        // 如果正在冷却，重新应用语言模板
         if (scanCooldownTimer !== null || getCooldownEnd() > Date.now()) {
             const cooldownEnd = getCooldownEnd();
             if (cooldownEnd > Date.now()) {
@@ -527,7 +516,6 @@ function initQuickScanner() {
     });
 
     scanBtn.addEventListener('click', async () => {
-        // 冷却中或未合规时不执行
         if (scanCooldownTimer !== null || getCooldownEnd() > Date.now() || !complianceCheck.checked) return;
 
         let url = scanInput.value.trim();
@@ -555,7 +543,6 @@ function initQuickScanner() {
                 return;
             }
 
-            // 启动冷却
             startScanCooldown();
 
             lastScanData = data;
@@ -567,6 +554,33 @@ function initQuickScanner() {
             resultBox.style.display = 'block';
             resultBox.innerHTML = `<div style="color:#ef4444;">${t('scan_network_error')}</div>`;
         }
+    });
+}
+
+/* ========== 服务详情表格列高亮（新增） ========== */
+function initServiceDetailColumnHighlight() {
+    const table = document.querySelector('.nav-item.service-detail table');
+    if (!table) return;
+
+    const headers = table.querySelectorAll('th[data-col]');
+    if (!headers.length) return;
+
+    headers.forEach(th => {
+        th.addEventListener('mouseenter', function() {
+            const colIndex = this.getAttribute('data-col');
+            // 高亮表头自身
+            this.classList.add('col-highlight');
+            // 高亮对应列的所有 td
+            const tds = table.querySelectorAll(`tbody td:nth-child(${colIndex})`);
+            tds.forEach(td => td.classList.add('col-highlight'));
+        });
+
+        th.addEventListener('mouseleave', function() {
+            const colIndex = this.getAttribute('data-col');
+            this.classList.remove('col-highlight');
+            const tds = table.querySelectorAll(`tbody td:nth-child(${colIndex})`);
+            tds.forEach(td => td.classList.remove('col-highlight'));
+        });
     });
 }
 
