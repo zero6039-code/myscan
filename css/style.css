@@ -1560,3 +1560,66 @@ html[data-i18n-ready] [data-i18n],
 .product-matrix-table td {
     word-break: break-word;
 }
+
+/* ==========================================================================
+   新增：服务详情下拉菜单优化（大字体、全宽、去除粗体）
+   ========================================================================== */
+.nav-item.service-detail .mega-dropdown {
+    width: 95vw;
+    max-width: 1400px;
+    left: 50%;
+    transform: translateX(-50%);
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 25px;
+    font-size: 1rem;              /* 整体字号调大 */
+    flex-direction: column;       /* 垂直排列，让介绍文字在上方 */
+    gap: 15px;
+}
+
+/* 移除原有 dropdown-intro 的边框和宽度限制，改为简单标题段落 */
+.nav-item.service-detail .dropdown-intro {
+    width: 100%;
+    max-width: 100%;
+    border-right: none;
+    padding-right: 0;
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.nav-item.service-detail .dropdown-intro h3 {
+    font-size: 28px;
+    margin: 0 0 8px 0;
+}
+
+.nav-item.service-detail .dropdown-intro p {
+    font-size: 1rem !important;
+    color: #94a3b8;
+    margin: 0;
+}
+
+/* 表格样式：字体大、无粗体、固定布局 */
+.nav-item.service-detail table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    font-size: 0.9rem;             /* 表格字号调大 */
+}
+
+.nav-item.service-detail th,
+.nav-item.service-detail td {
+    padding: 8px 10px;
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid #1e293b;
+    font-weight: normal;           /* 去掉粗体 */
+}
+
+.nav-item.service-detail th {
+    background: rgba(255,255,255,0.05);
+}
+
+/* 所有 strong 标签恢复为普通字重 */
+.nav-item.service-detail strong {
+    font-weight: normal;
+}
