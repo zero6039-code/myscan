@@ -268,6 +268,7 @@ function initQuoteModal() {
         formData.append('service', document.getElementById("form-service")?.value || '');
         formData.append('message', document.getElementById("form-info")?.value || '');
         formData.append('_subject', '新的咨询报价请求');
+        formData.append('g-recaptcha-response', document.getElementById('g-recaptcha-response').value);
 
         const msgSuccess = document.getElementById('alert-success')?.textContent || '提交成功！';
         const msgEmailError = document.getElementById('alert-email-error')?.textContent || '请检查邮箱地址';
