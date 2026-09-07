@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initBinaryStream();
     initQuickScanner();
     initPolicyModal();
+    renderServiceDetailTable();
     initServiceDetailColumnHighlight();   // 新增：服务详情列高亮
     window.addEventListener('resize', triggerStatsCounter);
 
