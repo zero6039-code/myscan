@@ -1613,6 +1613,7 @@ html[data-i18n-ready] [data-i18n],
     vertical-align: top;
     border-bottom: 1px solid #1e293b;
     font-weight: normal;           /* 去掉粗体 */
+    color: #cbd5e1;   /* 新增 */
 }
 
 .nav-item.service-detail th {
@@ -1622,4 +1623,29 @@ html[data-i18n-ready] [data-i18n],
 /* 所有 strong 标签恢复为普通字重 */
 .nav-item.service-detail strong {
     font-weight: normal;
+}
+
+/* 列高亮动画：从上到下渐变 */
+@keyframes colHighlight {
+    0% {
+        background-color: rgba(0, 166, 244, 0);
+    }
+    30% {
+        background-color: rgba(0, 166, 244, 0.15);
+    }
+    100% {
+        background-color: rgba(0, 166, 244, 0.05);
+    }
+}
+
+.nav-item.service-detail td.col-highlight,
+.nav-item.service-detail th.col-highlight {
+    animation: colHighlight 0.6s ease-out forwards;
+}
+
+/* 悬停时给表头自身轻微高亮 */
+.nav-item.service-detail th:hover {
+    background-color: rgba(0, 166, 244, 0.1);
+    cursor: pointer;
+    transition: background-color 0.3s;
 }
